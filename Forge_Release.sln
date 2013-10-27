@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".Documents", ".Documents", "{416C523A-8611-4C87-9740-C7A84C9B1D50}"
+	ProjectSection(SolutionItems) = preProject
+		.Documents\sign_synapse.bat = .Documents\sign_synapse.bat
+		.Documents\sign_terragraf.bat = .Documents\sign_terragraf.bat
+		.Documents\SignPassword.txt = .Documents\SignPassword.txt
+		.Documents\SynapseFuscator.xml = .Documents\SynapseFuscator.xml
+		.Documents\TerraGrafFuscator.xml = .Documents\TerraGrafFuscator.xml
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Base", "Forge.Base\Forge.Base.csproj", "{F3EED65E-C103-4BA8-AF1D-37421D73A708}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.WindowsServiceControl", "Forge.WindowsServiceControl\Forge.WindowsServiceControl.csproj", "{5750674A-8247-4F44-BE3F-DFAC351E1F73}"
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 3
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://jzo.visualstudio.com/defaultcollection
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = Forge.Base\\Forge.Base.csproj
+		SccProjectName1 = Forge.Base
+		SccLocalPath1 = Forge.Base
+		SccProjectUniqueName2 = Forge.WindowsServiceControl\\Forge.WindowsServiceControl.csproj
+		SccProjectName2 = Forge.WindowsServiceControl
+		SccLocalPath2 = Forge.WindowsServiceControl
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		BuildServerRelease|Any CPU = BuildServerRelease|Any CPU
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708}.BuildServerRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708}.BuildServerRelease|Any CPU.Build.0 = Release|Any CPU
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5750674A-8247-4F44-BE3F-DFAC351E1F73}.BuildServerRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{5750674A-8247-4F44-BE3F-DFAC351E1F73}.BuildServerRelease|Any CPU.Build.0 = Release|Any CPU
+		{5750674A-8247-4F44-BE3F-DFAC351E1F73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5750674A-8247-4F44-BE3F-DFAC351E1F73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5750674A-8247-4F44-BE3F-DFAC351E1F73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5750674A-8247-4F44-BE3F-DFAC351E1F73}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
