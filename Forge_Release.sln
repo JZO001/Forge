@@ -18,9 +18,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Extensions", "Forge.E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Persistence", "Forge.Persistence\Forge.Persistence.csproj", "{689C2101-257F-404B-9B50-9B550DFA196F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Test", "Forge.Test\Forge.Test.csproj", "{1C08031A-C275-414E-8688-636D49D69DC6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EDCC58B0-87A2-469A-B150-A4A02C4D585A}"
+	ProjectSection(SolutionItems) = preProject
+		Forge.vsmdi = Forge.vsmdi
+		Local.testsettings = Local.testsettings
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 5
+		SccNumberOfProjects = 6
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://jzo.visualstudio.com/defaultcollection
 		SccLocalPath0 = .
@@ -36,6 +45,9 @@ Global
 		SccProjectUniqueName4 = Forge.Persistence\\Forge.Persistence.csproj
 		SccProjectName4 = Forge.Persistence
 		SccLocalPath4 = Forge.Persistence
+		SccProjectUniqueName5 = Forge.Test\\Forge.Test.csproj
+		SccProjectName5 = Forge.Test
+		SccLocalPath5 = Forge.Test
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		BuildServerRelease|Any CPU = BuildServerRelease|Any CPU
@@ -67,6 +79,12 @@ Global
 		{689C2101-257F-404B-9B50-9B550DFA196F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{689C2101-257F-404B-9B50-9B550DFA196F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{689C2101-257F-404B-9B50-9B550DFA196F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C08031A-C275-414E-8688-636D49D69DC6}.BuildServerRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{1C08031A-C275-414E-8688-636D49D69DC6}.BuildServerRelease|Any CPU.Build.0 = Release|Any CPU
+		{1C08031A-C275-414E-8688-636D49D69DC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C08031A-C275-414E-8688-636D49D69DC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C08031A-C275-414E-8688-636D49D69DC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C08031A-C275-414E-8688-636D49D69DC6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -158,11 +158,8 @@ Forge.Net.TerraGraf.dll.*
 # Unnecessary files and folders
 Forge.sln
 BuildProcessTemplates
-ThreadPoolOld.cs
 NHibernate*
 Microsoft.SqlServer.*
-Newtonsoft.*
-Iesi.Collections.*
 NuGet.CommandLine.*
 
 # For Future
