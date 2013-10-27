@@ -23,7 +23,7 @@ namespace Forge.WindowsServiceControl
         /// <param name="databaseName">Name of the database.</param>
         /// <param name="desiredAccess">The desired access.</param>
         /// <returns></returns>
-        [DllImport("advapi32.dll", EntryPoint = "OpenSCManager")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA2101:SpecifyMarshalingForPInvokeStringArguments", MessageId = "1"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA2101:SpecifyMarshalingForPInvokeStringArguments", MessageId = "0"), DllImport("advapi32.dll", EntryPoint = "OpenSCManager")]
         public static extern IntPtr OpenSCManager(
             string machineName,
             string databaseName,
@@ -44,7 +44,7 @@ namespace Forge.WindowsServiceControl
         /// <param name="serviceName">Name of the service.</param>
         /// <param name="desiredAccess">The desired access.</param>
         /// <returns></returns>
-        [DllImport("advapi32.dll", EntryPoint = "OpenService")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA2101:SpecifyMarshalingForPInvokeStringArguments", MessageId = "1"), DllImport("advapi32.dll", EntryPoint = "OpenService")]
         public static extern IntPtr OpenService(
             IntPtr hSCManager,
             string serviceName,
