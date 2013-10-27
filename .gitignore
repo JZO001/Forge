@@ -166,6 +166,4 @@ Iesi.Collections.*
 NuGet.CommandLine.*
 
 # For Future
-Forge.Extensions*
-Forge.Persistence*
 Forge.Net.*
