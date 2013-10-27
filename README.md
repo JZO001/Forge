@@ -5,9 +5,9 @@ Forge is a [NuGet](http://nuget.org/) package that contains several "Patterns an
 
 ## Change history
 
-### 1.0 (10/27/2013)
+### 1.0.0 (10/27/2013)
 
-* Initial release
+* Initial release. NuGet package version is 1.0.3.
 
 
 ## Related blog posts
