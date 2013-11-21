@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Forge.Collections;
-using Forge;
 using Forge.Persistence.StorageProviders;
 
 namespace Forge.Persistence.Collections

@@ -5,9 +5,9 @@
 ***********************************************************************/
 
 using System;
+using System.Collections.Generic;
 using Forge.Collections;
 using Forge.Persistence.Formatters;
-using System.Collections.Generic;
 
 namespace Forge.Persistence.StorageProviders
 {

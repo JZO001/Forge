@@ -146,6 +146,7 @@
     <Compile Include="Native\Structures\KeyboardInput.cs" />
     <Compile Include="Native\Structures\MouseInput.cs" />
     <Compile Include="IO\PathHelper.cs" />
+    <Compile Include="Native\Structures\SystemTime.cs" />
     <Compile Include="Persistence\Formatters\RijndaelFormatter.cs" />
     <Compile Include="Persistence\Formatters\BinaryFormatter.cs" />
     <Compile Include="Persistence\Formatters\GZipFormatter.cs" />

@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using System;
 using System.Runtime.InteropServices;
 
 namespace Forge.Native.Structures
@@ -13,6 +14,7 @@ namespace Forge.Native.Structures
     /// Represents the mouse, keyboard and hardware union structure
     /// http://stackoverflow.com/questions/6830651/sendinput-and-64bits
     /// </summary>
+    [Serializable]
     [StructLayout(LayoutKind.Explicit)]
     public struct MouseKeyboardHardwareUnion
     {

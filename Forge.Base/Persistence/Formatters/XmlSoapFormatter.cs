@@ -5,10 +5,10 @@
 ***********************************************************************/
 
 using System;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Soap;
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.Serialization.Formatters;
+using System.Runtime.Serialization.Formatters.Soap;
 
 namespace Forge.Persistence.Formatters
 {

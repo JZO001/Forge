@@ -606,7 +606,7 @@ namespace Forge.EventRaiser
                 }
                 catch (Exception e)
                 {
-                    if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format("RAISER, failed to invoke on '{0}' with method '{1}'. Invoke on control: {2}, parallel: true. Reason: {4}", dl.Target == null ? dl.Method.DeclaringType.FullName : dl.Target.GetType().FullName, dl.Method.Name, mControlInvoke.ToString(), e.Message), e);
+                    if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format("RAISER, failed to invoke on '{0}' with method '{1}'. Invoke on control: {2}, parallel: true. Reason: {3}", dl.Target == null ? dl.Method.DeclaringType.FullName : dl.Target.GetType().FullName, dl.Method.Name, mControlInvoke.ToString(), e.Message), e);
                     mResultObjects[index] = e;
                 }
                 finally

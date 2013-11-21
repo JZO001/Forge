@@ -5,8 +5,6 @@
 ***********************************************************************/
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Configuration;
 
 namespace Forge.Configuration.Shared.Interfaces
@@ -62,13 +60,13 @@ namespace Forge.Configuration.Shared.Interfaces
         /// <summary>
         /// Refreshes the instance.
         /// </summary>
-        void RefreshInstance( );
+        void RefreshInstance();
 
         /// <summary>
         /// Saves the instance.
         /// </summary>
         /// <param name="mode">The mode.</param>
-        void SaveInstance( ConfigurationSaveMode mode );
+        void SaveInstance(ConfigurationSaveMode mode);
 
     }
 

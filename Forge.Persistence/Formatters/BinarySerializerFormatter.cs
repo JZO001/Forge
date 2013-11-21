@@ -8,7 +8,6 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.Serialization;
-using System.Security;
 using Forge.Persistence.Serialization;
 using Forge.Reflection;
 

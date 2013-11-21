@@ -9,7 +9,6 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Forge.EventRaiser;
 using Forge.Management;
 using Forge.Native.Structures;
 

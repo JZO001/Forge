@@ -5,9 +5,8 @@
 ***********************************************************************/
 
 using System;
-using Forge.Collections;
-using Forge.Configuration.Shared;
 using System.Collections.Generic;
+using Forge.Collections;
 
 namespace Forge.Persistence.StorageProviders
 {

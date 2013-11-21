@@ -4,7 +4,6 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Forge.Collections

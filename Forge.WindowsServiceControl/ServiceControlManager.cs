@@ -8,7 +8,6 @@ using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
-using Forge;
 
 namespace Forge.WindowsServiceControl
 {
@@ -51,6 +50,7 @@ namespace Forge.WindowsServiceControl
 
         #region Field(s)
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2006:UseSafeHandleToEncapsulateNativeResources")]
         private IntPtr mSCManager;
 
         private bool mDisposed = false;

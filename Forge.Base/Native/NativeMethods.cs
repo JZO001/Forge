@@ -346,6 +346,23 @@ namespace Forge.Native
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Interoperability", "CA1401:PInvokesShouldNotBeVisible"), DllImport("user32.dll")]
         public static extern bool GetCursorInfo(out CursorInfo pci);
 
+        /// <summary>
+        /// Gets the system time in UTC.
+        /// http://msdn.microsoft.com/en-us/library/windows/desktop/ms724390(v=vs.85).aspx
+        /// </summary>
+        /// <param name="lpSystemTime">The lp system time.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Interoperability", "CA1401:PInvokesShouldNotBeVisible"), DllImport("Kernel32.dll")]
+        public extern static void GetSystemTime(ref SystemTime lpSystemTime);
+
+        /// <summary>
+        /// Sets the system time in UTC.
+        /// http://msdn.microsoft.com/en-us/library/windows/desktop/ms724942(v=vs.85).aspx
+        /// </summary>
+        /// <param name="lpSystemTime">The lp system time.</param>
+        /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Interoperability", "CA1401:PInvokesShouldNotBeVisible"), DllImport("Kernel32.dll")]
+        public extern static uint SetSystemTime(ref SystemTime lpSystemTime);
+
     }
 
 }

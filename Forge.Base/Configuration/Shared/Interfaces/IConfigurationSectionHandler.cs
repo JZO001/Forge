@@ -4,10 +4,6 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Configuration;
 
 namespace Forge.Configuration.Shared.Interfaces
 {

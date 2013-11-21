@@ -7,7 +7,6 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Diagnostics;
 using System.IO;
 using System.Security.Permissions;
 using Forge.Configuration.Shared.Interfaces;
@@ -93,6 +92,8 @@ namespace Forge.Configuration.Shared
         private String mDefaultConfigurationFile = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
 
         private bool mSectionLoaded = false;
+
+        private readonly object LOCK_OBJECT = new object();
 
         #endregion
 
@@ -220,7 +221,7 @@ namespace Forge.Configuration.Shared
             {
                 if (!mSectionLoaded)
                 {
-                    lock (this)
+                    lock (LOCK_OBJECT)
                     {
                         if (!mSectionLoaded)
                         {
@@ -256,7 +257,7 @@ namespace Forge.Configuration.Shared
             {
                 if (!mSectionLoaded)
                 {
-                    lock (this)
+                    lock (LOCK_OBJECT)
                     {
                         if (!mSectionLoaded)
                         {
@@ -271,7 +272,7 @@ namespace Forge.Configuration.Shared
             {
                 if (!mSectionLoaded)
                 {
-                    lock (this)
+                    lock (LOCK_OBJECT)
                     {
                         if (!mSectionLoaded)
                         {
@@ -290,7 +291,7 @@ namespace Forge.Configuration.Shared
         /// </summary>
         public override void RefreshInstance()
         {
-            lock (this)
+            lock (LOCK_OBJECT)
             {
                 if (mConfig != null)
                 {
@@ -434,7 +435,7 @@ namespace Forge.Configuration.Shared
         {
             if (mFSWatcher != null)
             {
-                lock (this)
+                lock (LOCK_OBJECT)
                 {
                     if (mFSWatcher != null)
                     {
@@ -446,7 +447,7 @@ namespace Forge.Configuration.Shared
             }
             if (mSettings.SectionInformation.RestartOnExternalChanges)
             {
-                lock (this)
+                lock (LOCK_OBJECT)
                 {
                     if (LOGGER.IsInfoEnabled) LOGGER.Info(String.Format("{0}: listening configuration file for changes '{1}'...", LOG_PREFIX, DefaultConfigurationFile));
                     mFSWatcher = new FileSystemWatcher(Path.GetDirectoryName(DefaultConfigurationFile));

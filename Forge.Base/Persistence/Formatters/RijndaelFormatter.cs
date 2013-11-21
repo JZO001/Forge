@@ -164,6 +164,7 @@ namespace Forge.Persistence.Formatters
         ///   <c>true</c> if this instance can write the specified item; otherwise, <c>false</c>.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">item</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         public bool CanWrite(T item)
         {
             if (item == null)

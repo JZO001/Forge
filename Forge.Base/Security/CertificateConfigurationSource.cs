@@ -8,8 +8,8 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
-using Forge.Configuration.Shared;
 using Forge.Configuration;
+using Forge.Configuration.Shared;
 
 namespace Forge.Security
 {
