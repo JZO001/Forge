@@ -2,8 +2,8 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>log4net</id>
-    <version>2.0.2</version>
-    <title>log4net [1.2.12]</title>
+    <version>2.0.3</version>
+    <title>log4net [1.2.13]</title>
     <authors>Apache Software Foundation</authors>
     <owners>Apache Software Foundation</owners>
     <licenseUrl>http://logging.apache.org/log4net/license.html</licenseUrl>
