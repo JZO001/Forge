@@ -1,0 +1,94 @@
+﻿/* *********************************************************************
+ * Date: 25 Apr 2012
+ * Created by: Zoltan Juhasz
+ * E-Mail: forge@jzo.hu
+***********************************************************************/
+
+using System;
+using System.Diagnostics;
+using System.Runtime.Serialization;
+using NHibernate.Mapping.Attributes;
+
+namespace Forge.ORM.NHibernateExtension.Model
+{
+
+    /// <summary>
+    /// Represents an entity base with Int32 type identifier and native id generator
+    /// </summary>
+    [Serializable]
+    [DataContract(IsReference = true)]
+    [DebuggerDisplay("[{GetType()}, Id = '{Id}', Deleted = {Deleted}]")]
+    public abstract class EntityBaseInt64NativeId : EntityBaseGenericId<long>
+    {
+
+        #region Field(s)
+
+        /// <summary>
+        /// The identifier
+        /// </summary>
+        [Id(0, Name = "id", Column = "id", TypeType = typeof(long), UnsavedValue = "-1")]
+        [Generator(1, Class = "native")]
+        private long id = -1;
+
+        #endregion
+
+        #region Constructor(s)
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EntityBaseInt64NativeId"/> class.
+        /// </summary>
+        protected EntityBaseInt64NativeId()
+        {
+        }
+
+        #endregion
+
+        #region Public properties
+
+        /// <summary>
+        /// Gets or sets the identifier.
+        /// </summary>
+        /// <value>
+        /// The identifier.
+        /// </value>
+        /// <exception cref="System.NotImplementedException">
+        /// </exception>
+        [DebuggerHidden]
+        public override long Id
+        {
+            get
+            {
+                return this.id;
+            }
+            set
+            {
+                if (this.id != -1 && this.IsSaved)
+                {
+                    ThrowHelper.ThrowArgumentException("Unable to replace identifier of an existing entity.", "value");
+                }
+
+                OnPropertyChanging("Id");
+                this.id = value;
+                this.IsSaved = false; // ha beállítok id-t, az azt jelenti, hogy most lesz először mentve
+                OnPropertyChanged("Id");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is saved.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is saved; otherwise, <c>false</c>.
+        /// </value>
+        [DebuggerHidden]
+        public override bool IsSaved
+        {
+            get { return this.Id != -1 && base.IsSaved; }
+            set { base.IsSaved = value; }
+        }
+
+        #endregion
+
+    }
+
+}

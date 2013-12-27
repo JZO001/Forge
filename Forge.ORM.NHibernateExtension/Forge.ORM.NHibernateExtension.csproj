@@ -3,17 +3,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>
-    </ProductVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{1C08031A-C275-414E-8688-636D49D69DC6}</ProjectGuid>
+    <ProjectGuid>{D1427FB9-2787-46E6-A5AC-D98E8476F4F7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Forge.Test</RootNamespace>
-    <AssemblyName>Forge.Test</AssemblyName>
+    <RootNamespace>Forge.ORM.NHibernateExtension</RootNamespace>
+    <AssemblyName>Forge.ORM.NHibernateExtension</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
@@ -35,16 +33,21 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Forge.ORM.NHibernateExtension.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Forge.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Iesi.Collections">
       <HintPath>..\packages\Iesi.Collections.3.3.1.4000\lib\Net35\Iesi.Collections.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="NHibernate">
       <HintPath>..\packages\NHibernate.3.3.3.4001\lib\Net35\NHibernate.dll</HintPath>
     </Reference>
@@ -52,29 +55,48 @@
       <HintPath>..\packages\NHibernate.Mapping.Attributes.3.2.0.0\lib\NHibernate.Mapping.Attributes.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDependentAssemblyPaths Condition=" '$(VS100COMNTOOLS)' != '' " Include="$(VS100COMNTOOLS)..\IDE\PrivateAssemblies">
-      <Visible>False</Visible>
-    </CodeAnalysisDependentAssemblyPaths>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="ApplicationHelperTest.cs" />
-    <Compile Include="ArraysUnitTest.cs" />
-    <Compile Include="EntitiesIntNative\Customer.cs" />
-    <Compile Include="EntitiesIntNative\Product.cs" />
-    <Compile Include="EntitiesIntNative\ShoppingCart.cs" />
-    <Compile Include="EntityTest.cs" />
-    <Compile Include="PathTest.cs" />
+    <Compile Include="Criterias\AllCriteria.cs" />
+    <Compile Include="Criterias\ArithmeticCriteria.cs" />
+    <Compile Include="Criterias\ArithmeticOperandEnum.cs" />
+    <Compile Include="Criterias\AssociationEntry.cs" />
+    <Compile Include="Criterias\BetweenCriteria.cs" />
+    <Compile Include="Criterias\Criteria.cs" />
+    <Compile Include="Criterias\GroupCriteria.cs" />
+    <Compile Include="Criterias\GroupCriteriaLogicEnum.cs" />
+    <Compile Include="Criterias\InCriteria.cs" />
+    <Compile Include="Criterias\IReflectionCriteria.cs" />
+    <Compile Include="Criterias\LikeCriteria.cs" />
+    <Compile Include="Criterias\LikeMatchModeEnum.cs" />
+    <Compile Include="Criterias\NullCriteria.cs" />
+    <Compile Include="Criterias\OrderBy.cs" />
+    <Compile Include="Criterias\OrderModeEnum.cs" />
+    <Compile Include="EntityDeleteException.cs" />
+    <Compile Include="EntityRefreshException.cs" />
+    <Compile Include="EntitySaveException.cs" />
+    <Compile Include="Model\EntityBaseGenericId.cs" />
+    <Compile Include="Model\EntityBaseInt32NativeId.cs" />
+    <Compile Include="Model\EntityBaseInt64NativeId.cs" />
+    <Compile Include="Model\EntityBaseWithoutId.cs" />
+    <Compile Include="Model\EntityFieldDescriptionAttribute.cs" />
+    <Compile Include="Net4CollectionTypeFactory.cs" />
+    <Compile Include="ORMException.cs" />
+    <Compile Include="ORMUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TaskManagerTest.cs" />
-    <Compile Include="TypeHelperTest.cs" />
+    <Compile Include="QueryDetachedParams.cs" />
+    <Compile Include="QueryException.cs" />
+    <Compile Include="QueryHelper.cs" />
+    <Compile Include="QueryParams.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="Forge.pfx" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -82,24 +104,9 @@
       <Project>{F3EED65E-C103-4BA8-AF1D-37421D73A708}</Project>
       <Name>Forge.Base</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Forge.Extensions\Forge.Extensions.csproj">
-      <Project>{B4EA240F-19DC-42CB-810B-99E86AF8D06E}</Project>
-      <Name>Forge.Extensions</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Forge.ORM.NHibernateExtension\Forge.ORM.NHibernateExtension.csproj">
-      <Project>{D1427FB9-2787-46E6-A5AC-D98E8476F4F7}</Project>
-      <Name>Forge.ORM.NHibernateExtension</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Forge.Persistence\Forge.Persistence.csproj">
-      <Project>{689C2101-257F-404B-9B50-9B550DFA196F}</Project>
-      <Name>Forge.Persistence</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Forge.WindowsServiceControl\Forge.WindowsServiceControl.csproj">
-      <Project>{5750674A-8247-4F44-BE3F-DFAC351E1F73}</Project>
-      <Name>Forge.WindowsServiceControl</Name>
-    </ProjectReference>
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
