@@ -163,11 +163,11 @@ Microsoft.SqlServer.*
 NuGet.CommandLine.*
 
 # Packages
-Packages/Iesi*
-Packages/log4net*
-Packages/Newtonsoft*
-Packages/NHibernate*
-Packages/NuGet*
+packages/Iesi*
+packages/log4net*
+packages/Newtonsoft*
+packages/NHibernate*
+packages/NuGet*
 
 # For Future
 Forge.Net.*
