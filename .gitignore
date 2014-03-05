@@ -162,6 +162,13 @@ NHibernate*
 Microsoft.SqlServer.*
 NuGet.CommandLine.*
 
+# Packages
+Packages/Iesi*
+Packages/log4net*
+Packages/Newtonsoft*
+Packages/NHibernate*
+Packages/NuGet*
+
 # For Future
 Forge.Net.*
 Forge.ORM
