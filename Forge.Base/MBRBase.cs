@@ -6,6 +6,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Security;
 
 namespace Forge
 {
@@ -36,6 +37,7 @@ namespace Forge
         ///   <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="RemotingConfiguration, Infrastructure" />
         ///   </PermissionSet>
         /// <exception cref="T:System.Security.SecurityException">The immediate caller does not have infrastructure permission.</exception>
+        [SecurityCritical]
         public override object InitializeLifetimeService()
         {
             //ILease lease = (ILease)base.InitializeLifetimeService();
