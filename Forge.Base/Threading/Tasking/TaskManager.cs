@@ -28,6 +28,9 @@ namespace Forge.Threading.Tasking
 
         private readonly Dictionary<int, List<QueueItem>> mOrderedItems = new Dictionary<int, List<QueueItem>>();
 
+        private readonly List<QueueItem> mSequentialQueuedItems = null;
+        private bool mIsExecuting = false;
+
         #endregion
 
         #region Constructor(s)
@@ -36,8 +39,8 @@ namespace Forge.Threading.Tasking
         /// Initializes a new instance of the <see cref="TaskManager"/> class.
         /// </summary>
         public TaskManager()
+            : this(ChaosTheoryEnum.OrderByTaskDelegateTarget)
         {
-            this.ChaosTheoryMode = ChaosTheoryEnum.OrderByTaskDelegateTarget;
         }
 
         /// <summary>
@@ -46,6 +49,12 @@ namespace Forge.Threading.Tasking
         public TaskManager(ChaosTheoryEnum chaosTheory)
         {
             this.ChaosTheoryMode = chaosTheory;
+            this.InvokeUIAtAction = false;
+            this.InvokeUIAtReturn = true;
+            if (chaosTheory == ChaosTheoryEnum.Sequential)
+            {
+                mSequentialQueuedItems = new List<QueueItem>();
+            }
         }
 
         #endregion
@@ -59,6 +68,22 @@ namespace Forge.Threading.Tasking
         /// The chaos theory mode.
         /// </value>
         public ChaosTheoryEnum ChaosTheoryMode { get; private set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [invoke UI at action].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [invoke UI at action]; otherwise, <c>false</c>.
+        /// </value>
+        public bool InvokeUIAtAction { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [invoke UI at return].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [invoke UI at return]; otherwise, <c>false</c>.
+        /// </value>
+        public bool InvokeUIAtReturn { get; set; }
 
         #endregion
 
@@ -432,6 +457,12 @@ namespace Forge.Threading.Tasking
                         BeginExecution(returnDelegate.Target.GetHashCode(), item);
                     }
                     break;
+
+                case ChaosTheoryEnum.Sequential:
+                    {
+                        BeginExecution(item);
+                    }
+                    break;
             }
         }
 
@@ -458,6 +489,19 @@ namespace Forge.Threading.Tasking
             }
         }
 
+        private void BeginExecution(QueueItem item)
+        {
+            lock (mSequentialQueuedItems)
+            {
+                mSequentialQueuedItems.Add(item);
+                if (!mIsExecuting)
+                {
+                    mIsExecuting = true;
+                    mThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(ExecuteTask), item);
+                }
+            }
+        }
+
         private void ExecuteTask(object state)
         {
             QueueItem item = state as QueueItem;
@@ -466,7 +510,19 @@ namespace Forge.Threading.Tasking
 
             try
             {
-                methodResult = item.TaskDelegate.Method.Invoke(item.TaskDelegate.Target, item.InParameters);
+                if (InvokeUIAtAction && item.TaskDelegate.Target is Control)
+                {
+                    methodResult = ((Control)item.TaskDelegate.Target).Invoke(item.TaskDelegate, item.InParameters);
+                }
+                else if (InvokeUIAtAction && item.TaskDelegate.Target is DependencyObject)
+                {
+                    DependencyObject ctrl = (DependencyObject)item.TaskDelegate.Target;
+                    ctrl.Dispatcher.Invoke(item.TaskDelegate, item.InParameters);
+                }
+                else
+                {
+                    methodResult = item.TaskDelegate.Method.Invoke(item.TaskDelegate.Target, item.InParameters);
+                }
             }
             catch (TargetInvocationException ex)
             {
@@ -495,11 +551,11 @@ namespace Forge.Threading.Tasking
             {
                 try
                 {
-                    if (item.ReturnDelegate.Target is Control)
+                    if (InvokeUIAtReturn && item.ReturnDelegate.Target is Control)
                     {
                         ((Control)item.ReturnDelegate.Target).Invoke(item.ReturnDelegate, new object[] { result });
                     }
-                    else if (item.ReturnDelegate.Target is DependencyObject)
+                    else if (InvokeUIAtReturn && item.ReturnDelegate.Target is DependencyObject)
                     {
                         DependencyObject ctrl = (DependencyObject)item.ReturnDelegate.Target;
                         ctrl.Dispatcher.Invoke(item.ReturnDelegate, new object[] { result });
@@ -515,7 +571,22 @@ namespace Forge.Threading.Tasking
                 }
             }
 
-            if (ChaosTheoryMode != ChaosTheoryEnum.Chaos)
+            if (ChaosTheoryMode == ChaosTheoryEnum.Sequential)
+            {
+                lock (mSequentialQueuedItems)
+                {
+                    mSequentialQueuedItems.RemoveAt(0);
+                    if (mSequentialQueuedItems.Count > 0)
+                    {
+                        mThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(ExecuteTask), mSequentialQueuedItems[0]);
+                    }
+                    else
+                    {
+                        mIsExecuting = false;
+                    }
+                }
+            }
+            else if (ChaosTheoryMode != ChaosTheoryEnum.Chaos)
             {
                 lock (mOrderedItems)
                 {

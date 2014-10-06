@@ -29,7 +29,12 @@ namespace Forge.Threading.Tasking
         /// <summary>
         /// Tasks ordered by return delegate target
         /// </summary>
-        OrderByReturnDelegateTarget
+        OrderByReturnDelegateTarget,
+
+        /// <summary>
+        /// Task ordered by incoming sequence
+        /// </summary>
+        Sequential
 
     }
 

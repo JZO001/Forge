@@ -37,15 +37,15 @@ namespace Forge.Test
             Assert.IsFalse(type == null);
         }
 
-        [TestMethod]
-        public void TestTypeHelperDiffVersion()
-        {
-            string typeStr = string.Format("{0}, Iesi.Collections, Version=1.0.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4", typeof(Iesi.Collections.HashedSet).FullName);
+        //[TestMethod]
+        //public void TestTypeHelperDiffVersion()
+        //{
+        //    string typeStr = string.Format("{0}, Iesi.Collections, Version=1.0.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4", typeof(Iesi.Collections.HashedSet).FullName);
 
-            Type type = TypeHelper.GetTypeFromString(typeStr, true);
+        //    Type type = TypeHelper.GetTypeFromString(typeStr, true);
 
-            Assert.IsFalse(type == null);
-        }
+        //    Assert.IsFalse(type == null);
+        //}
 
         [TestMethod]
         public void TestTypeHelperMultiArray()
@@ -55,25 +55,25 @@ namespace Forge.Test
             Assert.IsFalse(type == null);
         }
 
-        [TestMethod]
-        public void TestTypeHelperArray()
-        {
-            string typeStr = string.Format("{0}[], Iesi.Collections, Version=1.0.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4", typeof(Iesi.Collections.HashedSet).FullName);
+        //[TestMethod]
+        //public void TestTypeHelperArray()
+        //{
+        //    string typeStr = string.Format("{0}[], Iesi.Collections, Version=1.0.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4", typeof(Iesi.Collections.HashedSet).FullName);
 
-            Type type = TypeHelper.GetTypeFromString(typeStr, true);
+        //    Type type = TypeHelper.GetTypeFromString(typeStr, true);
 
-            Assert.IsFalse(type == null);
-        }
+        //    Assert.IsFalse(type == null);
+        //}
 
-        [TestMethod]
-        public void TestTypeHelperGenericAndArray()
-        {
-            string typeStr = string.Format("{0}[,], Iesi.Collections, Version=1.0.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4", typeof(Iesi.Collections.Generic.ISet<>).FullName);
+        //[TestMethod]
+        //public void TestTypeHelperGenericAndArray()
+        //{
+        //    string typeStr = string.Format("{0}[,], Iesi.Collections, Version=1.0.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4", typeof(Iesi.Collections.Generic.ISet<>).FullName);
 
-            Type type = TypeHelper.GetTypeFromString(typeStr, true);
+        //    Type type = TypeHelper.GetTypeFromString(typeStr, true);
 
-            Assert.IsFalse(type == null);
-        }
+        //    Assert.IsFalse(type == null);
+        //}
 
     }
 

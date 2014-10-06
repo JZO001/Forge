@@ -31,7 +31,7 @@ namespace Forge.Test
 
             // create configuration and load assembly
             NHibernate.Cfg.Configuration cfg = new NHibernate.Cfg.Configuration();
-            cfg.Properties[NHibernate.Cfg.Environment.CollectionTypeFactoryClass] = typeof(Net4CollectionTypeFactory).AssemblyQualifiedName;
+            //cfg.Properties[NHibernate.Cfg.Environment.CollectionTypeFactoryClass] = typeof(Net4CollectionTypeFactory).AssemblyQualifiedName;
             cfg.Configure();
             //cfg.AddAssembly( typeof( Product ).Assembly ); // use this only, if hbm.xml exists in the assembly
             cfg.AddInputStream(HbmSerializer.Default.Serialize(typeof(Product).Assembly)); // ez bármikor müxik, de lassabb

@@ -370,15 +370,15 @@ namespace Forge.ORM.NHibernateExtension.Model
                             hashSet.GetType().GetMethod("UnionWith").Invoke(hashSet, new object[] { fieldValue });
                             field.SetValue(newEntity, hashSet);
                         }
-                        else if (field.FieldType.IsGenericType && field.FieldType.GetGenericTypeDefinition().Equals(typeof(Iesi.Collections.Generic.ISet<int>)))
-                        {
-                            // generic HashedSet (Iesi)
-                            Type genericType = field.FieldType.GetGenericArguments()[0];
-                            Type hashSetType = typeof(Iesi.Collections.Generic.HashedSet<>).MakeGenericType(genericType);
-                            object hashset = hashSetType.GetConstructor(Type.EmptyTypes).Invoke(null);
-                            hashset.GetType().GetMethod("AddAll").Invoke(hashset, new object[] { fieldValue });
-                            field.SetValue(newEntity, hashset);
-                        }
+                        //else if (field.FieldType.IsGenericType && field.FieldType.GetGenericTypeDefinition().Equals(typeof(Iesi.Collections.Generic.ISet<int>)))
+                        //{
+                        //    // generic HashedSet (Iesi)
+                        //    Type genericType = field.FieldType.GetGenericArguments()[0];
+                        //    Type hashSetType = typeof(Iesi.Collections.Generic.HashedSet<>).MakeGenericType(genericType);
+                        //    object hashset = hashSetType.GetConstructor(Type.EmptyTypes).Invoke(null);
+                        //    hashset.GetType().GetMethod("AddAll").Invoke(hashset, new object[] { fieldValue });
+                        //    field.SetValue(newEntity, hashset);
+                        //}
                         else if (field.FieldType.IsGenericType && field.FieldType.GetGenericTypeDefinition().Equals(typeof(System.Collections.Generic.IList<int>)))
                         {
                             // generic List (.NET)
@@ -393,11 +393,11 @@ namespace Forge.ORM.NHibernateExtension.Model
                             // non-generic list (.NET)
                             field.SetValue(newEntity, new System.Collections.ArrayList((System.Collections.ICollection)fieldValue));
                         }
-                        else if (field.FieldType.Equals(typeof(Iesi.Collections.ISet)))
-                        {
-                            // non-generic HashedSet (Iesi)
-                            field.SetValue(newEntity, new Iesi.Collections.HashedSet((System.Collections.ICollection)fieldValue));
-                        }
+                        //else if (field.FieldType.Equals(typeof(Iesi.Collections.ISet)))
+                        //{
+                        //    // non-generic HashedSet (Iesi)
+                        //    field.SetValue(newEntity, new Iesi.Collections.HashedSet((System.Collections.ICollection)fieldValue));
+                        //}
                         else
                         {
                             // value type or entity
