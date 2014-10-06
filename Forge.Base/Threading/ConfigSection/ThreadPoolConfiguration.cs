@@ -6,7 +6,6 @@
 
 using System;
 using System.Configuration;
-using System.Security.Permissions;
 
 namespace Forge.Threading.ConfigSection
 {
@@ -14,7 +13,6 @@ namespace Forge.Threading.ConfigSection
     /// <summary>
     /// Configuration access helper class for ThreadPools
     /// </summary>
-    [SecurityPermission(SecurityAction.Demand, Unrestricted = true)]
     public class ThreadPoolConfiguration : Forge.Configuration.Shared.SharedConfigSettings<ThreadPoolSection, ThreadPoolConfiguration>
     {
 

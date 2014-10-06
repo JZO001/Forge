@@ -7,7 +7,6 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using System.Security.Permissions;
 
 namespace Forge.WindowsServiceControl
 {
@@ -63,7 +62,6 @@ namespace Forge.WindowsServiceControl
         /// Initializes a new instance of the <see cref="ServiceControlManager" /> class.
         /// </summary>
         /// <exception cref="System.ComponentModel.Win32Exception">Unable to open Service Control Manager.</exception>
-        [SecurityPermission(SecurityAction.LinkDemand, UnmanagedCode = true)]
         public ServiceControlManager()
         {
             // Open the service control manager
@@ -99,7 +97,7 @@ namespace Forge.WindowsServiceControl
         ///   <c>true</c> if [has restart on failure] [the specified service name]; otherwise, <c>false</c>.
         /// </returns>
         /// <exception cref="System.ComponentModel.Win32Exception">Unable to query the Service configuration.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1806:DoNotIgnoreMethodResults", MessageId = "Forge.WindowsServiceControl.NativeMethods.CloseServiceHandle(System.IntPtr)"), SecurityPermission(SecurityAction.LinkDemand, UnmanagedCode = true)]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1806:DoNotIgnoreMethodResults", MessageId = "Forge.WindowsServiceControl.NativeMethods.CloseServiceHandle(System.IntPtr)")]
         public bool HasRestartOnFailure(string serviceName)
         {
             const int bufferSize = 1024 * 8;
@@ -162,7 +160,7 @@ namespace Forge.WindowsServiceControl
         /// </summary>
         /// <param name="serviceName">Name of the service.</param>
         /// <exception cref="System.ComponentModel.Win32Exception">Unable to change the Service configuration.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1806:DoNotIgnoreMethodResults", MessageId = "Forge.WindowsServiceControl.NativeMethods.CloseServiceHandle(System.IntPtr)"), SecurityPermission(SecurityAction.LinkDemand, UnmanagedCode = true)]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1806:DoNotIgnoreMethodResults", MessageId = "Forge.WindowsServiceControl.NativeMethods.CloseServiceHandle(System.IntPtr)")]
         public void SetRestartOnFailure(string serviceName)
         {
             const int actionCount = 2;

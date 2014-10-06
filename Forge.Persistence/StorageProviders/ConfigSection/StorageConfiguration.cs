@@ -4,7 +4,6 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
-using System.Security.Permissions;
 
 namespace Forge.Persistence.StorageProviders.ConfigSection
 {
@@ -12,7 +11,6 @@ namespace Forge.Persistence.StorageProviders.ConfigSection
     /// <summary>
     /// Configuration access helper class for storages
     /// </summary>
-    [SecurityPermission(SecurityAction.Demand, Unrestricted = true)]
     public class StorageConfiguration : Forge.Configuration.Shared.SharedConfigSettings<StorageSection, StorageConfiguration>
     {
 

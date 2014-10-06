@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
-using System.Security.Permissions;
 using Forge.Configuration.Shared.Interfaces;
 using log4net;
 
@@ -49,7 +48,6 @@ namespace Forge.Configuration.Shared
     /// </summary>
     /// <typeparam name="TSectionType">The type of the section type.</typeparam>
     /// <typeparam name="TSectionHandlerType">The type of the section handler type.</typeparam>
-    [SecurityPermission(SecurityAction.Demand, Unrestricted = true)]
     public abstract class SharedConfigSettings<TSectionType, TSectionHandlerType> : ConfigSettingsBase, IConfigurationSettingsHandler<TSectionType>
         where TSectionType : ConfigurationSectionBase, new()
         where TSectionHandlerType : SharedConfigSettings<TSectionType, TSectionHandlerType>, new()
@@ -430,7 +428,6 @@ namespace Forge.Configuration.Shared
         /// <summary>
         /// Starts the config watcher.
         /// </summary>
-        [SecurityPermission(SecurityAction.LinkDemand, Unrestricted = true)]
         protected virtual void StartConfigWatcher()
         {
             if (mFSWatcher != null)
