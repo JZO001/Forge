@@ -42,3 +42,5 @@ using System.Security;
 [assembly: AssemblyFileVersion("1.0.0.1")]
 [assembly: AssemblyInformationalVersion("1.0.0.1")]
 [assembly: AllowPartiallyTrustedCallers]
+
+[assembly: SecurityRules(SecurityRuleSet.Level1, SkipVerificationInFullTrust = true)]
