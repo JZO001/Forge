@@ -168,6 +168,9 @@ packages/log4net*
 packages/Newtonsoft*
 packages/NHibernate*
 packages/NuGet*
+packages/EntityFramework*
+packages/Microsoft*
+packages/System*
 
 # For Future
 Forge.Net.*

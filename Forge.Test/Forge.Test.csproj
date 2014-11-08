@@ -45,6 +45,12 @@
     <AssemblyOriginatorKeyFile>Forge.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net40\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net40\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="Iesi.Collections">
       <HintPath>..\packages\Iesi.Collections.4.0.1.4000\lib\net40\Iesi.Collections.dll</HintPath>
     </Reference>
@@ -54,8 +60,7 @@
     </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.6.0.5\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate">
       <HintPath>..\packages\NHibernate.4.0.1.4000\lib\net40\NHibernate.dll</HintPath>
@@ -64,8 +69,22 @@
       <HintPath>..\packages\NHibernate.Mapping.Attributes.3.2.0.0\lib\NHibernate.Mapping.Attributes.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.SQLite">
+      <HintPath>..\packages\System.Data.SQLite.Core.1.0.94.0\lib\net40\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.EF6">
+      <HintPath>..\packages\System.Data.SQLite.EF6.1.0.94.0\lib\net40\System.Data.SQLite.EF6.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.Linq">
+      <HintPath>..\packages\System.Data.SQLite.Linq.1.0.94.1\lib\net40\System.Data.SQLite.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.SqlServer.Compact.4.0.8876.1\lib\net40\System.Data.SqlServerCe.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -80,6 +99,7 @@
     <Compile Include="EntitiesIntNative\Product.cs" />
     <Compile Include="EntitiesIntNative\ShoppingCart.cs" />
     <Compile Include="EntityTest.cs" />
+    <Compile Include="NHibernateStorageTest.cs" />
     <Compile Include="PathTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TaskManagerTest.cs" />
@@ -95,6 +115,22 @@
       <Project>{F3EED65E-C103-4BA8-AF1D-37421D73A708}</Project>
       <Name>Forge.Base</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Forge.DatabaseManagement.SQLite\Forge.DatabaseManagement.SQLite.csproj">
+      <Project>{40AA163A-6A5D-41D1-8D42-9808C3B415E6}</Project>
+      <Name>Forge.DatabaseManagement.SQLite</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Forge.DatabaseManagement.SqlServer2008\Forge.DatabaseManagement.SqlServer2008.csproj">
+      <Project>{36E20203-B4D9-4363-BF52-EFD07E702BD3}</Project>
+      <Name>Forge.DatabaseManagement.SqlServer2008</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Forge.DatabaseManagement.SqlServerCe40\Forge.DatabaseManagement.SqlServerCe40.csproj">
+      <Project>{793E4687-D3E8-40B2-A966-AC356ED01A11}</Project>
+      <Name>Forge.DatabaseManagement.SqlServerCe40</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Forge.DatabaseManagement\Forge.DatabaseManagement.csproj">
+      <Project>{CF3D0FC3-46A2-4C86-83F0-5F9EBB417A3F}</Project>
+      <Name>Forge.DatabaseManagement</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Forge.Extensions\Forge.Extensions.csproj">
       <Project>{B4EA240F-19DC-42CB-810B-99E86AF8D06E}</Project>
       <Name>Forge.Extensions</Name>
@@ -102,6 +138,14 @@
     <ProjectReference Include="..\Forge.ORM.NHibernateExtension\Forge.ORM.NHibernateExtension.csproj">
       <Project>{D1427FB9-2787-46E6-A5AC-D98E8476F4F7}</Project>
       <Name>Forge.ORM.NHibernateExtension</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Forge.Persistence.Formatters.JsonNet\Forge.Persistence.Formatters.JsonNet.csproj">
+      <Project>{64BB1EFC-27BB-4A5F-B631-234A552C4288}</Project>
+      <Name>Forge.Persistence.Formatters.JsonNet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Forge.Persistence.StorageProviders.HibernateStorageProvider\Forge.Persistence.StorageProviders.HibernateStorageProvider.csproj">
+      <Project>{DA14FB35-D571-4163-A913-3D8C934954BD}</Project>
+      <Name>Forge.Persistence.StorageProviders.HibernateStorageProvider</Name>
     </ProjectReference>
     <ProjectReference Include="..\Forge.Persistence\Forge.Persistence.csproj">
       <Project>{689C2101-257F-404B-9B50-9B550DFA196F}</Project>
@@ -119,7 +163,16 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+    <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.94.0\build\net40\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.94.0\build\net40\System.Data.SQLite.Core.targets'))" />
   </Target>
+  <Import Project="..\packages\System.Data.SQLite.Core.1.0.94.0\build\net40\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.94.0\build\net40\System.Data.SQLite.Core.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    if not exist "$(TargetDir)x86" md "$(TargetDir)x86"
+    xcopy /s /y "$(SolutionDir)packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(TargetDir)x86"
+    if not exist "$(TargetDir)amd64" md "$(TargetDir)amd64"
+    xcopy /s /y "$(SolutionDir)packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\amd64\*.*" "$(TargetDir)amd64"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

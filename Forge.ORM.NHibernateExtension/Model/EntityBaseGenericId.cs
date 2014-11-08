@@ -155,16 +155,23 @@ namespace Forge.ORM.NHibernateExtension.Model
         /// </summary>
         /// <param name="o">The other.</param>
         /// <returns></returns>
-        public virtual int CompareTo(EntityBaseGenericId<TID> o)
+        public override int CompareTo(EntityBaseWithoutId o)
         {
+            if (o == null) ThrowHelper.ThrowArgumentNullException("o");
+            if (!(o is EntityBaseGenericId<TID>))
+            {
+                ThrowHelper.ThrowArgumentException("o");
+            }
+
+            EntityBaseGenericId<TID> obj = (EntityBaseGenericId<TID>)o;
             int result = 0;
             if (this.Id == null)
             {
-                result = this.EntityCreationTime.CompareTo(o.EntityCreationTime);
+                result = this.EntityCreationTime.CompareTo(obj.EntityCreationTime);
             }
             else
             {
-                result = this.Id.CompareTo(o.Id);
+                result = this.Id.CompareTo(obj.Id);
             }
             return result; // default is equals. This provides the functionality as keep the original order of the treesets
         }

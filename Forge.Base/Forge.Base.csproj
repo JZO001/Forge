@@ -118,6 +118,7 @@
     <Compile Include="EventRaiser\DelegateInvokeResult.cs" />
     <Compile Include="EventRaiser\Raiser.cs" />
     <Compile Include="EventRaiser\TypeNameResolver.cs" />
+    <Compile Include="HashGeneratorHelper.cs" />
     <Compile Include="InitializationException.cs" />
     <Compile Include="Logging\LogUtils.cs" />
     <Compile Include="Management\IManager.cs" />

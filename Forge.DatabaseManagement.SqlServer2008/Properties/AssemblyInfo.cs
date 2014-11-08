@@ -1,13 +1,12 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Windows Service Control")]
-[assembly: AssemblyDescription("Windows Service Control")]
+[assembly: AssemblyTitle("Forge.DatabaseManagement.SqlServer2008")]
+[assembly: AssemblyDescription("Forge Patterns and Practices")]
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
 #else
@@ -15,7 +14,7 @@ using System.Security;
 #endif
 [assembly: AssemblyCompany("Forge Project Contributor(s)")]
 [assembly: AssemblyProduct("Forge: reference, practice and patterns implementations and helper(s)")]
-[assembly: AssemblyCopyright("Copyright © Zoltan Juhasz, 2004-2013")]
+[assembly: AssemblyCopyright("Copyright © Zoltan Juhasz, 2004-2014")]
 //[assembly: AssemblyTrademark("")]
 //[assembly: AssemblyCulture("")]
 
@@ -25,7 +24,7 @@ using System.Security;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("b9b4983a-b858-413d-a186-8a053f6e174b")]
+[assembly: Guid("4801c491-5e03-422c-87e0-e1252559a798")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -37,9 +36,9 @@ using System.Security;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.2")]
-[assembly: AssemblyFileVersion("1.0.0.2")]
-[assembly: AssemblyInformationalVersion("1.0.0.2")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyInformationalVersion("1.0.0.0")]
 [assembly: AllowPartiallyTrustedCallers]
 
 [assembly: SecurityRules(SecurityRuleSet.Level1, SkipVerificationInFullTrust = true)]

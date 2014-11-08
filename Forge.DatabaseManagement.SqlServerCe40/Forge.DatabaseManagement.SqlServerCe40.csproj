@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{D1427FB9-2787-46E6-A5AC-D98E8476F4F7}</ProjectGuid>
+    <ProjectGuid>{793E4687-D3E8-40B2-A966-AC356ED01A11}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Forge.ORM.NHibernateExtension</RootNamespace>
-    <AssemblyName>Forge.ORM.NHibernateExtension</AssemblyName>
+    <RootNamespace>Forge.DatabaseManagement.SqlServerCe40</RootNamespace>
+    <AssemblyName>Forge.DatabaseManagement.SqlServerCe40</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
@@ -27,6 +27,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Forge.DatabaseManagement.SqlServerCe40.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -35,7 +36,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\Forge.ORM.NHibernateExtension.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\Forge.DatabaseManagement.SqlServerCe40.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -44,68 +45,26 @@
     <AssemblyOriginatorKeyFile>Forge.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Iesi.Collections, Version=4.0.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Iesi.Collections">
       <HintPath>..\packages\Iesi.Collections.4.0.1.4000\lib\net40\Iesi.Collections.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="NHibernate, Version=4.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="NHibernate">
       <HintPath>..\packages\NHibernate.4.0.1.4000\lib\net40\NHibernate.dll</HintPath>
     </Reference>
-    <Reference Include="NHibernate.Mapping.Attributes">
-      <HintPath>..\packages\NHibernate.Mapping.Attributes.3.2.0.0\lib\NHibernate.Mapping.Attributes.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.SqlServer.Compact.4.0.8876.1\lib\net40\System.Data.SqlServerCe.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Criterias\AllCriteria.cs" />
-    <Compile Include="Criterias\ArithmeticCriteria.cs" />
-    <Compile Include="Criterias\ArithmeticOperandEnum.cs" />
-    <Compile Include="Criterias\AssociationEntry.cs" />
-    <Compile Include="Criterias\BetweenCriteria.cs" />
-    <Compile Include="Criterias\Criteria.cs" />
-    <Compile Include="Criterias\GroupCriteria.cs" />
-    <Compile Include="Criterias\GroupCriteriaLogicEnum.cs" />
-    <Compile Include="Criterias\InCriteria.cs" />
-    <Compile Include="Criterias\IReflectionCriteria.cs" />
-    <Compile Include="Criterias\LikeCriteria.cs" />
-    <Compile Include="Criterias\LikeMatchModeEnum.cs" />
-    <Compile Include="Criterias\NullCriteria.cs" />
-    <Compile Include="Criterias\OrderBy.cs" />
-    <Compile Include="Criterias\OrderModeEnum.cs" />
-    <Compile Include="EntityCloneException.cs" />
-    <Compile Include="EntityDeleteException.cs" />
-    <Compile Include="EntityRefreshException.cs" />
-    <Compile Include="EntityRestoreException.cs" />
-    <Compile Include="EntitySaveException.cs" />
-    <Compile Include="Model\Distributed\EntityBase.cs" />
-    <Compile Include="Model\Distributed\EntityId.cs" />
-    <Compile Include="Model\Distributed\EntityVersion.cs" />
-    <Compile Include="Model\Distributed\Serialization\EntityClone.cs" />
-    <Compile Include="Model\Distributed\Serialization\EntityProxy.cs" />
-    <Compile Include="Model\EntityBaseGenericId.cs" />
-    <Compile Include="Model\EntityBaseInt32NativeId.cs" />
-    <Compile Include="Model\EntityBaseInt64NativeId.cs" />
-    <Compile Include="Model\EntityBaseWithoutId.cs" />
-    <Compile Include="Model\EntityFieldDescriptionAttribute.cs" />
-    <None Include="Net4CollectionTypeFactory.cs" />
-    <Compile Include="ORMException.cs" />
-    <Compile Include="ORMUtils.cs" />
+    <Compile Include="SqlServerCe40Dialect.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QueryDetachedParams.cs" />
-    <Compile Include="QueryException.cs" />
-    <Compile Include="QueryHelper.cs" />
-    <Compile Include="QueryParams.cs" />
+    <Compile Include="SqlServerCe40Manager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Forge.pfx" />
@@ -116,8 +75,11 @@
       <Project>{F3EED65E-C103-4BA8-AF1D-37421D73A708}</Project>
       <Name>Forge.Base</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Forge.DatabaseManagement\Forge.DatabaseManagement.csproj">
+      <Project>{CF3D0FC3-46A2-4C86-83F0-5F9EBB417A3F}</Project>
+      <Name>Forge.DatabaseManagement</Name>
+    </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -126,6 +88,13 @@
     </PropertyGroup>
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>
+    if not exist "$(TargetDir)x86" md "$(TargetDir)x86"
+    xcopy /s /y "$(SolutionDir)packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(TargetDir)x86"
+    if not exist "$(TargetDir)amd64" md "$(TargetDir)amd64"
+    xcopy /s /y "$(SolutionDir)packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\amd64\*.*" "$(TargetDir)amd64"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
