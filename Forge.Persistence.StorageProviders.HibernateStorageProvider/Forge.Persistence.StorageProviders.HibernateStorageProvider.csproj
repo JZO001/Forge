@@ -63,6 +63,7 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FailSafeFactory.cs" />
     <Compile Include="HibernateStorageProvider.cs" />
     <Compile Include="EntityModel\PersistentStorageAllocationTable.cs" />
     <Compile Include="EntityModel\PersistentStorageItem.cs" />
