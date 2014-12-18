@@ -247,7 +247,11 @@ namespace Forge.Logging
                 Assembly a = args.LoadedAssembly;
                 LOGGER.Info("LOGUTILS, new assembly loaded.");
                 LOGGER.Info(string.Format("LOGUTILS, Assembly, full name: {0}", a.FullName));
-                LOGGER.Info(string.Format("LOGUTILS, Assembly, code base: {0}", a.CodeBase));
+                try
+                {
+                    LOGGER.Info(string.Format("LOGUTILS, Assembly, code base: {0}", a.CodeBase));
+                }
+                catch (Exception) { }
                 LOGGER.Info(string.Format("LOGUTILS, Assembly, global assembly cache: {0}", a.GlobalAssemblyCache.ToString()));
                 LOGGER.Info(string.Format("LOGUTILS, Assembly, host context: {0}", a.HostContext.ToString()));
                 LOGGER.Info(string.Format("LOGUTILS, Assembly, ImageRuntimeVersion: {0}", a.ImageRuntimeVersion));
