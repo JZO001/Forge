@@ -221,7 +221,11 @@ namespace Forge.Logging
                     LOGGER.Info(string.Format("LOGUTILS, Assembly, host context: {0}", a.HostContext.ToString()));
                     LOGGER.Info(string.Format("LOGUTILS, Assembly, ImageRuntimeVersion: {0}", a.ImageRuntimeVersion));
                     LogAssemblyNewProperties(a);
-                    LOGGER.Info(string.Format("LOGUTILS, Assembly, Location: {0}", a.Location));
+                    try
+                    {
+                        LOGGER.Info(string.Format("LOGUTILS, Assembly, Location: {0}", a.Location));
+                    }
+                    catch (Exception) { }
                     LOGGER.Info(string.Format("LOGUTILS, Assembly, ReflectionOnly: {0}", a.ReflectionOnly.ToString()));
                 }
                 LOGGER.Info("--------------------------------------------------------");
@@ -260,7 +264,11 @@ namespace Forge.Logging
                 LOGGER.Info(string.Format("LOGUTILS, Assembly, host context: {0}", a.HostContext.ToString()));
                 LOGGER.Info(string.Format("LOGUTILS, Assembly, ImageRuntimeVersion: {0}", a.ImageRuntimeVersion));
                 LogAssemblyNewProperties(a);
-                LOGGER.Info(string.Format("LOGUTILS, Assembly, Location: {0}", a.Location));
+                try
+                {
+                    LOGGER.Info(string.Format("LOGUTILS, Assembly, Location: {0}", a.Location));
+                }
+                catch (Exception) { }
                 LOGGER.Info(string.Format("LOGUTILS, Assembly, ReflectionOnly: {0}", a.ReflectionOnly.ToString()));
                 LOGGER.Info("--------------------------------------------------------");
             }
