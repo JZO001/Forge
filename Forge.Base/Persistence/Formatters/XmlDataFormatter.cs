@@ -5,12 +5,9 @@
 ***********************************************************************/
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 using System.Xml;
 using System.Xml.Serialization;
-using log4net;
 
 namespace Forge.Persistence.Formatters
 {
@@ -22,15 +19,6 @@ namespace Forge.Persistence.Formatters
     [Serializable]
     public sealed class XmlDataFormatter<T> : IDataFormatter<T>
     {
-
-        #region Field(s)
-
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(XmlDataFormatter<T>));
-
-        private static Dictionary<Type, XmlSerializer> mSerializers = new Dictionary<Type, XmlSerializer>();
-        private static ReaderWriterLock mLock = new ReaderWriterLock();
-
-        #endregion
 
         #region Constructors
 
@@ -67,7 +55,7 @@ namespace Forge.Persistence.Formatters
                 {
                     XmlTextReader xmlReader = new XmlTextReader(stream);
                     xmlReader.WhitespaceHandling = WhitespaceHandling.Significant;
-                    result = GetSerializer(typeof(T)).CanDeserialize(xmlReader);
+                    result = new XmlSerializer(typeof(T)).CanDeserialize(xmlReader);
                 }
                 catch (Exception)
                 {
@@ -102,7 +90,7 @@ namespace Forge.Persistence.Formatters
             {
                 try
                 {
-                    GetSerializer(typeof(T)).Serialize(ms, item);
+                    new XmlSerializer(typeof(T)).Serialize(ms, item);
                     result = true;
                 }
                 catch (Exception)
@@ -128,7 +116,7 @@ namespace Forge.Persistence.Formatters
             xmlReader.WhitespaceHandling = WhitespaceHandling.Significant;
             try
             {
-                return (T)GetSerializer(typeof(T)).Deserialize(xmlReader);
+                return (T)new XmlSerializer(typeof(T)).Deserialize(xmlReader);
             }
             catch (FormatException)
             {
@@ -168,7 +156,7 @@ namespace Forge.Persistence.Formatters
 
             try
             {
-                GetSerializer(typeof(T)).Serialize(stream, data);
+                new XmlSerializer(typeof(T)).Serialize(stream, data);
             }
             catch (FormatException)
             {
@@ -178,46 +166,6 @@ namespace Forge.Persistence.Formatters
             {
                 throw new FormatException(ex.Message, ex);
             }
-        }
-
-        #endregion
-
-        #region Protected members
-
-        private static XmlSerializer GetSerializer(Type type)
-        {
-            XmlSerializer result = null;
-            mLock.AcquireReaderLock(Timeout.Infinite);
-            try
-            {
-                if (mSerializers.ContainsKey(type))
-                {
-                    result = mSerializers[type];
-                }
-                else
-                {
-                    result = new XmlSerializer(type);
-                    mLock.UpgradeToWriterLock(Timeout.Infinite);
-                    mSerializers[type] = result;
-                }
-            }
-            catch (Exception ex)
-            {
-                if (LOGGER.IsErrorEnabled) LOGGER.Error(String.Format("XmlDataFormatter: unable to create serializer for type '{0}'. Exception: {1}", type.AssemblyQualifiedName, ex.Message));
-                throw;
-            }
-            finally
-            {
-                if (mLock.IsWriterLockHeld)
-                {
-                    mLock.ReleaseWriterLock();
-                }
-                else
-                {
-                    mLock.ReleaseReaderLock();
-                }
-            }
-            return result;
         }
 
         #endregion

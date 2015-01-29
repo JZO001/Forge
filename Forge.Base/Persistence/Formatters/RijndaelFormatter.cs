@@ -5,6 +5,7 @@
 ***********************************************************************/
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
@@ -21,17 +22,61 @@ namespace Forge.Persistence.Formatters
 
         #region Field(s)
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private IDataFormatter<T> mInternalFormatter = new BinaryFormatter<T>();
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private X509Certificate2 mCertificate = null;
 
-        private byte[] IV = new byte[16];
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private byte[] mIV = new byte[16];
 
-        private byte[] Key = new byte[32];
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private byte[] mKey = new byte[32];
 
         #endregion
 
         #region Constructor(s)
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RijndaelFormatter{T}"/> class.
+        /// </summary>
+        public RijndaelFormatter()
+        {
+            Random rnd = new Random();
+            rnd.NextBytes(mIV);
+            rnd.NextBytes(mKey);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RijndaelFormatter{T}"/> class.
+        /// </summary>
+        /// <param name="iv">The iv.</param>
+        /// <param name="key">The key.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// iv
+        /// or
+        /// key
+        /// </exception>
+        /// <exception cref="System.IO.InvalidDataException">
+        /// </exception>
+        public RijndaelFormatter(byte[] iv, byte[] key)
+        {
+            if (iv == null)
+                throw new ArgumentNullException("iv");
+
+            if (key == null)
+                throw new ArgumentNullException("key");
+
+            if (iv.Length != 16)
+                throw new InvalidDataException();
+
+            if (key.Length != 32)
+                throw new InvalidDataException();
+
+            mIV = iv;
+            mKey = key;
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RijndaelFormatter{T}" /> class.
@@ -46,8 +91,8 @@ namespace Forge.Persistence.Formatters
 
             this.mCertificate = certificate;
 
-            Buffer.BlockCopy(certificate.PublicKey.EncodedKeyValue.RawData, 0, IV, 0, IV.Length);
-            Buffer.BlockCopy(certificate.PublicKey.EncodedKeyValue.RawData, certificate.PublicKey.EncodedKeyValue.RawData.Length - Key.Length, Key, 0, Key.Length);
+            Buffer.BlockCopy(certificate.PublicKey.EncodedKeyValue.RawData, 0, mIV, 0, mIV.Length);
+            Buffer.BlockCopy(certificate.PublicKey.EncodedKeyValue.RawData, certificate.PublicKey.EncodedKeyValue.RawData.Length - mKey.Length, mKey, 0, mKey.Length);
         }
 
         /// <summary>
@@ -82,6 +127,9 @@ namespace Forge.Persistence.Formatters
                 }
 
                 mCertificate = value;
+
+                Buffer.BlockCopy(value.PublicKey.EncodedKeyValue.RawData, 0, mIV, 0, mIV.Length);
+                Buffer.BlockCopy(value.PublicKey.EncodedKeyValue.RawData, value.PublicKey.EncodedKeyValue.RawData.Length - mKey.Length, mKey, 0, mKey.Length);
             }
         }
 
@@ -102,6 +150,52 @@ namespace Forge.Persistence.Formatters
                 }
 
                 mInternalFormatter = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the iv.
+        /// </summary>
+        /// <value>
+        /// The iv.
+        /// </value>
+        /// <exception cref="System.ArgumentNullException">value</exception>
+        /// <exception cref="System.IO.InvalidDataException"></exception>
+        public byte[] IV
+        {
+            get { return mIV; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+
+                if (value.Length != 16)
+                    throw new InvalidDataException();
+
+                mIV = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the key.
+        /// </summary>
+        /// <value>
+        /// The key.
+        /// </value>
+        /// <exception cref="System.ArgumentNullException">value</exception>
+        /// <exception cref="System.IO.InvalidDataException"></exception>
+        public byte[] Key
+        {
+            get { return mKey; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+
+                if (value.Length != 32)
+                    throw new InvalidDataException();
+
+                mKey = value;
             }
         }
 
@@ -132,8 +226,8 @@ namespace Forge.Persistence.Formatters
                 {
                     using (RijndaelManaged r = new RijndaelManaged())
                     {
-                        r.IV = IV;
-                        r.Key = Key;
+                        r.IV = mIV;
+                        r.Key = mKey;
                         using (ICryptoTransform decryptor = r.CreateDecryptor())
                         {
                             CryptoStream csDecrypt = new CryptoStream(stream, decryptor, CryptoStreamMode.Read);
@@ -182,8 +276,8 @@ namespace Forge.Persistence.Formatters
 
                     using (RijndaelManaged r = new RijndaelManaged())
                     {
-                        r.IV = IV;
-                        r.Key = Key;
+                        r.IV = mIV;
+                        r.Key = mKey;
                         using (ICryptoTransform encryptor = r.CreateEncryptor())
                         {
                             using (MemoryStream temp = new MemoryStream())
@@ -225,8 +319,8 @@ namespace Forge.Persistence.Formatters
             {
                 using (RijndaelManaged r = new RijndaelManaged())
                 {
-                    r.IV = IV;
-                    r.Key = Key;
+                    r.IV = mIV;
+                    r.Key = mKey;
                     using (ICryptoTransform decryptor = r.CreateDecryptor())
                     {
                         CryptoStream csDecrypt = new CryptoStream(stream, decryptor, CryptoStreamMode.Read);
@@ -275,8 +369,8 @@ namespace Forge.Persistence.Formatters
 
                     using (RijndaelManaged r = new RijndaelManaged())
                     {
-                        r.IV = IV;
-                        r.Key = Key;
+                        r.IV = mIV;
+                        r.Key = mKey;
                         using (ICryptoTransform encryptor = r.CreateEncryptor())
                         {
                             CryptoStream csEncrypt = new CryptoStream(stream, encryptor, CryptoStreamMode.Write);
@@ -308,7 +402,12 @@ namespace Forge.Persistence.Formatters
         /// </returns>
         public object Clone()
         {
-            return new RijndaelFormatter<T>(this.mCertificate, this.mInternalFormatter);
+            RijndaelFormatter<T> cloned = new RijndaelFormatter<T>();
+            cloned.mCertificate = this.mCertificate;
+            cloned.mInternalFormatter = this.mInternalFormatter;
+            cloned.mIV = this.mIV;
+            cloned.mKey = this.mKey;
+            return cloned;
         }
 
         #endregion
