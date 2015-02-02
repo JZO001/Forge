@@ -157,18 +157,18 @@ namespace Forge.Logging
 
                 if (domain.SetupInformation != null)
                 {
-                    try
-                    {
-                        ExtractObjectData e = ExtractObjectData.Create("SetupInformation.AppDomainManagerAssembly");
-                        LOGGER.Info(string.Format("LOGUTILS, Domain, Setup Information, AppDomainManagerAssembly: {0}", e.GetValue(domain).ToString()));
-                    }
-                    catch (Exception) { }
-                    try
-                    {
-                        ExtractObjectData e = ExtractObjectData.Create("SetupInformation.AppDomainManagerType");
-                        LOGGER.Info(string.Format("LOGUTILS, Domain, Setup Information, AppDomainManagerType: {0}", e.GetValue(domain).ToString()));
-                    }
-                    catch (Exception) { }
+                    //try
+                    //{
+                    //    ExtractObjectData e = ExtractObjectData.Create("SetupInformation.AppDomainManagerAssembly");
+                    //    LOGGER.Info(string.Format("LOGUTILS, Domain, Setup Information, AppDomainManagerAssembly: {0}", e.GetValue(domain).ToString()));
+                    //}
+                    //catch (Exception) { }
+                    //try
+                    //{
+                    //    ExtractObjectData e = ExtractObjectData.Create("SetupInformation.AppDomainManagerType");
+                    //    LOGGER.Info(string.Format("LOGUTILS, Domain, Setup Information, AppDomainManagerType: {0}", e.GetValue(domain).ToString()));
+                    //}
+                    //catch (Exception) { }
 
                     LOGGER.Info(string.Format("LOGUTILS, Domain, Setup Information, ApplicationBase: {0}", domain.SetupInformation.ApplicationBase));
                     LOGGER.Info(string.Format("LOGUTILS, Domain, Setup Information, ApplicationName: {0}", domain.SetupInformation.ApplicationName));
@@ -183,7 +183,7 @@ namespace Forge.Logging
                     LOGGER.Info(string.Format("LOGUTILS, Domain, Setup Information, LoaderOptimization: {0}", domain.SetupInformation.LoaderOptimization.ToString()));
                     LOGGER.Info(string.Format("LOGUTILS, Domain, Setup Information, PrivateBinPath: {0}", domain.SetupInformation.PrivateBinPath));
                     LOGGER.Info(string.Format("LOGUTILS, Domain, Setup Information, PrivateBinPathProbe: {0}", domain.SetupInformation.PrivateBinPathProbe));
-                    LOGGER.Info(string.Format("LOGUTILS, Domain, Setup Information, SandboxInterop: {0}", domain.SetupInformation.SandboxInterop.ToString()));
+                    //LOGGER.Info(string.Format("LOGUTILS, Domain, Setup Information, SandboxInterop: {0}", domain.SetupInformation.SandboxInterop.ToString()));
                     LOGGER.Info(string.Format("LOGUTILS, Domain, Setup Information, ShadowCopyDirectories: {0}", domain.SetupInformation.ShadowCopyDirectories));
                     LOGGER.Info(string.Format("LOGUTILS, Domain, Setup Information, ShadowCopyFiles: {0}", domain.SetupInformation.ShadowCopyFiles));
                 }
@@ -281,7 +281,7 @@ namespace Forge.Logging
 
         private static void LogAssemblyNewProperties(Assembly a)
         {
-            // Log assembly properties which are available in newer version Framework.NET
+            // Log assembly properties which are available in newer version of Framework.NET
             try
             {
                 ExtractObjectData e = ExtractObjectData.Create("IsDynamic");

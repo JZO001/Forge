@@ -1,10 +1,16 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 ﻿
 namespace Forge.Test
 {
     [TestClass]
     public class ArraysUnitTest
     {
+
+        public ArraysUnitTest()
+        {
+            Console.WriteLine(Environment.Version.ToString());
+        }
 
         [TestMethod]
         public void TestEquals()
