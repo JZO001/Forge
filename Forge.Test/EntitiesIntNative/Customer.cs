@@ -34,9 +34,9 @@ namespace Forge.Test.EntitiesIntNative
             get { return name; }
             set
             {
-                OnPropertyChanging("name");
+                OnPropertyChanging("Name");
                 name = value;
-                OnPropertyChanged("name");
+                OnPropertyChanged("Name");
             }
         }
 

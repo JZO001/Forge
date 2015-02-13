@@ -8,6 +8,7 @@ using System;
 using Forge.ORM.NHibernateExtension.Model;
 using log4net;
 using NHibernate;
+using NHibernate.Proxy;
 
 namespace Forge.ORM.NHibernateExtension
 {
@@ -158,6 +159,32 @@ namespace Forge.ORM.NHibernateExtension
             {
                 throw new EntityDeleteException(ex.Message, ex);
             }
+        }
+
+        /// <summary>
+        /// Unproxies the entity.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="entity">The entity.</param>
+        /// <param name="session">The session.</param>
+        /// <returns>TEntity</returns>
+        public static TEntity UnproxyEntity<TEntity>(TEntity entity, ISession session) where TEntity : EntityBaseWithoutId
+        {
+            if (entity == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("entity");
+            }
+            if (session == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("session");
+            }
+
+            if (entity is INHibernateProxy)
+            {
+                return (TEntity)session.GetSessionImplementation().PersistenceContext.UnproxyAndReassociate(entity);
+            }
+
+            return (TEntity)entity;
         }
 
         #endregion
