@@ -407,7 +407,7 @@ namespace Forge.ORM.NHibernateExtension.Criterias
                 {
                     if (mCriterion == null)
                     {
-                        mCriterion = BuildCriterion(isThisId ? string.Format("{0}.{1}", e.Association, propertyList[listPointer + 1]) : e.Association);
+                        mCriterion = BuildCriterion((isThisId && listPointer < propertyList.Count - 1) ? string.Format("{0}.{1}", e.Association, propertyList[listPointer + 1]) : e.Association);
                     }
                     if (dependencyCriterion != null)
                     {
