@@ -187,6 +187,31 @@ namespace Forge.ORM.NHibernateExtension
             return (TEntity)entity;
         }
 
+        /// <summary>
+        /// Unproxies the entity.
+        /// </summary>
+        /// <param name="entity">The entity.</param>
+        /// <param name="session">The session.</param>
+        /// <returns></returns>
+        public static EntityBaseWithoutId UnproxyEntity(EntityBaseWithoutId entity, ISession session)
+        {
+            if (entity == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("entity");
+            }
+            if (session == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("session");
+            }
+
+            if (entity is INHibernateProxy)
+            {
+                return (EntityBaseWithoutId)session.GetSessionImplementation().PersistenceContext.UnproxyAndReassociate(entity);
+            }
+
+            return (EntityBaseWithoutId)entity;
+        }
+
         #endregion
 
     }
