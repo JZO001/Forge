@@ -26,6 +26,10 @@ namespace Forge.Logging
 
         private static bool mIsSubscribedForAppDomainUnhandledException = false;
 
+        private static bool mIsDynamicAvailable = true;
+
+        private static bool mIsFullyTrustedAvailable = true;
+
         #endregion
 
         #region Public properties
@@ -157,18 +161,18 @@ namespace Forge.Logging
 
                 if (domain.SetupInformation != null)
                 {
-                    //try
-                    //{
-                    //    ExtractObjectData e = ExtractObjectData.Create("SetupInformation.AppDomainManagerAssembly");
-                    //    LOGGER.Info(string.Format("LOGUTILS, Domain, Setup Information, AppDomainManagerAssembly: {0}", e.GetValue(domain).ToString()));
-                    //}
-                    //catch (Exception) { }
-                    //try
-                    //{
-                    //    ExtractObjectData e = ExtractObjectData.Create("SetupInformation.AppDomainManagerType");
-                    //    LOGGER.Info(string.Format("LOGUTILS, Domain, Setup Information, AppDomainManagerType: {0}", e.GetValue(domain).ToString()));
-                    //}
-                    //catch (Exception) { }
+                    try
+                    {
+                        ExtractObjectData e = ExtractObjectData.Create("SetupInformation.AppDomainManagerAssembly");
+                        LOGGER.Info(string.Format("LOGUTILS, Domain, Setup Information, AppDomainManagerAssembly: {0}", e.GetValue(domain).ToString()));
+                    }
+                    catch (Exception) { }
+                    try
+                    {
+                        ExtractObjectData e = ExtractObjectData.Create("SetupInformation.AppDomainManagerType");
+                        LOGGER.Info(string.Format("LOGUTILS, Domain, Setup Information, AppDomainManagerType: {0}", e.GetValue(domain).ToString()));
+                    }
+                    catch (Exception) { }
 
                     LOGGER.Info(string.Format("LOGUTILS, Domain, Setup Information, ApplicationBase: {0}", domain.SetupInformation.ApplicationBase));
                     LOGGER.Info(string.Format("LOGUTILS, Domain, Setup Information, ApplicationName: {0}", domain.SetupInformation.ApplicationName));
@@ -282,18 +286,42 @@ namespace Forge.Logging
         private static void LogAssemblyNewProperties(Assembly a)
         {
             // Log assembly properties which are available in newer version of Framework.NET
-            try
+            if (mIsDynamicAvailable)
             {
-                ExtractObjectData e = ExtractObjectData.Create("IsDynamic");
-                LOGGER.Info(string.Format("LOGUTILS, Assembly, IsDynamic: {0}", e.GetValue(a).ToString()));
+                try
+                {
+                    ExtractObjectData e = ExtractObjectData.Create("IsDynamic");
+                    LOGGER.Info(string.Format("LOGUTILS, Assembly, IsDynamic: {0}", e.GetValue(a).ToString()));
+                }
+                catch (MissingFieldException)
+                {
+                    mIsDynamicAvailable = false;
+
+                }
+                catch (MissingMemberException)
+                {
+                    mIsDynamicAvailable = false;
+                }
+                catch (Exception) { }
             }
-            catch (Exception) { }
-            try
+            if (mIsFullyTrustedAvailable)
             {
-                ExtractObjectData e = ExtractObjectData.Create("IsFullyTrusted");
-                LOGGER.Info(string.Format("LOGUTILS, Assembly, IsFullyTrusted: {0}", e.GetValue(a).ToString()));
+                try
+                {
+                    ExtractObjectData e = ExtractObjectData.Create("IsFullyTrusted");
+                    LOGGER.Info(string.Format("LOGUTILS, Assembly, IsFullyTrusted: {0}", e.GetValue(a).ToString()));
+                }
+                catch (MissingFieldException)
+                {
+                    mIsFullyTrustedAvailable = false;
+
+                }
+                catch (MissingMemberException)
+                {
+                    mIsFullyTrustedAvailable = false;
+                }
+                catch (Exception) { }
             }
-            catch (Exception) { }
         }
 
         #endregion
