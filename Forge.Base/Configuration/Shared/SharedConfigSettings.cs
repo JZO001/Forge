@@ -102,6 +102,7 @@ namespace Forge.Configuration.Shared
         /// </summary>
         static SharedConfigSettings()
         {
+            UserLevelModeForLoading = ConfigurationUserLevel.None;
             LOGGER = LogManager.GetLogger(typeof(TSectionHandlerType));
             mConfigHandler = new TSectionHandlerType();
         }
@@ -130,6 +131,14 @@ namespace Forge.Configuration.Shared
         #endregion
 
         #region Public properties
+
+        /// <summary>
+        /// Gets or sets the user level modefor loading.
+        /// </summary>
+        /// <value>
+        /// The user level modefor loading.
+        /// </value>
+        public static ConfigurationUserLevel UserLevelModeForLoading { get; set; }
 
         /// <summary>
         /// Gets the settings.
@@ -179,6 +188,17 @@ namespace Forge.Configuration.Shared
         public static IConfigurationSettingsHandler<TSectionType> SectionHandler
         {
             get { return mConfigHandler; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether this instance has configuration file.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this instance has configuration file; otherwise, <c>false</c>.
+        /// </value>
+        public bool HasConfigurationFile
+        {
+            get { return mConfig == null ? false : mConfig.HasFile; }
         }
 
         /// <summary>
@@ -275,7 +295,7 @@ namespace Forge.Configuration.Shared
                         if (!mSectionLoaded)
                         {
                             CreateSection();
-                            StartConfigWatcher();
+                            //StartConfigWatcher();
                         }
                     }
                 }
@@ -299,7 +319,7 @@ namespace Forge.Configuration.Shared
                         CreateSection();
                         try
                         {
-                            Validate();
+                            //Validate();
                             StartConfigWatcher();
                             if (LOGGER.IsInfoEnabled) LOGGER.Info(string.Format("{0}: configuration successfully refreshed", LOG_PREFIX));
                         }
@@ -382,7 +402,7 @@ namespace Forge.Configuration.Shared
                 if (LOGGER.IsInfoEnabled) LOGGER.Info(String.Format("{0}: reading configuration from file '{1}'...", LOG_PREFIX, DefaultConfigurationFile));
                 ExeConfigurationFileMap fMap = new ExeConfigurationFileMap();
                 fMap.ExeConfigFilename = DefaultConfigurationFile;
-                mConfig = ConfigurationManager.OpenMappedExeConfiguration(fMap, ConfigurationUserLevel.None);
+                mConfig = ConfigurationManager.OpenMappedExeConfiguration(fMap, UserLevelModeForLoading);
                 mSettings = (TSectionType)mConfig.Sections[typeof(TSectionType).Name];
                 mSectionLoaded = true;
             }
@@ -399,7 +419,7 @@ namespace Forge.Configuration.Shared
                     {
                         mConfig.Sections.Remove(typeof(TSectionType).Name);
                         mConfig.Sections.Add(typeof(TSectionType).Name, mSettings);
-                        mConfig.Save(ConfigurationSaveMode.Full);
+                        //mConfig.Save(ConfigurationSaveMode.Full);
                     }
                 }
             }
