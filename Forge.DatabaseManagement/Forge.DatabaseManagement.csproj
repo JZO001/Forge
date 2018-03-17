@@ -59,11 +59,15 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Forge.Base\Forge.Base.csproj">
-      <Project>{F3EED65E-C103-4BA8-AF1D-37421D73A708}</Project>
+      <Project>{f3eed65e-c103-4ba8-af1d-37421d73a708}</Project>
       <Name>Forge.Base</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>echo F|xcopy /r /y "$(TargetPath)" "$(SolutionDir).Output\$(TargetFileName)"
+</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

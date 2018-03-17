@@ -6,6 +6,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Runtime.Remoting.Lifetime;
 using System.Security;
 
 namespace Forge
@@ -25,7 +26,16 @@ namespace Forge
         protected MBRBase()
             : base()
         {
+            InitialLeaseTime = TimeSpan.Zero;
         }
+
+        /// <summary>
+        /// Gets or sets the initial lease time.
+        /// </summary>
+        /// <value>
+        /// The initial lease time.
+        /// </value>
+        public TimeSpan InitialLeaseTime { get; set; }
 
         /// <summary>
         /// Obtains a lifetime service object to control the lifetime policy for this instance.
@@ -40,13 +50,17 @@ namespace Forge
         [SecurityCritical]
         public override object InitializeLifetimeService()
         {
-            //ILease lease = (ILease)base.InitializeLifetimeService();
-            //if (lease.CurrentState == LeaseState.Initial)
-            //{
-            //    lease.InitialLeaseTime = TimeSpan.Zero; // lease time does not expire
-            //}
-            //return lease;
-            return null;
+            if (InitialLeaseTime.Equals(TimeSpan.Zero))
+            {
+                return null;
+            }
+
+            ILease lease = (ILease)base.InitializeLifetimeService();
+            if (lease.CurrentState == LeaseState.Initial)
+            {
+                lease.InitialLeaseTime = InitialLeaseTime;
+            }
+            return lease;
         }
 
     }

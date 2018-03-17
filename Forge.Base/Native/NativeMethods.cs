@@ -41,13 +41,15 @@ namespace Forge.Native
     /// <remarks>
     /// http://msdn.microsoft.com/library/default.asp?url=/library/en-us/winui/winui/windowsuserinterface/windowing/hooks/hookreference/hookfunctions/callwndproc.asp
     /// </remarks>
-    public delegate int HookProcessDelegate(int nCode, int wParam, IntPtr lParam);
+    public delegate int HookProcessDelegate(int nCode, IntPtr wParam, IntPtr lParam);
 
     /// <summary>
     /// Represents a set of native methods
     /// </summary>
     public static class NativeMethods
     {
+
+        #region User32.dll native methods
 
         /// <summary>
         /// Mouse_events the specified dw flags.
@@ -58,7 +60,7 @@ namespace Forge.Native
         /// <param name="cButtons">The c buttons.</param>
         /// <param name="dwExtraInfo">The dw extra info.</param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Interoperability", "CA1401:PInvokesShouldNotBeVisible"), DllImport("user32.dll")]
-        public static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint cButtons, int dwExtraInfo);
+        public static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint cButtons, UIntPtr dwExtraInfo);
 
         /// <summary>
         /// Keybd_events the specified b vk.
@@ -68,7 +70,7 @@ namespace Forge.Native
         /// <param name="dwFlags">The dw flags.</param>
         /// <param name="dwExtraInfo">The dw extra info.</param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Interoperability", "CA1401:PInvokesShouldNotBeVisible"), DllImport("user32.dll")]
-        public static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, uint dwExtraInfo);
+        public static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
 
         /// <summary>
         /// Sends the input.
@@ -130,7 +132,7 @@ namespace Forge.Native
         /// http://msdn.microsoft.com/library/default.asp?url=/library/en-us/winui/winui/windowsuserinterface/windowing/hooks/hookreference/hookfunctions/setwindowshookex.asp
         /// </remarks>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Interoperability", "CA1401:PInvokesShouldNotBeVisible"), DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
-        public static extern int CallNextHookEx(int idHook, int nCode, int wParam, IntPtr lParam);
+        public static extern int CallNextHookEx(IntPtr idHook, int nCode, IntPtr wParam, IntPtr lParam);
 
         /// <summary>
         /// The SetWindowsHookEx function installs an application-defined hook procedure into a hook chain. 
@@ -346,6 +348,10 @@ namespace Forge.Native
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Interoperability", "CA1401:PInvokesShouldNotBeVisible"), DllImport("user32.dll")]
         public static extern bool GetCursorInfo(out CursorInfo pci);
 
+        #endregion
+
+        #region Kernel32.dll native methods
+
         /// <summary>
         /// Gets the system time in UTC.
         /// http://msdn.microsoft.com/en-us/library/windows/desktop/ms724390(v=vs.85).aspx
@@ -362,6 +368,201 @@ namespace Forge.Native
         /// <returns></returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Interoperability", "CA1401:PInvokesShouldNotBeVisible"), DllImport("Kernel32.dll")]
         public extern static uint SetSystemTime(ref SystemTime lpSystemTime);
+
+        /// <summary>
+        /// Gets the module handle.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Interoperability", "CA1401:PInvokesShouldNotBeVisible"), DllImport("kernel32.dll")]
+        public static extern IntPtr GetModuleHandle(string name);
+
+        /// <summary>
+        /// Convert file time to system time.
+        /// </summary>
+        /// <param name="fileTime">The file time.</param>
+        /// <param name="systemTime">The system time.</param>
+        /// <returns></returns>
+        [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool FileTimeToSystemTime([In] ref long fileTime, out SystemTime systemTime);
+
+        #endregion
+
+        #region AdvApi32.dll native methods
+
+        [DllImport("AdvApi32.dll", SetLastError = true, ExactSpelling = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool CryptAcquireContextW(
+            out IntPtr providerContext,
+            [MarshalAs(UnmanagedType.LPWStr)] string container,
+            [MarshalAs(UnmanagedType.LPWStr)] string provider,
+            int providerType,
+            int flags);
+
+        [DllImport("AdvApi32.dll", SetLastError = true, ExactSpelling = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool CryptReleaseContext(
+            IntPtr providerContext,
+            int flags);
+
+        [DllImport("AdvApi32.dll", SetLastError = true, ExactSpelling = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool CryptGenKey(
+            IntPtr providerContext,
+            int algorithmId,
+            int flags,
+            out IntPtr cryptKeyHandle);
+
+        [DllImport("AdvApi32.dll", SetLastError = true, ExactSpelling = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool CryptDestroyKey(
+            IntPtr cryptKeyHandle);
+
+        [DllImport("Crypt32.dll", SetLastError = true, ExactSpelling = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool CertStrToNameW(
+            int certificateEncodingType,
+            IntPtr x500,
+            int strType,
+            IntPtr reserved,
+            [MarshalAs(UnmanagedType.LPArray)] [Out] byte[] encoded,
+            ref int encodedLength,
+            out IntPtr errorString);
+
+        [DllImport("Crypt32.dll", SetLastError = true, ExactSpelling = true)]
+        public static extern IntPtr CertCreateSelfSignCertificate(
+            IntPtr providerHandle,
+            [In] ref CryptoApiBlob subjectIssuerBlob,
+            int flags,
+            [In] ref CryptKeyProviderInformation keyProviderInformation,
+            IntPtr signatureAlgorithm,
+            [In] ref SystemTime startTime,
+            [In] ref SystemTime endTime,
+            IntPtr extensions);
+
+        [DllImport("Crypt32.dll", SetLastError = true, ExactSpelling = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool CertFreeCertificateContext(
+            IntPtr certificateContext);
+
+        [DllImport("Crypt32.dll", SetLastError = true, ExactSpelling = true)]
+        public static extern IntPtr CertOpenStore(
+            [MarshalAs(UnmanagedType.LPStr)] string storeProvider,
+            int messageAndCertificateEncodingType,
+            IntPtr cryptProvHandle,
+            int flags,
+            IntPtr parameters);
+
+        [DllImport("Crypt32.dll", SetLastError = true, ExactSpelling = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool CertCloseStore(
+            IntPtr certificateStoreHandle,
+            int flags);
+
+        [DllImport("Crypt32.dll", SetLastError = true, ExactSpelling = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool CertAddCertificateContextToStore(
+            IntPtr certificateStoreHandle,
+            IntPtr certificateContext,
+            int addDisposition,
+            out IntPtr storeContextPtr);
+
+        [DllImport("Crypt32.dll", SetLastError = true, ExactSpelling = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool CertSetCertificateContextProperty(
+            IntPtr certificateContext,
+            int propertyId,
+            int flags,
+            [In] ref CryptKeyProviderInformation data);
+
+        [DllImport("Crypt32.dll", SetLastError = true, ExactSpelling = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool PFXExportCertStoreEx(
+            IntPtr certificateStoreHandle,
+            ref CryptoApiBlob pfxBlob,
+            IntPtr password,
+            IntPtr reserved,
+            int flags);
+
+        #endregion
+
+        #region Data structures
+
+        /// <summary>
+        /// Represents the system time
+        /// </summary>
+        [StructLayout(LayoutKind.Sequential)]
+        public struct SystemTime
+        {
+            /// <summary>
+            /// The year
+            /// </summary>
+            public short Year;
+            /// <summary>
+            /// The month
+            /// </summary>
+            public short Month;
+            /// <summary>
+            /// The day of week
+            /// </summary>
+            public short DayOfWeek;
+            /// <summary>
+            /// The day
+            /// </summary>
+            public short Day;
+            /// <summary>
+            /// The hour
+            /// </summary>
+            public short Hour;
+            /// <summary>
+            /// The minute
+            /// </summary>
+            public short Minute;
+            /// <summary>
+            /// The second
+            /// </summary>
+            public short Second;
+            /// <summary>
+            /// The milliseconds
+            /// </summary>
+            public short Milliseconds;
+        }
+
+        /// <summary>
+        /// CryptoApiBlob
+        /// </summary>
+        [StructLayout(LayoutKind.Sequential)]
+        public struct CryptoApiBlob
+        {
+            public int DataLength;
+            public IntPtr Data;
+
+            public CryptoApiBlob(int dataLength, IntPtr data)
+            {
+                this.DataLength = dataLength;
+                this.Data = data;
+            }
+        }
+
+        /// <summary>
+        /// Represents the cryptographic key provider
+        /// </summary>
+        [StructLayout(LayoutKind.Sequential)]
+        public struct CryptKeyProviderInformation
+        {
+            [MarshalAs(UnmanagedType.LPWStr)]
+            public string ContainerName;
+            [MarshalAs(UnmanagedType.LPWStr)]
+            public string ProviderName;
+            public int ProviderType;
+            public int Flags;
+            public int ProviderParameterCount;
+            public IntPtr ProviderParameters; // PCRYPT_KEY_PROV_PARAM
+            public int KeySpec;
+        }
+
+        #endregion
 
     }
 

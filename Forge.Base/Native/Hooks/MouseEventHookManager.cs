@@ -6,6 +6,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -375,7 +376,7 @@ namespace Forge.Native.Hooks
         /// hooks will not receive hook notifications and may behave incorrectly as a result. If the hook 
         /// procedure does not call CallNextHookEx, the return value should be zero. 
         /// </returns>
-        private int MouseHookProcEventHandler(int nCode, int wParam, IntPtr lParam)
+        private int MouseHookProcEventHandler(int nCode, IntPtr wParam, IntPtr lParam)
         {
             if (nCode >= 0)
             {
@@ -528,7 +529,7 @@ namespace Forge.Native.Hooks
             }
 
             // call next hook
-            return NativeMethods.CallNextHookEx(mMouseHookHandle, nCode, wParam, lParam);
+            return NativeMethods.CallNextHookEx(new IntPtr(mMouseHookHandle), nCode, wParam, lParam);
         }
 
         private void SubscribeToGlobalMouseEvents()
@@ -540,10 +541,12 @@ namespace Forge.Native.Hooks
                 mMouseDelegateHandler = MouseHookProcEventHandler;
 
                 // install hook
+                // Marshal.GetHINSTANCE(typeof(MouseEventHookManager).Assembly.GetModules()[0])
                 mMouseHookHandle = NativeMethods.SetWindowsHookEx(
                     (int)HookEventEnum.WH_MOUSE_LL,
                     mMouseDelegateHandler,
-                    Marshal.GetHINSTANCE(typeof(MouseEventHookManager).Assembly.GetModules()[0]), 0);
+                    NativeMethods.GetModuleHandle(Process.GetCurrentProcess().MainModule.ModuleName), 
+                    0);
 
                 // If SetWindowsHookEx fails.
                 if (mMouseHookHandle == 0)

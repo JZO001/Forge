@@ -1,15 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".Documents", ".Documents", "{416C523A-8611-4C87-9740-C7A84C9B1D50}"
-	ProjectSection(SolutionItems) = preProject
-		.Documents\sign_synapse.bat = .Documents\sign_synapse.bat
-		.Documents\sign_terragraf.bat = .Documents\sign_terragraf.bat
-		.Documents\SignPassword.txt = .Documents\SignPassword.txt
-		.Documents\SynapseFuscator.xml = .Documents\SynapseFuscator.xml
-		.Documents\TerraGrafFuscator.xml = .Documents\TerraGrafFuscator.xml
-	EndProjectSection
-EndProject
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2002
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Base", "Forge.Base\Forge.Base.csproj", "{F3EED65E-C103-4BA8-AF1D-37421D73A708}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.WindowsServiceControl", "Forge.WindowsServiceControl\Forge.WindowsServiceControl.csproj", "{5750674A-8247-4F44-BE3F-DFAC351E1F73}"
@@ -20,44 +13,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Persistence", "Forge.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Test", "Forge.Test\Forge.Test.csproj", "{1C08031A-C275-414E-8688-636D49D69DC6}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EDCC58B0-87A2-469A-B150-A4A02C4D585A}"
-	ProjectSection(SolutionItems) = preProject
-		Forge.vsmdi = Forge.vsmdi
-		Forge_Release.vsmdi = Forge_Release.vsmdi
-		Local.testsettings = Local.testsettings
-		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Persistence.Formatters.JsonNet", "Forge.Persistence.Formatters.JsonNet\Forge.Persistence.Formatters.JsonNet.csproj", "{64BB1EFC-27BB-4A5F-B631-234A552C4288}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.DatabaseManagement", "Forge.DatabaseManagement\Forge.DatabaseManagement.csproj", "{CF3D0FC3-46A2-4C86-83F0-5F9EBB417A3F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.DatabaseManagement.SQLite", "Forge.DatabaseManagement.SQLite\Forge.DatabaseManagement.SQLite.csproj", "{40AA163A-6A5D-41D1-8D42-9808C3B415E6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.DatabaseManagement.SqlServerCe40", "Forge.DatabaseManagement.SqlServerCe40\Forge.DatabaseManagement.SqlServerCe40.csproj", "{793E4687-D3E8-40B2-A966-AC356ED01A11}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.ORM.NHibernateExtension", "Forge.ORM.NHibernateExtension\Forge.ORM.NHibernateExtension.csproj", "{D1427FB9-2787-46E6-A5AC-D98E8476F4F7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Persistence.StorageProviders.HibernateStorageProvider", "Forge.Persistence.StorageProviders.HibernateStorageProvider\Forge.Persistence.StorageProviders.HibernateStorageProvider.csproj", "{DA14FB35-D571-4163-A913-3D8C934954BD}"
+EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 7
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://jzo.visualstudio.com/defaultcollection
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = Forge.Base\\Forge.Base.csproj
-		SccProjectName1 = Forge.Base
-		SccLocalPath1 = Forge.Base
-		SccProjectUniqueName2 = Forge.WindowsServiceControl\\Forge.WindowsServiceControl.csproj
-		SccProjectName2 = Forge.WindowsServiceControl
-		SccLocalPath2 = Forge.WindowsServiceControl
-		SccProjectUniqueName3 = Forge.Extensions\\Forge.Extensions.csproj
-		SccProjectName3 = Forge.Extensions
-		SccLocalPath3 = Forge.Extensions
-		SccProjectUniqueName4 = Forge.Persistence\\Forge.Persistence.csproj
-		SccProjectName4 = Forge.Persistence
-		SccLocalPath4 = Forge.Persistence
-		SccProjectUniqueName5 = Forge.Test\\Forge.Test.csproj
-		SccProjectName5 = Forge.Test
-		SccLocalPath5 = Forge.Test
-		SccProjectUniqueName6 = Forge.Persistence.Formatters.JsonNet\\Forge.Persistence.Formatters.JsonNet.csproj
-		SccProjectName6 = Forge.Persistence.Formatters.JsonNet
-		SccLocalPath6 = Forge.Persistence.Formatters.JsonNet
-	EndGlobalSection
-	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = Forge_Release.vsmdi
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		BuildServerRelease|Any CPU = BuildServerRelease|Any CPU
 		Debug|Any CPU = Debug|Any CPU
@@ -100,8 +68,44 @@ Global
 		{64BB1EFC-27BB-4A5F-B631-234A552C4288}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64BB1EFC-27BB-4A5F-B631-234A552C4288}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64BB1EFC-27BB-4A5F-B631-234A552C4288}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF3D0FC3-46A2-4C86-83F0-5F9EBB417A3F}.BuildServerRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{CF3D0FC3-46A2-4C86-83F0-5F9EBB417A3F}.BuildServerRelease|Any CPU.Build.0 = Release|Any CPU
+		{CF3D0FC3-46A2-4C86-83F0-5F9EBB417A3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF3D0FC3-46A2-4C86-83F0-5F9EBB417A3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF3D0FC3-46A2-4C86-83F0-5F9EBB417A3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF3D0FC3-46A2-4C86-83F0-5F9EBB417A3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40AA163A-6A5D-41D1-8D42-9808C3B415E6}.BuildServerRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{40AA163A-6A5D-41D1-8D42-9808C3B415E6}.BuildServerRelease|Any CPU.Build.0 = Release|Any CPU
+		{40AA163A-6A5D-41D1-8D42-9808C3B415E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40AA163A-6A5D-41D1-8D42-9808C3B415E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40AA163A-6A5D-41D1-8D42-9808C3B415E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40AA163A-6A5D-41D1-8D42-9808C3B415E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{793E4687-D3E8-40B2-A966-AC356ED01A11}.BuildServerRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{793E4687-D3E8-40B2-A966-AC356ED01A11}.BuildServerRelease|Any CPU.Build.0 = Release|Any CPU
+		{793E4687-D3E8-40B2-A966-AC356ED01A11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{793E4687-D3E8-40B2-A966-AC356ED01A11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{793E4687-D3E8-40B2-A966-AC356ED01A11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{793E4687-D3E8-40B2-A966-AC356ED01A11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1427FB9-2787-46E6-A5AC-D98E8476F4F7}.BuildServerRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{D1427FB9-2787-46E6-A5AC-D98E8476F4F7}.BuildServerRelease|Any CPU.Build.0 = Release|Any CPU
+		{D1427FB9-2787-46E6-A5AC-D98E8476F4F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1427FB9-2787-46E6-A5AC-D98E8476F4F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1427FB9-2787-46E6-A5AC-D98E8476F4F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1427FB9-2787-46E6-A5AC-D98E8476F4F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA14FB35-D571-4163-A913-3D8C934954BD}.BuildServerRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{DA14FB35-D571-4163-A913-3D8C934954BD}.BuildServerRelease|Any CPU.Build.0 = Release|Any CPU
+		{DA14FB35-D571-4163-A913-3D8C934954BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA14FB35-D571-4163-A913-3D8C934954BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA14FB35-D571-4163-A913-3D8C934954BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA14FB35-D571-4163-A913-3D8C934954BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E8527564-7607-44FB-99DA-855E122AEDC3}
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = Forge_Release.vsmdi
 	EndGlobalSection
 EndGlobal

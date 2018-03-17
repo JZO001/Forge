@@ -135,7 +135,6 @@ namespace Forge.Security
                 {
                     StoreName storeName = StoreName.My;
                     StoreLocation storeLocation = StoreLocation.CurrentUser;
-                    string subject = string.Empty;
 
                     string storeNameStr = ConfigurationAccessHelper.GetValueByPath(configItem.PropertyItems, "StoreName");
                     if (!string.IsNullOrEmpty(storeNameStr))
@@ -149,7 +148,7 @@ namespace Forge.Security
                         storeLocation = (StoreLocation)Enum.Parse(typeof(StoreLocation), storeLocationStr);
                     }
 
-                    subject = ConfigurationAccessHelper.GetValueByPath(configItem.PropertyItems, "Subject");
+                    string subject = ConfigurationAccessHelper.GetValueByPath(configItem.PropertyItems, "Subject");
                     if (string.IsNullOrEmpty(subject))
                     {
                         throw new InvalidConfigurationValueException("Subject value is invalid.");
@@ -183,6 +182,70 @@ namespace Forge.Security
                     finally
                     {
                         store.Close();
+                    }
+                }
+                else if ("frombase64".Equals(certSource))
+                {
+                    string certBase64 = ConfigurationAccessHelper.GetValueByPath(configItem.PropertyItems, "CertificateBase64");
+                    if (string.IsNullOrEmpty(certBase64))
+                    {
+                        throw new InvalidConfigurationValueException("CertificateBase64 value is invalid.");
+                    }
+
+                    byte[] data = Convert.FromBase64String(certBase64);
+
+                    string passwordString = ConfigurationAccessHelper.GetValueByPath(configItem.PropertyItems, "Password");
+                    if (string.IsNullOrEmpty(passwordString))
+                    {
+                        throw new InvalidConfigurationValueException("Password value is invalid.");
+                    }
+
+                    try
+                    {
+                        mCertificate = new X509Certificate2(data, passwordString);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new InvalidConfigurationException("Invalid certificate.", ex);
+                    }
+                }
+                else if ("generatenew".Equals(certSource))
+                {
+                    string subject = ConfigurationAccessHelper.GetValueByPath(configItem.PropertyItems, "Subject");
+                    if (string.IsNullOrEmpty(subject))
+                    {
+                        throw new InvalidConfigurationValueException("Subject value is invalid.");
+                    }
+
+                    string passwordString = ConfigurationAccessHelper.GetValueByPath(configItem.PropertyItems, "Password");
+                    if (string.IsNullOrEmpty(passwordString))
+                    {
+                        passwordString = Guid.NewGuid().ToString();
+                    }
+
+                    DateTime dtCertStart = DateTime.UtcNow.AddDays(-1);
+                    string certStartDate = ConfigurationAccessHelper.GetValueByPath(configItem.PropertyItems, "CertValidStartDate");
+                    if (!string.IsNullOrEmpty(certStartDate))
+                    {
+                        DateTime.TryParse(certStartDate, out dtCertStart);
+                    }
+
+                    DateTime dtCertExpired = DateTime.MaxValue;
+                    string certExpiry = ConfigurationAccessHelper.GetValueByPath(configItem.PropertyItems, "CertExpiryDate");
+                    if (!string.IsNullOrEmpty(certExpiry))
+                    {
+                        DateTime.TryParse(certExpiry, out dtCertExpired);
+                    }
+
+                    try
+                    {
+                        byte[] data = CertificateFactory.CreateSelfSignCertificatePfx(subject, dtCertStart, dtCertExpired, passwordString);
+                        mCertificate = new X509Certificate2(data, passwordString);
+                        mCertificate.FriendlyName = "Generated Certificate";
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new InvalidConfigurationException("Invalid certificate.", ex);
                     }
                 }
                 else

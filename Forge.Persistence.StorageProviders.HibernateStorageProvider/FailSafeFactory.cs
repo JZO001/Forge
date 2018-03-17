@@ -28,7 +28,7 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
         /// <returns></returns>
         public static HibernateStorageProvider<T> FailSafeStartStorageProvider<T>(string storageId, bool enableReset, out bool hasError)
         {
-            return FailSafeStartStorageProvider(storageId, new BinarySerializerFormatter<T>(BinarySerializerBehaviorEnum.DoNotThrowExceptionOnMissingField, TypeLookupModeEnum.AllowAll, true), false, out hasError);
+            return FailSafeStartStorageProvider(storageId, new BinarySerializerFormatter<T>(BinarySerializerBehaviorEnum.DoNotThrowExceptionOnMissingField, TypeLookupModeEnum.AllowAll, true), enableReset, out hasError);
         }
 
         /// <summary>
@@ -83,9 +83,9 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
                     // check data consistency
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format("NHIBERNATE_STORAGE_PROVIDER, failed to initialize storage provider: '{0}'. Reset allowed: {1}", storageId, enableReset.ToString()));
+                if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format("NHIBERNATE_STORAGE_PROVIDER, failed to initialize storage provider: '{0}'. Reset allowed: {1}", storageId, enableReset.ToString()), ex);
                 hasError = true;
                 if (enableReset)
                 {
@@ -147,9 +147,9 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
                     // check data consistency
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format("NHIBERNATE_STORAGE_PROVIDER, failed to initialize storage provider: '{0}'. Reset allowed: {1}", storageId, enableReset.ToString()));
+                if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format("NHIBERNATE_STORAGE_PROVIDER, failed to initialize storage provider: '{0}'. Reset allowed: {1}", storageId, enableReset.ToString()), ex);
                 hasError = true;
                 if (enableReset)
                 {

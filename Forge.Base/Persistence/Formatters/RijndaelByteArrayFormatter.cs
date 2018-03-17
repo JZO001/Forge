@@ -1,5 +1,5 @@
 ﻿/* *********************************************************************
- * Date: 9 Aug 2013
+ * Date: 18 Nov 2016
  * Created by: Zoltan Juhasz
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
@@ -14,16 +14,14 @@ namespace Forge.Persistence.Formatters
 {
 
     /// <summary>
-    /// X509 Binary serializer formatter
+    /// Rijndael formatter
     /// </summary>
-    /// <typeparam name="T">Generic type</typeparam>
-    public sealed class RijndaelFormatter<T> : IDataFormatter<T>
+    public sealed class RijndaelByteArrayFormatter : IDataFormatter<Stream>
     {
 
         #region Field(s)
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private IDataFormatter<T> mInternalFormatter = new BinaryFormatter<T>();
+        private const int BUFFER_SIZE = 8192;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private X509Certificate2 mCertificate = null;
@@ -39,9 +37,9 @@ namespace Forge.Persistence.Formatters
         #region Constructor(s)
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RijndaelFormatter{T}"/> class.
+        /// Initializes a new instance of the <see cref="RijndaelByteArrayFormatter"/> class.
         /// </summary>
-        public RijndaelFormatter()
+        public RijndaelByteArrayFormatter()
         {
             Random rnd = new Random();
             rnd.NextBytes(mIV);
@@ -49,7 +47,7 @@ namespace Forge.Persistence.Formatters
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RijndaelFormatter{T}"/> class.
+        /// Initializes a new instance of the <see cref="RijndaelByteArrayFormatter"/> class.
         /// </summary>
         /// <param name="iv">The iv.</param>
         /// <param name="key">The key.</param>
@@ -60,7 +58,7 @@ namespace Forge.Persistence.Formatters
         /// </exception>
         /// <exception cref="System.IO.InvalidDataException">
         /// </exception>
-        public RijndaelFormatter(byte[] iv, byte[] key)
+        public RijndaelByteArrayFormatter(byte[] iv, byte[] key)
         {
             if (iv == null)
                 throw new ArgumentNullException("iv");
@@ -79,22 +77,10 @@ namespace Forge.Persistence.Formatters
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RijndaelFormatter{T}"/> class.
-        /// </summary>
-        /// <param name="iv">The iv.</param>
-        /// <param name="key">The key.</param>
-        /// <param name="internalFormatter">The internal formatter.</param>
-        public RijndaelFormatter(byte[] iv, byte[] key, IDataFormatter<T> internalFormatter) : this(iv, key)
-        {
-            if (internalFormatter == null) ThrowHelper.ThrowArgumentNullException("internalFormatter");
-            this.mInternalFormatter = internalFormatter;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RijndaelFormatter{T}" /> class.
+        /// Initializes a new instance of the <see cref="RijndaelByteArrayFormatter" /> class.
         /// </summary>
         /// <param name="certificate">The certificate.</param>
-        public RijndaelFormatter(X509Certificate2 certificate)
+        public RijndaelByteArrayFormatter(X509Certificate2 certificate)
         {
             if (certificate == null)
             {
@@ -105,18 +91,6 @@ namespace Forge.Persistence.Formatters
 
             Buffer.BlockCopy(certificate.PublicKey.EncodedKeyValue.RawData, 0, mIV, 0, mIV.Length);
             Buffer.BlockCopy(certificate.PublicKey.EncodedKeyValue.RawData, certificate.PublicKey.EncodedKeyValue.RawData.Length - mKey.Length, mKey, 0, mKey.Length);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RijndaelFormatter{T}" /> class.
-        /// </summary>
-        /// <param name="certificate">The certificate.</param>
-        /// <param name="internalFormatter">The internal formatter.</param>
-        public RijndaelFormatter(X509Certificate2 certificate, IDataFormatter<T> internalFormatter)
-            : this(certificate)
-        {
-            if (internalFormatter == null) ThrowHelper.ThrowArgumentNullException("internalFormatter");
-            this.mInternalFormatter = internalFormatter;
         }
 
         #endregion
@@ -143,26 +117,6 @@ namespace Forge.Persistence.Formatters
 
                 Buffer.BlockCopy(value.PublicKey.EncodedKeyValue.RawData, 0, mIV, 0, mIV.Length);
                 Buffer.BlockCopy(value.PublicKey.EncodedKeyValue.RawData, value.PublicKey.EncodedKeyValue.RawData.Length - mKey.Length, mKey, 0, mKey.Length);
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the internal formatter.
-        /// </summary>
-        /// <value>
-        /// The internal formatter.
-        /// </value>
-        public IDataFormatter<T> InternalFormatter
-        {
-            get { return mInternalFormatter; }
-            set
-            {
-                if (value == null)
-                {
-                    ThrowHelper.ThrowArgumentNullException("value");
-                }
-
-                mInternalFormatter = value;
             }
         }
 
@@ -244,7 +198,11 @@ namespace Forge.Persistence.Formatters
                         using (ICryptoTransform decryptor = r.CreateDecryptor())
                         {
                             CryptoStream csDecrypt = new CryptoStream(stream, decryptor, CryptoStreamMode.Read);
-                            this.mInternalFormatter.Read(csDecrypt);
+                            byte[] buffer = new byte[BUFFER_SIZE];
+                            int numRead = 0;
+                            while ((numRead = csDecrypt.Read(buffer, 0, buffer.Length)) != 0)
+                            {
+                            }
                         }
                     }
                 }
@@ -266,48 +224,47 @@ namespace Forge.Persistence.Formatters
         /// <summary>
         /// Determines whether this instance can write the specified item.
         /// </summary>
-        /// <param name="item">The item.</param>
+        /// <param name="sourceStream">The item.</param>
         /// <returns>
         ///   <c>true</c> if this instance can write the specified item; otherwise, <c>false</c>.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">item</exception>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
-        public bool CanWrite(T item)
+        public bool CanWrite(Stream sourceStream)
         {
-            if (item == null)
+            if (sourceStream == null)
             {
-                ThrowHelper.ThrowArgumentNullException("item");
+                ThrowHelper.ThrowArgumentNullException("sourceStream");
             }
 
             bool result = false;
             try
             {
-                using (MemoryStream ms = new MemoryStream())
+                using (RijndaelManaged r = new RijndaelManaged())
                 {
-                    this.mInternalFormatter.Write(ms, item);
-                    ms.Position = 0;
-
-                    using (RijndaelManaged r = new RijndaelManaged())
+                    r.IV = mIV;
+                    r.Key = mKey;
+                    using (ICryptoTransform encryptor = r.CreateEncryptor())
                     {
-                        r.IV = mIV;
-                        r.Key = mKey;
-                        using (ICryptoTransform encryptor = r.CreateEncryptor())
+                        using (MemoryStream temp = new MemoryStream())
                         {
-                            using (MemoryStream temp = new MemoryStream())
+                            using (CryptoStream csEncrypt = new CryptoStream(temp, encryptor, CryptoStreamMode.Write))
                             {
-                                using (CryptoStream csEncrypt = new CryptoStream(temp, encryptor, CryptoStreamMode.Write))
+                                byte[] buffer = new byte[BUFFER_SIZE];
+                                int numRead = 0;
+                                while ((numRead = sourceStream.Read(buffer, 0, buffer.Length)) != 0)
                                 {
-                                    //csEncrypt.Write(ms.ToArray(), 0, (int)ms.Length);
-                                    ms.WriteTo(csEncrypt);
-                                    csEncrypt.FlushFinalBlock();
-                                    temp.SetLength(0);
+                                    csEncrypt.Write(buffer, 0, numRead);
                                 }
+
+                                csEncrypt.FlushFinalBlock();
+                                temp.SetLength(0);
                             }
                         }
                     }
-
-                    result = true;
                 }
+
+                result = true;
             }
             catch (Exception)
             {
@@ -318,29 +275,37 @@ namespace Forge.Persistence.Formatters
         /// <summary>
         /// Reads the specified stream.
         /// </summary>
-        /// <param name="stream">The stream.</param>
+        /// <param name="sourceStream">The stream.</param>
         /// <returns></returns>
         /// <exception cref="System.ArgumentNullException">stream</exception>
         /// <exception cref="System.FormatException"></exception>
-        public T Read(Stream stream)
+        public Stream Read(Stream sourceStream)
         {
-            if (stream == null)
+            if (sourceStream == null)
             {
-                ThrowHelper.ThrowArgumentNullException("stream");
+                ThrowHelper.ThrowArgumentNullException("sourceStream");
             }
 
             try
             {
+                MemoryStream ms = new MemoryStream();
                 using (RijndaelManaged r = new RijndaelManaged())
                 {
                     r.IV = mIV;
                     r.Key = mKey;
                     using (ICryptoTransform decryptor = r.CreateDecryptor())
                     {
-                        CryptoStream csDecrypt = new CryptoStream(stream, decryptor, CryptoStreamMode.Read);
-                        return (T)this.mInternalFormatter.Read(csDecrypt);
+                        CryptoStream csDecrypt = new CryptoStream(sourceStream, decryptor, CryptoStreamMode.Read);
+                        byte[] buffer = new byte[BUFFER_SIZE];
+                        int numRead = 0;
+                        while ((numRead = csDecrypt.Read(buffer, 0, buffer.Length)) != 0)
+                        {
+                            ms.Write(buffer, 0, numRead);
+                        }
                     }
                 }
+                ms.Position = 0;
+                return ms;
             }
             catch (FormatException)
             {
@@ -353,45 +318,41 @@ namespace Forge.Persistence.Formatters
         }
 
         /// <summary>
-        /// Writes the specified stream.
+        /// Writes the specified source stream content into the target stream.
         /// </summary>
-        /// <param name="stream">The stream.</param>
-        /// <param name="data">The data.</param>
-        /// <exception cref="System.ArgumentNullException">
-        /// stream
-        /// or
-        /// data
-        /// </exception>
+        /// <param name="targetStream">The targetStream.</param>
+        /// <param name="sourceStream">The sourceStream.</param>
         /// <exception cref="System.FormatException"></exception>
-        public void Write(Stream stream, T data)
+        /// <exception cref="System.ArgumentNullException">stream
+        /// or
+        /// data</exception>
+        public void Write(Stream targetStream, Stream sourceStream)
         {
-            if (stream == null)
+            if (targetStream == null)
             {
-                ThrowHelper.ThrowArgumentNullException("stream");
+                ThrowHelper.ThrowArgumentNullException("targetStream");
             }
-            if (data == null)
+            if (sourceStream == null)
             {
-                ThrowHelper.ThrowArgumentNullException("data");
+                ThrowHelper.ThrowArgumentNullException("sourceStream");
             }
 
             try
             {
-                using (MemoryStream ms = new MemoryStream())
+                using (RijndaelManaged r = new RijndaelManaged())
                 {
-                    this.mInternalFormatter.Write(ms, data);
-                    ms.Position = 0;
-
-                    using (RijndaelManaged r = new RijndaelManaged())
+                    r.IV = mIV;
+                    r.Key = mKey;
+                    using (ICryptoTransform encryptor = r.CreateEncryptor())
                     {
-                        r.IV = mIV;
-                        r.Key = mKey;
-                        using (ICryptoTransform encryptor = r.CreateEncryptor())
+                        CryptoStream csEncrypt = new CryptoStream(targetStream, encryptor, CryptoStreamMode.Write);
+                        byte[] buffer = new byte[BUFFER_SIZE];
+                        int numRead = 0;
+                        while ((numRead = sourceStream.Read(buffer, 0, buffer.Length)) != 0)
                         {
-                            CryptoStream csEncrypt = new CryptoStream(stream, encryptor, CryptoStreamMode.Write);
-                            ms.WriteTo(csEncrypt);
-                            //csEncrypt.Write(ms.ToArray(), 0, (int)ms.Length);
-                            csEncrypt.FlushFinalBlock();
+                            csEncrypt.Write(buffer, 0, numRead);
                         }
+                        csEncrypt.FlushFinalBlock();
                     }
                 }
             }
@@ -417,9 +378,8 @@ namespace Forge.Persistence.Formatters
         /// </returns>
         public object Clone()
         {
-            RijndaelFormatter<T> cloned = new RijndaelFormatter<T>();
+            RijndaelByteArrayFormatter cloned = new RijndaelByteArrayFormatter();
             cloned.mCertificate = this.mCertificate;
-            cloned.mInternalFormatter = this.mInternalFormatter;
             cloned.mIV = this.mIV;
             cloned.mKey = this.mKey;
             return cloned;

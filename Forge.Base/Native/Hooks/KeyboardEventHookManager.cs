@@ -6,6 +6,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -169,7 +170,7 @@ namespace Forge.Native.Hooks
         /// hooks will not receive hook notifications and may behave incorrectly as a result. If the hook 
         /// procedure does not call CallNextHookEx, the return value should be zero. 
         /// </returns>
-        private int KeyboardHookProc(int nCode, Int32 wParam, IntPtr lParam)
+        private int KeyboardHookProc(int nCode, IntPtr wParam, IntPtr lParam)
         {
             //indicates if any of underlaing events set e.Handled flag
             bool handled = false;
@@ -179,7 +180,7 @@ namespace Forge.Native.Hooks
                 //read structure KeyboardHookStruct at lParam
                 KeyboardInput myKeyboardHookStruct = (KeyboardInput)Marshal.PtrToStructure(lParam, typeof(KeyboardInput));
                 //raise KeyDown
-                if (KeyDown != null && (wParam == (int)KeyboardInputNotificationEnum.WM_KEYDOWN || wParam == (int)KeyboardInputNotificationEnum.WM_SYSKEYDOWN))
+                if (KeyDown != null && (wParam.ToInt32() == (int)KeyboardInputNotificationEnum.WM_KEYDOWN || wParam.ToInt32() == (int)KeyboardInputNotificationEnum.WM_SYSKEYDOWN))
                 {
                     Keys keyData = (Keys)myKeyboardHookStruct.WVirtualKeyCode;
                     KeyEventArgs e = new KeyEventArgs(keyData);
@@ -188,7 +189,7 @@ namespace Forge.Native.Hooks
                 }
 
                 // raise KeyPress
-                if (KeyPress != null && wParam == (int)KeyboardInputNotificationEnum.WM_KEYDOWN)
+                if (KeyPress != null && wParam.ToInt32() == (int)KeyboardInputNotificationEnum.WM_KEYDOWN)
                 {
                     bool isDownShift = ((NativeMethods.GetKeyState((int)Keys.ShiftKey) & 0x80) == 0x80 ? true : false);
                     bool isDownCapslock = (NativeMethods.GetKeyState((int)Keys.Capital) != 0 ? true : false);
@@ -211,7 +212,7 @@ namespace Forge.Native.Hooks
                 }
 
                 // raise KeyUp
-                if (KeyUp != null && (wParam == (int)KeyboardInputNotificationEnum.WM_KEYUP || wParam == (int)KeyboardInputNotificationEnum.WM_SYSKEYUP))
+                if (KeyUp != null && (wParam.ToInt32() == (int)KeyboardInputNotificationEnum.WM_KEYUP || wParam.ToInt32() == (int)KeyboardInputNotificationEnum.WM_SYSKEYUP))
                 {
                     Keys keyData = (Keys)myKeyboardHookStruct.WVirtualKeyCode;
                     KeyEventArgs e = new KeyEventArgs(keyData);
@@ -225,7 +226,7 @@ namespace Forge.Native.Hooks
             if (handled) return -1;
 
             // forward to other application
-            return NativeMethods.CallNextHookEx(mKeyboardHookHandle, nCode, wParam, lParam);
+            return NativeMethods.CallNextHookEx(new IntPtr(mKeyboardHookHandle), nCode, wParam, lParam);
         }
 
         private void SubscribeToGlobalKeyboardEvents()
@@ -237,10 +238,12 @@ namespace Forge.Native.Hooks
                 mKeyboardDelegate = KeyboardHookProc;
 
                 // install hook
+                //Marshal.GetHINSTANCE(typeof(KeyboardEventHookManager).Assembly.GetModules()[0]), 
                 mKeyboardHookHandle = NativeMethods.SetWindowsHookEx(
                     (int)HookEventEnum.WH_KEYBOARD_LL,
                     mKeyboardDelegate,
-                    Marshal.GetHINSTANCE(typeof(KeyboardEventHookManager).Assembly.GetModules()[0]), 0);
+                    NativeMethods.GetModuleHandle(Process.GetCurrentProcess().MainModule.ModuleName), 
+                    0);
 
                 // If SetWindowsHookEx fails.
                 if (mKeyboardHookHandle == 0)

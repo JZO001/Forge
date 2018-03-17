@@ -103,18 +103,33 @@ namespace Forge.Configuration.Check
         }
 
         /// <summary>
-        /// Validate the configuration
+        /// Validates the configuration.
+        /// </summary>
+        /// <param name="configFile">The configuration file.</param>
+        /// <returns>True, if the configuration file content is valid, otherwise False.</returns>
+        public static bool ValidateConfiguration(String configFile)
+        {
+            return ValidateConfiguration(configFile, ConfigurationUserLevel.None);
+        }
+
+        /// <summary>
+        /// Validates the configuration
         /// </summary>
         /// <param name="configFile">The config file.</param>
-        /// <returns>True, if the configuration file content is valid, otherwise False.</returns>
+        /// <param name="userLevel">The user level.</param>
+        /// <returns>
+        /// True, if the configuration file content is valid, otherwise False.
+        /// </returns>
         [DebuggerStepThrough]
-        public static bool ValidateConfiguration(String configFile)
+        public static bool ValidateConfiguration(String configFile, ConfigurationUserLevel userLevel)
         {
             bool success = true;
 
             try
             {
-                ConfigurationManager.OpenExeConfiguration(configFile);
+                ExeConfigurationFileMap fMap = new ExeConfigurationFileMap();
+                fMap.ExeConfigFilename = configFile;
+                ConfigurationManager.OpenMappedExeConfiguration(fMap, userLevel);
             }
             catch (Exception ex)
             {

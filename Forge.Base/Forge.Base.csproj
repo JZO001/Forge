@@ -67,8 +67,9 @@
     <AssemblyOriginatorKeyFile>Forge.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.5\lib\net40-full\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net40-full\log4net.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -151,6 +152,7 @@
     <Compile Include="Native\Structures\MouseInput.cs" />
     <Compile Include="IO\PathHelper.cs" />
     <Compile Include="Native\Structures\SystemTime.cs" />
+    <Compile Include="Persistence\Formatters\RijndaelByteArrayFormatter.cs" />
     <Compile Include="Persistence\Formatters\RijndaelFormatter.cs" />
     <Compile Include="Persistence\Formatters\BinaryFormatter.cs" />
     <Compile Include="Persistence\Formatters\GZipFormatter.cs" />
@@ -162,6 +164,7 @@
     <Compile Include="Reflection\TypeHelper.cs" />
     <Compile Include="Reflection\TypeLookupModeEnum.cs" />
     <Compile Include="Security\CertificateConfigurationSource.cs" />
+    <Compile Include="Security\CertificateFactory.cs" />
     <Compile Include="Threading\AtomicLong.cs" />
     <Compile Include="Threading\ConfigSection\ThreadPoolConfiguration.cs" />
     <Compile Include="Threading\ConfigSection\ThreadPoolSection.cs" />
@@ -224,6 +227,10 @@
     </PropertyGroup>
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>echo F|xcopy /r /y "$(TargetPath)" "$(SolutionDir).Output\$(TargetFileName)"
+</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

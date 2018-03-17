@@ -148,7 +148,7 @@ namespace Forge.DatabaseManagement.SqlServerCe40
                 }
             }
 
-            string databaseFile = string.Empty;
+            FileInfo databaseFile = null;
             string connectionString = string.Empty;
 
             if (descriptor.ContainsKey(CONNECTION_STRING))
@@ -166,15 +166,14 @@ namespace Forge.DatabaseManagement.SqlServerCe40
                 throw new InvalidConfigurationException("Unable to find connection information in NHibernate Descriptor settings.");
             }
 
-            if (string.IsNullOrEmpty(databaseFile))
+            if (databaseFile == null)
             {
-                throw new InvalidConfigurationException("Unable to find data source in connection string.");
+                throw new InvalidConfigurationException("Unable to find data source or database file name in connection string.");
             }
 
             using (SqlCeEngine en = new SqlCeEngine(connectionString))
             {
-                FileInfo dbFileInfo = new FileInfo(databaseFile);
-                if (!dbFileInfo.Exists)
+                if (!databaseFile.Exists)
                 {
                     en.CreateDatabase();
                 }
@@ -182,7 +181,7 @@ namespace Forge.DatabaseManagement.SqlServerCe40
                 {
                     if (mode == SchemaFactoryModeEnum.Create || mode == SchemaFactoryModeEnum.Create_And_Drop)
                     {
-                        dbFileInfo.Delete();
+                        databaseFile.Delete();
                         en.CreateDatabase();
                     }
                     else
@@ -198,6 +197,34 @@ namespace Forge.DatabaseManagement.SqlServerCe40
         }
 
         /// <summary>
+        /// Gets the database file.
+        /// </summary>
+        /// <param name="connectionString">The connection string.</param>
+        /// <returns></returns>
+        public static FileInfo GetDatabaseFile(string connectionString)
+        {
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                throw new InvalidConfigurationException("Unable to get connection information in NHibernate Descriptor settings.");
+            }
+
+            FileInfo result = null;
+
+            string[] configItems = connectionString.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string item in configItems)
+            {
+                string[] keyValue = item.Split(new string[] { "=" }, StringSplitOptions.RemoveEmptyEntries);
+                string key = keyValue[0].Trim().ToLower();
+                if (key.Equals("data source"))
+                {
+                    result = new FileInfo(keyValue[1].Trim());
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()
@@ -209,34 +236,6 @@ namespace Forge.DatabaseManagement.SqlServerCe40
         #endregion
 
         #region Protected method(s)
-
-        /// <summary>
-        /// Gets the database file.
-        /// </summary>
-        /// <param name="connectionString">The connection string.</param>
-        /// <returns></returns>
-        protected string GetDatabaseFile(string connectionString)
-        {
-            if (string.IsNullOrEmpty(connectionString))
-            {
-                throw new InvalidConfigurationException("Unable to connection information in NHibernate Descriptor settings.");
-            }
-
-            string result = string.Empty;
-
-            string[] configItems = connectionString.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
-            foreach (string item in configItems)
-            {
-                string[] keyValue = item.Split(new string[] { "=" }, StringSplitOptions.RemoveEmptyEntries);
-                string key = keyValue[0].Trim().ToLower();
-                if (key.Equals("data source"))
-                {
-                    result = keyValue[1].Trim();
-                }
-            }
-
-            return result;
-        }
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources

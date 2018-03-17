@@ -6,6 +6,7 @@
 
 using System;
 using System.IO;
+using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -23,11 +24,40 @@ namespace Forge.Persistence.Formatters
         #region Constructors
 
         /// <summary>
+        /// Initializes the <see cref="XmlDataFormatter{T}"/> class.
+        /// </summary>
+        static XmlDataFormatter()
+        {
+            DefaultEncoding = Encoding.UTF8;
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="XmlDataFormatter&lt;T&gt;"/> class.
         /// </summary>
         public XmlDataFormatter()
         {
+            Encoding = DefaultEncoding;
         }
+
+        #endregion
+
+        #region Public properties
+
+        /// <summary>
+        /// Gets or sets the default encoding for XmlDataFormatter instances.
+        /// </summary>
+        /// <value>
+        /// The default encoding.
+        /// </value>
+        public static Encoding DefaultEncoding { get; set; }
+
+        /// <summary>
+        /// Gets or sets the encoding.
+        /// </summary>
+        /// <value>
+        /// The encoding.
+        /// </value>
+        public Encoding Encoding { get; set; }
 
         #endregion
 
@@ -78,6 +108,7 @@ namespace Forge.Persistence.Formatters
         /// <returns>
         ///   <c>true</c> if this instance can write the specified item; otherwise, <c>false</c>.
         /// </returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         public bool CanWrite(T item)
         {
             if (item == null)
@@ -88,13 +119,18 @@ namespace Forge.Persistence.Formatters
             bool result = false;
             using (MemoryStream ms = new MemoryStream())
             {
-                try
+                using (StreamWriter sw = new StreamWriter(ms, Encoding))
                 {
-                    new XmlSerializer(typeof(T)).Serialize(ms, item);
-                    result = true;
-                }
-                catch (Exception)
-                {
+                    try
+                    {
+                        new XmlSerializer(typeof(T)).Serialize(sw, item);
+                        sw.Flush();
+                        result = true;
+                    }
+                    catch (Exception)
+                    {
+                    }
+                    ms.SetLength(0);
                 }
             }
             return result;
@@ -112,11 +148,10 @@ namespace Forge.Persistence.Formatters
                 ThrowHelper.ThrowArgumentNullException("stream");
             }
 
-            XmlTextReader xmlReader = new XmlTextReader(stream);
-            xmlReader.WhitespaceHandling = WhitespaceHandling.Significant;
+            StreamReader sr = new StreamReader(stream, Encoding);
             try
             {
-                return (T)new XmlSerializer(typeof(T)).Deserialize(xmlReader);
+                return (T)new XmlSerializer(typeof(T)).Deserialize(sr);
             }
             catch (FormatException)
             {
@@ -125,10 +160,6 @@ namespace Forge.Persistence.Formatters
             catch (Exception ex)
             {
                 throw new FormatException(ex.Message, ex);
-            }
-            finally
-            {
-                xmlReader.Close();
             }
         }
 
@@ -154,9 +185,11 @@ namespace Forge.Persistence.Formatters
                 ThrowHelper.ThrowArgumentNullException("data");
             }
 
+            StreamWriter sw = new StreamWriter(stream, Encoding);
             try
             {
-                new XmlSerializer(typeof(T)).Serialize(stream, data);
+                new XmlSerializer(typeof(T)).Serialize(sw, data);
+                sw.Flush();
             }
             catch (FormatException)
             {
@@ -180,7 +213,7 @@ namespace Forge.Persistence.Formatters
         /// </returns>
         public object Clone()
         {
-            return new XmlDataFormatter<T>();
+            return new XmlDataFormatter<T>() { Encoding = this.Encoding };
         }
 
         #endregion
