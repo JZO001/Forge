@@ -1,0 +1,139 @@
+﻿/* *********************************************************************
+ * Date: 09 May 2008
+ * Created by: Zoltan Juhasz
+ * E-Mail: forge@jzo.hu
+***********************************************************************/
+
+using System;
+using System.Diagnostics;
+using System.Threading;
+using Forge.Net.Synapse;
+
+namespace Forge.Net.TerraGraf.NetworkPeers
+{
+
+    /// <summary>
+    /// Represents a NAT gateway
+    /// </summary>
+    [Serializable]
+    internal sealed class NATGateway
+    {
+
+        #region Field(s)
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private AddressEndPoint mEndPoint = null;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private int mAttempts = 0;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private bool mSuccess = false;
+
+        #endregion
+
+        #region Constructor(s)
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NATGateway"/> class.
+        /// </summary>
+        /// <param name="endPoint">The end point.</param>
+        internal NATGateway(AddressEndPoint endPoint)
+        {
+            if (endPoint == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("endPoint");
+            }
+            this.mEndPoint = endPoint;
+        }
+
+        #endregion
+
+        #region Internal properties
+
+        /// <summary>
+        /// Gets the end point.
+        /// </summary>
+        /// <value>
+        /// The end point.
+        /// </value>
+        [DebuggerHidden]
+        internal AddressEndPoint EndPoint
+        {
+            get { return this.mEndPoint; }
+        }
+
+        /// <summary>
+        /// Gets the attempts.
+        /// </summary>
+        /// <value>
+        /// The attempts.
+        /// </value>
+        [DebuggerHidden]
+        internal int Attempts
+        {
+            get { return mAttempts; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="TCPServer"/> is success.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if success; otherwise, <c>false</c>.
+        /// </value>
+        [DebuggerHidden]
+        internal bool Success
+        {
+            get { return mSuccess; }
+            set { mSuccess = value; }
+        }
+
+        #endregion
+
+        #region Internal method(s)
+
+        /// <summary>
+        /// Increment the attempt number.
+        /// </summary>
+        internal void IncAttempts()
+        {
+            Interlocked.Increment(ref mAttempts);
+        }
+
+        #endregion
+
+        #region Public method(s)
+
+        /// <summary>
+        /// Determines whether the specified <see cref="System.Object"/> is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The <see cref="System.Object"/> to compare with this instance.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified <see cref="System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+        /// </returns>
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (!obj.GetType().Equals(GetType())) return false;
+
+            NATGateway other = (NATGateway)obj;
+            return other.mEndPoint.Equals(mEndPoint);
+        }
+
+        /// <summary>
+        /// Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+        /// </returns>
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        #endregion
+
+    }
+
+}

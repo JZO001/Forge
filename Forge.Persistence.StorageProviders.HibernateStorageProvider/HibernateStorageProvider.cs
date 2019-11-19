@@ -40,7 +40,7 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
 
         private static readonly ISessionFactory DEFAULT_SESSION_FACTORY = null;
 
-        private static Mutex APP_ID_MUTEX = null;
+        private Mutex mAppIdMutex = null;
 
         private ItemTable mAllocationTable = null;
 
@@ -59,21 +59,7 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
         /// </summary>
         static HibernateStorageProvider()
         {
-            string appId = ApplicationHelper.ApplicationId;
-            SYSTEM_ID = HashGeneratorHelper.GetSHA256BasedValue(appId);
-
-            bool mutexResult = false;
-            string typeName = String.Format("HibernateStorageProvider_{0}_{1}", appId, typeof(T).AssemblyQualifiedName.GetHashCode().ToString());
-            if (typeName.Length > 255)
-            {
-                // ez a Mutex név hosszának korlátozása
-                typeName = typeName.Substring(0, 255);
-            }
-            APP_ID_MUTEX = new Mutex(true, typeName, out mutexResult);
-            if (!mutexResult)
-            {
-                throw new InitializationException("An other application with the specified application identifier is running.");
-            }
+            SYSTEM_ID = HashGeneratorHelper.GetSHA256BasedValue(ApplicationHelper.ApplicationId);
 
             CategoryPropertyItem configItem = ConfigurationAccessHelper.GetCategoryPropertyByPath(StorageConfiguration.Settings.CategoryPropertyItems, "NHibernateProvider/NHibernateStorages/Default");
             if (configItem != null)
@@ -615,6 +601,20 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
 
         private void Initialize()
         {
+            string appId = ApplicationHelper.ApplicationId;
+            bool mutexResult = false;
+            string typeName = String.Format("HibernateStorageProvider_{0}_{1}_{2}", appId, StorageId, typeof(T).AssemblyQualifiedName.GetHashCode().ToString());
+            if (typeName.Length > 255)
+            {
+                // limit the length of the mutex name to avoid exception
+                typeName = typeName.Substring(0, 255);
+            }
+            mAppIdMutex = new Mutex(true, typeName, out mutexResult);
+            if (!mutexResult)
+            {
+                throw new InitializationException("An other application with the specified application identifier is running.");
+            }
+
             this.mDeviceId = HashGeneratorHelper.GetSHA256BasedValue(StorageId);
             CategoryPropertyItem pi = ConfigurationAccessHelper.GetCategoryPropertyByPath(StorageConfiguration.Settings.CategoryPropertyItems, String.Format("NHibernateProvider/KnownStorageIdsToReset/{0}", StorageId));
             if (pi != null)
@@ -884,34 +884,41 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
         {
             if (disposing)
             {
-                if (mAllocationTable != null)
+                if (mAppIdMutex != null)
                 {
-                    // minden elem törlése
-                    try
-                    {
-                        using (ISession session = GetSession())
-                        {
-                            using (ITransaction transaction = session.BeginTransaction())
-                            {
-                                QueryParams<PersistentStorageAllocationTable> query = new QueryParams<PersistentStorageAllocationTable>(
-                                        GetAllocationTableCriteria(), 1);
-                                IList<PersistentStorageAllocationTable> resultList = QueryHelper.Query<PersistentStorageAllocationTable>(session, query, LOG_QUERY);
-                                if (resultList.Count > 0)
-                                {
-                                    ORMUtils.DeleteEntity(resultList[0], session);
-                                }
-                                foreach (EntityId entityId in mAllocationTable.ItemIds)
-                                {
-                                    RemoveObject(entityId, session);
-                                }
-                                transaction.Commit();
-                            }
-                        }
-                    }
-                    catch (Exception)
-                    {
-                    }
+                    mAppIdMutex.Close();
+                    mAppIdMutex = null;
                 }
+
+                //if (mAllocationTable != null)
+                //{
+                //    // remove all elements
+                //    try
+                //    {
+                //        using (ISession session = GetSession())
+                //        {
+                //            using (ITransaction transaction = session.BeginTransaction())
+                //            {
+                //                QueryParams<PersistentStorageAllocationTable> query = new QueryParams<PersistentStorageAllocationTable>(
+                //                        GetAllocationTableCriteria(), 1);
+                //                IList<PersistentStorageAllocationTable> resultList = QueryHelper.Query<PersistentStorageAllocationTable>(session, query, LOG_QUERY);
+                //                if (resultList.Count > 0)
+                //                {
+                //                    ORMUtils.DeleteEntity(resultList[0], session);
+                //                }
+                //                foreach (EntityId entityId in mAllocationTable.ItemIds)
+                //                {
+                //                    RemoveObject(entityId, session);
+                //                }
+                //                transaction.Commit();
+                //            }
+                //        }
+                //    }
+                //    catch (Exception)
+                //    {
+                //    }
+                //}
+
             }
             mAllocationTable = null;
             mTableFormatter = null;

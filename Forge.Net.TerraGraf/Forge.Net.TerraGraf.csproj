@@ -1,0 +1,198 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{79531288-031B-4790-AAF3-F7CCD182E7FB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Forge.Net.TerraGraf</RootNamespace>
+    <AssemblyName>Forge.Net.TerraGraf</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>BasicCorrectnessRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\Debug\Forge.Net.TerraGraf.xml</DocumentationFile>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <DocumentationFile>bin\Release\Forge.Net.TerraGraf.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Forge.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DelaySign>false</DelaySign>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net40-full\log4net.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ConfigSection\TerraGrafConfiguration.cs" />
+    <Compile Include="ConfigSection\TerraGrafSection.cs" />
+    <Compile Include="Configuration\ConfigContainer.cs" />
+    <Compile Include="Configuration\ConnectionEntry.cs" />
+    <Compile Include="Configuration\ContextRule.cs" />
+    <Compile Include="Configuration\NATGatewaySettings.cs" />
+    <Compile Include="Configuration\NATUPnPSettings.cs" />
+    <Compile Include="Configuration\NetworkContextSettings.cs" />
+    <Compile Include="Configuration\NetworkPeerSettings.cs" />
+    <Compile Include="Configuration\Settings.cs" />
+    <Compile Include="Configuration\TCPConnectionSettings.cs" />
+    <Compile Include="Configuration\TCPServerSettings.cs" />
+    <Compile Include="Configuration\UDPDetectionModeEnum.cs" />
+    <Compile Include="Configuration\UDPDetectionSettings.cs" />
+    <Compile Include="Connection\BroadcastServer.cs" />
+    <Compile Include="Connection\ConnectionManager.cs" />
+    <Compile Include="Connection\NetworkConnectionTask.cs" />
+    <Compile Include="Connection\NetworkPeerSession.cs" />
+    <Compile Include="Contexts\NetworkContext.cs" />
+    <Compile Include="Contexts\NetworkContextRuleManager.cs" />
+    <Compile Include="Contexts\NetworkPeerContext.cs" />
+    <Compile Include="Contexts\NetworkPeerDataContext.cs" />
+    <Compile Include="Formatters\MessageFormatter.cs" />
+    <Compile Include="ISocketSafeHandle.cs" />
+    <Compile Include="Messaging\MessageAcknowledge.cs" />
+    <Compile Include="Messaging\MessageArrivedEventArgs.cs" />
+    <Compile Include="Messaging\MessageBase.cs" />
+    <Compile Include="Messaging\MessageCodeEnum.cs" />
+    <Compile Include="Messaging\MessageLowLevelAcknowledge.cs" />
+    <Compile Include="Messaging\MessagePriorityEnum.cs" />
+    <Compile Include="Messaging\MessageSendEventArgs.cs" />
+    <Compile Include="Messaging\MessageTask.cs" />
+    <Compile Include="Messaging\MessageTypeEnum.cs" />
+    <Compile Include="Messaging\NegotiationMessage.cs" />
+    <Compile Include="Messaging\SocketCloseMessage.cs" />
+    <Compile Include="Messaging\SocketMessage.cs" />
+    <Compile Include="Messaging\SocketOpenRequestMessage.cs" />
+    <Compile Include="Messaging\SocketOpenResponseMessage.cs" />
+    <Compile Include="Messaging\SocketRawDataMessage.cs" />
+    <Compile Include="Messaging\TerraGrafInformationMessage.cs" />
+    <Compile Include="Messaging\TerraGrafMessageBase.cs" />
+    <Compile Include="Messaging\TerraGrafPeerUpdateMessage.cs" />
+    <Compile Include="Messaging\UdpBroadcastMessage.cs" />
+    <Compile Include="NetworkInfo\BlackHoleContainer.cs" />
+    <Compile Include="NetworkInfo\NATGatewayContainer.cs" />
+    <Compile Include="NetworkInfo\NetworkPeer.cs" />
+    <Compile Include="NetworkInfo\PeerContextContainer.cs" />
+    <Compile Include="NetworkInfo\PeerRelation.cs" />
+    <Compile Include="NetworkInfo\PeerRelationContainer.cs" />
+    <Compile Include="NetworkInfo\ServerContainer.cs" />
+    <Compile Include="NetworkInfo\TerraGrafNetworkInformation.cs" />
+    <Compile Include="NetworkManager.cs" />
+    <Compile Include="NetworkPeerChangedEventArgs.cs" />
+    <Compile Include="NetworkPeerContextEventArgs.cs" />
+    <Compile Include="NetworkPeerDistanceChangedEventArgs.cs" />
+    <Compile Include="NetworkPeers\BlackHoleContainer.cs" />
+    <Compile Include="NetworkPeers\INetworkConnection.cs" />
+    <Compile Include="NetworkPeers\INetworkPeer.cs" />
+    <Compile Include="NetworkPeers\INetworkPeerLocal.cs" />
+    <Compile Include="NetworkPeers\INetworkPeerRemote.cs" />
+    <Compile Include="NetworkPeers\NATGateway.cs" />
+    <Compile Include="NetworkPeers\NATGatewayCollection.cs" />
+    <Compile Include="NetworkPeers\NetworkConnection.cs" />
+    <Compile Include="NetworkPeers\NetworkPeerDataContextContainer.cs" />
+    <Compile Include="NetworkPeers\NetworkPeerLocal.cs" />
+    <Compile Include="NetworkPeers\NetworkPeerRemote.cs" />
+    <Compile Include="NetworkPeers\PeerRelationPair.cs" />
+    <Compile Include="NetworkPeers\PeerRelationPairCollection.cs" />
+    <Compile Include="NetworkPeers\PeerTypeEnum.cs" />
+    <Compile Include="NetworkPeers\TCPServer.cs" />
+    <Compile Include="NetworkPeers\TCPServerCollection.cs" />
+    <Compile Include="PeerContextLock.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Socket.cs" />
+    <Compile Include="SocketSafeHandle.cs" />
+    <Compile Include="TcpClient.cs" />
+    <Compile Include="TcpListener.cs" />
+    <Compile Include="TerraGrafNetworkFactory.cs" />
+    <Compile Include="UdpClient.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Forge.pfx" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="NATUPNPLib">
+      <Guid>{1C565858-F302-471E-B409-F180AA4ABEC6}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="NetFwTypeLib">
+      <Guid>{58FBCF7C-E7A9-467C-80B3-FC65E8FCCA08}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Forge.Base\Forge.Base.csproj">
+      <Project>{f3eed65e-c103-4ba8-af1d-37421d73a708}</Project>
+      <Name>Forge.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Forge.Net.Synapse\Forge.Net.Synapse.csproj">
+      <Project>{63528bc4-c7d4-4db0-add7-36c98f0e0c0e}</Project>
+      <Name>Forge.Net.Synapse</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Forge.Persistence\Forge.Persistence.csproj">
+      <Project>{689c2101-257f-404b-9b50-9b550dfa196f}</Project>
+      <Name>Forge.Persistence</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

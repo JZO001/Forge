@@ -15,7 +15,7 @@ using System.Security;
 #endif
 [assembly: AssemblyCompany("Forge Project Contributor(s)")]
 [assembly: AssemblyProduct("Forge: reference, practice and patterns implementations and helper(s)")]
-[assembly: AssemblyCopyright("Copyright © Zoltan Juhasz, 2004-2014")]
+[assembly: AssemblyCopyright("Copyright © Zoltan Juhasz, 2004-2019")]
 //[assembly: AssemblyTrademark("")]
 //[assembly: AssemblyCulture("")]
 
