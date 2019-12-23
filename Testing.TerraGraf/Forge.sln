@@ -1,0 +1,690 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29609.76
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".Documents", ".Documents", "{416C523A-8611-4C87-9740-C7A84C9B1D50}"
+	ProjectSection(SolutionItems) = preProject
+		.Documents\Forge.Base.nupkg = .Documents\Forge.Base.nupkg
+		.Documents\Forge.DatabaseManagement.nupkg = .Documents\Forge.DatabaseManagement.nupkg
+		.Documents\Forge.DatabaseManagement.SQLite..nupkg = .Documents\Forge.DatabaseManagement.SQLite..nupkg
+		.Documents\Forge.DatabaseManagement.SqlServer2008.nupkg = .Documents\Forge.DatabaseManagement.SqlServer2008.nupkg
+		.Documents\Forge.DatabaseManagement.SqlServerCe40.nupkg = .Documents\Forge.DatabaseManagement.SqlServerCe40.nupkg
+		.Documents\Forge.ErrorReport.Client.nupkg = .Documents\Forge.ErrorReport.Client.nupkg
+		.Documents\Forge.ErrorReport.nupkg = .Documents\Forge.ErrorReport.nupkg
+		.Documents\Forge.ErrorReport.Service.nupkg = .Documents\Forge.ErrorReport.Service.nupkg
+		.Documents\Forge.Extensions.nupkg = .Documents\Forge.Extensions.nupkg
+		.Documents\Forge.Logging.Log4Net.nupkg = .Documents\Forge.Logging.Log4Net.nupkg
+		.Documents\Forge.Native.nupkg = .Documents\Forge.Native.nupkg
+		.Documents\Forge.Net.Remoting.nupkg = .Documents\Forge.Net.Remoting.nupkg
+		.Documents\Forge.Net.Services.nupkg = .Documents\Forge.Net.Services.nupkg
+		.Documents\Forge.Net.Synapse.nupkg = .Documents\Forge.Net.Synapse.nupkg
+		.Documents\Forge.Net.TerraGraf.nupkg = .Documents\Forge.Net.TerraGraf.nupkg
+		.Documents\Forge.ORM.NHibernateExtension.nupkg = .Documents\Forge.ORM.NHibernateExtension.nupkg
+		.Documents\Forge.Persistence.Formatters.JsonNet.nupkg = .Documents\Forge.Persistence.Formatters.JsonNet.nupkg
+		.Documents\Forge.Persistence.nupkg = .Documents\Forge.Persistence.nupkg
+		.Documents\Forge.Persistence.StorageProviders.HibernateStorageProvider.nupkg = .Documents\Forge.Persistence.StorageProviders.HibernateStorageProvider.nupkg
+		.Documents\Forge.pfx = .Documents\Forge.pfx
+		.Documents\Forge.RemoteDesktop.Client.nupkg = .Documents\Forge.RemoteDesktop.Client.nupkg
+		.Documents\Forge.RemoteDesktop.nupkg = .Documents\Forge.RemoteDesktop.nupkg
+		.Documents\Forge.RemoteDesktop.Service.nupkg = .Documents\Forge.RemoteDesktop.Service.nupkg
+		.Documents\Forge.Security.nupkg = .Documents\Forge.Security.nupkg
+		.Documents\Forge.TimeServer.Client.nupkg = .Documents\Forge.TimeServer.Client.nupkg
+		.Documents\Forge.TimeServer.nupkg = .Documents\Forge.TimeServer.nupkg
+		.Documents\Forge.TimeServer.Service.nupkg = .Documents\Forge.TimeServer.Service.nupkg
+		.Documents\Forge.WindowsServiceControl.nupkg = .Documents\Forge.WindowsServiceControl.nupkg
+		.Documents\ForgeNET.cer = .Documents\ForgeNET.cer
+		.Documents\ForgeNET.pfx = .Documents\ForgeNET.pfx
+		.Documents\ForgeNET.pvk = .Documents\ForgeNET.pvk
+		.Documents\ForgeNET2.cer = .Documents\ForgeNET2.cer
+		.Documents\ForgeNET2.pfx = .Documents\ForgeNET2.pfx
+		.Documents\ForgeNET2.pvk = .Documents\ForgeNET2.pvk
+		.Documents\nuget.txt = .Documents\nuget.txt
+		.Documents\sign_synapse.bat = .Documents\sign_synapse.bat
+		.Documents\sign_terragraf.bat = .Documents\sign_terragraf.bat
+		.Documents\SignPassword.txt = .Documents\SignPassword.txt
+		.Documents\ssl_cert_creator.bat = .Documents\ssl_cert_creator.bat
+		.Documents\ssl_cert_creator2.bat = .Documents\ssl_cert_creator2.bat
+		.Documents\SynapseFuscator.xml = .Documents\SynapseFuscator.xml
+		.Documents\TerraGrafFuscator.xml = .Documents\TerraGrafFuscator.xml
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Base", "Forge.Base\Forge.Base.csproj", "{F3EED65E-C103-4BA8-AF1D-37421D73A708}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.WindowsServiceControl", "Forge.WindowsServiceControl\Forge.WindowsServiceControl.csproj", "{5750674A-8247-4F44-BE3F-DFAC351E1F73}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708} = {F3EED65E-C103-4BA8-AF1D-37421D73A708}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Persistence", "Forge.Persistence\Forge.Persistence.csproj", "{689C2101-257F-404B-9B50-9B550DFA196F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708} = {F3EED65E-C103-4BA8-AF1D-37421D73A708}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Extensions", "Forge.Extensions\Forge.Extensions.csproj", "{B4EA240F-19DC-42CB-810B-99E86AF8D06E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708} = {F3EED65E-C103-4BA8-AF1D-37421D73A708}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Net.Synapse", "Forge.Net.Synapse\Forge.Net.Synapse.csproj", "{63528BC4-C7D4-4DB0-ADD7-36C98F0E0C0E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708} = {F3EED65E-C103-4BA8-AF1D-37421D73A708}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Net.TerraGraf", "Forge.Net.TerraGraf\Forge.Net.TerraGraf.csproj", "{79531288-031B-4790-AAF3-F7CCD182E7FB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{689C2101-257F-404B-9B50-9B550DFA196F} = {689C2101-257F-404B-9B50-9B550DFA196F}
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708} = {F3EED65E-C103-4BA8-AF1D-37421D73A708}
+		{63528BC4-C7D4-4DB0-ADD7-36C98F0E0C0E} = {63528BC4-C7D4-4DB0-ADD7-36C98F0E0C0E}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{427A6E42-81E4-40FB-8173-0A2E7D0619EF}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Test", "Forge.Test\Forge.Test.csproj", "{1C08031A-C275-414E-8688-636D49D69DC6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EDCC58B0-87A2-469A-B150-A4A02C4D585A}"
+	ProjectSection(SolutionItems) = preProject
+		Forge.vsmdi = Forge.vsmdi
+		Local.testsettings = Local.testsettings
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Persistence.Formatters.JsonNet", "Forge.Persistence.Formatters.JsonNet\Forge.Persistence.Formatters.JsonNet.csproj", "{64BB1EFC-27BB-4A5F-B631-234A552C4288}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708} = {F3EED65E-C103-4BA8-AF1D-37421D73A708}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.ORM.NHibernateExtension", "Forge.ORM.NHibernateExtension\Forge.ORM.NHibernateExtension.csproj", "{D1427FB9-2787-46E6-A5AC-D98E8476F4F7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708} = {F3EED65E-C103-4BA8-AF1D-37421D73A708}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.DatabaseManagement", "Forge.DatabaseManagement\Forge.DatabaseManagement.csproj", "{CF3D0FC3-46A2-4C86-83F0-5F9EBB417A3F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708} = {F3EED65E-C103-4BA8-AF1D-37421D73A708}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.DatabaseManagement.SQLite", "Forge.DatabaseManagement.SQLite\Forge.DatabaseManagement.SQLite.csproj", "{40AA163A-6A5D-41D1-8D42-9808C3B415E6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CF3D0FC3-46A2-4C86-83F0-5F9EBB417A3F} = {CF3D0FC3-46A2-4C86-83F0-5F9EBB417A3F}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.DatabaseManagement.SqlServer2008", "Forge.DatabaseManagement.SqlServer2008\Forge.DatabaseManagement.SqlServer2008.csproj", "{36E20203-B4D9-4363-BF52-EFD07E702BD3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CF3D0FC3-46A2-4C86-83F0-5F9EBB417A3F} = {CF3D0FC3-46A2-4C86-83F0-5F9EBB417A3F}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.DatabaseManagement.SqlServerCe40", "Forge.DatabaseManagement.SqlServerCe40\Forge.DatabaseManagement.SqlServerCe40.csproj", "{793E4687-D3E8-40B2-A966-AC356ED01A11}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CF3D0FC3-46A2-4C86-83F0-5F9EBB417A3F} = {CF3D0FC3-46A2-4C86-83F0-5F9EBB417A3F}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Persistence.StorageProviders.HibernateStorageProvider", "Forge.Persistence.StorageProviders.HibernateStorageProvider\Forge.Persistence.StorageProviders.HibernateStorageProvider.csproj", "{DA14FB35-D571-4163-A913-3D8C934954BD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{689C2101-257F-404B-9B50-9B550DFA196F} = {689C2101-257F-404B-9B50-9B550DFA196F}
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708} = {F3EED65E-C103-4BA8-AF1D-37421D73A708}
+		{D1427FB9-2787-46E6-A5AC-D98E8476F4F7} = {D1427FB9-2787-46E6-A5AC-D98E8476F4F7}
+		{CF3D0FC3-46A2-4C86-83F0-5F9EBB417A3F} = {CF3D0FC3-46A2-4C86-83F0-5F9EBB417A3F}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Hooks", "Testing.Hooks\Testing.Hooks.csproj", "{2BED1D69-7029-4D15-B2EC-A15116563FF3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Net.Remoting", "Forge.Net.Remoting\Forge.Net.Remoting.csproj", "{0F590995-E709-4BD6-85FB-4059D2D7507E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{689C2101-257F-404B-9B50-9B550DFA196F} = {689C2101-257F-404B-9B50-9B550DFA196F}
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708} = {F3EED65E-C103-4BA8-AF1D-37421D73A708}
+		{79531288-031B-4790-AAF3-F7CCD182E7FB} = {79531288-031B-4790-AAF3-F7CCD182E7FB}
+		{63528BC4-C7D4-4DB0-ADD7-36C98F0E0C0E} = {63528BC4-C7D4-4DB0-ADD7-36C98F0E0C0E}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Net.Services", "Forge.Net.Services\Forge.Net.Services.csproj", "{5BF0BB3E-82BD-4F55-988F-64F39912A794}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708} = {F3EED65E-C103-4BA8-AF1D-37421D73A708}
+		{79531288-031B-4790-AAF3-F7CCD182E7FB} = {79531288-031B-4790-AAF3-F7CCD182E7FB}
+		{0F590995-E709-4BD6-85FB-4059D2D7507E} = {0F590995-E709-4BD6-85FB-4059D2D7507E}
+		{63528BC4-C7D4-4DB0-ADD7-36C98F0E0C0E} = {63528BC4-C7D4-4DB0-ADD7-36C98F0E0C0E}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.TimeServer", "Forge.TimeServer\Forge.TimeServer.csproj", "{6486D46B-70D8-4F1A-86D5-67A2794E6AEC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.TimeServer.Client", "Forge.TimeServer.Client\Forge.TimeServer.Client.csproj", "{D2DEC75E-E22B-423F-BA8A-253D652A611B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.TimeServer.Service", "Forge.TimeServer.Service\Forge.TimeServer.Service.csproj", "{DEBE7357-24AE-47A4-BFC6-BD1643A53BB2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.RemoteDesktop", "Forge.RemoteDesktop\Forge.RemoteDesktop.csproj", "{4C5BA699-04F5-4BFF-9CC2-3393C295445F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708} = {F3EED65E-C103-4BA8-AF1D-37421D73A708}
+		{79531288-031B-4790-AAF3-F7CCD182E7FB} = {79531288-031B-4790-AAF3-F7CCD182E7FB}
+		{0F590995-E709-4BD6-85FB-4059D2D7507E} = {0F590995-E709-4BD6-85FB-4059D2D7507E}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.RemoteDesktop.Client", "Forge.RemoteDesktop.Client\Forge.RemoteDesktop.Client.csproj", "{936FA984-1673-4799-991D-90A98F7A6D92}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5BF0BB3E-82BD-4F55-988F-64F39912A794} = {5BF0BB3E-82BD-4F55-988F-64F39912A794}
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708} = {F3EED65E-C103-4BA8-AF1D-37421D73A708}
+		{79531288-031B-4790-AAF3-F7CCD182E7FB} = {79531288-031B-4790-AAF3-F7CCD182E7FB}
+		{0F590995-E709-4BD6-85FB-4059D2D7507E} = {0F590995-E709-4BD6-85FB-4059D2D7507E}
+		{4C5BA699-04F5-4BFF-9CC2-3393C295445F} = {4C5BA699-04F5-4BFF-9CC2-3393C295445F}
+		{63528BC4-C7D4-4DB0-ADD7-36C98F0E0C0E} = {63528BC4-C7D4-4DB0-ADD7-36C98F0E0C0E}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.RemoteDesktop.Service", "Forge.RemoteDesktop.Service\Forge.RemoteDesktop.Service.csproj", "{2C8A02B1-38E9-490D-BE48-5D316A508517}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5BF0BB3E-82BD-4F55-988F-64F39912A794} = {5BF0BB3E-82BD-4F55-988F-64F39912A794}
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708} = {F3EED65E-C103-4BA8-AF1D-37421D73A708}
+		{79531288-031B-4790-AAF3-F7CCD182E7FB} = {79531288-031B-4790-AAF3-F7CCD182E7FB}
+		{0F590995-E709-4BD6-85FB-4059D2D7507E} = {0F590995-E709-4BD6-85FB-4059D2D7507E}
+		{4C5BA699-04F5-4BFF-9CC2-3393C295445F} = {4C5BA699-04F5-4BFF-9CC2-3393C295445F}
+		{63528BC4-C7D4-4DB0-ADD7-36C98F0E0C0E} = {63528BC4-C7D4-4DB0-ADD7-36C98F0E0C0E}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.ErrorReport", "Forge.ErrorReport\Forge.ErrorReport.csproj", "{C7A8F803-2AF4-4211-8EF4-BB62A9EC0B34}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708} = {F3EED65E-C103-4BA8-AF1D-37421D73A708}
+		{0F590995-E709-4BD6-85FB-4059D2D7507E} = {0F590995-E709-4BD6-85FB-4059D2D7507E}
+		{D1427FB9-2787-46E6-A5AC-D98E8476F4F7} = {D1427FB9-2787-46E6-A5AC-D98E8476F4F7}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.ErrorReport.Client", "Forge.ErrorReport.Client\Forge.ErrorReport.Client.csproj", "{44570E1B-56D9-4177-9608-2C86C708F064}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C7A8F803-2AF4-4211-8EF4-BB62A9EC0B34} = {C7A8F803-2AF4-4211-8EF4-BB62A9EC0B34}
+		{5BF0BB3E-82BD-4F55-988F-64F39912A794} = {5BF0BB3E-82BD-4F55-988F-64F39912A794}
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708} = {F3EED65E-C103-4BA8-AF1D-37421D73A708}
+		{79531288-031B-4790-AAF3-F7CCD182E7FB} = {79531288-031B-4790-AAF3-F7CCD182E7FB}
+		{0F590995-E709-4BD6-85FB-4059D2D7507E} = {0F590995-E709-4BD6-85FB-4059D2D7507E}
+		{63528BC4-C7D4-4DB0-ADD7-36C98F0E0C0E} = {63528BC4-C7D4-4DB0-ADD7-36C98F0E0C0E}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.ErrorReport.Service", "Forge.ErrorReport.Service\Forge.ErrorReport.Service.csproj", "{D4C8AAD5-EC16-444B-992E-6E0B71200B03}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C7A8F803-2AF4-4211-8EF4-BB62A9EC0B34} = {C7A8F803-2AF4-4211-8EF4-BB62A9EC0B34}
+		{5BF0BB3E-82BD-4F55-988F-64F39912A794} = {5BF0BB3E-82BD-4F55-988F-64F39912A794}
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708} = {F3EED65E-C103-4BA8-AF1D-37421D73A708}
+		{79531288-031B-4790-AAF3-F7CCD182E7FB} = {79531288-031B-4790-AAF3-F7CCD182E7FB}
+		{0F590995-E709-4BD6-85FB-4059D2D7507E} = {0F590995-E709-4BD6-85FB-4059D2D7507E}
+		{63528BC4-C7D4-4DB0-ADD7-36C98F0E0C0E} = {63528BC4-C7D4-4DB0-ADD7-36C98F0E0C0E}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "Testing\Testing.csproj", "{2B9130CE-B844-45D7-A7F8-9A4774FB08D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Entities", "Testing.Entities\Testing.Entities.csproj", "{FDC2F19E-004B-49F0-A92C-AB4B93E5B9B8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.RemoteDesktop.Client", "Testing.RemoteDesktop.Client\Testing.RemoteDesktop.Client.csproj", "{EBF78544-67E1-4825-B806-4B7C4F0A7FD0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.RemoteDesktop.Server", "Testing.RemoteDesktop.Server\Testing.RemoteDesktop.Server.csproj", "{91F0E989-EE41-4799-9F35-22B6B7869121}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.TerraGraf", "Testing.TerraGraf\Testing.TerraGraf.csproj", "{07A0FACA-C0A5-4699-9B18-31C29989A040}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.UpdateFramework", "Forge.UpdateFramework\Forge.UpdateFramework.csproj", "{5381068C-E22C-4FBB-A105-9A219FB5166B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708} = {F3EED65E-C103-4BA8-AF1D-37421D73A708}
+		{0F590995-E709-4BD6-85FB-4059D2D7507E} = {0F590995-E709-4BD6-85FB-4059D2D7507E}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.UpdateFramework.Client", "Forge.UpdateFramework.Client\Forge.UpdateFramework.Client.csproj", "{04BDD54C-260B-4F36-BCC0-E24181660B0B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5BF0BB3E-82BD-4F55-988F-64F39912A794} = {5BF0BB3E-82BD-4F55-988F-64F39912A794}
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708} = {F3EED65E-C103-4BA8-AF1D-37421D73A708}
+		{5381068C-E22C-4FBB-A105-9A219FB5166B} = {5381068C-E22C-4FBB-A105-9A219FB5166B}
+		{0F590995-E709-4BD6-85FB-4059D2D7507E} = {0F590995-E709-4BD6-85FB-4059D2D7507E}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.UpdateFramework.Service", "Forge.UpdateFramework.Service\Forge.UpdateFramework.Service.csproj", "{26FA621F-314D-4962-AED8-38404BEDE4F9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5BF0BB3E-82BD-4F55-988F-64F39912A794} = {5BF0BB3E-82BD-4F55-988F-64F39912A794}
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708} = {F3EED65E-C103-4BA8-AF1D-37421D73A708}
+		{5381068C-E22C-4FBB-A105-9A219FB5166B} = {5381068C-E22C-4FBB-A105-9A219FB5166B}
+		{0F590995-E709-4BD6-85FB-4059D2D7507E} = {0F590995-E709-4BD6-85FB-4059D2D7507E}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".Output", ".Output", "{DEBEA049-F132-4732-B65D-9CEBD211F4CE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".Dotfuscated", ".Dotfuscated", "{1DE49078-6E4F-4988-8E2F-B2A3360FFA74}"
+	ProjectSection(SolutionItems) = preProject
+		.Dotfuscated\Forge.snk = .Dotfuscated\Forge.snk
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Native", "Forge.Native\Forge.Native.csproj", "{B2B97F2D-EFF3-4568-AE8A-10646114AB14}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Security", "Forge.Security\Forge.Security.csproj", "{94A61AE8-D345-40CD-A007-9CB050B8E0AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Logging.Log4net", "Forge.Logging.Log4net\Forge.Logging.Log4net.csproj", "{2684A3BD-A1C6-4AB1-BC3C-6BC0AD3F42D4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708}.Debug|x86.Build.0 = Debug|Any CPU
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708}.Release|x86.ActiveCfg = Release|Any CPU
+		{F3EED65E-C103-4BA8-AF1D-37421D73A708}.Release|x86.Build.0 = Release|Any CPU
+		{5750674A-8247-4F44-BE3F-DFAC351E1F73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5750674A-8247-4F44-BE3F-DFAC351E1F73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5750674A-8247-4F44-BE3F-DFAC351E1F73}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5750674A-8247-4F44-BE3F-DFAC351E1F73}.Debug|x86.Build.0 = Debug|Any CPU
+		{5750674A-8247-4F44-BE3F-DFAC351E1F73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5750674A-8247-4F44-BE3F-DFAC351E1F73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5750674A-8247-4F44-BE3F-DFAC351E1F73}.Release|x86.ActiveCfg = Release|Any CPU
+		{5750674A-8247-4F44-BE3F-DFAC351E1F73}.Release|x86.Build.0 = Release|Any CPU
+		{689C2101-257F-404B-9B50-9B550DFA196F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{689C2101-257F-404B-9B50-9B550DFA196F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{689C2101-257F-404B-9B50-9B550DFA196F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{689C2101-257F-404B-9B50-9B550DFA196F}.Debug|x86.Build.0 = Debug|Any CPU
+		{689C2101-257F-404B-9B50-9B550DFA196F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{689C2101-257F-404B-9B50-9B550DFA196F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{689C2101-257F-404B-9B50-9B550DFA196F}.Release|x86.ActiveCfg = Release|Any CPU
+		{689C2101-257F-404B-9B50-9B550DFA196F}.Release|x86.Build.0 = Release|Any CPU
+		{B4EA240F-19DC-42CB-810B-99E86AF8D06E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4EA240F-19DC-42CB-810B-99E86AF8D06E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4EA240F-19DC-42CB-810B-99E86AF8D06E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B4EA240F-19DC-42CB-810B-99E86AF8D06E}.Debug|x86.Build.0 = Debug|Any CPU
+		{B4EA240F-19DC-42CB-810B-99E86AF8D06E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4EA240F-19DC-42CB-810B-99E86AF8D06E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4EA240F-19DC-42CB-810B-99E86AF8D06E}.Release|x86.ActiveCfg = Release|Any CPU
+		{B4EA240F-19DC-42CB-810B-99E86AF8D06E}.Release|x86.Build.0 = Release|Any CPU
+		{63528BC4-C7D4-4DB0-ADD7-36C98F0E0C0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63528BC4-C7D4-4DB0-ADD7-36C98F0E0C0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63528BC4-C7D4-4DB0-ADD7-36C98F0E0C0E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{63528BC4-C7D4-4DB0-ADD7-36C98F0E0C0E}.Debug|x86.Build.0 = Debug|Any CPU
+		{63528BC4-C7D4-4DB0-ADD7-36C98F0E0C0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63528BC4-C7D4-4DB0-ADD7-36C98F0E0C0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63528BC4-C7D4-4DB0-ADD7-36C98F0E0C0E}.Release|x86.ActiveCfg = Release|Any CPU
+		{63528BC4-C7D4-4DB0-ADD7-36C98F0E0C0E}.Release|x86.Build.0 = Release|Any CPU
+		{79531288-031B-4790-AAF3-F7CCD182E7FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79531288-031B-4790-AAF3-F7CCD182E7FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79531288-031B-4790-AAF3-F7CCD182E7FB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{79531288-031B-4790-AAF3-F7CCD182E7FB}.Debug|x86.Build.0 = Debug|Any CPU
+		{79531288-031B-4790-AAF3-F7CCD182E7FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79531288-031B-4790-AAF3-F7CCD182E7FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79531288-031B-4790-AAF3-F7CCD182E7FB}.Release|x86.ActiveCfg = Release|Any CPU
+		{79531288-031B-4790-AAF3-F7CCD182E7FB}.Release|x86.Build.0 = Release|Any CPU
+		{1C08031A-C275-414E-8688-636D49D69DC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C08031A-C275-414E-8688-636D49D69DC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C08031A-C275-414E-8688-636D49D69DC6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1C08031A-C275-414E-8688-636D49D69DC6}.Debug|x86.Build.0 = Debug|Any CPU
+		{1C08031A-C275-414E-8688-636D49D69DC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C08031A-C275-414E-8688-636D49D69DC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C08031A-C275-414E-8688-636D49D69DC6}.Release|x86.ActiveCfg = Release|Any CPU
+		{1C08031A-C275-414E-8688-636D49D69DC6}.Release|x86.Build.0 = Release|Any CPU
+		{64BB1EFC-27BB-4A5F-B631-234A552C4288}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64BB1EFC-27BB-4A5F-B631-234A552C4288}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64BB1EFC-27BB-4A5F-B631-234A552C4288}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{64BB1EFC-27BB-4A5F-B631-234A552C4288}.Debug|x86.Build.0 = Debug|Any CPU
+		{64BB1EFC-27BB-4A5F-B631-234A552C4288}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64BB1EFC-27BB-4A5F-B631-234A552C4288}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64BB1EFC-27BB-4A5F-B631-234A552C4288}.Release|x86.ActiveCfg = Release|Any CPU
+		{64BB1EFC-27BB-4A5F-B631-234A552C4288}.Release|x86.Build.0 = Release|Any CPU
+		{D1427FB9-2787-46E6-A5AC-D98E8476F4F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1427FB9-2787-46E6-A5AC-D98E8476F4F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1427FB9-2787-46E6-A5AC-D98E8476F4F7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D1427FB9-2787-46E6-A5AC-D98E8476F4F7}.Debug|x86.Build.0 = Debug|Any CPU
+		{D1427FB9-2787-46E6-A5AC-D98E8476F4F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1427FB9-2787-46E6-A5AC-D98E8476F4F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1427FB9-2787-46E6-A5AC-D98E8476F4F7}.Release|x86.ActiveCfg = Release|Any CPU
+		{D1427FB9-2787-46E6-A5AC-D98E8476F4F7}.Release|x86.Build.0 = Release|Any CPU
+		{CF3D0FC3-46A2-4C86-83F0-5F9EBB417A3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF3D0FC3-46A2-4C86-83F0-5F9EBB417A3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF3D0FC3-46A2-4C86-83F0-5F9EBB417A3F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CF3D0FC3-46A2-4C86-83F0-5F9EBB417A3F}.Debug|x86.Build.0 = Debug|Any CPU
+		{CF3D0FC3-46A2-4C86-83F0-5F9EBB417A3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF3D0FC3-46A2-4C86-83F0-5F9EBB417A3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF3D0FC3-46A2-4C86-83F0-5F9EBB417A3F}.Release|x86.ActiveCfg = Release|Any CPU
+		{CF3D0FC3-46A2-4C86-83F0-5F9EBB417A3F}.Release|x86.Build.0 = Release|Any CPU
+		{40AA163A-6A5D-41D1-8D42-9808C3B415E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40AA163A-6A5D-41D1-8D42-9808C3B415E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40AA163A-6A5D-41D1-8D42-9808C3B415E6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{40AA163A-6A5D-41D1-8D42-9808C3B415E6}.Debug|x86.Build.0 = Debug|Any CPU
+		{40AA163A-6A5D-41D1-8D42-9808C3B415E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40AA163A-6A5D-41D1-8D42-9808C3B415E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40AA163A-6A5D-41D1-8D42-9808C3B415E6}.Release|x86.ActiveCfg = Release|Any CPU
+		{40AA163A-6A5D-41D1-8D42-9808C3B415E6}.Release|x86.Build.0 = Release|Any CPU
+		{36E20203-B4D9-4363-BF52-EFD07E702BD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36E20203-B4D9-4363-BF52-EFD07E702BD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36E20203-B4D9-4363-BF52-EFD07E702BD3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{36E20203-B4D9-4363-BF52-EFD07E702BD3}.Debug|x86.Build.0 = Debug|Any CPU
+		{36E20203-B4D9-4363-BF52-EFD07E702BD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36E20203-B4D9-4363-BF52-EFD07E702BD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36E20203-B4D9-4363-BF52-EFD07E702BD3}.Release|x86.ActiveCfg = Release|Any CPU
+		{36E20203-B4D9-4363-BF52-EFD07E702BD3}.Release|x86.Build.0 = Release|Any CPU
+		{793E4687-D3E8-40B2-A966-AC356ED01A11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{793E4687-D3E8-40B2-A966-AC356ED01A11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{793E4687-D3E8-40B2-A966-AC356ED01A11}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{793E4687-D3E8-40B2-A966-AC356ED01A11}.Debug|x86.Build.0 = Debug|Any CPU
+		{793E4687-D3E8-40B2-A966-AC356ED01A11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{793E4687-D3E8-40B2-A966-AC356ED01A11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{793E4687-D3E8-40B2-A966-AC356ED01A11}.Release|x86.ActiveCfg = Release|Any CPU
+		{793E4687-D3E8-40B2-A966-AC356ED01A11}.Release|x86.Build.0 = Release|Any CPU
+		{DA14FB35-D571-4163-A913-3D8C934954BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA14FB35-D571-4163-A913-3D8C934954BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA14FB35-D571-4163-A913-3D8C934954BD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DA14FB35-D571-4163-A913-3D8C934954BD}.Debug|x86.Build.0 = Debug|Any CPU
+		{DA14FB35-D571-4163-A913-3D8C934954BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA14FB35-D571-4163-A913-3D8C934954BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA14FB35-D571-4163-A913-3D8C934954BD}.Release|x86.ActiveCfg = Release|Any CPU
+		{DA14FB35-D571-4163-A913-3D8C934954BD}.Release|x86.Build.0 = Release|Any CPU
+		{2BED1D69-7029-4D15-B2EC-A15116563FF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BED1D69-7029-4D15-B2EC-A15116563FF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BED1D69-7029-4D15-B2EC-A15116563FF3}.Debug|x86.ActiveCfg = Debug|x86
+		{2BED1D69-7029-4D15-B2EC-A15116563FF3}.Debug|x86.Build.0 = Debug|x86
+		{2BED1D69-7029-4D15-B2EC-A15116563FF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BED1D69-7029-4D15-B2EC-A15116563FF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BED1D69-7029-4D15-B2EC-A15116563FF3}.Release|x86.ActiveCfg = Release|x86
+		{2BED1D69-7029-4D15-B2EC-A15116563FF3}.Release|x86.Build.0 = Release|x86
+		{0F590995-E709-4BD6-85FB-4059D2D7507E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F590995-E709-4BD6-85FB-4059D2D7507E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F590995-E709-4BD6-85FB-4059D2D7507E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0F590995-E709-4BD6-85FB-4059D2D7507E}.Debug|x86.Build.0 = Debug|Any CPU
+		{0F590995-E709-4BD6-85FB-4059D2D7507E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F590995-E709-4BD6-85FB-4059D2D7507E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F590995-E709-4BD6-85FB-4059D2D7507E}.Release|x86.ActiveCfg = Release|Any CPU
+		{0F590995-E709-4BD6-85FB-4059D2D7507E}.Release|x86.Build.0 = Release|Any CPU
+		{5BF0BB3E-82BD-4F55-988F-64F39912A794}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BF0BB3E-82BD-4F55-988F-64F39912A794}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BF0BB3E-82BD-4F55-988F-64F39912A794}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5BF0BB3E-82BD-4F55-988F-64F39912A794}.Debug|x86.Build.0 = Debug|Any CPU
+		{5BF0BB3E-82BD-4F55-988F-64F39912A794}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BF0BB3E-82BD-4F55-988F-64F39912A794}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BF0BB3E-82BD-4F55-988F-64F39912A794}.Release|x86.ActiveCfg = Release|Any CPU
+		{5BF0BB3E-82BD-4F55-988F-64F39912A794}.Release|x86.Build.0 = Release|Any CPU
+		{6486D46B-70D8-4F1A-86D5-67A2794E6AEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6486D46B-70D8-4F1A-86D5-67A2794E6AEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6486D46B-70D8-4F1A-86D5-67A2794E6AEC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6486D46B-70D8-4F1A-86D5-67A2794E6AEC}.Debug|x86.Build.0 = Debug|Any CPU
+		{6486D46B-70D8-4F1A-86D5-67A2794E6AEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6486D46B-70D8-4F1A-86D5-67A2794E6AEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6486D46B-70D8-4F1A-86D5-67A2794E6AEC}.Release|x86.ActiveCfg = Release|Any CPU
+		{6486D46B-70D8-4F1A-86D5-67A2794E6AEC}.Release|x86.Build.0 = Release|Any CPU
+		{D2DEC75E-E22B-423F-BA8A-253D652A611B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2DEC75E-E22B-423F-BA8A-253D652A611B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2DEC75E-E22B-423F-BA8A-253D652A611B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D2DEC75E-E22B-423F-BA8A-253D652A611B}.Debug|x86.Build.0 = Debug|Any CPU
+		{D2DEC75E-E22B-423F-BA8A-253D652A611B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2DEC75E-E22B-423F-BA8A-253D652A611B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2DEC75E-E22B-423F-BA8A-253D652A611B}.Release|x86.ActiveCfg = Release|Any CPU
+		{D2DEC75E-E22B-423F-BA8A-253D652A611B}.Release|x86.Build.0 = Release|Any CPU
+		{DEBE7357-24AE-47A4-BFC6-BD1643A53BB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEBE7357-24AE-47A4-BFC6-BD1643A53BB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEBE7357-24AE-47A4-BFC6-BD1643A53BB2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DEBE7357-24AE-47A4-BFC6-BD1643A53BB2}.Debug|x86.Build.0 = Debug|Any CPU
+		{DEBE7357-24AE-47A4-BFC6-BD1643A53BB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEBE7357-24AE-47A4-BFC6-BD1643A53BB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEBE7357-24AE-47A4-BFC6-BD1643A53BB2}.Release|x86.ActiveCfg = Release|Any CPU
+		{DEBE7357-24AE-47A4-BFC6-BD1643A53BB2}.Release|x86.Build.0 = Release|Any CPU
+		{4C5BA699-04F5-4BFF-9CC2-3393C295445F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C5BA699-04F5-4BFF-9CC2-3393C295445F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C5BA699-04F5-4BFF-9CC2-3393C295445F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4C5BA699-04F5-4BFF-9CC2-3393C295445F}.Debug|x86.Build.0 = Debug|Any CPU
+		{4C5BA699-04F5-4BFF-9CC2-3393C295445F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C5BA699-04F5-4BFF-9CC2-3393C295445F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C5BA699-04F5-4BFF-9CC2-3393C295445F}.Release|x86.ActiveCfg = Release|Any CPU
+		{4C5BA699-04F5-4BFF-9CC2-3393C295445F}.Release|x86.Build.0 = Release|Any CPU
+		{936FA984-1673-4799-991D-90A98F7A6D92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{936FA984-1673-4799-991D-90A98F7A6D92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{936FA984-1673-4799-991D-90A98F7A6D92}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{936FA984-1673-4799-991D-90A98F7A6D92}.Debug|x86.Build.0 = Debug|Any CPU
+		{936FA984-1673-4799-991D-90A98F7A6D92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{936FA984-1673-4799-991D-90A98F7A6D92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{936FA984-1673-4799-991D-90A98F7A6D92}.Release|x86.ActiveCfg = Release|Any CPU
+		{936FA984-1673-4799-991D-90A98F7A6D92}.Release|x86.Build.0 = Release|Any CPU
+		{2C8A02B1-38E9-490D-BE48-5D316A508517}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C8A02B1-38E9-490D-BE48-5D316A508517}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C8A02B1-38E9-490D-BE48-5D316A508517}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2C8A02B1-38E9-490D-BE48-5D316A508517}.Debug|x86.Build.0 = Debug|Any CPU
+		{2C8A02B1-38E9-490D-BE48-5D316A508517}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C8A02B1-38E9-490D-BE48-5D316A508517}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C8A02B1-38E9-490D-BE48-5D316A508517}.Release|x86.ActiveCfg = Release|Any CPU
+		{2C8A02B1-38E9-490D-BE48-5D316A508517}.Release|x86.Build.0 = Release|Any CPU
+		{C7A8F803-2AF4-4211-8EF4-BB62A9EC0B34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7A8F803-2AF4-4211-8EF4-BB62A9EC0B34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7A8F803-2AF4-4211-8EF4-BB62A9EC0B34}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C7A8F803-2AF4-4211-8EF4-BB62A9EC0B34}.Debug|x86.Build.0 = Debug|Any CPU
+		{C7A8F803-2AF4-4211-8EF4-BB62A9EC0B34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7A8F803-2AF4-4211-8EF4-BB62A9EC0B34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7A8F803-2AF4-4211-8EF4-BB62A9EC0B34}.Release|x86.ActiveCfg = Release|Any CPU
+		{C7A8F803-2AF4-4211-8EF4-BB62A9EC0B34}.Release|x86.Build.0 = Release|Any CPU
+		{44570E1B-56D9-4177-9608-2C86C708F064}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44570E1B-56D9-4177-9608-2C86C708F064}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44570E1B-56D9-4177-9608-2C86C708F064}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{44570E1B-56D9-4177-9608-2C86C708F064}.Debug|x86.Build.0 = Debug|Any CPU
+		{44570E1B-56D9-4177-9608-2C86C708F064}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44570E1B-56D9-4177-9608-2C86C708F064}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44570E1B-56D9-4177-9608-2C86C708F064}.Release|x86.ActiveCfg = Release|Any CPU
+		{44570E1B-56D9-4177-9608-2C86C708F064}.Release|x86.Build.0 = Release|Any CPU
+		{D4C8AAD5-EC16-444B-992E-6E0B71200B03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4C8AAD5-EC16-444B-992E-6E0B71200B03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4C8AAD5-EC16-444B-992E-6E0B71200B03}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D4C8AAD5-EC16-444B-992E-6E0B71200B03}.Debug|x86.Build.0 = Debug|Any CPU
+		{D4C8AAD5-EC16-444B-992E-6E0B71200B03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4C8AAD5-EC16-444B-992E-6E0B71200B03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4C8AAD5-EC16-444B-992E-6E0B71200B03}.Release|x86.ActiveCfg = Release|Any CPU
+		{D4C8AAD5-EC16-444B-992E-6E0B71200B03}.Release|x86.Build.0 = Release|Any CPU
+		{2B9130CE-B844-45D7-A7F8-9A4774FB08D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B9130CE-B844-45D7-A7F8-9A4774FB08D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B9130CE-B844-45D7-A7F8-9A4774FB08D8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2B9130CE-B844-45D7-A7F8-9A4774FB08D8}.Debug|x86.Build.0 = Debug|Any CPU
+		{2B9130CE-B844-45D7-A7F8-9A4774FB08D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B9130CE-B844-45D7-A7F8-9A4774FB08D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B9130CE-B844-45D7-A7F8-9A4774FB08D8}.Release|x86.ActiveCfg = Release|Any CPU
+		{2B9130CE-B844-45D7-A7F8-9A4774FB08D8}.Release|x86.Build.0 = Release|Any CPU
+		{FDC2F19E-004B-49F0-A92C-AB4B93E5B9B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDC2F19E-004B-49F0-A92C-AB4B93E5B9B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDC2F19E-004B-49F0-A92C-AB4B93E5B9B8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FDC2F19E-004B-49F0-A92C-AB4B93E5B9B8}.Debug|x86.Build.0 = Debug|Any CPU
+		{FDC2F19E-004B-49F0-A92C-AB4B93E5B9B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDC2F19E-004B-49F0-A92C-AB4B93E5B9B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDC2F19E-004B-49F0-A92C-AB4B93E5B9B8}.Release|x86.ActiveCfg = Release|Any CPU
+		{FDC2F19E-004B-49F0-A92C-AB4B93E5B9B8}.Release|x86.Build.0 = Release|Any CPU
+		{EBF78544-67E1-4825-B806-4B7C4F0A7FD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBF78544-67E1-4825-B806-4B7C4F0A7FD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBF78544-67E1-4825-B806-4B7C4F0A7FD0}.Debug|x86.ActiveCfg = Debug|x86
+		{EBF78544-67E1-4825-B806-4B7C4F0A7FD0}.Debug|x86.Build.0 = Debug|x86
+		{EBF78544-67E1-4825-B806-4B7C4F0A7FD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBF78544-67E1-4825-B806-4B7C4F0A7FD0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBF78544-67E1-4825-B806-4B7C4F0A7FD0}.Release|x86.ActiveCfg = Release|x86
+		{EBF78544-67E1-4825-B806-4B7C4F0A7FD0}.Release|x86.Build.0 = Release|x86
+		{91F0E989-EE41-4799-9F35-22B6B7869121}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91F0E989-EE41-4799-9F35-22B6B7869121}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91F0E989-EE41-4799-9F35-22B6B7869121}.Debug|x86.ActiveCfg = Debug|x86
+		{91F0E989-EE41-4799-9F35-22B6B7869121}.Debug|x86.Build.0 = Debug|x86
+		{91F0E989-EE41-4799-9F35-22B6B7869121}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91F0E989-EE41-4799-9F35-22B6B7869121}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91F0E989-EE41-4799-9F35-22B6B7869121}.Release|x86.ActiveCfg = Release|x86
+		{91F0E989-EE41-4799-9F35-22B6B7869121}.Release|x86.Build.0 = Release|x86
+		{07A0FACA-C0A5-4699-9B18-31C29989A040}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07A0FACA-C0A5-4699-9B18-31C29989A040}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07A0FACA-C0A5-4699-9B18-31C29989A040}.Debug|x86.ActiveCfg = Debug|x86
+		{07A0FACA-C0A5-4699-9B18-31C29989A040}.Debug|x86.Build.0 = Debug|x86
+		{07A0FACA-C0A5-4699-9B18-31C29989A040}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07A0FACA-C0A5-4699-9B18-31C29989A040}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07A0FACA-C0A5-4699-9B18-31C29989A040}.Release|x86.ActiveCfg = Release|x86
+		{07A0FACA-C0A5-4699-9B18-31C29989A040}.Release|x86.Build.0 = Release|x86
+		{5381068C-E22C-4FBB-A105-9A219FB5166B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5381068C-E22C-4FBB-A105-9A219FB5166B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5381068C-E22C-4FBB-A105-9A219FB5166B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5381068C-E22C-4FBB-A105-9A219FB5166B}.Debug|x86.Build.0 = Debug|Any CPU
+		{5381068C-E22C-4FBB-A105-9A219FB5166B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5381068C-E22C-4FBB-A105-9A219FB5166B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5381068C-E22C-4FBB-A105-9A219FB5166B}.Release|x86.ActiveCfg = Release|Any CPU
+		{5381068C-E22C-4FBB-A105-9A219FB5166B}.Release|x86.Build.0 = Release|Any CPU
+		{04BDD54C-260B-4F36-BCC0-E24181660B0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04BDD54C-260B-4F36-BCC0-E24181660B0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04BDD54C-260B-4F36-BCC0-E24181660B0B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{04BDD54C-260B-4F36-BCC0-E24181660B0B}.Debug|x86.Build.0 = Debug|Any CPU
+		{04BDD54C-260B-4F36-BCC0-E24181660B0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04BDD54C-260B-4F36-BCC0-E24181660B0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04BDD54C-260B-4F36-BCC0-E24181660B0B}.Release|x86.ActiveCfg = Release|Any CPU
+		{04BDD54C-260B-4F36-BCC0-E24181660B0B}.Release|x86.Build.0 = Release|Any CPU
+		{26FA621F-314D-4962-AED8-38404BEDE4F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26FA621F-314D-4962-AED8-38404BEDE4F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26FA621F-314D-4962-AED8-38404BEDE4F9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{26FA621F-314D-4962-AED8-38404BEDE4F9}.Debug|x86.Build.0 = Debug|Any CPU
+		{26FA621F-314D-4962-AED8-38404BEDE4F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26FA621F-314D-4962-AED8-38404BEDE4F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26FA621F-314D-4962-AED8-38404BEDE4F9}.Release|x86.ActiveCfg = Release|Any CPU
+		{26FA621F-314D-4962-AED8-38404BEDE4F9}.Release|x86.Build.0 = Release|Any CPU
+		{B2B97F2D-EFF3-4568-AE8A-10646114AB14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2B97F2D-EFF3-4568-AE8A-10646114AB14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2B97F2D-EFF3-4568-AE8A-10646114AB14}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B2B97F2D-EFF3-4568-AE8A-10646114AB14}.Debug|x86.Build.0 = Debug|Any CPU
+		{B2B97F2D-EFF3-4568-AE8A-10646114AB14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2B97F2D-EFF3-4568-AE8A-10646114AB14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2B97F2D-EFF3-4568-AE8A-10646114AB14}.Release|x86.ActiveCfg = Release|Any CPU
+		{B2B97F2D-EFF3-4568-AE8A-10646114AB14}.Release|x86.Build.0 = Release|Any CPU
+		{94A61AE8-D345-40CD-A007-9CB050B8E0AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94A61AE8-D345-40CD-A007-9CB050B8E0AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94A61AE8-D345-40CD-A007-9CB050B8E0AA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{94A61AE8-D345-40CD-A007-9CB050B8E0AA}.Debug|x86.Build.0 = Debug|Any CPU
+		{94A61AE8-D345-40CD-A007-9CB050B8E0AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94A61AE8-D345-40CD-A007-9CB050B8E0AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94A61AE8-D345-40CD-A007-9CB050B8E0AA}.Release|x86.ActiveCfg = Release|Any CPU
+		{94A61AE8-D345-40CD-A007-9CB050B8E0AA}.Release|x86.Build.0 = Release|Any CPU
+		{2684A3BD-A1C6-4AB1-BC3C-6BC0AD3F42D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2684A3BD-A1C6-4AB1-BC3C-6BC0AD3F42D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2684A3BD-A1C6-4AB1-BC3C-6BC0AD3F42D4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2684A3BD-A1C6-4AB1-BC3C-6BC0AD3F42D4}.Debug|x86.Build.0 = Debug|Any CPU
+		{2684A3BD-A1C6-4AB1-BC3C-6BC0AD3F42D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2684A3BD-A1C6-4AB1-BC3C-6BC0AD3F42D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2684A3BD-A1C6-4AB1-BC3C-6BC0AD3F42D4}.Release|x86.ActiveCfg = Release|Any CPU
+		{2684A3BD-A1C6-4AB1-BC3C-6BC0AD3F42D4}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {719B58E3-18E1-4DF2-8676-DE4D25031067}
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 38
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://jzo.visualstudio.com/
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = Forge.Base\\Forge.Base.csproj
+		SccProjectName1 = Forge.Base
+		SccLocalPath1 = Forge.Base
+		SccProjectUniqueName2 = Forge.WindowsServiceControl\\Forge.WindowsServiceControl.csproj
+		SccProjectName2 = Forge.WindowsServiceControl
+		SccLocalPath2 = Forge.WindowsServiceControl
+		SccProjectUniqueName3 = Forge.Persistence\\Forge.Persistence.csproj
+		SccProjectName3 = Forge.Persistence
+		SccLocalPath3 = Forge.Persistence
+		SccProjectUniqueName4 = Forge.Extensions\\Forge.Extensions.csproj
+		SccProjectName4 = Forge.Extensions
+		SccLocalPath4 = Forge.Extensions
+		SccProjectUniqueName5 = Forge.Net.Synapse\\Forge.Net.Synapse.csproj
+		SccProjectName5 = Forge.Net.Synapse
+		SccLocalPath5 = Forge.Net.Synapse
+		SccProjectUniqueName6 = Forge.Net.TerraGraf\\Forge.Net.TerraGraf.csproj
+		SccProjectName6 = Forge.Net.TerraGraf
+		SccLocalPath6 = Forge.Net.TerraGraf
+		SccProjectUniqueName7 = Forge.Test\\Forge.Test.csproj
+		SccProjectName7 = Forge.Test
+		SccLocalPath7 = Forge.Test
+		SccProjectUniqueName8 = Forge.Persistence.Formatters.JsonNet\\Forge.Persistence.Formatters.JsonNet.csproj
+		SccProjectName8 = Forge.Persistence.Formatters.JsonNet
+		SccLocalPath8 = Forge.Persistence.Formatters.JsonNet
+		SccProjectUniqueName9 = Forge.ORM.NHibernateExtension\\Forge.ORM.NHibernateExtension.csproj
+		SccProjectName9 = Forge.ORM.NHibernateExtension
+		SccLocalPath9 = Forge.ORM.NHibernateExtension
+		SccProjectUniqueName10 = Forge.DatabaseManagement\\Forge.DatabaseManagement.csproj
+		SccProjectName10 = Forge.DatabaseManagement
+		SccLocalPath10 = Forge.DatabaseManagement
+		SccProjectUniqueName11 = Forge.DatabaseManagement.SQLite\\Forge.DatabaseManagement.SQLite.csproj
+		SccProjectName11 = Forge.DatabaseManagement.SQLite
+		SccLocalPath11 = Forge.DatabaseManagement.SQLite
+		SccProjectUniqueName12 = Forge.DatabaseManagement.SqlServer2008\\Forge.DatabaseManagement.SqlServer2008.csproj
+		SccProjectName12 = Forge.DatabaseManagement.SqlServer2008
+		SccLocalPath12 = Forge.DatabaseManagement.SqlServer2008
+		SccProjectUniqueName13 = Forge.DatabaseManagement.SqlServerCe40\\Forge.DatabaseManagement.SqlServerCe40.csproj
+		SccProjectName13 = Forge.DatabaseManagement.SqlServerCe40
+		SccLocalPath13 = Forge.DatabaseManagement.SqlServerCe40
+		SccProjectUniqueName14 = Forge.Persistence.StorageProviders.HibernateStorageProvider\\Forge.Persistence.StorageProviders.HibernateStorageProvider.csproj
+		SccProjectName14 = Forge.Persistence.StorageProviders.HibernateStorageProvider
+		SccLocalPath14 = Forge.Persistence.StorageProviders.HibernateStorageProvider
+		SccProjectUniqueName15 = Testing.Hooks\\Testing.Hooks.csproj
+		SccProjectName15 = Testing.Hooks
+		SccLocalPath15 = Testing.Hooks
+		SccProjectUniqueName16 = Forge.Net.Remoting\\Forge.Net.Remoting.csproj
+		SccProjectName16 = Forge.Net.Remoting
+		SccLocalPath16 = Forge.Net.Remoting
+		SccProjectUniqueName17 = Forge.Net.Services\\Forge.Net.Services.csproj
+		SccProjectName17 = Forge.Net.Services
+		SccLocalPath17 = Forge.Net.Services
+		SccProjectUniqueName18 = Forge.TimeServer\\Forge.TimeServer.csproj
+		SccProjectName18 = Forge.TimeServer
+		SccLocalPath18 = Forge.TimeServer
+		SccProjectUniqueName19 = Forge.TimeServer.Client\\Forge.TimeServer.Client.csproj
+		SccProjectName19 = Forge.TimeServer.Client
+		SccLocalPath19 = Forge.TimeServer.Client
+		SccProjectUniqueName20 = Forge.TimeServer.Service\\Forge.TimeServer.Service.csproj
+		SccProjectName20 = Forge.TimeServer.Service
+		SccLocalPath20 = Forge.TimeServer.Service
+		SccProjectUniqueName21 = Forge.RemoteDesktop\\Forge.RemoteDesktop.csproj
+		SccProjectName21 = Forge.RemoteDesktop
+		SccLocalPath21 = Forge.RemoteDesktop
+		SccProjectUniqueName22 = Forge.RemoteDesktop.Client\\Forge.RemoteDesktop.Client.csproj
+		SccProjectName22 = Forge.RemoteDesktop.Client
+		SccLocalPath22 = Forge.RemoteDesktop.Client
+		SccProjectUniqueName23 = Forge.RemoteDesktop.Service\\Forge.RemoteDesktop.Service.csproj
+		SccProjectName23 = Forge.RemoteDesktop.Service
+		SccLocalPath23 = Forge.RemoteDesktop.Service
+		SccProjectUniqueName24 = Forge.ErrorReport\\Forge.ErrorReport.csproj
+		SccProjectName24 = Forge.ErrorReport
+		SccLocalPath24 = Forge.ErrorReport
+		SccProjectUniqueName25 = Forge.ErrorReport.Client\\Forge.ErrorReport.Client.csproj
+		SccProjectName25 = Forge.ErrorReport.Client
+		SccLocalPath25 = Forge.ErrorReport.Client
+		SccProjectUniqueName26 = Forge.ErrorReport.Service\\Forge.ErrorReport.Service.csproj
+		SccProjectName26 = Forge.ErrorReport.Service
+		SccLocalPath26 = Forge.ErrorReport.Service
+		SccProjectUniqueName27 = Testing\\Testing.csproj
+		SccProjectName27 = Testing
+		SccLocalPath27 = Testing
+		SccProjectUniqueName28 = Testing.Entities\\Testing.Entities.csproj
+		SccProjectName28 = Testing.Entities
+		SccLocalPath28 = Testing.Entities
+		SccProjectUniqueName29 = Testing.RemoteDesktop.Client\\Testing.RemoteDesktop.Client.csproj
+		SccProjectName29 = Testing.RemoteDesktop.Client
+		SccLocalPath29 = Testing.RemoteDesktop.Client
+		SccProjectUniqueName30 = Testing.RemoteDesktop.Server\\Testing.RemoteDesktop.Server.csproj
+		SccProjectName30 = Testing.RemoteDesktop.Server
+		SccLocalPath30 = Testing.RemoteDesktop.Server
+		SccProjectUniqueName31 = Testing.TerraGraf\\Testing.TerraGraf.csproj
+		SccProjectName31 = Testing.TerraGraf
+		SccLocalPath31 = Testing.TerraGraf
+		SccProjectUniqueName32 = Forge.UpdateFramework\\Forge.UpdateFramework.csproj
+		SccProjectName32 = Forge.UpdateFramework
+		SccLocalPath32 = Forge.UpdateFramework
+		SccProjectUniqueName33 = Forge.UpdateFramework.Client\\Forge.UpdateFramework.Client.csproj
+		SccProjectName33 = Forge.UpdateFramework.Client
+		SccLocalPath33 = Forge.UpdateFramework.Client
+		SccProjectUniqueName34 = Forge.UpdateFramework.Service\\Forge.UpdateFramework.Service.csproj
+		SccProjectName34 = Forge.UpdateFramework.Service
+		SccLocalPath34 = Forge.UpdateFramework.Service
+		SccProjectUniqueName35 = Forge.Native\\Forge.Native.csproj
+		SccProjectName35 = Forge.Native
+		SccLocalPath35 = Forge.Native
+		SccProjectUniqueName36 = Forge.Security\\Forge.Security.csproj
+		SccProjectName36 = Forge.Security
+		SccLocalPath36 = Forge.Security
+		SccProjectUniqueName37 = Forge.Logging.Log4net\\Forge.Logging.Log4net.csproj
+		SccProjectName37 = Forge.Logging.log4net
+		SccLocalPath37 = Forge.Logging.log4net
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = Forge.vsmdi
+	EndGlobalSection
+EndGlobal

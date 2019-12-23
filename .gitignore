@@ -157,7 +157,6 @@ certificate.bat
 Forge.Net.TerraGraf.dll.*
 
 # Unnecessary files and folders
-Forge.sln
 BuildProcessTemplates
 NHibernate*
 Microsoft.SqlServer.*
