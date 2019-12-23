@@ -1,0 +1,543 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Forge.ErrorReport</name>
+    </assembly>
+    <members>
+        <member name="T:Forge.ErrorReport.ConfigSection.ErrorReportConfiguration">
+            <summary>
+            Configuration access helper class for remote desktop
+            </summary>
+        </member>
+        <member name="M:Forge.ErrorReport.ConfigSection.ErrorReportConfiguration.#cctor">
+            <summary>
+            Initializes the <see cref="T:Forge.ErrorReport.ConfigSection.ErrorReportConfiguration"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.ErrorReport.ConfigSection.ErrorReportConfiguration.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.ErrorReport.ConfigSection.ErrorReportConfiguration"/> class.
+            </summary>
+        </member>
+        <member name="T:Forge.ErrorReport.ConfigSection.ErrorReportSection">
+            <summary>
+            Configuration section for remote desktop
+            </summary>
+        </member>
+        <member name="M:Forge.ErrorReport.ConfigSection.ErrorReportSection.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.ErrorReport.ConfigSection.ErrorReportSection"/> class.
+            </summary>
+        </member>
+        <member name="T:Forge.ErrorReport.Consts">
+            <summary>
+            Represents the constants used by the error report
+            </summary>
+        </member>
+        <member name="F:Forge.ErrorReport.Consts.SERVICE_ID">
+            <summary>
+            Identifier of the service and locator
+            </summary>
+        </member>
+        <member name="T:Forge.ErrorReport.Contracts.IErrorReportSendContract">
+            <summary>
+            Represents the error report contract
+            </summary>
+        </member>
+        <member name="M:Forge.ErrorReport.Contracts.IErrorReportSendContract.SendErrorReport(Forge.ErrorReport.ReportPackage)">
+            <summary>
+            Sends the error report.
+            </summary>
+            <param name="package">The package.</param>
+        </member>
+        <member name="T:Forge.ErrorReport.Filter.ArithmeticFilter">
+            <summary>
+            Arithmetic filter
+            </summary>
+        </member>
+        <member name="M:Forge.ErrorReport.Filter.ArithmeticFilter.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.ErrorReport.Filter.ArithmeticFilter"/> class.
+            </summary>
+        </member>
+        <member name="P:Forge.ErrorReport.Filter.ArithmeticFilter.Operand">
+            <summary>
+            Gets or sets the operand.
+            </summary>
+            <value>
+            The operand.
+            </value>
+        </member>
+        <member name="M:Forge.ErrorReport.Filter.ArithmeticFilter.Initialize(Forge.Configuration.Shared.CategoryPropertyItem)">
+            <summary>
+            Initializes the specified item.
+            </summary>
+            <param name="item">The item.</param>
+        </member>
+        <member name="M:Forge.ErrorReport.Filter.ArithmeticFilter.Filter(Forge.ErrorReport.ReportPackage)">
+            <summary>
+            Filters the specified package.
+            </summary>
+            <param name="package">The package.</param>
+            <returns>
+            True, if the filter criterias matches, otherwise False.
+            </returns>
+        </member>
+        <member name="M:Forge.ErrorReport.Filter.ArithmeticFilter.DoInitializationCheck">
+            <summary>
+            Documents the initialization check.
+            </summary>
+            <exception cref="T:Forge.InitializationException">Member name has not been definied.</exception>
+        </member>
+        <member name="T:Forge.ErrorReport.Filter.ArithmeticFilterOperandEnum">
+            <summary>
+            Operands for arithemtic filter
+            </summary>
+        </member>
+        <member name="F:Forge.ErrorReport.Filter.ArithmeticFilterOperandEnum.Equal">
+            <summary>
+            Equal
+            </summary>
+        </member>
+        <member name="F:Forge.ErrorReport.Filter.ArithmeticFilterOperandEnum.NotEqual">
+            <summary>
+            NotEqual
+            </summary>
+        </member>
+        <member name="F:Forge.ErrorReport.Filter.ArithmeticFilterOperandEnum.Greater">
+            <summary>
+            Greater
+            </summary>
+        </member>
+        <member name="F:Forge.ErrorReport.Filter.ArithmeticFilterOperandEnum.Lower">
+            <summary>
+            Lower
+            </summary>
+        </member>
+        <member name="F:Forge.ErrorReport.Filter.ArithmeticFilterOperandEnum.GreaterOrEqual">
+            <summary>
+            Greater or equal
+            </summary>
+        </member>
+        <member name="F:Forge.ErrorReport.Filter.ArithmeticFilterOperandEnum.LowerOrEqual">
+            <summary>
+            Lower or equal
+            </summary>
+        </member>
+        <member name="T:Forge.ErrorReport.Filter.FilterBase">
+            <summary>
+            Represents the base method(s) of an error report filter
+            </summary>
+        </member>
+        <member name="F:Forge.ErrorReport.Filter.FilterBase.CONFIG_NEGATION">
+            <summary>
+            The configuration g_ negation
+            </summary>
+        </member>
+        <member name="M:Forge.ErrorReport.Filter.FilterBase.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.ErrorReport.Filter.FilterBase"/> class.
+            </summary>
+        </member>
+        <member name="P:Forge.ErrorReport.Filter.FilterBase.IsInitialized">
+            <summary>
+            Gets a value indicating whether [is initialized].
+            </summary>
+            <value>
+              <c>true</c> if [is initialized]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.ErrorReport.Filter.FilterBase.Negation">
+            <summary>
+            Gets or sets a value indicating whether [negation].
+            </summary>
+            <value>
+              <c>true</c> if [negation]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:Forge.ErrorReport.Filter.FilterBase.Initialize(Forge.Configuration.Shared.CategoryPropertyItem)">
+            <summary>
+            Initializes the specified item.
+            </summary>
+            <param name="item">The item.</param>
+        </member>
+        <member name="M:Forge.ErrorReport.Filter.FilterBase.Filter(Forge.ErrorReport.ReportPackage)">
+            <summary>
+            Filters the specified package.
+            </summary>
+            <param name="package">The package.</param>
+            <returns>
+            True, if the filter criterias matches, otherwise False.
+            </returns>
+        </member>
+        <member name="M:Forge.ErrorReport.Filter.FilterBase.DoInitializationCheck">
+            <summary>
+            Documents the initialization check.
+            </summary>
+            <exception cref="T:Forge.InitializationException"></exception>
+        </member>
+        <member name="T:Forge.ErrorReport.Filter.FilterMemberNameAndValue">
+            <summary>
+            Filter base with member name and value
+            </summary>
+        </member>
+        <member name="F:Forge.ErrorReport.Filter.FilterMemberNameAndValue.CONFIG_MEMBERNAME">
+            <summary>
+            The configuration g_ membername
+            </summary>
+        </member>
+        <member name="F:Forge.ErrorReport.Filter.FilterMemberNameAndValue.CONFIG_VALUE">
+            <summary>
+            The configuration g_ value
+            </summary>
+        </member>
+        <member name="M:Forge.ErrorReport.Filter.FilterMemberNameAndValue.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.ErrorReport.Filter.FilterMemberNameAndValue"/> class.
+            </summary>
+        </member>
+        <member name="P:Forge.ErrorReport.Filter.FilterMemberNameAndValue.MemberName">
+            <summary>
+            Gets or sets the name of the member.
+            </summary>
+            <value>
+            The name of the member.
+            </value>
+        </member>
+        <member name="P:Forge.ErrorReport.Filter.FilterMemberNameAndValue.Value">
+            <summary>
+            Gets or sets the value.
+            </summary>
+            <value>
+            The value.
+            </value>
+        </member>
+        <member name="M:Forge.ErrorReport.Filter.FilterMemberNameAndValue.Initialize(Forge.Configuration.Shared.CategoryPropertyItem)">
+            <summary>
+            Initializes the specified item.
+            </summary>
+            <param name="item">The item.</param>
+        </member>
+        <member name="T:Forge.ErrorReport.Filter.GroupFilter">
+            <summary>
+            Represents a group filter
+            </summary>
+        </member>
+        <member name="M:Forge.ErrorReport.Filter.GroupFilter.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.ErrorReport.Filter.GroupFilter"/> class.
+            </summary>
+        </member>
+        <member name="P:Forge.ErrorReport.Filter.GroupFilter.FilterLogic">
+            <summary>
+            Gets the filter logic.
+            </summary>
+            <value>
+            The filter logic.
+            </value>
+        </member>
+        <member name="P:Forge.ErrorReport.Filter.GroupFilter.Filters">
+            <summary>
+            Gets the filters.
+            </summary>
+            <value>
+            The filters.
+            </value>
+        </member>
+        <member name="M:Forge.ErrorReport.Filter.GroupFilter.Initialize(Forge.Configuration.Shared.CategoryPropertyItem)">
+            <summary>
+            Initializes the specified item.
+            </summary>
+            <param name="item">The item.</param>
+        </member>
+        <member name="M:Forge.ErrorReport.Filter.GroupFilter.Filter(Forge.ErrorReport.ReportPackage)">
+            <summary>
+            Filters the specified package.
+            </summary>
+            <param name="package">The package.</param>
+            <returns>
+            True, if the filter criterias matches, otherwise False.
+            </returns>
+        </member>
+        <member name="M:Forge.ErrorReport.Filter.GroupFilter.DoInitializationCheck">
+            <summary>
+            Documents the initialization check.
+            </summary>
+            <exception cref="T:Forge.InitializationException">No filter(s) definied.</exception>
+        </member>
+        <member name="T:Forge.ErrorReport.Filter.GroupFilterLoginEnum">
+            <summary>
+            Represents the group filter logic
+            </summary>
+        </member>
+        <member name="F:Forge.ErrorReport.Filter.GroupFilterLoginEnum.And">
+            <summary>
+            And
+            </summary>
+        </member>
+        <member name="F:Forge.ErrorReport.Filter.GroupFilterLoginEnum.Or">
+            <summary>
+            Or
+            </summary>
+        </member>
+        <member name="T:Forge.ErrorReport.Filter.IErrorReportFilter">
+            <summary>
+            Represents an error report filter
+            </summary>
+        </member>
+        <member name="M:Forge.ErrorReport.Filter.IErrorReportFilter.Filter(Forge.ErrorReport.ReportPackage)">
+            <summary>
+            Filters the specified package.
+            </summary>
+            <param name="package">The package.</param>
+            <returns>True, if the filter criterias matches, otherwise False.</returns>
+        </member>
+        <member name="T:Forge.ErrorReport.Filter.LikeFilter">
+            <summary>
+            Like filter
+            </summary>
+        </member>
+        <member name="M:Forge.ErrorReport.Filter.LikeFilter.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.ErrorReport.Filter.LikeFilter"/> class.
+            </summary>
+        </member>
+        <member name="P:Forge.ErrorReport.Filter.LikeFilter.MatchMode">
+            <summary>
+            Gets or sets the match mode.
+            </summary>
+            <value>
+            The match mode.
+            </value>
+        </member>
+        <member name="M:Forge.ErrorReport.Filter.LikeFilter.Initialize(Forge.Configuration.Shared.CategoryPropertyItem)">
+            <summary>
+            Initializes the specified item.
+            </summary>
+            <param name="item">The item.</param>
+        </member>
+        <member name="M:Forge.ErrorReport.Filter.LikeFilter.Filter(Forge.ErrorReport.ReportPackage)">
+            <summary>
+            Filters the specified package.
+            </summary>
+            <param name="package">The package.</param>
+            <returns>
+            True, if the filter criterias matches, otherwise False.
+            </returns>
+        </member>
+        <member name="T:Forge.ErrorReport.Filter.LikeMatchModeFilterEnum">
+            <summary>
+            Matching mode for like filter
+            </summary>
+        </member>
+        <member name="F:Forge.ErrorReport.Filter.LikeMatchModeFilterEnum.Exact">
+            <summary>
+            The provided string is exactly match with cell value
+            </summary>
+        </member>
+        <member name="F:Forge.ErrorReport.Filter.LikeMatchModeFilterEnum.Start">
+            <summary>
+            The cell value starts with the provided string
+            </summary>
+        </member>
+        <member name="F:Forge.ErrorReport.Filter.LikeMatchModeFilterEnum.End">
+            <summary>
+            The cell value ends with the provided string
+            </summary>
+        </member>
+        <member name="F:Forge.ErrorReport.Filter.LikeMatchModeFilterEnum.Anywhere">
+            <summary>
+            The cell value contains the provided string
+            </summary>
+        </member>
+        <member name="T:Forge.ErrorReport.ReportPackage">
+            <summary>
+            Represents a package of an error report
+            </summary>
+        </member>
+        <member name="M:Forge.ErrorReport.ReportPackage.#cctor">
+            <summary>
+            Initializes the <see cref="T:Forge.ErrorReport.ReportPackage"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.ErrorReport.ReportPackage.#ctor(log4net.Core.LoggingEvent,System.Collections.Generic.ICollection{log4net.Core.LoggingEvent})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.ErrorReport.ReportPackage" /> class.
+            </summary>
+            <param name="loggingEvent">The logging event.</param>
+            <param name="logEvents">The log events.</param>
+        </member>
+        <member name="P:Forge.ErrorReport.ReportPackage.ApplicationId">
+            <summary>
+            Gets the application unique identifier.
+            </summary>
+            <value>
+            The application unique identifier.
+            </value>
+        </member>
+        <member name="P:Forge.ErrorReport.ReportPackage.ReportCreated">
+            <summary>
+            Gets the report created.
+            </summary>
+            <value>
+            The report created.
+            </value>
+        </member>
+        <member name="P:Forge.ErrorReport.ReportPackage.LoggingEvent">
+            <summary>
+            Gets the logging event.
+            </summary>
+            <value>
+            The logging event.
+            </value>
+        </member>
+        <member name="P:Forge.ErrorReport.ReportPackage.LogEvents">
+            <summary>
+            Gets the log events.
+            </summary>
+            <value>
+            The log events.
+            </value>
+        </member>
+        <member name="T:Forge.ErrorReport.ReportPackageDescriptor">
+            <summary>
+            Represents a report package without log infos
+            </summary>
+        </member>
+        <member name="M:Forge.ErrorReport.ReportPackageDescriptor.#ctor(Forge.ORM.NHibernateExtension.Model.Distributed.EntityId,System.String,System.Int32,System.DateTime)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.ErrorReport.ReportPackageDescriptor" /> class.
+            </summary>
+            <param name="id">The unique identifier.</param>
+            <param name="applicationId">The application unique identifier.</param>
+            <param name="errorLevelType">Type of the error level.</param>
+            <param name="reportCreated">The report created.</param>
+        </member>
+        <member name="P:Forge.ErrorReport.ReportPackageDescriptor.Id">
+            <summary>
+            Gets the unique identifier.
+            </summary>
+            <value>
+            The unique identifier.
+            </value>
+        </member>
+        <member name="P:Forge.ErrorReport.ReportPackageDescriptor.ApplicationId">
+            <summary>
+            Gets the application unique identifier.
+            </summary>
+            <value>
+            The application unique identifier.
+            </value>
+        </member>
+        <member name="P:Forge.ErrorReport.ReportPackageDescriptor.ErrorLevelType">
+            <summary>
+            Gets the type of the error level.
+            </summary>
+            <value>
+            The type of the error level.
+            </value>
+        </member>
+        <member name="P:Forge.ErrorReport.ReportPackageDescriptor.ReportCreated">
+            <summary>
+            Gets the report created.
+            </summary>
+            <value>
+            The report created.
+            </value>
+        </member>
+        <member name="T:Forge.ErrorReport.Sink.IErrorReportPackageSink">
+            <summary>
+            Represents a report package processor
+            </summary>
+        </member>
+        <member name="P:Forge.ErrorReport.Sink.IErrorReportPackageSink.SinkId">
+            <summary>
+            Gets the sink unique identifier.
+            </summary>
+            <value>
+            The sink unique identifier.
+            </value>
+        </member>
+        <member name="P:Forge.ErrorReport.Sink.IErrorReportPackageSink.Filter">
+            <summary>
+            Gets or sets the filter.
+            </summary>
+            <value>
+            The filter.
+            </value>
+        </member>
+        <member name="M:Forge.ErrorReport.Sink.IErrorReportPackageSink.ProcessReportPackage(Forge.ErrorReport.ReportPackage)">
+            <summary>
+            Processes the report package.
+            </summary>
+            <param name="package">The package.</param>
+        </member>
+        <member name="M:Forge.ErrorReport.Sink.IErrorReportPackageSink.Close">
+            <summary>
+            Closes the sink.
+            </summary>
+        </member>
+        <member name="T:Forge.ErrorReport.Sink.SinkBase">
+            <summary>
+            Represents the base functionality of a sink
+            </summary>
+        </member>
+        <member name="F:Forge.ErrorReport.Sink.SinkBase.CONFIG_FILTER">
+            <summary>
+            The configuration g_ filter
+            </summary>
+        </member>
+        <member name="M:Forge.ErrorReport.Sink.SinkBase.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.ErrorReport.Sink.SinkBase"/> class.
+            </summary>
+        </member>
+        <member name="P:Forge.ErrorReport.Sink.SinkBase.SinkId">
+            <summary>
+            Gets the sink unique identifier.
+            </summary>
+            <value>
+            The sink unique identifier.
+            </value>
+        </member>
+        <member name="P:Forge.ErrorReport.Sink.SinkBase.Filter">
+            <summary>
+            Gets or sets the filter.
+            </summary>
+            <value>
+            The filter.
+            </value>
+        </member>
+        <member name="P:Forge.ErrorReport.Sink.SinkBase.IsInitialized">
+            <summary>
+            Gets a value indicating whether [is initialized].
+            </summary>
+            <value>
+              <c>true</c> if [is initialized]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:Forge.ErrorReport.Sink.SinkBase.Initialize(Forge.Configuration.Shared.CategoryPropertyItem)">
+            <summary>
+            Initializes the specified item.
+            </summary>
+            <param name="item">The item.</param>
+        </member>
+        <member name="M:Forge.ErrorReport.Sink.SinkBase.ProcessReportPackage(Forge.ErrorReport.ReportPackage)">
+            <summary>
+            Processes the report package.
+            </summary>
+            <param name="package">The package.</param>
+        </member>
+        <member name="M:Forge.ErrorReport.Sink.SinkBase.Close">
+            <summary>
+            Closes the sink.
+            </summary>
+        </member>
+        <member name="M:Forge.ErrorReport.Sink.SinkBase.DoInitializationCheck">
+            <summary>
+            Documents the initialization check.
+            </summary>
+            <exception cref="T:Forge.InitializationException"></exception>
+        </member>
+    </members>
+</doc>

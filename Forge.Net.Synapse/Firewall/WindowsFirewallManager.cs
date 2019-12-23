@@ -4,6 +4,9 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+#if NETCOREAPP3_1
+#else
+
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -611,3 +614,5 @@ namespace Forge.Net.Synapse.Firewall
     }
 
 }
+
+#endif

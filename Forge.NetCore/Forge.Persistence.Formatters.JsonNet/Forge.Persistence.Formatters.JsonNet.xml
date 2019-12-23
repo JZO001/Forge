@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Forge.Persistence.Formatters.JsonNet</name>
+    </assembly>
+    <members>
+        <member name="T:Forge.Persistence.Formatters.JsonNet.JsonFormatter`1">
+            <summary>
+            Json.NET formatter
+            </summary>
+            <typeparam name="T">Generic type</typeparam>
+        </member>
+        <member name="M:Forge.Persistence.Formatters.JsonNet.JsonFormatter`1.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Formatters.JsonNet.JsonFormatter`1"/> class.
+            </summary>
+        </member>
+        <member name="P:Forge.Persistence.Formatters.JsonNet.JsonFormatter`1.SerializerSettings">
+            <summary>
+            Gets or sets the serializer settings.
+            </summary>
+            <value>
+            The serializer settings.
+            </value>
+        </member>
+        <member name="M:Forge.Persistence.Formatters.JsonNet.JsonFormatter`1.CanRead(System.IO.Stream)">
+            <summary>
+            Determines whether this instance can read the specified stream.
+            </summary>
+            <param name="stream">The stream.</param>
+            <returns>
+              <c>true</c> if this instance can read the specified stream; otherwise, <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">stream</exception>
+        </member>
+        <member name="M:Forge.Persistence.Formatters.JsonNet.JsonFormatter`1.CanWrite(`0)">
+            <summary>
+            Determines whether this instance can write the specified item.
+            </summary>
+            <param name="item">The item.</param>
+            <returns>
+              <c>true</c> if this instance can write the specified item; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Forge.Persistence.Formatters.JsonNet.JsonFormatter`1.Read(System.IO.Stream)">
+            <summary>
+            Reads the specified stream.
+            </summary>
+            <param name="stream">The stream.</param>
+            <returns>Data</returns>
+            <exception cref="T:System.FormatException"></exception>
+        </member>
+        <member name="M:Forge.Persistence.Formatters.JsonNet.JsonFormatter`1.Write(System.IO.Stream,`0)">
+            <summary>
+            Writes the specified stream.
+            </summary>
+            <param name="stream">The stream.</param>
+            <param name="data">The data.</param>
+            <exception cref="T:System.FormatException"></exception>
+        </member>
+        <member name="M:Forge.Persistence.Formatters.JsonNet.JsonFormatter`1.Clone">
+            <summary>
+            Creates a new object that is a copy of the current instance.
+            </summary>
+            <returns>
+            A new object that is a copy of this instance.
+            </returns>
+        </member>
+    </members>
+</doc>

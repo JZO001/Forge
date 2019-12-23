@@ -1,0 +1,2701 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Forge.Persistence</name>
+    </assembly>
+    <members>
+        <member name="T:Forge.Persistence.Collections.CacheStrategyEnum">
+            <summary>
+            Cache strategy mode
+            </summary>
+        </member>
+        <member name="F:Forge.Persistence.Collections.CacheStrategyEnum.RecentlyUsed">
+            <summary>
+            Cache the most used items into the memory
+            </summary>
+        </member>
+        <member name="F:Forge.Persistence.Collections.CacheStrategyEnum.CacheForStack">
+            <summary>
+            Cache the forepart of the collection
+            </summary>
+        </member>
+        <member name="F:Forge.Persistence.Collections.CacheStrategyEnum.CacheForQueue">
+            <summary>
+            Cache the endpart of the collection
+            </summary>
+        </member>
+        <member name="T:Forge.Persistence.Collections.DuplicatedCacheIdentifierException">
+            <summary>
+            Occurs when the cache identifier already exist
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.Collections.DuplicatedCacheIdentifierException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Collections.DuplicatedCacheIdentifierException"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.Collections.DuplicatedCacheIdentifierException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Collections.DuplicatedCacheIdentifierException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.DuplicatedCacheIdentifierException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Collections.DuplicatedCacheIdentifierException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="ex">The ex.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.DuplicatedCacheIdentifierException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Collections.DuplicatedCacheIdentifierException" /> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="info" /> parameter is null.</exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is null or <see cref="P:System.Exception.HResult" /> is zero (0).</exception>
+        </member>
+        <member name="T:Forge.Persistence.Collections.IPersistentCache`1">
+            <summary>
+            Persistent cache interface
+            </summary>
+            <typeparam name="T">Generic type</typeparam>
+        </member>
+        <member name="P:Forge.Persistence.Collections.IPersistentCache`1.Id">
+            <summary>
+            Gets the id.
+            </summary>
+            <value>
+            The id.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Collections.IPersistentCache`1.CacheSize">
+            <summary>
+            Gets or sets the size of the cache.
+            </summary>
+            <value>
+            The size of the cache.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Collections.IPersistentCache`1.Count">
+            <summary>
+            Gets the count.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.Collections.IPersistentCache`1.Clear">
+            <summary>
+            Clears this instance.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.Collections.IPersistentCache`1.Contains(`0)">
+            <summary>
+            Determines whether [contains] [the specified o].
+            </summary>
+            <param name="o">The o.</param>
+            <returns>
+              <c>true</c> if [contains] [the specified o]; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Forge.Persistence.Collections.IPersistentCache`1.ToArray">
+            <summary>
+            Toes the array.
+            </summary>
+            <returns>Array of items</returns>
+        </member>
+        <member name="P:Forge.Persistence.Collections.IPersistentCache`1.IsEmpty">
+            <summary>
+            Gets a value indicating whether this instance is empty.
+            </summary>
+            <value>
+              <c>true</c> if this instance is empty; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Collections.IPersistentCache`1.IsDisposed">
+            <summary>
+            Gets a value indicating whether this instance is disposed.
+            </summary>
+            <value>
+            	<c>true</c> if this instance is disposed; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Collections.IPersistentCache`1.CacheStrategy">
+            <summary>
+            Gets the cache strategy.
+            </summary>
+            <value>
+            The cache strategy.
+            </value>
+        </member>
+        <member name="M:Forge.Persistence.Collections.IPersistentCache`1.ForEach(Forge.Action{`0})">
+            <summary>
+            Fors the each.
+            </summary>
+            <param name="action">The action.</param>
+        </member>
+        <member name="T:Forge.Persistence.Collections.IPersistentCollection`1">
+            <summary>
+            Persistent collection interface
+            </summary>
+            <typeparam name="T">Generic type</typeparam>
+        </member>
+        <member name="T:Forge.Persistence.Collections.IPersistentDictionary`2">
+            <summary>
+            Persistent dictionary interface
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <typeparam name="TValue">The type of the value.</typeparam>
+        </member>
+        <member name="P:Forge.Persistence.Collections.IPersistentDictionary`2.Keys">
+            <summary>
+            Gets an IPersistentDictionary&lt;TKey,TValue&gt; containing the keys of
+            the IPersistentDictionary&lt;TKey,TValue&gt;.
+            </summary>
+            <value>
+            An IPersistentDictionary&lt;TKey,TValue&gt; containing the keys of the object
+            that implements IPersistentDictionary&lt;TKey,TValue&gt;.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Collections.IPersistentDictionary`2.Values">
+            <summary>
+            Gets an IPersistentDictionary&lt;TKey,TValue&gt; containing the values in
+            object that implements IPersistentDictionary&lt;TKey,TValue&gt;.
+            </summary>
+            <value>
+            An IPersistentDictionary&lt;TKey,TValue&gt; containing the values in the
+            object that implements IPersistentDictionary&lt;TKey,TValue&gt;.
+            </value>
+        </member>
+        <member name="T:Forge.Persistence.Collections.IPersistentList`1">
+            <summary>
+            Persistent list
+            </summary>
+            <typeparam name="T">Generic type</typeparam>
+        </member>
+        <member name="M:Forge.Persistence.Collections.IPersistentList`1.ContainsAll(System.Collections.Generic.ICollection{`0})">
+            <summary>
+            Determines whether the specified c contains all.
+            </summary>
+            <param name="c">The c.</param>
+            <returns>
+              <c>true</c> if the specified c contains all; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Forge.Persistence.Collections.IPersistentList`1.InsertRange(System.Int32,System.Collections.Generic.ICollection{`0})">
+            <summary>
+            Inserts the range.
+            </summary>
+            <param name="index">The index.</param>
+            <param name="c">The c.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.IPersistentList`1.RemoveAll(System.Collections.Generic.ICollection{`0})">
+            <summary>
+            Removes all.
+            </summary>
+            <param name="c">The c.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.IPersistentList`1.RetainAll(System.Collections.Generic.ICollection{`0})">
+            <summary>
+            Retains all.
+            </summary>
+            <param name="c">The c.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.IPersistentList`1.LastIndexOf(`0)">
+            <summary>
+            Lasts the index of.
+            </summary>
+            <param name="o">The o.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Persistence.Collections.IPersistentList`1.CopyTo(`0[])">
+            <summary>
+            Copies to.
+            </summary>
+            <param name="array">The array.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.IPersistentList`1.CopyTo(System.Int32,`0[],System.Int32,System.Int32)">
+            <summary>
+            Copies to.
+            </summary>
+            <param name="index">The index.</param>
+            <param name="array">The array.</param>
+            <param name="arrayIndex">Index of the array.</param>
+            <param name="count">The count.</param>
+        </member>
+        <member name="T:Forge.Persistence.Collections.IPersistentQueue`1">
+            <summary>
+            Persistent queue interface
+            </summary>
+            <typeparam name="T">Generic type</typeparam>
+        </member>
+        <member name="M:Forge.Persistence.Collections.IPersistentQueue`1.Dequeue">
+            <summary>
+            Dequeues this instance.
+            </summary>
+            <returns>Item</returns>
+        </member>
+        <member name="M:Forge.Persistence.Collections.IPersistentQueue`1.Enqueue(`0)">
+            <summary>
+            Enqueues this instance.
+            </summary>
+            <param name="item">The item.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.IPersistentQueue`1.Peek">
+            <summary>
+            Peeks this instance.
+            </summary>
+            <returns>Item</returns>
+        </member>
+        <member name="T:Forge.Persistence.Collections.IPersistentStack`1">
+            <summary>
+            Persistent stack interface
+            </summary>
+            <typeparam name="T">Generic type</typeparam>
+        </member>
+        <member name="M:Forge.Persistence.Collections.IPersistentStack`1.Peek">
+            <summary>
+            Peeks this instance.
+            </summary>
+            <returns>Item</returns>
+        </member>
+        <member name="M:Forge.Persistence.Collections.IPersistentStack`1.Pop">
+            <summary>
+            Pops this instance.
+            </summary>
+            <returns>Item</returns>
+        </member>
+        <member name="M:Forge.Persistence.Collections.IPersistentStack`1.Push(`0)">
+            <summary>
+            Pushes this instance.
+            </summary>
+            <param name="item">The item</param>
+        </member>
+        <member name="T:Forge.Persistence.Collections.PersistentCache`1">
+            <summary>
+            Persistent cache base
+            </summary>
+            <typeparam name="T">Generic type</typeparam>
+        </member>
+        <member name="F:Forge.Persistence.Collections.PersistentCache`1.mLockObject">
+            <summary>
+            Object for locking
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.#ctor(System.String,Forge.Persistence.Collections.CacheStrategyEnum)">
+            <summary>
+            Prevents a default instance of the <see cref="T:Forge.Persistence.Collections.PersistentCache`1"/> class from being created.
+            </summary>
+            <param name="cacheId">The cache id.</param>
+            <param name="cacheStrategy">The cache strategy.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.#ctor(System.String,Forge.Persistence.Collections.CacheStrategyEnum,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Collections.PersistentCache`1"/> class.
+            </summary>
+            <param name="cacheId">The cache id.</param>
+            <param name="cacheStrategy">The cache strategy.</param>
+            <param name="cacheSize">Size of the cache.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.#ctor(System.String,Forge.Persistence.Collections.CacheStrategyEnum,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Collections.PersistentCache`1"/> class.
+            </summary>
+            <param name="cacheId">The cache id.</param>
+            <param name="cacheStrategy">The cache strategy.</param>
+            <param name="configurationName">Name of the configuration.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.Finalize">
+            <summary>
+            Releases unmanaged resources and performs other cleanup operations before the
+            <see cref="T:Forge.Persistence.Collections.PersistentCache`1"/> is reclaimed by garbage collection.
+            </summary>
+        </member>
+        <member name="P:Forge.Persistence.Collections.PersistentCache`1.Id">
+            <summary>
+            Gets the id.
+            </summary>
+            <value>
+            The id.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Collections.PersistentCache`1.CacheSize">
+            <summary>
+            Gets or sets the size of the cache.
+            </summary>
+            <value>
+            The size of the cache.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Collections.PersistentCache`1.Count">
+            <summary>
+            Gets the count.
+            </summary>
+            <value>
+            The count.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Collections.PersistentCache`1.IsEmpty">
+            <summary>
+            Gets a value indicating whether this instance is empty.
+            </summary>
+            <value>
+              <c>true</c> if this instance is empty; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Collections.PersistentCache`1.IsDisposed">
+            <summary>
+            Gets a value indicating whether this instance is disposed.
+            </summary>
+            <value>
+            	<c>true</c> if this instance is disposed; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Collections.PersistentCache`1.CacheStrategy">
+            <summary>
+            Gets the cache strategy.
+            </summary>
+            <value>
+            The cache strategy.
+            </value>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.Clear">
+            <summary>
+            Clears this instance.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.Contains(`0)">
+            <summary>
+            Determines whether [contains] [the specified o].
+            </summary>
+            <param name="o">The o.</param>
+            <returns>
+              <c>true</c> if [contains] [the specified o]; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.ToArray">
+            <summary>
+            Toes the array.
+            </summary>
+            <returns>Array of the items</returns>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.GetEnumerator">
+            <summary>
+            Gets the enumerator.
+            </summary>
+            <returns>Enumerator of generic items</returns>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.System#Collections#Generic#IEnumerable{T}#GetEnumerator">
+            <summary>
+            Gets the enumerator.
+            </summary>
+            <returns>Enumerator of generic items</returns>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through a collection.
+            </summary>
+            <returns>
+            An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
+            </returns>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.Forge#Collections#IEnumerableSpecialized{T}#GetEnumerator">
+            <summary>
+            Gets the enumerator.
+            </summary>
+            <returns>Enumerator of generic items</returns>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.ForEach(Forge.Action{`0})">
+            <summary>
+            Fors the each.
+            </summary>
+            <param name="action">The action.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.AddItem(`0)">
+            <summary>
+            Adds the item.
+            </summary>
+            <param name="obj">The o.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.AddItem(System.Int32,`0)">
+            <summary>
+            Adds the item.
+            </summary>
+            <param name="index">The index.</param>
+            <param name="obj">The o.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.RemoveItem(`0)">
+            <summary>
+            Removes the item.
+            </summary>
+            <param name="o">The o.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.RemoveItem(System.Int32)">
+            <summary>
+            Removes the item.
+            </summary>
+            <param name="index">The index.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.GetItem(System.Int32)">
+            <summary>
+            Gets the item.
+            </summary>
+            <param name="index">The index.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.GetIndexOfItem(`0)">
+            <summary>
+            Gets the index of item.
+            </summary>
+            <param name="obj">The o.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.DoDisposeCheck">
+            <summary>
+            Does the dispose check.
+            </summary>
+        </member>
+        <member name="P:Forge.Persistence.Collections.PersistentCache`1.StorageProvider">
+            <summary>
+            Gets the storage provider.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.SetStorageProvider(Forge.Persistence.StorageProviders.IStorageProvider{`0},System.Boolean)">
+            <summary>
+            Sets the storage provider.
+            </summary>
+            <param name="provider">The provider.</param>
+            <param name="owner">if set to <c>true</c> [owner].</param>
+        </member>
+        <member name="P:Forge.Persistence.Collections.PersistentCache`1.Version">
+            <summary>
+            Gets the version.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.IncVersion">
+            <summary>
+            Incs the version.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.DecVersion">
+            <summary>
+            Decs the version.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.WriteDump(System.String)">
+            <summary>
+            Writes the dump.
+            </summary>
+            <param name="comment">The comment.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources
+            </summary>
+            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.FillCache">
+            <summary>
+            Fills the cache.
+            </summary>
+        </member>
+        <member name="P:Forge.Persistence.Collections.PersistentCache`1.CacheItem`1.Index">
+            <summary>
+            Gets or sets the index.
+            </summary>
+            <value>
+            The index.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Collections.PersistentCache`1.CacheItem`1.Element">
+            <summary>
+            Gets the element.
+            </summary>
+        </member>
+        <member name="P:Forge.Persistence.Collections.PersistentCache`1.CacheItem`1.LastAccessed">
+            <summary>
+            Gets the last accessed.
+            </summary>
+            <value>
+            The last accessed.
+            </value>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.CacheItem`1.UpdateLastAccessedTime">
+            <summary>
+            Updates the last accessed time.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.CacheItem`1.CompareTo(Forge.Persistence.Collections.PersistentCache{`0}.CacheItem{`1})">
+            <summary>
+            Compares to.
+            </summary>
+            <param name="o">The o.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.CacheItem`1.CompareTo(System.Object)">
+            <summary>
+            Compares the current instance with another object of the same type and returns an integer that indicates whether the current instance precedes, follows, or occurs in the same position in the sort order as the other object.
+            </summary>
+            <param name="obj">An object to compare with this instance.</param>
+            <returns>
+            A value that indicates the relative order of the objects being compared. The return value has these meanings: Value Meaning Less than zero This instance is less than <paramref name="obj"/>. Zero This instance is equal to <paramref name="obj"/>. Greater than zero This instance is greater than <paramref name="obj"/>.
+            </returns>
+            <exception cref="T:System.ArgumentException">
+              <paramref name="obj"/> is not the same type as this instance. </exception>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.CacheItem`1.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+            </returns>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.CacheItem`1.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object"/> is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object"/> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.CacheItem`1.ToString">
+            <summary>
+            Returns a <see cref="T:System.String"/> that represents this instance.
+            </summary>
+            <returns>
+            A <see cref="T:System.String"/> that represents this instance.
+            </returns>
+        </member>
+        <member name="T:Forge.Persistence.Collections.PersistentCache`1.CacheIterator`1">
+            <summary>
+            CacheIterator
+            </summary>
+            <typeparam name="TItem">Generic type</typeparam>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.CacheIterator`1.#ctor(Forge.Persistence.Collections.PersistentCache{`1})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Collections.PersistentCache`1.CacheIterator`1"/> struct.
+            </summary>
+            <param name="cache">The cache.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.CacheIterator`1.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.CacheIterator`1.MoveNext">
+            <summary>
+            Advances the enumerator to the next element of the collection.
+            </summary>
+            <returns>
+            true if the enumerator was successfully advanced to the next element; false if the enumerator has passed the end of the collection.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">The collection was modified after the enumerator was created. </exception>
+        </member>
+        <member name="P:Forge.Persistence.Collections.PersistentCache`1.CacheIterator`1.Current">
+            <summary>
+            Gets the current.
+            </summary>
+        </member>
+        <member name="P:Forge.Persistence.Collections.PersistentCache`1.CacheIterator`1.System#Collections#IEnumerator#Current">
+            <summary>
+            Gets the current.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.CacheIterator`1.System#Collections#IEnumerator#Reset">
+            <summary>
+            Sets the enumerator to its initial position, which is before the first element in the collection.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">The collection was modified after the enumerator was created. </exception>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.CacheIterator`1.Remove">
+            <summary>
+            Removes this instance.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentCache`1.CacheIterator`1.HasNext">
+            <summary>
+            Determines whether this instance has next.
+            </summary>
+            <returns>
+              <c>true</c> if this instance has next; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="T:Forge.Persistence.Collections.PersistentDictionary`2">
+            <summary>
+            Persistent dictionary
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <typeparam name="TValue">The type of the value.</typeparam>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentDictionary`2.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Collections.PersistentDictionary`2"/> class.
+            </summary>
+            <param name="mapId">The map id.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentDictionary`2.#ctor(System.String,Forge.Persistence.StorageProviders.IStorageProvider{System.Collections.Generic.KeyValuePair{`0,`1}})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Collections.PersistentDictionary`2"/> class.
+            </summary>
+            <param name="mapId">The map id.</param>
+            <param name="provider">The provider.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentDictionary`2.#ctor(System.String,Forge.Persistence.StorageProviders.IStorageProvider{System.Collections.Generic.KeyValuePair{`0,`1}},System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Collections.PersistentDictionary`2"/> class.
+            </summary>
+            <param name="mapId">The map id.</param>
+            <param name="provider">The provider.</param>
+            <param name="cacheSize">Size of the cache.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentDictionary`2.#ctor(System.String,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Collections.PersistentDictionary`2"/> class.
+            </summary>
+            <param name="mapId">The map id.</param>
+            <param name="cacheSize">Size of the cache.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentDictionary`2.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Collections.PersistentDictionary`2"/> class.
+            </summary>
+            <param name="mapId">The map id.</param>
+            <param name="configurationName">Name of the configuration.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentDictionary`2.Add(`0,`1)">
+            <summary>
+            Adds the specified key.
+            </summary>
+            <param name="key">The key.</param>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentDictionary`2.ContainsKey(`0)">
+            <summary>
+            Determines whether the specified key contains key.
+            </summary>
+            <param name="key">The key.</param>
+            <returns>
+              <c>true</c> if the specified key contains key; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="P:Forge.Persistence.Collections.PersistentDictionary`2.Keys">
+            <summary>
+            Gets the keys.
+            </summary>
+            <value>
+            The keys.
+            </value>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentDictionary`2.Remove(`0)">
+            <summary>
+            Removes the specified key.
+            </summary>
+            <param name="key">The key.</param>
+            <returns>True, if the collection modified, otherwise False.</returns>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentDictionary`2.TryGetValue(`0,`1@)">
+            <summary>
+            Tries the get value.
+            </summary>
+            <param name="key">The key.</param>
+            <param name="value">The value.</param>
+            <returns>True, if the key found, otherwise False.</returns>
+        </member>
+        <member name="P:Forge.Persistence.Collections.PersistentDictionary`2.Values">
+            <summary>
+            Gets the values.
+            </summary>
+            <value>
+            The values.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Collections.PersistentDictionary`2.Item(`0)">
+            <summary>
+            Gets or sets the object with the specified key.
+            </summary>
+            <value>
+            The value
+            </value>
+            <param name="key">The key.</param>
+            <returns>The value</returns>
+            <exception cref="T:System.Collections.Generic.KeyNotFoundException"></exception>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentDictionary`2.Add(System.Collections.Generic.KeyValuePair{`0,`1})">
+            <summary>
+            Adds the specified kv.
+            </summary>
+            <param name="kv">The kv.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentDictionary`2.CopyTo(System.Collections.Generic.KeyValuePair{`0,`1}[],System.Int32)">
+            <summary>
+            Copies to.
+            </summary>
+            <param name="array">The array.</param>
+            <param name="index">The index.</param>
+        </member>
+        <member name="P:Forge.Persistence.Collections.PersistentDictionary`2.IsReadOnly">
+            <summary>
+            Gets a value indicating whether this instance is read only.
+            </summary>
+            <value>
+            	<c>true</c> if this instance is read only; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentDictionary`2.Remove(System.Collections.Generic.KeyValuePair{`0,`1})">
+            <summary>
+            Removes the specified kv.
+            </summary>
+            <param name="kv">The kv.</param>
+            <returns>True, if the collection modified, otherwise False.</returns>
+        </member>
+        <member name="P:Forge.Persistence.Collections.PersistentDictionary`2.System#Collections#Generic#IDictionary{TKey,TValue}#Keys">
+            <summary>
+            Gets the keys.
+            </summary>
+            <value>
+            The keys.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Collections.PersistentDictionary`2.System#Collections#Generic#IDictionary{TKey,TValue}#Values">
+            <summary>
+            Gets the values.
+            </summary>
+            <value>
+            The values.
+            </value>
+        </member>
+        <member name="T:Forge.Persistence.Collections.PersistentList`1">
+            <summary>
+            Persistent list implementation
+            </summary>
+            <typeparam name="T">Generic type</typeparam>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentList`1.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Collections.PersistentList`1"/> class.
+            </summary>
+            <param name="listId">The list id.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentList`1.#ctor(System.String,Forge.Persistence.StorageProviders.IStorageProvider{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Collections.PersistentList`1"/> class.
+            </summary>
+            <param name="listId">The list id.</param>
+            <param name="provider">The provider.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentList`1.#ctor(System.String,Forge.Persistence.StorageProviders.IStorageProvider{`0},System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Collections.PersistentList`1"/> class.
+            </summary>
+            <param name="listId">The list id.</param>
+            <param name="provider">The provider.</param>
+            <param name="cacheSize">Size of the cache.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentList`1.#ctor(System.String,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Collections.PersistentList`1"/> class.
+            </summary>
+            <param name="listId">The list id.</param>
+            <param name="cacheSize">Size of the cache.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentList`1.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Collections.PersistentList`1"/> class.
+            </summary>
+            <param name="listId">The list id.</param>
+            <param name="configurationName">Name of the configuration.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentList`1.SubList(System.Int32,System.Int32)">
+            <summary>
+            Subs the list.
+            </summary>
+            <param name="fromIndex">From index.</param>
+            <param name="toIndex">To index.</param>
+            <returns>Sub list of the items</returns>
+        </member>
+        <member name="P:Forge.Persistence.Collections.PersistentList`1.Version">
+            <summary>
+            Gets the version.
+            </summary>
+            <value>
+            The version.
+            </value>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentList`1.Add(`0)">
+            <summary>
+            Adds the specified item.
+            </summary>
+            <param name="item">The item.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentList`1.CopyTo(`0[])">
+            <summary>
+            Copies to.
+            </summary>
+            <param name="array">The array.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentList`1.CopyTo(`0[],System.Int32)">
+            <summary>
+            Copies to.
+            </summary>
+            <param name="array">The array.</param>
+            <param name="arrayIndex">Index of the array.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentList`1.CopyTo(System.Int32,`0[],System.Int32,System.Int32)">
+            <summary>
+            Copies to.
+            </summary>
+            <param name="index">The index.</param>
+            <param name="array">The array.</param>
+            <param name="arrayIndex">Index of the array.</param>
+            <param name="count">The count.</param>
+        </member>
+        <member name="P:Forge.Persistence.Collections.PersistentList`1.IsReadOnly">
+            <summary>
+            Gets a value indicating whether this instance is read only.
+            </summary>
+            <value>
+            	<c>true</c> if this instance is read only; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentList`1.Remove(`0)">
+            <summary>
+            Removes the specified item.
+            </summary>
+            <param name="item">The item.</param>
+            <returns>True, if the collection modified, otherwise False.</returns>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentList`1.IndexOf(`0)">
+            <summary>
+            Indexes the of.
+            </summary>
+            <param name="item">The item.</param>
+            <returns>The index of the item, if not found, returns -1.</returns>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentList`1.Insert(System.Int32,`0)">
+            <summary>
+            Inserts the specified index.
+            </summary>
+            <param name="index">The index.</param>
+            <param name="item">The item.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentList`1.RemoveAt(System.Int32)">
+            <summary>
+            Removes at.
+            </summary>
+            <param name="index">The index.</param>
+        </member>
+        <member name="P:Forge.Persistence.Collections.PersistentList`1.Item(System.Int32)">
+            <summary>
+            Gets or sets the object at the specified index.
+            </summary>
+            <value>
+            The value
+            </value>
+            <param name="index">The index.</param>
+            <returns>Item</returns>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentList`1.AddRange(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Adds the range.
+            </summary>
+            <param name="c">The collection of items.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentList`1.RemoveAll(System.Collections.Generic.ICollection{`0})">
+            <summary>
+            Removes all.
+            </summary>
+            <param name="c">The collection of items.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentList`1.RetainAll(System.Collections.Generic.ICollection{`0})">
+            <summary>
+            Retains all.
+            </summary>
+            <param name="c">The collection of items.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentList`1.LastIndexOf(`0)">
+            <summary>
+            Lasts the index of.
+            </summary>
+            <param name="o">The item</param>
+            <returns>The index of the last occurence of the item. If not found, returns -1.</returns>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentList`1.ContainsAll(System.Collections.Generic.ICollection{`0})">
+            <summary>
+            Determines whether the specified c contains all.
+            </summary>
+            <param name="c">The c.</param>
+            <returns>
+              <c>true</c> if the specified c contains all; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentList`1.InsertRange(System.Int32,System.Collections.Generic.ICollection{`0})">
+            <summary>
+            Inserts the range.
+            </summary>
+            <param name="index">The index.</param>
+            <param name="c">The c.</param>
+        </member>
+        <member name="T:Forge.Persistence.Collections.PersistentQueue`1">
+            <summary>
+            Persistent queue
+            </summary>
+            <typeparam name="T">Generic type</typeparam>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentQueue`1.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Collections.PersistentQueue`1"/> class.
+            </summary>
+            <param name="queueId">The queue id.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentQueue`1.#ctor(System.String,Forge.Persistence.StorageProviders.IStorageProvider{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Collections.PersistentQueue`1"/> class.
+            </summary>
+            <param name="queueId">The queue id.</param>
+            <param name="provider">The provider.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentQueue`1.#ctor(System.String,Forge.Persistence.StorageProviders.IStorageProvider{`0},System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Collections.PersistentQueue`1"/> class.
+            </summary>
+            <param name="queueId">The queue id.</param>
+            <param name="provider">The provider.</param>
+            <param name="cacheSize">Size of the cache.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentQueue`1.#ctor(System.String,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Collections.PersistentQueue`1"/> class.
+            </summary>
+            <param name="queueId">The queue id.</param>
+            <param name="cacheSize">Size of the cache.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentQueue`1.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Collections.PersistentQueue`1"/> class.
+            </summary>
+            <param name="queueId">The queue id.</param>
+            <param name="configurationName">Name of the configuration.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentQueue`1.Dequeue">
+            <summary>
+            Dequeues this instance.
+            </summary>
+            <returns>Item</returns>
+            <exception cref="T:System.InvalidOperationException"></exception>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentQueue`1.Enqueue(`0)">
+            <summary>
+            Enqueues the specified o.
+            </summary>
+            <param name="o">The o.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentQueue`1.Peek">
+            <summary>
+            Peeks this instance.
+            </summary>
+            <returns>Item</returns>
+            <exception cref="T:System.InvalidOperationException">The collection is empty.</exception>
+        </member>
+        <member name="T:Forge.Persistence.Collections.PersistentStack`1">
+            <summary>
+            Persistent stack
+            </summary>
+            <typeparam name="T">Generic type</typeparam>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentStack`1.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Collections.PersistentStack`1"/> class.
+            </summary>
+            <param name="stackId">The stack id.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentStack`1.#ctor(System.String,Forge.Persistence.StorageProviders.IStorageProvider{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Collections.PersistentStack`1"/> class.
+            </summary>
+            <param name="stackId">The stack id.</param>
+            <param name="provider">The provider.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentStack`1.#ctor(System.String,Forge.Persistence.StorageProviders.IStorageProvider{`0},System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Collections.PersistentStack`1"/> class.
+            </summary>
+            <param name="stackId">The stack id.</param>
+            <param name="provider">The provider.</param>
+            <param name="cacheSize">Size of the cache.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentStack`1.#ctor(System.String,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Collections.PersistentStack`1"/> class.
+            </summary>
+            <param name="stackId">The stack id.</param>
+            <param name="cacheSize">Size of the cache.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentStack`1.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Collections.PersistentStack`1"/> class.
+            </summary>
+            <param name="stackId">The stack id.</param>
+            <param name="configurationName">Name of the configuration.</param>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentStack`1.Peek">
+            <summary>
+            Peeks this instance.
+            </summary>
+            <returns>Item</returns>
+            <exception cref="T:System.InvalidOperationException">The collection is empty.</exception>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentStack`1.Pop">
+            <summary>
+            Pops this instance.
+            </summary>
+            <returns>Item</returns>
+            <exception cref="T:System.InvalidOperationException">The collection is empty.</exception>
+        </member>
+        <member name="M:Forge.Persistence.Collections.PersistentStack`1.Push(`0)">
+            <summary>
+            Pushes the specified o.
+            </summary>
+            <param name="o">The o.</param>
+        </member>
+        <member name="T:Forge.Persistence.Formatters.BinarySerializerFormatter`1">
+            <summary>
+            Binary serializer formatter
+            </summary>
+            <typeparam name="T">Generic type</typeparam>
+        </member>
+        <member name="M:Forge.Persistence.Formatters.BinarySerializerFormatter`1.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Formatters.BinarySerializerFormatter`1"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.Formatters.BinarySerializerFormatter`1.#ctor(Forge.Persistence.Serialization.BinarySerializerBehaviorEnum)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Formatters.BinarySerializerFormatter`1"/> class.
+            </summary>
+            <param name="behavior">The behavior.</param>
+        </member>
+        <member name="M:Forge.Persistence.Formatters.BinarySerializerFormatter`1.#ctor(Forge.Persistence.Serialization.BinarySerializerBehaviorEnum,Forge.Reflection.TypeLookupModeEnum,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Formatters.BinarySerializerFormatter`1"/> class.
+            </summary>
+            <param name="behavior">The behavior.</param>
+            <param name="typeLookupMode">The type lookup mode.</param>
+            <param name="findNewestTypeVersion">if set to <c>true</c> [find newest type version].</param>
+        </member>
+        <member name="P:Forge.Persistence.Formatters.BinarySerializerFormatter`1.Context">
+            <summary>
+            Gets or sets the context.
+            </summary>
+            <value>
+            The context.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Formatters.BinarySerializerFormatter`1.Selector">
+            <summary>
+            Gets or sets the selector.
+            </summary>
+            <value>
+            The selector.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Formatters.BinarySerializerFormatter`1.SerializerBehavior">
+            <summary>
+            Gets or sets the serializer behavior.
+            </summary>
+            <value>
+            The serializer behavior.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Formatters.BinarySerializerFormatter`1.TypeLookupMode">
+            <summary>
+            Gets or sets the type lookup mode.
+            </summary>
+            <value>
+            The type lookup mode.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Formatters.BinarySerializerFormatter`1.FindNewestTypeVersion">
+            <summary>
+            Gets or sets a value indicating whether [find newest type version].
+            </summary>
+            <value>
+            <c>true</c> if [find newest type version]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:Forge.Persistence.Formatters.BinarySerializerFormatter`1.CanRead(System.IO.Stream)">
+            <summary>
+            Determines whether this instance can read the specified stream.
+            </summary>
+            <param name="stream">The stream.</param>
+            <returns>
+              <c>true</c> if this instance can read the specified stream; otherwise, <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">stream</exception>
+        </member>
+        <member name="M:Forge.Persistence.Formatters.BinarySerializerFormatter`1.CanWrite(`0)">
+            <summary>
+            Determines whether this instance can write the specified item.
+            </summary>
+            <param name="item">The item.</param>
+            <returns>
+              <c>true</c> if this instance can write the specified item; otherwise, <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">item</exception>
+        </member>
+        <member name="M:Forge.Persistence.Formatters.BinarySerializerFormatter`1.Read(System.IO.Stream)">
+            <summary>
+            Reads the specified stream.
+            </summary>
+            <param name="stream">The stream.</param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException">stream</exception>
+            <exception cref="T:System.FormatException"></exception>
+        </member>
+        <member name="M:Forge.Persistence.Formatters.BinarySerializerFormatter`1.Write(System.IO.Stream,`0)">
+            <summary>
+            Writes the specified stream.
+            </summary>
+            <param name="stream">The stream.</param>
+            <param name="data">The data.</param>
+            <exception cref="T:System.ArgumentNullException">
+            stream
+            or
+            data
+            </exception>
+            <exception cref="T:System.FormatException"></exception>
+        </member>
+        <member name="M:Forge.Persistence.Formatters.BinarySerializerFormatter`1.Clone">
+            <summary>
+            Creates a new object that is a copy of the current instance.
+            </summary>
+            <returns>
+            A new object that is a copy of this instance.
+            </returns>
+        </member>
+        <member name="T:Forge.Persistence.Formatters.DataContractJsonFormatter`1">
+            <summary>
+            Data Contract Json Formatter
+            </summary>
+            <typeparam name="T">Generic type</typeparam>
+        </member>
+        <member name="M:Forge.Persistence.Formatters.DataContractJsonFormatter`1.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Formatters.DataContractJsonFormatter`1"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.Formatters.DataContractJsonFormatter`1.CanRead(System.IO.Stream)">
+            <summary>
+            Determines whether this instance can read the specified stream.
+            </summary>
+            <param name="stream">The stream.</param>
+            <returns>
+              <c>true</c> if this instance can read the specified stream; otherwise, <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">stream</exception>
+        </member>
+        <member name="M:Forge.Persistence.Formatters.DataContractJsonFormatter`1.CanWrite(`0)">
+            <summary>
+            Determines whether this instance can write the specified item.
+            </summary>
+            <param name="item">The item.</param>
+            <returns>
+              <c>true</c> if this instance can write the specified item; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Forge.Persistence.Formatters.DataContractJsonFormatter`1.Read(System.IO.Stream)">
+            <summary>
+            Reads the specified stream.
+            </summary>
+            <param name="stream">The stream.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Persistence.Formatters.DataContractJsonFormatter`1.Write(System.IO.Stream,`0)">
+            <summary>
+            Writes the specified stream.
+            </summary>
+            <param name="stream">The stream.</param>
+            <param name="data">The data.</param>
+        </member>
+        <member name="M:Forge.Persistence.Formatters.DataContractJsonFormatter`1.Clone">
+            <summary>
+            Creates a new object that is a copy of the current instance.
+            </summary>
+            <returns>
+            A new object that is a copy of this instance.
+            </returns>
+        </member>
+        <member name="T:Forge.Persistence.Serialization.BinarySerializer">
+            <summary>
+            Binary serializer
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.BinarySerializer.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Serialization.BinarySerializer"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.BinarySerializer.#ctor(System.Runtime.Serialization.ISurrogateSelector,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Serialization.BinarySerializer" /> class.
+            </summary>
+            <param name="selector">The selector.</param>
+            <param name="context">The context.</param>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.Context">
+            <summary>
+            Gets or sets the context.
+            </summary>
+            <value>
+            The context.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.Selector">
+            <summary>
+            Gets or sets the selector.
+            </summary>
+            <value>
+            The selector.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.SerializerBehavior">
+            <summary>
+            Gets or sets the serializer behavior.
+            </summary>
+            <value>
+            The serializer behavior.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.TypeLookupMode">
+            <summary>
+            Gets or sets the type lookup mode.
+            </summary>
+            <value>
+            The type lookup mode.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.FindNewestTypeVersion">
+            <summary>
+            Gets or sets a value indicating whether [find newest type version].
+            </summary>
+            <value>
+            <c>true</c> if [find newest type version]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.BinarySerializer.Serialize(System.IO.Stream,System.Object)">
+            <summary>
+            Serializes the specified serialization stream.
+            </summary>
+            <param name="serializationStream">The serialization stream.</param>
+            <param name="graph">The graph.</param>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.BinarySerializer.Deserialize(System.IO.Stream)">
+            <summary>
+            Deserializes the specified serialization stream.
+            </summary>
+            <param name="serializationStream">The serialization stream.</param>
+            <returns>The object</returns>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">Stream content is invalid or the object version changed.</exception>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.BinarySerializer.ContextBase.#cctor">
+            <summary>
+            Initializes the <see cref="T:Forge.Persistence.Serialization.BinarySerializer.ContextBase"/> class.
+            </summary>
+        </member>
+        <member name="F:Forge.Persistence.Serialization.BinarySerializer.SerializationContext.mReferenceVsTypeInstances">
+            <summary>
+            Referencia azonosító vs referencia leíró
+            </summary>
+        </member>
+        <member name="F:Forge.Persistence.Serialization.BinarySerializer.SerializationContext.mAssemblyVsAssemblyId">
+            <summary>
+            The assemblies
+            </summary>
+        </member>
+        <member name="F:Forge.Persistence.Serialization.BinarySerializer.SerializationContext.mAssemblyIdVsAssembly">
+            <summary>
+            The assembly id vs assembly
+            </summary>
+        </member>
+        <member name="F:Forge.Persistence.Serialization.BinarySerializer.SerializationContext.mTypeIdVsTypeInfo">
+            <summary>
+            Típus azonosító vs típus info
+            </summary>
+        </member>
+        <member name="F:Forge.Persistence.Serialization.BinarySerializer.SerializationContext.mTypeVsTypeInfo">
+            <summary>
+            Típus vs típus info
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.BinarySerializer.SerializationContext.#cctor">
+            <summary>
+            Initializes the <see cref="T:Forge.Persistence.Serialization.BinarySerializer.SerializationContext"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.BinarySerializer.SerializationContext.#ctor(System.Runtime.Serialization.ISurrogateSelector,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Serialization.BinarySerializer.SerializationContext" /> class.
+            </summary>
+            <param name="selector">The selector.</param>
+            <param name="context">The context.</param>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.SerializationContext.Context">
+            <summary>
+            Gets the context.
+            </summary>
+            <value>
+            The context.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.SerializationContext.Selector">
+            <summary>
+            Gets or sets the selector.
+            </summary>
+            <value>
+            The selector.
+            </value>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.BinarySerializer.SerializationContext.GetTypeInfo(System.Type)">
+            <summary>
+            Checks the type info.
+            </summary>
+            <param name="type">The type.</param>
+            <exception cref="T:System.InvalidOperationException"></exception>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.BinarySerializer.SerializationContext.Serialize(System.IO.Stream,System.Object)">
+            <summary>
+            Serializes the specified serialization stream.
+            </summary>
+            <param name="serializationStream">The serialization stream.</param>
+            <param name="graph">The graph.</param>
+        </member>
+        <member name="F:Forge.Persistence.Serialization.BinarySerializer.DeserializationContext.mAsmIdVsAssemblyName">
+            <summary>
+            Assembly azonosító, assembly név
+            </summary>
+        </member>
+        <member name="F:Forge.Persistence.Serialization.BinarySerializer.DeserializationContext.mTypeIdVsTypeInfo">
+            <summary>
+            Típus azonosító vs típus info
+            </summary>
+        </member>
+        <member name="F:Forge.Persistence.Serialization.BinarySerializer.DeserializationContext.mInstanceIdVsInstanceProxy">
+            <summary>
+            Példány azonosító és példány leíró
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.BinarySerializer.DeserializationContext.#cctor">
+            <summary>
+            Initializes the <see cref="T:Forge.Persistence.Serialization.BinarySerializer.DeserializationContext"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.BinarySerializer.DeserializationContext.#ctor(System.Runtime.Serialization.ISurrogateSelector,System.Runtime.Serialization.StreamingContext,Forge.Persistence.Serialization.BinarySerializerBehaviorEnum,Forge.Reflection.TypeLookupModeEnum,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Serialization.BinarySerializer.DeserializationContext" /> class.
+            </summary>
+            <param name="selector">The selector.</param>
+            <param name="context">The context.</param>
+            <param name="serializerBehavior">The serializer behavior.</param>
+            <param name="typeLookupMode">The type lookup mode.</param>
+            <param name="findNewestTypeVersion">if set to <c>true</c> [find newest type version].</param>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.DeserializationContext.Context">
+            <summary>
+            Gets the context.
+            </summary>
+            <value>
+            The context.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.DeserializationContext.Selector">
+            <summary>
+            Gets or sets the selector.
+            </summary>
+            <value>
+            The selector.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.DeserializationContext.SerializerBehavior">
+            <summary>
+            Gets the serializer behavior.
+            </summary>
+            <value>
+            The serializer behavior.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.DeserializationContext.TypeLookupMode">
+            <summary>
+            Gets the type lookup mode.
+            </summary>
+            <value>
+            The type lookup mode.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.DeserializationContext.FindNewestTypeVersion">
+            <summary>
+            Gets a value indicating whether [find newest type version].
+            </summary>
+            <value>
+            <c>true</c> if [find newest type version]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.DeserializationContext.AsmIdVsAssemblyName">
+            <summary>
+            Gets the name of the asm id vs assembly.
+            </summary>
+            <value>
+            The name of the asm id vs assembly.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.DeserializationContext.TypeIdVsTypeInfo">
+            <summary>
+            Gets the type id vs type info.
+            </summary>
+            <value>
+            The type id vs type info.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.DeserializationContext.InstanceIdVsInstanceProxy">
+            <summary>
+            Gets the instance id vs instance proxy.
+            </summary>
+            <value>
+            The instance id vs instance proxy.
+            </value>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.BinarySerializer.DeserializationContext.Deserialize(System.IO.Stream)">
+            <summary>
+            Deserializes the specified serialization stream.
+            </summary>
+            <param name="serializationStream">The serialization stream.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.BinarySerializer.STypeInfo.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Serialization.BinarySerializer.STypeInfo"/> class.
+            </summary>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.STypeInfo.TypeId">
+            <summary>
+            Gets or sets the type id.
+            </summary>
+            <value>
+            The type id.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.STypeInfo.Type">
+            <summary>
+            Gets or sets the type.
+            </summary>
+            <value>
+            The type.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.STypeInfo.AssemblyId">
+            <summary>
+            Gets or sets the assembly id.
+            </summary>
+            <value>
+            The assembly id.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.STypeInfo.SerializableFieldCounter">
+            <summary>
+            Gets or sets the serializable field counter.
+            </summary>
+            <value>
+            The serializable field counter.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.STypeInfo.ArrayRank">
+            <summary>
+            Gets the array rank.
+            </summary>
+            <value>
+            The array rank.
+            </value>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.BinarySerializer.STypeInfo.SerializeType(System.IO.Stream,Forge.Persistence.Serialization.BinarySerializer.SerializationContext)">
+            <summary>
+            Serializes the type.
+            </summary>
+            <param name="serializationStream">The serialization stream.</param>
+            <param name="context">The context.</param>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.BinarySerializer.STypeInfo.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object" /> is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object" /> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.BinarySerializer.STypeInfo.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+            </returns>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.BinarySerializer.STypeInfo.Clone">
+            <summary>
+            Creates a new object that is a copy of the current instance.
+            </summary>
+            <returns>
+            A new object that is a copy of this instance.
+            </returns>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.BinarySerializer.STypeInstanceProxy.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Serialization.BinarySerializer.STypeInstanceProxy"/> class.
+            </summary>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.STypeInstanceProxy.InstanceId">
+            <summary>
+            Gets or sets the instance id.
+            </summary>
+            <value>
+            The instance id.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.STypeInstanceProxy.InstanceValue">
+            <summary>
+            Gets or sets the instance value.
+            </summary>
+            <value>
+            The instance value.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.STypeInstanceProxy.ArrayKeys">
+            <summary>
+            Gets or sets the array keys.
+            </summary>
+            <value>
+            The array keys.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.STypeInstanceProxy.IsArrayDimensionRepresentation">
+            <summary>
+            Gets or sets a value indicating whether this instance is array dimension representation.
+            </summary>
+            <value>
+            <c>true</c> if this instance is array dimension representation; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.STypeInstanceProxy.ArrayItems">
+            <summary>
+            Gets or sets the array items.
+            </summary>
+            <value>
+            The array items.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.STypeInstanceProxy.ArrayRank">
+            <summary>
+            Gets the array rank.
+            </summary>
+            <value>
+            The array rank.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.STypeInstanceProxy.FieldVsProxy">
+            <summary>
+            Gets the field vs proxy.
+            </summary>
+            <value>
+            The field vs proxy.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.STypeInstanceProxy.SerializationInfo">
+            <summary>
+            Gets or sets the serialization info.
+            </summary>
+            <value>
+            The serialization info.
+            </value>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.BinarySerializer.STypeInstanceProxy.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object" /> is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object" /> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.BinarySerializer.STypeInstanceProxy.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+            </returns>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.BinarySerializer.STypeInstanceProxy.SerializeContent(System.IO.Stream,Forge.Persistence.Serialization.BinarySerializer.SerializationContext)">
+            <summary>
+            Serializes the content.
+            </summary>
+            <param name="serializationStream">The serialization stream.</param>
+            <param name="context">The context.</param>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.BinarySerializer.DTypeInfo.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Serialization.BinarySerializer.DTypeInfo"/> class.
+            </summary>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.DTypeInfo.AssemblyId">
+            <summary>
+            Gets or sets the assembly id.
+            </summary>
+            <value>
+            The assembly id.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.DTypeInfo.TypeId">
+            <summary>
+            Gets or sets the type id.
+            </summary>
+            <value>
+            The type id.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.DTypeInfo.Type">
+            <summary>
+            Gets or sets the type.
+            </summary>
+            <value>
+            The type.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.DTypeInfo.TypeName">
+            <summary>
+            Gets or sets the name of the type.
+            </summary>
+            <value>
+            The name of the type.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.DTypeInfo.IsArray">
+            <summary>
+            Gets or sets a value indicating whether this instance is array.
+            </summary>
+            <value>
+              <c>true</c> if this instance is array; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.DTypeInfo.ArrayRank">
+            <summary>
+            Gets the array rank.
+            </summary>
+            <value>
+            The array rank.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.DTypeInfo.IsGenericType">
+            <summary>
+            Gets or sets a value indicating whether this instance is generic type.
+            </summary>
+            <value>
+            <c>true</c> if this instance is generic type; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.DTypeInfo.IsGenericDeclaration">
+            <summary>
+            Gets or sets a value indicating whether this instance is generic declaration.
+            </summary>
+            <value>
+            <c>true</c> if this instance is generic declaration; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.DTypeInfo.IsNested">
+            <summary>
+            Gets or sets a value indicating whether this instance is nested.
+            </summary>
+            <value>
+              <c>true</c> if this instance is nested; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.DTypeInfo.DeclaredTypeId">
+            <summary>
+            Gets or sets the declared type id.
+            </summary>
+            <value>
+            The declared type id.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.DTypeInfo.GenericParameterTypeIds">
+            <summary>
+            Gets or sets the generic parameter type ids.
+            ez akkor is null, ha a IsGenericDeclaration == true
+            </summary>
+            <value>
+            The generic parameter type ids.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.DTypeInfo.DeserializableFieldNumber">
+            <summary>
+            Gets or sets the deserializable field number.
+            </summary>
+            <value>
+            The deserializable field number.
+            </value>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.BinarySerializer.DTypeInfo.ResolveType(Forge.Persistence.Serialization.BinarySerializer.DeserializationContext)">
+            <summary>
+            Resolves the type.
+            </summary>
+            <param name="context">The context.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.BinarySerializer.DTypeInfo.AppendNestedType(Forge.Persistence.Serialization.BinarySerializer.DeserializationContext,System.String)">
+            <summary>
+            Appends the type of the nested.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="typeName">Name of the type.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.BinarySerializer.DTypeInfo.Clone">
+            <summary>
+            Creates a new object that is a copy of the current instance.
+            </summary>
+            <returns>
+            A new object that is a copy of this instance.
+            </returns>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.BinarySerializer.DTypeInstanceProxy.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.Serialization.BinarySerializer.DTypeInstanceProxy"/> class.
+            </summary>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.DTypeInstanceProxy.InstanceId">
+            <summary>
+            Gets or sets the instance id.
+            </summary>
+            <value>
+            The instance id.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.DTypeInstanceProxy.InstanceValue">
+            <summary>
+            Gets or sets the instance value.
+            </summary>
+            <value>
+            The instance value.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.DTypeInstanceProxy.ArrayKeysRefIds">
+            <summary>
+            Gets or sets the array key.
+            </summary>
+            <value>
+            The array key.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.DTypeInstanceProxy.ArrayItemsRefIds">
+            <summary>
+            Gets the array items ref ids.
+            </summary>
+            <value>
+            The array items ref ids.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.DTypeInstanceProxy.IsArrayDimensionRepresentation">
+            <summary>
+            Gets or sets a value indicating whether this instance is array dimension representation.
+            </summary>
+            <value>
+            <c>true</c> if this instance is array dimension representation; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.DTypeInstanceProxy.FieldsVsInstanceIds">
+            <summary>
+            Gets the fields vs instance ids.
+            </summary>
+            <value>
+            The fields vs instance ids.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.Serialization.BinarySerializer.DTypeInstanceProxy.IsConstructed">
+            <summary>
+            Gets or sets a value indicating whether this instance is constructed.
+            </summary>
+            <value>
+            <c>true</c> if this instance is constructed; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.BinarySerializer.DTypeInstanceProxy.Construct(Forge.Persistence.Serialization.BinarySerializer.DeserializationContext)">
+            <summary>
+            Constructs the specified context.
+            </summary>
+            <param name="context">The context.</param>
+            <returns></returns>
+            <exception cref="T:System.MissingFieldException"></exception>
+        </member>
+        <member name="T:Forge.Persistence.Serialization.BinarySerializerBehaviorEnum">
+            <summary>
+            Behavior of the binary serializer
+            </summary>
+        </member>
+        <member name="F:Forge.Persistence.Serialization.BinarySerializerBehaviorEnum.ThrowExceptionOnMissingField">
+            <summary>
+            The throw exception on missing field
+            </summary>
+        </member>
+        <member name="F:Forge.Persistence.Serialization.BinarySerializerBehaviorEnum.DoNotThrowExceptionOnMissingField">
+            <summary>
+            The do not throw exception on missing field
+            </summary>
+        </member>
+        <member name="T:Forge.Persistence.Serialization.SerializationHelper">
+            <summary>
+            Serialization/deserialization helper class
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.SerializationHelper.Read``1(System.IO.FileInfo)">
+            <summary>
+            Reads the specified file.
+            </summary>
+            <typeparam name="T">Generic type</typeparam>
+            <param name="file">The file.</param>
+            <returns>Data</returns>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.SerializationHelper.Read``1(System.IO.Stream)">
+            <summary>
+            Reads the specified stream.
+            </summary>
+            <typeparam name="T">Type of the data</typeparam>
+            <param name="stream">The stream.</param>
+            <returns>Data</returns>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.SerializationHelper.Read``1(System.IO.FileInfo,Forge.Persistence.Formatters.IDataFormatter{``0})">
+            <summary>
+            Reads the specified file.
+            </summary>
+            <typeparam name="T">Generic type</typeparam>
+            <param name="file">The file.</param>
+            <param name="formatter">The formatter.</param>
+            <returns>Data</returns>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.SerializationHelper.Read``1(System.IO.Stream,Forge.Persistence.Formatters.IDataFormatter{``0})">
+            <summary>
+            Reads the specified stream.
+            </summary>
+            <typeparam name="T">Generic type</typeparam>
+            <param name="stream">The stream.</param>
+            <param name="formatter">The formatter.</param>
+            <returns>Data</returns>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.SerializationHelper.Read``1(System.IO.FileInfo,Forge.Persistence.Formatters.IDataFormatter{``0},System.Boolean)">
+            <summary>
+            Reads the specified file.
+            </summary>
+            <typeparam name="T">Generic type</typeparam>
+            <param name="file">The file.</param>
+            <param name="formatter">The formatter.</param>
+            <param name="decompress">if set to <c>true</c> [decompress].</param>
+            <returns>Data</returns>
+            <exception cref="T:System.ArgumentNullException">
+            file
+            or
+            formatter
+            </exception>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.SerializationHelper.Read``1(System.IO.Stream,Forge.Persistence.Formatters.IDataFormatter{``0},System.Boolean)">
+            <summary>
+            Reads the specified stream.
+            </summary>
+            <typeparam name="T">Generic type</typeparam>
+            <param name="stream">The stream.</param>
+            <param name="formatter">The formatter.</param>
+            <param name="decompress">if set to <c>true</c> [decompress].</param>
+            <returns>Data</returns>
+            <exception cref="T:System.ArgumentNullException">
+            stream
+            or
+            formatter
+            </exception>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.SerializationHelper.Write``1(``0,System.IO.FileInfo)">
+            <summary>
+            Writes the specified obj.
+            </summary>
+            <typeparam name="T">Generic type</typeparam>
+            <param name="obj">The obj.</param>
+            <param name="file">The file.</param>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.SerializationHelper.Write``1(``0,System.IO.Stream)">
+            <summary>
+            Writes the specified obj.
+            </summary>
+            <typeparam name="T">Generic type</typeparam>
+            <param name="obj">The obj.</param>
+            <param name="stream">The stream.</param>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.SerializationHelper.Write``1(``0,System.IO.FileInfo,Forge.Persistence.Formatters.IDataFormatter{``0})">
+            <summary>
+            Writes the specified obj.
+            </summary>
+            <typeparam name="T">Generic type</typeparam>
+            <param name="obj">The obj.</param>
+            <param name="file">The file.</param>
+            <param name="formatter">The formatter.</param>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.SerializationHelper.Write``1(``0,System.IO.Stream,Forge.Persistence.Formatters.IDataFormatter{``0})">
+            <summary>
+            Writes the specified obj.
+            </summary>
+            <typeparam name="T">Generic type</typeparam>
+            <param name="obj">The obj.</param>
+            <param name="stream">The stream.</param>
+            <param name="formatter">The formatter.</param>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.SerializationHelper.Write``1(``0,System.IO.FileInfo,Forge.Persistence.Formatters.IDataFormatter{``0},System.Boolean)">
+            <summary>
+            Writes the specified obj.
+            </summary>
+            <typeparam name="T">Generic type</typeparam>
+            <param name="obj">The obj.</param>
+            <param name="file">The file.</param>
+            <param name="formatter">The formatter.</param>
+            <param name="compress">if set to <c>true</c> [compress].</param>
+            <exception cref="T:System.ArgumentNullException">
+            file
+            or
+            formatter
+            </exception>
+        </member>
+        <member name="M:Forge.Persistence.Serialization.SerializationHelper.Write``1(``0,System.IO.Stream,Forge.Persistence.Formatters.IDataFormatter{``0},System.Boolean)">
+            <summary>
+            Writes the specified obj.
+            </summary>
+            <typeparam name="T">Generic type</typeparam>
+            <param name="obj">The obj.</param>
+            <param name="stream">The stream.</param>
+            <param name="formatter">The formatter.</param>
+            <param name="compress">if set to <c>true</c> [compress].</param>
+            <exception cref="T:System.ArgumentNullException">
+            stream
+            or
+            formatter
+            </exception>
+        </member>
+        <member name="T:Forge.Persistence.StorageProviders.ConfigSection.StorageConfiguration">
+            <summary>
+            Configuration access helper class for storages
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.ConfigSection.StorageConfiguration.#cctor">
+            <summary>
+            Initializes the <see cref="T:Forge.Persistence.StorageProviders.ConfigSection.StorageConfiguration"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.ConfigSection.StorageConfiguration.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.ConfigSection.StorageConfiguration"/> class.
+            </summary>
+        </member>
+        <member name="T:Forge.Persistence.StorageProviders.ConfigSection.StorageSection">
+            <summary>
+            Configuration Section for storages
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.ConfigSection.StorageSection.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.ConfigSection.StorageSection"/> class.
+            </summary>
+        </member>
+        <member name="T:Forge.Persistence.StorageProviders.FileStorageProvider`1">
+            <summary>
+            File based storage provider
+            </summary>
+            <typeparam name="T">Generic type</typeparam>
+        </member>
+        <member name="F:Forge.Persistence.StorageProviders.FileStorageProvider`1.DefaultBaseUrl">
+            <summary>
+            Default storage folder
+            </summary>
+        </member>
+        <member name="F:Forge.Persistence.StorageProviders.FileStorageProvider`1.DefaultFormatterAssemblyStyle">
+            <summary>
+            Default assembly style
+            </summary>
+        </member>
+        <member name="F:Forge.Persistence.StorageProviders.FileStorageProvider`1.DefaultFormatterTypeStyle">
+            <summary>
+            Default type style
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.FileStorageProvider`1.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.FileStorageProvider`1"/> class.
+            </summary>
+            <param name="storageId">The storage id.</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.FileStorageProvider`1.#ctor(System.String,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.FileStorageProvider`1"/> class.
+            </summary>
+            <param name="storageId">The storage id.</param>
+            <param name="compressContent">if set to <c>true</c> [compress content].</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.FileStorageProvider`1.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.FileStorageProvider`1"/> class.
+            </summary>
+            <param name="storageId">The storage id.</param>
+            <param name="baseUrl">The base URL.</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.FileStorageProvider`1.#ctor(System.String,System.String,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.FileStorageProvider`1"/> class.
+            </summary>
+            <param name="storageId">The storage id.</param>
+            <param name="baseUrl">The base URL.</param>
+            <param name="compressContent">if set to <c>true</c> [compress content].</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.FileStorageProvider`1.#ctor(System.String,Forge.Persistence.Formatters.IDataFormatter{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.FileStorageProvider`1"/> class.
+            </summary>
+            <param name="storageId">The storage id.</param>
+            <param name="dataFormatter">The data formatter.</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.FileStorageProvider`1.#ctor(System.String,Forge.Persistence.Formatters.IDataFormatter{`0},System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.FileStorageProvider`1"/> class.
+            </summary>
+            <param name="storageId">The storage id.</param>
+            <param name="dataFormatter">The data formatter.</param>
+            <param name="compressContent">if set to <c>true</c> [compress content].</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.FileStorageProvider`1.#ctor(System.String,Forge.Persistence.Formatters.IDataFormatter{`0},System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.FileStorageProvider`1"/> class.
+            </summary>
+            <param name="storageId">The storage id.</param>
+            <param name="dataFormatter">The data formatter.</param>
+            <param name="baseUrl">The base URL.</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.FileStorageProvider`1.#ctor(System.String,Forge.Persistence.Formatters.IDataFormatter{`0},System.String,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.FileStorageProvider`1"/> class.
+            </summary>
+            <param name="storageId">The storage id.</param>
+            <param name="dataFormatter">The data formatter.</param>
+            <param name="baseUrl">The base URL.</param>
+            <param name="compressContent">if set to <c>true</c> [compress content].</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.FileStorageProvider`1.#ctor(System.String,Forge.Configuration.Shared.CategoryPropertyItem)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.FileStorageProvider`1"/> class.
+            </summary>
+            <param name="storageId">The storage id.</param>
+            <param name="configItem">The config item.</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.FileStorageProvider`1.Finalize">
+            <summary>
+            Releases unmanaged resources and performs other cleanup operations before the
+            <see cref="T:Forge.Persistence.StorageProviders.FileStorageProvider`1"/> is reclaimed by garbage collection.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.FileStorageProvider`1.Add(`0)">
+            <summary>
+            Adds the specified o.
+            </summary>
+            <param name="o">The o.</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.FileStorageProvider`1.AddRange(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Adds the range.
+            </summary>
+            <param name="o">The o.</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.FileStorageProvider`1.Insert(System.Int32,`0)">
+            <summary>
+            Inserts the specified index.
+            </summary>
+            <param name="index">The index.</param>
+            <param name="o">The o.</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.FileStorageProvider`1.Remove(`0)">
+            <summary>
+            Removes the specified o.
+            </summary>
+            <param name="o">The o.</param>
+            <returns>
+            True, if the collection modified, otherwise False.
+            </returns>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.FileStorageProvider`1.RemoveAt(System.Int32)">
+            <summary>
+            Removes at.
+            </summary>
+            <param name="index">The index.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">index</exception>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.FileStorageProvider`1.Clear">
+            <summary>
+            Clears this instance.
+            </summary>
+        </member>
+        <member name="P:Forge.Persistence.StorageProviders.FileStorageProvider`1.Item(System.Int32)">
+            <summary>
+            Gets the object at the specified index.
+            </summary>
+            <value>
+            The value
+            </value>
+            <param name="index">The index.</param>
+            <returns>Item</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">index</exception>
+        </member>
+        <member name="P:Forge.Persistence.StorageProviders.FileStorageProvider`1.Count">
+            <summary>
+            Gets the count.
+            </summary>
+            <value>
+            The count.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.StorageProviders.FileStorageProvider`1.IsEmpty">
+            <summary>
+            Gets a value indicating whether this instance is empty.
+            </summary>
+            <value>
+              <c>true</c> if this instance is empty; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.FileStorageProvider`1.GetEnumerator">
+            <summary>
+            Gets the enumerator.
+            </summary>
+            <returns>Enumerator of generic items</returns>
+        </member>
+        <member name="P:Forge.Persistence.StorageProviders.FileStorageProvider`1.CompressContent">
+            <summary>
+            Gets a value indicating whether [compress content].
+            </summary>
+            <value>
+              <c>true</c> if [compress content]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.FileStorageProvider`1.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources
+            </summary>
+            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        </member>
+        <member name="T:Forge.Persistence.StorageProviders.IStorageProvider`1">
+            <summary>
+            Interface for storage providers
+            </summary>
+            <typeparam name="T">Generic type</typeparam>
+        </member>
+        <member name="P:Forge.Persistence.StorageProviders.IStorageProvider`1.StorageId">
+            <summary>
+            Get the unique identifier of the storage provider
+            </summary>
+            <value>
+            The storage id.
+            </value>
+            <returns>Unique identifier</returns>
+        </member>
+        <member name="P:Forge.Persistence.StorageProviders.IStorageProvider`1.DataFormatter">
+            <summary>
+            Get the formatter which used by the provider to persist data
+            </summary>
+            <value>
+            The data formatter.
+            </value>
+            <returns>The formatter</returns>
+        </member>
+        <member name="P:Forge.Persistence.StorageProviders.IStorageProvider`1.DataType">
+            <summary>
+            Gets the type of the data.
+            </summary>
+            <value>
+            The type of the data.
+            </value>
+            <returns>Type of the data</returns>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.IStorageProvider`1.Add(`0)">
+            <summary>
+            Adds an object to the persistent store
+            </summary>
+            <param name="o">The o.</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.IStorageProvider`1.AddRange(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Adds the range of T.
+            </summary>
+            <param name="o">The o.</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.IStorageProvider`1.Insert(System.Int32,`0)">
+            <summary>
+            Insert the item into the specified position
+            </summary>
+            <param name="index">The index.</param>
+            <param name="o">The o.</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.IStorageProvider`1.Remove(`0)">
+            <summary>
+            Removes an object from the persistent store
+            </summary>
+            <param name="o">The o.</param>
+            <returns>True, if the collection modified, otherwise False.</returns>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.IStorageProvider`1.RemoveAt(System.Int32)">
+            <summary>
+            Remove item from the specified position.
+            </summary>
+            <param name="index">The index.</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.IStorageProvider`1.Clear">
+            <summary>
+            Clears the persistent store
+            </summary>
+        </member>
+        <member name="P:Forge.Persistence.StorageProviders.IStorageProvider`1.Item(System.Int32)">
+            <summary>
+            Get item from the specified position.
+            </summary>
+            <param name="index">The index.</param>
+            <returns></returns>
+        </member>
+        <member name="P:Forge.Persistence.StorageProviders.IStorageProvider`1.Count">
+            <summary>
+            Gets the size of the persistent store.
+            </summary>
+            <value>
+            The count.
+            </value>
+            <returns>The number of items in the collection</returns>
+        </member>
+        <member name="P:Forge.Persistence.StorageProviders.IStorageProvider`1.IsEmpty">
+            <summary>
+            Determines whether this persistent store is empty.
+            </summary>
+            <returns>
+              <c>true</c> if this persistent store is empty; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="T:Forge.Persistence.StorageProviders.MemoryStorageProvider`1">
+            <summary>
+            Memory based provider
+            </summary>
+            <typeparam name="T">Generic type</typeparam>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.MemoryStorageProvider`1.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.MemoryStorageProvider`1"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.MemoryStorageProvider`1.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.MemoryStorageProvider`1"/> class.
+            </summary>
+            <param name="storageId">The storage id.</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.MemoryStorageProvider`1.Finalize">
+            <summary>
+            Releases unmanaged resources and performs other cleanup operations before the
+            <see cref="T:Forge.Persistence.StorageProviders.MemoryStorageProvider`1"/> is reclaimed by garbage collection.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.MemoryStorageProvider`1.Add(`0)">
+            <summary>
+            Adds the specified o.
+            </summary>
+            <param name="o">The o.</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.MemoryStorageProvider`1.AddRange(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Adds the range.
+            </summary>
+            <param name="o">The o.</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.MemoryStorageProvider`1.Insert(System.Int32,`0)">
+            <summary>
+            Inserts the specified index.
+            </summary>
+            <param name="index">The index.</param>
+            <param name="o">The o.</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.MemoryStorageProvider`1.Remove(`0)">
+            <summary>
+            Removes the specified o.
+            </summary>
+            <param name="o">The o.</param>
+            <returns>True, if the collection modified, otherwise False.</returns>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.MemoryStorageProvider`1.RemoveAt(System.Int32)">
+            <summary>
+            Removes the specified index.
+            </summary>
+            <param name="index">The index.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">index</exception>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.MemoryStorageProvider`1.Clear">
+            <summary>
+            Clears this instance.
+            </summary>
+        </member>
+        <member name="P:Forge.Persistence.StorageProviders.MemoryStorageProvider`1.Item(System.Int32)">
+            <summary>
+            Gets the object at the specified index.
+            </summary>
+            <value>
+            The value
+            </value>
+            <param name="index">The index.</param>
+            <returns>
+            Item
+            </returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">index</exception>
+        </member>
+        <member name="P:Forge.Persistence.StorageProviders.MemoryStorageProvider`1.Count">
+            <summary>
+            Gets the count.
+            </summary>
+            <value>
+            The count.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.StorageProviders.MemoryStorageProvider`1.IsEmpty">
+            <summary>
+            Gets a value indicating whether this instance is empty.
+            </summary>
+            <value>
+              <c>true</c> if this instance is empty; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.MemoryStorageProvider`1.GetEnumerator">
+            <summary>
+            Gets the enumerator.
+            </summary>
+            <returns>Enumerator of generic items</returns>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.MemoryStorageProvider`1.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources
+            </summary>
+            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        </member>
+        <member name="T:Forge.Persistence.StorageProviders.PersistenceException">
+            <summary>
+            Occurs when a persistence failed.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.PersistenceException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.PersistenceException"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.PersistenceException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.PersistenceException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.PersistenceException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.PersistenceException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="ex">The ex.</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.PersistenceException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.PersistenceException" /> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="info" /> parameter is null.</exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is null or <see cref="P:System.Exception.HResult" /> is zero (0).</exception>
+        </member>
+        <member name="T:Forge.Persistence.StorageProviders.StorageIdentifierAlreadyExistException">
+            <summary>
+            Exception for duplication identifiers
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.StorageIdentifierAlreadyExistException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.StorageIdentifierAlreadyExistException"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.StorageIdentifierAlreadyExistException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.StorageIdentifierAlreadyExistException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.StorageIdentifierAlreadyExistException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.StorageIdentifierAlreadyExistException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="ex">The ex.</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.StorageIdentifierAlreadyExistException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.StorageIdentifierAlreadyExistException" /> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="info" /> parameter is null.</exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is null or <see cref="P:System.Exception.HResult" /> is zero (0).</exception>
+        </member>
+        <member name="T:Forge.Persistence.StorageProviders.StorageProviderBase`1">
+            <summary>
+            Storage provider base implementation
+            </summary>
+            <typeparam name="T">Generic type</typeparam>
+        </member>
+        <member name="F:Forge.Persistence.StorageProviders.StorageProviderBase`1.mDataFormatter">
+            <summary>
+            The default data formatter
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.StorageProviderBase`1.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.StorageProviderBase`1"/> class.
+            </summary>
+            <param name="storageId">The storage id.</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.StorageProviderBase`1.#ctor(System.String,Forge.Configuration.Shared.CategoryPropertyItem)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.StorageProviderBase`1"/> class.
+            </summary>
+            <param name="storageId">The storage id.</param>
+            <param name="configItem">The config item.</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.StorageProviderBase`1.Finalize">
+            <summary>
+            Releases unmanaged resources and performs other cleanup operations before the
+            <see cref="T:Forge.Persistence.StorageProviders.StorageProviderBase`1"/> is reclaimed by garbage collection.
+            </summary>
+        </member>
+        <member name="P:Forge.Persistence.StorageProviders.StorageProviderBase`1.StorageId">
+            <summary>
+            Gets the storage id.
+            </summary>
+            <value>
+            The storage id.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.StorageProviders.StorageProviderBase`1.DataFormatter">
+            <summary>
+            Gets the data formatter.
+            </summary>
+            <value>
+            The data formatter.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.StorageProviders.StorageProviderBase`1.DataType">
+            <summary>
+            Gets the type of the data.
+            </summary>
+            <value>
+            The type of the data.
+            </value>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.StorageProviderBase`1.Add(`0)">
+            <summary>
+            Adds the specified o.
+            </summary>
+            <param name="o">The o.</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.StorageProviderBase`1.AddRange(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Adds the range.
+            </summary>
+            <param name="o">The o.</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.StorageProviderBase`1.Insert(System.Int32,`0)">
+            <summary>
+            Inserts the specified o.
+            </summary>
+            <param name="index">The index.</param>
+            <param name="o">The o.</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.StorageProviderBase`1.Remove(`0)">
+            <summary>
+            Removes the specified o.
+            </summary>
+            <param name="o">The o.</param>
+            <returns>True, if the collection modified, otherwise False.</returns>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.StorageProviderBase`1.RemoveAt(System.Int32)">
+            <summary>
+            Removes the specified index.
+            </summary>
+            <param name="index">The index.</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.StorageProviderBase`1.Clear">
+            <summary>
+            Clears this instance.
+            </summary>
+        </member>
+        <member name="P:Forge.Persistence.StorageProviders.StorageProviderBase`1.Item(System.Int32)">
+            <summary>
+            Gets or sets the object at the specified index.
+            </summary>
+            <value>
+            The value
+            </value>
+            <param name="index">The index.</param>
+            <returns>Item</returns>
+        </member>
+        <member name="P:Forge.Persistence.StorageProviders.StorageProviderBase`1.Count">
+            <summary>
+            Sizes this instance.
+            </summary>
+            <value>
+            The count.
+            </value>
+            <returns>Number of the items in the collection</returns>
+        </member>
+        <member name="P:Forge.Persistence.StorageProviders.StorageProviderBase`1.IsEmpty">
+            <summary>
+            Determines whether this instance is empty.
+            </summary>
+            <returns>
+              <c>true</c> if this instance is empty; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.StorageProviderBase`1.GetEnumerator">
+            <summary>
+            Gets the enumerator.
+            </summary>
+            <returns>
+            Enumerator of generic items
+            </returns>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.StorageProviderBase`1.System#Collections#Generic#IEnumerable{T}#GetEnumerator">
+            <summary>
+            Gets the enumerator.
+            </summary>
+            <returns>
+            Enumerator of generic items
+            </returns>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.StorageProviderBase`1.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through a collection.
+            </summary>
+            <returns>
+            An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
+            </returns>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.StorageProviderBase`1.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="P:Forge.Persistence.StorageProviders.StorageProviderBase`1.Version">
+            <summary>
+            Gets the version.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.StorageProviderBase`1.IncVersion">
+            <summary>
+            Increments the version.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.StorageProviderBase`1.DoDisposeCheck">
+            <summary>
+            Does the dispose check.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.StorageProviderBase`1.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources
+            </summary>
+            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        </member>
+        <member name="T:Forge.Persistence.StorageProviders.StorageProviderBase`1.StorageProviderIterator`1">
+            <summary>
+            Iterator implementation for storage providers
+            </summary>
+            <typeparam name="TData">The type of the data.</typeparam>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.StorageProviderBase`1.StorageProviderIterator`1.#ctor(Forge.Persistence.StorageProviders.StorageProviderBase{`1},System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.StorageProviderBase`1.StorageProviderIterator`1"/> class.
+            </summary>
+            <param name="provider">The provider.</param>
+            <param name="index">The index.</param>
+            <param name="count">The count.</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.StorageProviderBase`1.StorageProviderIterator`1.Finalize">
+            <summary>
+            Releases unmanaged resources and performs other cleanup operations before the
+            <see cref="T:Forge.Persistence.StorageProviders.StorageProviderBase`1.StorageProviderIterator`1"/> is reclaimed by garbage collection.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.StorageProviderBase`1.StorageProviderIterator`1.Next">
+            <summary>
+            Nexts this instance.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.StorageProviderBase`1.StorageProviderIterator`1.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources
+            </summary>
+            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.StorageProviderBase`1.StorageProviderIterator`1.Remove">
+            <summary>
+            Removes this instance.
+            </summary>
+        </member>
+        <member name="P:Forge.Persistence.StorageProviders.StorageProviderBase`1.StorageProviderIterator`1.Current">
+            <summary>
+            Gets the current.
+            </summary>
+        </member>
+        <member name="P:Forge.Persistence.StorageProviders.StorageProviderBase`1.StorageProviderIterator`1.System#Collections#IEnumerator#Current">
+            <summary>
+            Gets the current.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.StorageProviderBase`1.StorageProviderIterator`1.MoveNext">
+            <summary>
+            Advances the enumerator to the next element of the collection.
+            </summary>
+            <returns>
+            true if the enumerator was successfully advanced to the next element; false if the enumerator has passed the end of the collection.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">The collection was modified after the enumerator was created. </exception>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.StorageProviderBase`1.StorageProviderIterator`1.HasNext">
+            <summary>
+            Determines whether this instance has next.
+            </summary>
+            <returns>
+              <c>true</c> if this instance has next; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.StorageProviderBase`1.StorageProviderIterator`1.Reset">
+            <summary>
+            Sets the enumerator to its initial position, which is before the first element in the collection.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">The collection was modified after the enumerator was created. </exception>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.StorageProviderBase`1.StorageProviderIterator`1.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+    </members>
+</doc>

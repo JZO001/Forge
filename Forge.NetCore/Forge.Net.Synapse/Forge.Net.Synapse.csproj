@@ -1,0 +1,125 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp3.1;net40</TargetFrameworks>
+    <Version>4.0.0.7</Version>
+    <Copyright>Copyright © Zoltan Juhasz, 2005-2019</Copyright>
+    <Description>Contains the persistence library</Description>
+    <Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
+    <Company>Forge Project Contributor(s)</Company>
+    <PackageId>Forge.Net.Synapse</PackageId>
+    <Authors>Zoltan Juhasz</Authors>
+    <AssemblyVersion>4.0.0.7</AssemblyVersion>
+    <Title>Synapse Network Core Library</Title>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <ProjectGuid>{63528BC4-C7D4-4DB0-ADD7-36C98F0E0C0E}</ProjectGuid>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp3.1|AnyCPU'">
+    <DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.Net.Synapse\Forge.Net.Synapse.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp3.1|AnyCPU'">
+    <DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.Net.Synapse\Forge.Net.Synapse.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\Forge.Net.Synapse\AddressEndPoint.cs" Link="AddressEndPoint.cs" />
+    <Compile Include="..\..\Forge.Net.Synapse\ConnectionEventArgs.cs" Link="ConnectionEventArgs.cs" />
+    <Compile Include="..\..\Forge.Net.Synapse\Firewall\FirewallException.cs" Link="Firewall\FirewallException.cs" />
+    <Compile Include="..\..\Forge.Net.Synapse\Firewall\WindowsFirewallManager.cs" Link="Firewall\WindowsFirewallManager.cs" />
+    <Compile Include="..\..\Forge.Net.Synapse\Icmp\Ping.cs" Link="Icmp\Ping.cs" />
+    <Compile Include="..\..\Forge.Net.Synapse\Icmp\PingResultEnum.cs" Link="Icmp\PingResultEnum.cs" />
+    <Compile Include="..\..\Forge.Net.Synapse\Icmp\PingResultEventArgs.cs" Link="Icmp\PingResultEventArgs.cs" />
+    <Compile Include="..\..\Forge.Net.Synapse\NATUPnP\ProtocolEnum.cs" Link="NATUPnP\ProtocolEnum.cs" />
+    <Compile Include="..\..\Forge.Net.Synapse\NATUPnP\UPnPManager.cs" Link="NATUPnP\UPnPManager.cs" />
+    <Compile Include="..\..\Forge.Net.Synapse\NetworkFactory\DefaultClientStreamFactory.cs" Link="NetworkFactory\DefaultClientStreamFactory.cs" />
+    <Compile Include="..\..\Forge.Net.Synapse\NetworkFactory\DefaultNetworkFactory.cs" Link="NetworkFactory\DefaultNetworkFactory.cs" />
+    <Compile Include="..\..\Forge.Net.Synapse\NetworkFactory\DefaultServerStreamFactory.cs" Link="NetworkFactory\DefaultServerStreamFactory.cs" />
+    <Compile Include="..\..\Forge.Net.Synapse\NetworkFactory\SocketWrapper.cs" Link="NetworkFactory\SocketWrapper.cs" />
+    <Compile Include="..\..\Forge.Net.Synapse\NetworkFactory\SslClientStreamFactory.cs" Link="NetworkFactory\SslClientStreamFactory.cs" />
+    <Compile Include="..\..\Forge.Net.Synapse\NetworkFactory\SslServerStreamFactory.cs" Link="NetworkFactory\SslServerStreamFactory.cs" />
+    <Compile Include="..\..\Forge.Net.Synapse\NetworkFactory\StreamFactoryBase.cs" Link="NetworkFactory\StreamFactoryBase.cs" />
+    <Compile Include="..\..\Forge.Net.Synapse\NetworkFactory\TcpClientWrapper.cs" Link="NetworkFactory\TcpClientWrapper.cs" />
+    <Compile Include="..\..\Forge.Net.Synapse\NetworkFactory\TcpListenerWrapper.cs" Link="NetworkFactory\TcpListenerWrapper.cs" />
+    <Compile Include="..\..\Forge.Net.Synapse\NetworkFactory\UdpClientWrapper.cs" Link="NetworkFactory\UdpClientWrapper.cs" />
+    <Compile Include="..\..\Forge.Net.Synapse\NetworkManager.cs" Link="NetworkManager.cs" />
+    <Compile Include="..\..\Forge.Net.Synapse\NetworkServices\IClientStreamFactory.cs" Link="NetworkServices\IClientStreamFactory.cs" />
+    <Compile Include="..\..\Forge.Net.Synapse\NetworkServices\INetworkFactory.cs" Link="NetworkServices\INetworkFactory.cs" />
+    <Compile Include="..\..\Forge.Net.Synapse\NetworkServices\IServerStreamFactory.cs" Link="NetworkServices\IServerStreamFactory.cs" />
+    <Compile Include="..\..\Forge.Net.Synapse\NetworkServices\ISocket.cs" Link="NetworkServices\ISocket.cs" />
+    <Compile Include="..\..\Forge.Net.Synapse\NetworkServices\IStreamFactory.cs" Link="NetworkServices\IStreamFactory.cs" />
+    <Compile Include="..\..\Forge.Net.Synapse\NetworkServices\ITcpClient.cs" Link="NetworkServices\ITcpClient.cs" />
+    <Compile Include="..\..\Forge.Net.Synapse\NetworkServices\ITcpListener.cs" Link="NetworkServices\ITcpListener.cs" />
+    <Compile Include="..\..\Forge.Net.Synapse\NetworkServices\IUdpClient.cs" Link="NetworkServices\IUdpClient.cs" />
+    <Compile Include="..\..\Forge.Net.Synapse\NetworkStream.cs" Link="NetworkStream.cs" />
+    <Compile Include="..\..\Forge.Net.Synapse\TcpKeepAlive.cs" Link="TcpKeepAlive.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+    <PackageReference Include="System.Configuration.ConfigurationManager">
+      <Version>4.7.0</Version>
+    </PackageReference>
+    <Reference Include="Forge.Base">
+      <HintPath>..\Forge.Base\bin\netcoreapp3.1\Forge.Base.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <Name>Forge.Base</Name>
+    </Reference>
+    <Reference Include="Forge.Security">
+      <HintPath>..\Forge.Security\bin\netcoreapp3.1\Forge.Security.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <Name>Forge.Security</Name>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net40'">
+    <COMReference Include="NetFwTypeLib.dll">
+      <Guid>58fbcf7c-e7a9-467c-80b3-fc65e8fcca08</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Lcid>0</Lcid>
+      <Isolated>false</Isolated>
+    </COMReference>
+    <COMReference Include="NATUPNPLib.dll">
+      <Guid>1c565858-f302-471e-b409-f180aa4abec6</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Lcid>0</Lcid>
+      <Isolated>false</Isolated>
+    </COMReference>
+    <Reference Include="System.Configuration" />
+    <Reference Include="Forge.Base">
+      <HintPath>..\Forge.Base\bin\net40\Forge.Base.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <Name>Forge.Base</Name>
+    </Reference>
+    <Reference Include="Forge.Security">
+      <HintPath>..\Forge.Security\bin\net40\Forge.Security.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <Name>Forge.Security</Name>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Firewall\" />
+    <Folder Include="Icmp\" />
+    <Folder Include="NATUPnP\" />
+    <Folder Include="NetworkFactory\" />
+    <Folder Include="NetworkServices\" />
+  </ItemGroup>
+
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="echo F|xcopy /r /y &quot;$(TargetPath)&quot; &quot;$(ProjectDir)bin\$(TargetFramework)\$(TargetFileName)&quot;&#xD;&#xA;" />
+  </Target>
+
+</Project>

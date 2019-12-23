@@ -9,7 +9,6 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Forge.Reflection;
-using log4net;
 
 namespace Forge.Logging
 {
@@ -109,19 +108,26 @@ namespace Forge.Logging
                 LOGGER.Info(string.Format("LOGUTILS, SessionId: {0}", p.SessionId.ToString()));
                 LOGGER.Info(string.Format("LOGUTILS, Start time: {0}", p.StartTime.ToString()));
 
-                if (p.StartInfo != null)
+                try
                 {
-                    LOGGER.Info(string.Format("LOGUTILS, StartInfo, arguments: {0}", p.StartInfo.Arguments));
-                    LOGGER.Info(string.Format("LOGUTILS, StartInfo, create no window: {0}", p.StartInfo.CreateNoWindow.ToString()));
-                    LOGGER.Info(string.Format("LOGUTILS, StartInfo, domain: {0}", p.StartInfo.Domain));
-                    LOGGER.Info(string.Format("LOGUTILS, StartInfo, file name: {0}", p.StartInfo.FileName));
-                    LOGGER.Info(string.Format("LOGUTILS, StartInfo, load user profile: {0}", p.StartInfo.LoadUserProfile.ToString()));
-                    LOGGER.Info(string.Format("LOGUTILS, StartInfo, redirect standard error: {0}", p.StartInfo.RedirectStandardError.ToString()));
-                    LOGGER.Info(string.Format("LOGUTILS, StartInfo, redirect standard input: {0}", p.StartInfo.RedirectStandardInput.ToString()));
-                    LOGGER.Info(string.Format("LOGUTILS, StartInfo, user name: {0}", p.StartInfo.UserName));
-                    LOGGER.Info(string.Format("LOGUTILS, StartInfo, use shell execute: {0}", p.StartInfo.UseShellExecute.ToString()));
-                    LOGGER.Info(string.Format("LOGUTILS, StartInfo, verb: {0}", p.StartInfo.Verb));
-                    LOGGER.Info(string.Format("LOGUTILS, StartInfo, working directory: {0}", p.StartInfo.WorkingDirectory));
+                    if (p.StartInfo != null)
+                    {
+                        LOGGER.Info(string.Format("LOGUTILS, StartInfo, arguments: {0}", p.StartInfo.Arguments));
+                        LOGGER.Info(string.Format("LOGUTILS, StartInfo, create no window: {0}", p.StartInfo.CreateNoWindow.ToString()));
+                        LOGGER.Info(string.Format("LOGUTILS, StartInfo, domain: {0}", p.StartInfo.Domain));
+                        LOGGER.Info(string.Format("LOGUTILS, StartInfo, file name: {0}", p.StartInfo.FileName));
+                        LOGGER.Info(string.Format("LOGUTILS, StartInfo, load user profile: {0}", p.StartInfo.LoadUserProfile.ToString()));
+                        LOGGER.Info(string.Format("LOGUTILS, StartInfo, redirect standard error: {0}", p.StartInfo.RedirectStandardError.ToString()));
+                        LOGGER.Info(string.Format("LOGUTILS, StartInfo, redirect standard input: {0}", p.StartInfo.RedirectStandardInput.ToString()));
+                        LOGGER.Info(string.Format("LOGUTILS, StartInfo, user name: {0}", p.StartInfo.UserName));
+                        LOGGER.Info(string.Format("LOGUTILS, StartInfo, use shell execute: {0}", p.StartInfo.UseShellExecute.ToString()));
+                        LOGGER.Info(string.Format("LOGUTILS, StartInfo, verb: {0}", p.StartInfo.Verb));
+                        LOGGER.Info(string.Format("LOGUTILS, StartInfo, working directory: {0}", p.StartInfo.WorkingDirectory));
+                    }
+                }
+                catch (Exception)
+                {
+                    LOGGER.Info("LOGUTILS, StartInfo is not available.");
                 }
 
                 LOGGER.Info("--------------------------------------------------------");
@@ -175,6 +181,8 @@ namespace Forge.Logging
                     catch (Exception) { }
 
                     LOGGER.Info(string.Format("LOGUTILS, Domain, Setup Information, ApplicationBase: {0}", domain.SetupInformation.ApplicationBase));
+#if NETCOREAPP3_1
+#else
                     LOGGER.Info(string.Format("LOGUTILS, Domain, Setup Information, ApplicationName: {0}", domain.SetupInformation.ApplicationName));
                     LOGGER.Info(string.Format("LOGUTILS, Domain, Setup Information, CachePath: {0}", domain.SetupInformation.CachePath));
                     LOGGER.Info(string.Format("LOGUTILS, Domain, Setup Information, ConfigurationFile: {0}", domain.SetupInformation.ConfigurationFile));
@@ -190,6 +198,7 @@ namespace Forge.Logging
                     //LOGGER.Info(string.Format("LOGUTILS, Domain, Setup Information, SandboxInterop: {0}", domain.SetupInformation.SandboxInterop.ToString()));
                     LOGGER.Info(string.Format("LOGUTILS, Domain, Setup Information, ShadowCopyDirectories: {0}", domain.SetupInformation.ShadowCopyDirectories));
                     LOGGER.Info(string.Format("LOGUTILS, Domain, Setup Information, ShadowCopyFiles: {0}", domain.SetupInformation.ShadowCopyFiles));
+#endif
                 }
 
                 LOGGER.Info("--------------------------------------------------------");

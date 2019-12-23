@@ -10,8 +10,8 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Xml.Serialization;
+using Forge.Logging;
 using Forge.Threading.ConfigSection;
-using log4net;
 
 namespace Forge.Threading
 {

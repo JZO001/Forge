@@ -1,0 +1,193 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Forge.DatabaseManagement.SqlServer2008</name>
+    </assembly>
+    <members>
+        <member name="T:Forge.DatabaseManagement.SqlServer2008.MsSql2008Dialect">
+            <summary>
+            Represents a custom MS SQL Server 2008 NHibernate dialect, which fixes the double bug
+            </summary>
+        </member>
+        <member name="M:Forge.DatabaseManagement.SqlServer2008.MsSql2008Dialect.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.DatabaseManagement.SqlServer2008.MsSql2008Dialect"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.DatabaseManagement.SqlServer2008.MsSql2008Dialect.RegisterCharacterTypeMappings">
+            <summary>
+            Registers the character type mappings.
+            </summary>
+        </member>
+        <member name="M:Forge.DatabaseManagement.SqlServer2008.MsSql2008Dialect.RegisterNumericTypeMappings">
+            <summary>
+            Registers the numeric type mappings.
+            </summary>
+        </member>
+        <member name="T:Forge.DatabaseManagement.SqlServer2008.MsSql2008Manager">
+            <summary>
+            Represents a database manager which ensure the underlying database integrity is valid.
+            </summary>
+        </member>
+        <member name="F:Forge.DatabaseManagement.SqlServer2008.MsSql2008Manager.CONNECTION_STRING">
+            <summary>
+            Connection string key
+            </summary>
+        </member>
+        <member name="F:Forge.DatabaseManagement.SqlServer2008.MsSql2008Manager.CONNECTION_STRING_NAME">
+            <summary>
+            Connection string name key
+            </summary>
+        </member>
+        <member name="F:Forge.DatabaseManagement.SqlServer2008.MsSql2008Manager.USER_ID">
+            <summary>
+            The user id
+            </summary>
+        </member>
+        <member name="F:Forge.DatabaseManagement.SqlServer2008.MsSql2008Manager.INITIAL_CATALOG">
+            <summary>
+            The initial catalog
+            </summary>
+        </member>
+        <member name="F:Forge.DatabaseManagement.SqlServer2008.MsSql2008Manager.PASSWORD">
+            <summary>
+            The password
+            </summary>
+        </member>
+        <member name="F:Forge.DatabaseManagement.SqlServer2008.MsSql2008Manager.SERVER">
+            <summary>
+            The server
+            </summary>
+        </member>
+        <member name="F:Forge.DatabaseManagement.SqlServer2008.MsSql2008Manager.DATABASE">
+            <summary>
+            The database
+            </summary>
+        </member>
+        <member name="F:Forge.DatabaseManagement.SqlServer2008.MsSql2008Manager.DATABASE_COLLATION">
+            <summary>
+            The database collation
+            </summary>
+        </member>
+        <member name="M:Forge.DatabaseManagement.SqlServer2008.MsSql2008Manager.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.DatabaseManagement.SqlServer2008.MsSql2008Manager" /> class.
+            </summary>
+        </member>
+        <member name="M:Forge.DatabaseManagement.SqlServer2008.MsSql2008Manager.Finalize">
+            <summary>
+            Finalizes an instance of the <see cref="T:Forge.DatabaseManagement.SqlServer2008.MsSql2008Manager" /> class.
+            </summary>
+        </member>
+        <member name="P:Forge.DatabaseManagement.SqlServer2008.MsSql2008Manager.IsInitialized">
+            <summary>
+            Gets a value indicating whether this instance is initialized.
+            </summary>
+            <value>
+            <c>true</c> if this instance is initialized; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.DatabaseManagement.SqlServer2008.MsSql2008Manager.DefaultCommandTimeout">
+            <summary>
+            Gets or sets the default command timeout.
+            </summary>
+            <value>
+            The default command timeout.
+            </value>
+        </member>
+        <member name="M:Forge.DatabaseManagement.SqlServer2008.MsSql2008Manager.Initialize(Forge.Configuration.Shared.CategoryPropertyItem)">
+            <summary>
+            Initializes the specified config item.
+            </summary>
+            <param name="configItem">The config item.</param>
+            <exception cref="T:Forge.InitializationException">Administration connection string was not set.</exception>
+            <exception cref="T:Forge.InitializationException">Administration connection string was not set.</exception>
+        </member>
+        <member name="M:Forge.DatabaseManagement.SqlServer2008.MsSql2008Manager.EnsureDatabaseIntegrity(System.Int64,System.Collections.Generic.Dictionary{System.String,System.String},Forge.DatabaseManagement.SchemaFactoryModeEnum)">
+            <summary>
+            Ensures the database integrity.
+            </summary>
+            <param name="systemId">The system id.</param>
+            <param name="descriptor">The descriptor.</param>
+            <param name="mode">The mode.</param>
+            <exception cref="T:Forge.InitializationException">MsSql2008 Manager has not been initialized.</exception>
+            <exception cref="T:Forge.Configuration.Shared.InvalidConfigurationException">Unable to connection information in NHibernate Descriptor settings.</exception>
+            <exception cref="T:Forge.Configuration.Shared.InvalidConfigurationValueException">Connection string is empty.
+            or
+            Connection string does not contains DATABASE nor DATA SOURCE definition.
+            or
+            Connection string does not contains PASSWORD definition.
+            or
+            Connection string does not contains information about the database name.</exception>
+        </member>
+        <member name="M:Forge.DatabaseManagement.SqlServer2008.MsSql2008Manager.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:Forge.DatabaseManagement.SqlServer2008.MsSql2008Manager.ParseConnectionString(System.String)">
+            <summary>
+            Parses the connection string.
+            </summary>
+            <param name="connectionString">The connection string.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.DatabaseManagement.SqlServer2008.MsSql2008Manager.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources
+            </summary>
+            <param name="dispose"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        </member>
+        <member name="T:Forge.DatabaseManagement.SqlServer2008.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Forge.DatabaseManagement.SqlServer2008.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Forge.DatabaseManagement.SqlServer2008.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Forge.DatabaseManagement.SqlServer2008.Properties.Resources.AlterDatabaseCollation">
+            <summary>
+              Looks up a localized string similar to ALTER DATABASE [{0}] COLLATE {1}.
+            </summary>
+        </member>
+        <member name="P:Forge.DatabaseManagement.SqlServer2008.Properties.Resources.CheckLogin">
+            <summary>
+              Looks up a localized string similar to SELECT COUNT(*) FROM master.dbo.syslogins db WHERE db.loginname = @P0.
+            </summary>
+        </member>
+        <member name="P:Forge.DatabaseManagement.SqlServer2008.Properties.Resources.CreateDatabase">
+            <summary>
+              Looks up a localized string similar to CREATE DATABASE [{0}].
+            </summary>
+        </member>
+        <member name="P:Forge.DatabaseManagement.SqlServer2008.Properties.Resources.CreateLogin">
+            <summary>
+              Looks up a localized string similar to CREATE LOGIN {0} WITH PASSWORD = &apos;{1}&apos;, CHECK_EXPIRATION = OFF, CHECK_POLICY = OFF.
+            </summary>
+        </member>
+        <member name="P:Forge.DatabaseManagement.SqlServer2008.Properties.Resources.DatabaseCheck">
+            <summary>
+              Looks up a localized string similar to SELECT COUNT(*) FROM master.dbo.sysdatabases db WHERE db.name = @P0.
+            </summary>
+        </member>
+        <member name="P:Forge.DatabaseManagement.SqlServer2008.Properties.Resources.GetDatabaseCollation">
+            <summary>
+              Looks up a localized string similar to SELECT DATABASEPROPERTYEX(&apos;{0}&apos;, &apos;Collation&apos;) SQLCollation.
+            </summary>
+        </member>
+        <member name="P:Forge.DatabaseManagement.SqlServer2008.Properties.Resources.SetDatabaseOwner">
+            <summary>
+              Looks up a localized string similar to ALTER AUTHORIZATION ON DATABASE::{0} TO [{1}].
+            </summary>
+        </member>
+    </members>
+</doc>

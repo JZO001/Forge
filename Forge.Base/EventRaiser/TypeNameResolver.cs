@@ -16,7 +16,7 @@ namespace Forge.EventRaiser
 
         #region Field(s)
 
-        [DebuggerBrowsable( DebuggerBrowsableState.Never )]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private String mCallerTypeName = String.Empty;
 
         #endregion
@@ -26,14 +26,15 @@ namespace Forge.EventRaiser
         /// <summary>
         /// Initializes a new instance of the <see cref="TypeNameResolver"/> class.
         /// </summary>
-        internal TypeNameResolver( )
+        internal TypeNameResolver()
         {
-            StackTrace st = new StackTrace( System.Threading.Thread.CurrentThread, false );
-            for( int i = 1; i < st.FrameCount; i++ )
+            StackTrace st = new StackTrace();
+            //StackTrace st = new StackTrace( System.Threading.Thread.CurrentThread, false );
+            for (int i = 1; i < st.FrameCount; i++)
             {
-                if ( !st.GetFrame( i ).GetMethod( ).Name.Contains( "CallDelegatorByAsync" ) )
+                if (!st.GetFrame(i).GetMethod().Name.Contains("CallDelegatorByAsync"))
                 {
-                    mCallerTypeName = st.GetFrame( i ).GetMethod( ).ReflectedType.FullName;
+                    mCallerTypeName = st.GetFrame(i).GetMethod().ReflectedType.FullName;
                     break;
                 }
             }

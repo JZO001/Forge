@@ -113,7 +113,7 @@ namespace Testing.TerraGraf
         public void Initialize(string id, MasterForm form)
         {
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-            log4net.Config.XmlConfigurator.Configure();
+            Forge.Logging.Log4net.Log4NetManager.InitializeFromAppConfig();
             this.Id = id;
             this.mOwnerForm = form;
             Forge.Net.TerraGraf.NetworkManager.Instance.NetworkPeerDiscovered += new EventHandler<NetworkPeerChangedEventArgs>(Instance_NetworkPeerDiscovered);

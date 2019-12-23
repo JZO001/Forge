@@ -11,7 +11,7 @@ namespace Forge.Testing.RemoteDesktop.Client
         [STAThread]
         static void Main()
         {
-            log4net.Config.XmlConfigurator.Configure();
+            Forge.Logging.Log4net.Log4NetManager.InitializeFromAppConfig();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

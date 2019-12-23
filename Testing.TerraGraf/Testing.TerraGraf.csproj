@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Testing.TerraGraf</RootNamespace>
     <AssemblyName>Testing.TerraGraf</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -18,21 +18,6 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -501,9 +486,16 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="publickey_generator.txt" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Forge.Base\Forge.Base.csproj">
       <Project>{f3eed65e-c103-4ba8-af1d-37421d73a708}</Project>
       <Name>Forge.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Forge.Logging.Log4net\Forge.Logging.Log4net.csproj">
+      <Project>{2684a3bd-a1c6-4ab1-bc3c-6bc0ad3f42d4}</Project>
+      <Name>Forge.Logging.Log4net</Name>
     </ProjectReference>
     <ProjectReference Include="..\Forge.Net.Remoting\Forge.Net.Remoting.csproj">
       <Project>{0f590995-e709-4bd6-85fb-4059d2d7507e}</Project>
@@ -520,6 +512,10 @@
     <ProjectReference Include="..\Forge.Net.TerraGraf\Forge.Net.TerraGraf.csproj">
       <Project>{79531288-031b-4790-aaf3-f7ccd182e7fb}</Project>
       <Name>Forge.Net.TerraGraf</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Forge.UpdateFramework\Forge.UpdateFramework.csproj">
+      <Project>{5381068c-e22c-4fbb-a105-9a219fb5166b}</Project>
+      <Name>Forge.UpdateFramework</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

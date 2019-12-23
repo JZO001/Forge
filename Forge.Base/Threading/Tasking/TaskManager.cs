@@ -4,12 +4,11 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Logging;
+using Forge.Reflection;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Windows;
-using System.Windows.Forms;
-using log4net;
 
 namespace Forge.Threading.Tasking
 {
@@ -510,14 +509,15 @@ namespace Forge.Threading.Tasking
 
             try
             {
-                if (InvokeUIAtAction && item.TaskDelegate.Target is Control)
+                if (InvokeUIAtAction && UIReflectionHelper.IsObjectWinFormsControl(item.TaskDelegate.Target))
                 {
-                    methodResult = ((Control)item.TaskDelegate.Target).Invoke(item.TaskDelegate, item.InParameters);
+                    methodResult = UIReflectionHelper.InvokeOnWinFormsControl(item.TaskDelegate.Target, item.TaskDelegate, item.InParameters); //((Control)item.TaskDelegate.Target).Invoke(item.TaskDelegate, item.InParameters);
                 }
-                else if (InvokeUIAtAction && item.TaskDelegate.Target is DependencyObject)
+                else if (InvokeUIAtAction && UIReflectionHelper.IsObjectWPFDependency(item.TaskDelegate.Target))
                 {
-                    DependencyObject ctrl = (DependencyObject)item.TaskDelegate.Target;
-                    ctrl.Dispatcher.Invoke(item.TaskDelegate, item.InParameters);
+                    //DependencyObject ctrl = (DependencyObject)item.TaskDelegate.Target;
+                    //methodResult = ctrl.Dispatcher.Invoke(item.TaskDelegate, item.InParameters);
+                    methodResult = UIReflectionHelper.InvokeOnWPFDependency(item.TaskDelegate.Target, item.TaskDelegate, item.InParameters);
                 }
                 else
                 {
@@ -551,14 +551,16 @@ namespace Forge.Threading.Tasking
             {
                 try
                 {
-                    if (InvokeUIAtReturn && item.ReturnDelegate.Target is Control)
+                    if (InvokeUIAtReturn && UIReflectionHelper.IsObjectWinFormsControl(item.ReturnDelegate.Target))
                     {
-                        ((Control)item.ReturnDelegate.Target).Invoke(item.ReturnDelegate, new object[] { result });
+                        //((Control)item.ReturnDelegate.Target).Invoke(item.ReturnDelegate, new object[] { result });
+                        UIReflectionHelper.InvokeOnWinFormsControl(item.ReturnDelegate.Target, item.ReturnDelegate, new object[] { result });
                     }
-                    else if (InvokeUIAtReturn && item.ReturnDelegate.Target is DependencyObject)
+                    else if (InvokeUIAtReturn && UIReflectionHelper.IsObjectWPFDependency(item.ReturnDelegate.Target))
                     {
-                        DependencyObject ctrl = (DependencyObject)item.ReturnDelegate.Target;
-                        ctrl.Dispatcher.Invoke(item.ReturnDelegate, new object[] { result });
+                        //DependencyObject ctrl = (DependencyObject)item.ReturnDelegate.Target;
+                        //ctrl.Dispatcher.Invoke(item.ReturnDelegate, new object[] { result });
+                        UIReflectionHelper.InvokeOnWPFDependency(item.ReturnDelegate.Target, item.ReturnDelegate, new object[] { result });
                     }
                     else
                     {

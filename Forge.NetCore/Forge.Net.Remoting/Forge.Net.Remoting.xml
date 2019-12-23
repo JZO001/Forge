@@ -1,0 +1,3584 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Forge.Net.Remoting</name>
+    </assembly>
+    <members>
+        <member name="T:Forge.Net.Remoting.ChannelNotFoundException">
+            <summary>
+            Occurs when a channel not found
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.ChannelNotFoundException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.ChannelNotFoundException"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.ChannelNotFoundException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.ChannelNotFoundException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.ChannelNotFoundException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.ChannelNotFoundException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="ex">The ex.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.ChannelNotFoundException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.ChannelNotFoundException" /> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="info" /> parameter is null.</exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is null or <see cref="P:System.Exception.HResult" /> is zero (0).</exception>
+        </member>
+        <member name="T:Forge.Net.Remoting.Channels.ChannelConnectAgainDelegate">
+            <summary>
+            Represents channel connection restoration
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Forge.Net.Remoting.Channels.ChannelConnectDelegate">
+            <summary>
+            Represents channel establish a connection to a remote host
+            </summary>
+            <param name="remoteEp">The remote ep.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Forge.Net.Remoting.Channels.Channel">
+            <summary>
+            Channel base implementation
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.Channels.Channel.DEFAULT_TIMEOUT">
+            <summary>
+            Default method call timeout
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.Channels.Channel.mChannelId">
+            <summary>
+            Channel identifier
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.Channels.Channel.mSendMessageSinks">
+            <summary>
+            Send message sinks
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.Channels.Channel.mReceiveMessageSinks">
+            <summary>
+            Receive message sinks
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.Channels.Channel.mInitialized">
+            <summary>
+            Indicates the channel initialized.
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.Channels.Channel.mStreamsSupported">
+            <summary>
+            Indicated the channel supports the streams
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.Channels.Channel.mSessionReusable">
+            <summary>
+            Indicates the channel supports reusable sessions
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.Channels.Channel.mConnectionData">
+            <summary>
+            Stores the default connection data
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.Channels.Channel.mServerEndpoints">
+            <summary>
+            List of the server endpoints
+            </summary>
+        </member>
+        <member name="E:Forge.Net.Remoting.Channels.Channel.SessionStateChange">
+            <summary>
+            Occurs when [session state change].
+            </summary>
+        </member>
+        <member name="E:Forge.Net.Remoting.Channels.Channel.ReceiveMessage">
+            <summary>
+            Occurs when [receive message].
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.Channel.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Channels.Channel"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.Channel.#ctor(System.String,System.Collections.Generic.ICollection{Forge.Net.Remoting.Sinks.IMessageSink},System.Collections.Generic.ICollection{Forge.Net.Remoting.Sinks.IMessageSink})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Channels.Channel"/> class.
+            </summary>
+            <param name="channelId">The channel unique id.</param>
+            <param name="sendMessageSinks">The send message sinks.</param>
+            <param name="receiveMessageSinks">The receive message sinks.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.Channel.Finalize">
+            <summary>
+            Releases unmanaged resources and performs other cleanup operations before the
+            <see cref="T:Forge.Net.Remoting.Channels.Channel"/> is reclaimed by garbage collection.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.Channel.ChannelId">
+            <summary>
+            Gets the channel id.
+            </summary>
+            <value>
+            The channel id.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.Channel.IsInitialized">
+            <summary>
+            Gets a value indicating whether this instance is initialized.
+            </summary>
+            <value>
+            <c>true</c> if this instance is initialized; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.Channel.IsStreamSupported">
+            <summary>
+            Gets a value indicating whether this instance is stream supported.
+            </summary>
+            <value>
+            <c>true</c> if this instance is stream supported; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.Channel.IsDisposed">
+            <summary>
+            Gets a value indicating whether this instance is disposed.
+            </summary>
+            <value>
+            	<c>true</c> if this instance is disposed; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.Channel.DefaultConnectionData">
+            <summary>
+            Gets the default connection data.
+            </summary>
+            <value>
+            The default connection data.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.Channel.DefaultErrorResponseTimeout">
+            <summary>
+            Gets or sets the default error response timeout.
+            </summary>
+            <value>
+            The default error response timeout.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.Channel.ServerEndpoints">
+            <summary>
+            Gets the server endpoints.
+            </summary>
+            <value>
+            The server endpoints.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.Channel.IsSessionReusable">
+            <summary>
+            Gets a value indicating whether [session reusable].
+            </summary>
+            <value>
+              <c>true</c> if [session reusable]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.Channel.Initialize(Forge.Configuration.Shared.CategoryPropertyItem)">
+            <summary>
+            Initializes the channel.
+            </summary>
+            <param name="pi">The pi.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.Channel.BeginConnect(System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the connect.
+            </summary>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.Channel.Connect">
+            <summary>
+            Connects this instance.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.Channel.BeginConnect(Forge.Net.Synapse.AddressEndPoint,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the connect.
+            </summary>
+            <param name="remoteEp">The remote ep.</param>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.Channel.Connect(Forge.Net.Synapse.AddressEndPoint)">
+            <summary>
+            Connects the specified remote ep.
+            </summary>
+            <param name="remoteEp">The remote ep.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.Channel.EndConnect(System.IAsyncResult)">
+            <summary>
+            Ends the connect.
+            </summary>
+            <param name="asyncResult">The async result.</param>
+            <returns>SessionId</returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.Channel.EndConnect(System.IAsyncResult,Forge.Net.Synapse.AddressEndPoint)">
+            <summary>
+            Ends the connect.
+            </summary>
+            <param name="asyncResult">The async result.</param>
+            <param name="remoteEp">The remote ep.</param>
+            <returns>SessionId</returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.Channel.Disconnect(System.String)">
+            <summary>
+            Disconnects the specified session id.
+            </summary>
+            <param name="sessionId">The session id.</param>
+            <returns>True, if the connection found and closed, otherwise False.</returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.Channel.SendMessage(System.String,Forge.Net.Remoting.Messaging.IMessage)">
+            <summary>
+            Sends the message.
+            </summary>
+            <param name="sessionId">The session id.</param>
+            <param name="message">The message.</param>
+            <returns>Response message or null</returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.Channel.SendMessage(System.String,Forge.Net.Remoting.Messaging.IMessage,System.Int64)">
+            <summary>
+            Sends the message.
+            </summary>
+            <param name="sessionId">The session id.</param>
+            <param name="message">The message.</param>
+            <param name="timeout">The timeout.</param>
+            <returns>Response message or null</returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.Channel.StartListening">
+            <summary>
+            Starts the listening.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.Channel.StopListening">
+            <summary>
+            Stops the listening.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.Channel.SendMessageSinks">
+            <summary>
+            Gets the send message sinks.
+            </summary>
+            <value>
+            The send message sinks.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.Channel.ReceiveMessageSinks">
+            <summary>
+            Gets the receive message sink.
+            </summary>
+            <value>
+            The receive message sinks.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.Channel.GetSessionInfo(System.String)">
+            <summary>
+            Gets the session info.
+            </summary>
+            <param name="sessionId">The session id.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.Channel.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.Channel.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object"/> is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object"/> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.Channel.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+            </returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.Channel.OnSessionStateChange(Forge.Net.Remoting.Channels.SessionStateEventArgs)">
+            <summary>
+            Raises the <see cref="E:SessionStateChange"/> event.
+            </summary>
+            <param name="e">The <see cref="T:Forge.Net.Remoting.Channels.SessionStateEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.Channel.OnReceiveRequestMessage(System.String,Forge.Net.Remoting.Messaging.IMessage)">
+            <summary>
+            Called when [receive request message].
+            </summary>
+            <param name="sessionId">The session id.</param>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.Channel.InternalOnReceiveRequestMessage(Forge.Net.Remoting.Channels.Channel,Forge.Net.Remoting.Channels.ReceiveMessageEventArgs)">
+            <summary>
+            Internals the on receive request message.
+            </summary>
+            <param name="channel">The channel.</param>
+            <param name="e">The <see cref="T:Forge.Net.Remoting.Channels.ReceiveMessageEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.Channel.CreateMessageSink(Forge.Configuration.Shared.CategoryPropertyItem)">
+            <summary>
+            Creates the message sink.
+            </summary>
+            <param name="pi">The pi.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.Channel.DoDisposeCheck">
+            <summary>
+            Does the dispose check.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.Channel.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources
+            </summary>
+            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.Channel.SerializedEventForSession.#ctor(Forge.Net.Remoting.Channels.Channel)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Channels.Channel.SerializedEventForSession"/> class.
+            </summary>
+            <param name="channel">The channel.</param>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.Channel.SerializedEventForSession.Channel">
+            <summary>
+            Gets the channel.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.Channel.SerializedEventForSession.Containers">
+            <summary>
+            Gets the containers.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.Channel.SerializedEventForSession.AddMessage(System.String,Forge.Net.Remoting.Messaging.IMessage)">
+            <summary>
+            Adds the message.
+            </summary>
+            <param name="sessionId">The session id.</param>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.Channel.EventContainer.#ctor(Forge.Net.Remoting.Channels.Channel.SerializedEventForSession,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Channels.Channel.EventContainer"/> class.
+            </summary>
+            <param name="container">The container.</param>
+            <param name="sessionId">The session id.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.Channel.EventContainer.AddMessage(Forge.Net.Remoting.Messaging.IMessage)">
+            <summary>
+            Adds the message.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="T:Forge.Net.Remoting.Channels.ChannelRegistrationEventArgs">
+            <summary>
+            Represents the arguments of the channel registration event
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.ChannelRegistrationEventArgs.#ctor(Forge.Net.Remoting.Channels.Channel)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Channels.ChannelRegistrationEventArgs"/> class.
+            </summary>
+            <param name="channel">The channel.</param>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.ChannelRegistrationEventArgs.Channel">
+            <summary>
+            Gets the channel.
+            </summary>
+            <value>
+            The channel.
+            </value>
+        </member>
+        <member name="T:Forge.Net.Remoting.Channels.ChannelServices">
+            <summary>
+            Store registered channels.
+            </summary>
+        </member>
+        <member name="E:Forge.Net.Remoting.Channels.ChannelServices.RegisterChannelEvent">
+            <summary>
+            Occurs when [register channel event].
+            </summary>
+        </member>
+        <member name="E:Forge.Net.Remoting.Channels.ChannelServices.UnregisterChannelEvent">
+            <summary>
+            Occurs when [unregister channel event].
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.ChannelServices.#cctor">
+            <summary>
+            Initializes the <see cref="T:Forge.Net.Remoting.Channels.ChannelServices"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.ChannelServices.#ctor">
+            <summary>
+            Prevents a default instance of the <see cref="T:Forge.Net.Remoting.Channels.ChannelServices"/> class from being created.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.ChannelServices.Initialize">
+            <summary>
+            Initializes this instance.
+            </summary>
+            <exception cref="T:Forge.Configuration.Shared.InvalidConfigurationException">
+            Channel id has not been definied.
+            or
+            Channel class name has not been definied.
+            </exception>
+            <exception cref="T:Forge.Configuration.Shared.InvalidConfigurationValueException"></exception>
+            <exception cref="T:Forge.InitializationException"></exception>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.ChannelServices.StartListeningChannels">
+            <summary>
+            Starts the listening channels.
+            </summary>
+            <exception cref="T:Forge.InitializationException"></exception>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.ChannelServices.StopListeningChannels">
+            <summary>
+            Stops the listening channels.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.ChannelServices.RegisterChannel(Forge.Net.Remoting.Channels.Channel)">
+            <summary>
+            Registers the channel.
+            </summary>
+            <param name="channel">The channel.</param>
+            <returns>True, if this channel was a new instance, otherwise False.</returns>
+            <exception cref="T:System.ArgumentNullException">channel</exception>
+            <exception cref="T:Forge.InitializationException">Channel has not been initialized.</exception>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.ChannelServices.UnregisterChannel(Forge.Net.Remoting.Channels.Channel)">
+            <summary>
+            Unregisters the channel.
+            </summary>
+            <param name="channel">The channel.</param>
+            <returns>True, if the channel unregistered, otherwise False</returns>
+            <exception cref="T:System.ArgumentNullException">channel</exception>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.ChannelServices.IsChannelRegistered(Forge.Net.Remoting.Channels.Channel)">
+            <summary>
+            Determines whether [is channel registered] [the specified channel].
+            </summary>
+            <param name="channel">The channel.</param>
+            <returns>
+              <c>true</c> if [is channel registered] [the specified channel]; otherwise, <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">channel</exception>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.ChannelServices.IsChannelRegistered(System.String)">
+            <summary>
+            Determines whether [is channel registered] [the specified channel id].
+            </summary>
+            <param name="channelId">The channel id.</param>
+            <returns>
+              <c>true</c> if [is channel registered] [the specified channel id]; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.ChannelServices.RegisteredChannels">
+            <summary>
+            Gets the registered channels.
+            </summary>
+            <value>
+            The registered channels.
+            </value>
+            <returns>Enumerator of channels</returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.ChannelServices.GetChannelById(System.String)">
+            <summary>
+            Gets the channel by id.
+            </summary>
+            <param name="channelId">The channel id.</param>
+            <returns>Channel</returns>
+        </member>
+        <member name="T:Forge.Net.Remoting.Channels.ISessionInfo">
+            <summary>
+            Represents the network session information
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.ISessionInfo.SessionId">
+            <summary>
+            Gets the session id.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.ISessionInfo.RemoteEndPoint">
+            <summary>
+            Gets the remote end point.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.ISessionInfo.LocalEndPoint">
+            <summary>
+            Gets the local end point.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.ISessionInfo.Reconnectable">
+            <summary>
+            Gets a value indicating whether this <see cref="T:Forge.Net.Remoting.Channels.ISessionInfo"/> is reconnectable.
+            </summary>
+            <value>
+              <c>true</c> if reconnectable; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="T:Forge.Net.Remoting.Channels.ReadOnlySelfRemoverFileStream">
+            <summary>
+            Self remover file stream
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.ReadOnlySelfRemoverFileStream.#ctor(System.String,System.IO.FileMode)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Channels.ReadOnlySelfRemoverFileStream"/> class.
+            </summary>
+            <param name="fileName">Name of the file.</param>
+            <param name="fileMode">The file mode.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.ReadOnlySelfRemoverFileStream.#ctor(System.IO.FileInfo,System.IO.FileMode)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Channels.ReadOnlySelfRemoverFileStream"/> class.
+            </summary>
+            <param name="fileInfo">The file info.</param>
+            <param name="fileMode">The file mode.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.ReadOnlySelfRemoverFileStream.Dispose(System.Boolean)">
+            <summary>
+            Releases the unmanaged resources used by the <see cref="T:System.IO.FileStream"/> and optionally releases the managed resources.
+            </summary>
+            <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        </member>
+        <member name="T:Forge.Net.Remoting.Channels.ReceiveMessageEventArgs">
+            <summary>
+            Event arguments for message receive
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.ReceiveMessageEventArgs.#ctor(System.String,Forge.Net.Remoting.Messaging.IMessage)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Channels.ReceiveMessageEventArgs"/> class.
+            </summary>
+            <param name="sessionId">The session id.</param>
+            <param name="message">The message.</param>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.ReceiveMessageEventArgs.SessionId">
+            <summary>
+            Gets the session id.
+            </summary>
+            <value>
+            The session id.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.ReceiveMessageEventArgs.Message">
+            <summary>
+            Gets the message.
+            </summary>
+            <value>
+            The message.
+            </value>
+        </member>
+        <member name="T:Forge.Net.Remoting.Channels.SessionStateEventArgs">
+            <summary>
+            Represents the event arguments of the session state event
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.SessionStateEventArgs.#ctor(System.String,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Channels.SessionStateEventArgs"/> class.
+            </summary>
+            <param name="sessionId">The session id.</param>
+            <param name="connected">if set to <c>true</c> [connected].</param>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.SessionStateEventArgs.SessionId">
+            <summary>
+            Gets the session id.
+            </summary>
+            <value>
+            The session id.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.SessionStateEventArgs.IsConnected">
+            <summary>
+            Gets a value indicating whether this instance is connected.
+            </summary>
+            <value>
+            <c>true</c> if this instance is connected; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="T:Forge.Net.Remoting.Channels.TCPChannel">
+            <summary>
+            TCP Channel implementation
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.TCPChannel.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Channels.TCPChannel"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.TCPChannel.#ctor(System.String,System.Collections.Generic.ICollection{Forge.Net.Remoting.Sinks.IMessageSink},System.Collections.Generic.ICollection{Forge.Net.Remoting.Sinks.IMessageSink})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Channels.TCPChannel"/> class.
+            </summary>
+            <param name="channelId">The channel id.</param>
+            <param name="sendMessageSinks">The send message sinks.</param>
+            <param name="receiveMessageSinks">The receive message sinks.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.TCPChannel.#ctor(System.String,System.Collections.Generic.ICollection{Forge.Net.Remoting.Sinks.IMessageSink},System.Collections.Generic.ICollection{Forge.Net.Remoting.Sinks.IMessageSink},System.Collections.Generic.IEnumerable{Forge.Net.Synapse.AddressEndPoint})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Channels.TCPChannel"/> class.
+            </summary>
+            <param name="channelId">The channel id.</param>
+            <param name="sendMessageSinks">The send message sinks.</param>
+            <param name="receiveMessageSinks">The receive message sinks.</param>
+            <param name="serverData">The server data.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.TCPChannel.#ctor(System.String,System.Collections.Generic.ICollection{Forge.Net.Remoting.Sinks.IMessageSink},System.Collections.Generic.ICollection{Forge.Net.Remoting.Sinks.IMessageSink},Forge.Net.Synapse.NetworkServices.INetworkFactory,Forge.Net.Synapse.NetworkServices.IServerStreamFactory,Forge.Net.Synapse.NetworkServices.IClientStreamFactory)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Channels.TCPChannel"/> class.
+            </summary>
+            <param name="channelId">The channel id.</param>
+            <param name="sendMessageSinks">The send message sinks.</param>
+            <param name="receiveMessageSinks">The receive message sinks.</param>
+            <param name="networkFactory">The network factory.</param>
+            <param name="serverStreamFactory">The server stream factory.</param>
+            <param name="clientStreamFactory">The client stream factory.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.TCPChannel.#ctor(System.String,System.Collections.Generic.ICollection{Forge.Net.Remoting.Sinks.IMessageSink},System.Collections.Generic.ICollection{Forge.Net.Remoting.Sinks.IMessageSink},System.Collections.Generic.IEnumerable{Forge.Net.Synapse.AddressEndPoint},Forge.Net.Synapse.NetworkServices.INetworkFactory)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Channels.TCPChannel"/> class.
+            </summary>
+            <param name="channelId">The channel id.</param>
+            <param name="sendMessageSinks">The send message sinks.</param>
+            <param name="receiveMessageSinks">The receive message sinks.</param>
+            <param name="serverData">The server data.</param>
+            <param name="networkFactory">The network factory.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.TCPChannel.#ctor(System.String,System.Collections.Generic.ICollection{Forge.Net.Remoting.Sinks.IMessageSink},System.Collections.Generic.ICollection{Forge.Net.Remoting.Sinks.IMessageSink},System.Collections.Generic.IEnumerable{Forge.Net.Synapse.AddressEndPoint},Forge.Net.Synapse.NetworkServices.INetworkFactory,Forge.Net.Synapse.NetworkServices.IServerStreamFactory,Forge.Net.Synapse.NetworkServices.IClientStreamFactory)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Channels.TCPChannel"/> class.
+            </summary>
+            <param name="channelId">The channel id.</param>
+            <param name="sendMessageSinks">The send message sinks.</param>
+            <param name="receiveMessageSinks">The receive message sinks.</param>
+            <param name="serverData">The server data.</param>
+            <param name="networkFactory">The network factory.</param>
+            <param name="serverStreamFactory">The server stream factory.</param>
+            <param name="clientStreamFactory">The client stream factory.</param>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.TCPChannel.TempStreamStorageFolder">
+            <summary>
+            Gets or sets the temp stream storage folder.
+            </summary>
+            <value>
+            The temp stream storage folder.
+            </value>
+            <exception cref="T:Forge.Configuration.Shared.InvalidConfigurationException"></exception>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.TCPChannel.MaxSendMessageSize">
+            <summary>
+            Gets or sets the size of the max send message.
+            </summary>
+            <value>
+            The size of the max send message.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.TCPChannel.MaxSendStreamSize">
+            <summary>
+            Gets or sets the size of the max send stream.
+            </summary>
+            <value>
+            The size of the max send stream.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.TCPChannel.MaxReceiveMessageSize">
+            <summary>
+            Gets or sets the size of the max receive message.
+            </summary>
+            <value>
+            The size of the max receive message.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.TCPChannel.MaxReceiveStreamSize">
+            <summary>
+            Gets or sets the size of the max receive stream.
+            </summary>
+            <value>
+            The size of the max receive stream.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.TCPChannel.ServerEndpoints">
+            <summary>
+            Gets the server endpoints.
+            </summary>
+            <value>
+            The server endpoints.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.TCPChannel.Initialize(Forge.Configuration.Shared.CategoryPropertyItem)">
+            <summary>
+            Initializes the channel.
+            </summary>
+            <param name="pi">The pi.</param>
+            <exception cref="T:Forge.Configuration.Shared.InvalidConfigurationException">Channel id has not been definied.
+            or
+            or
+            No send message sink definied.
+            or
+            No receive message sink definied.
+            or
+            or
+            or</exception>
+            <exception cref="T:System.IO.IOException">Temp stream folder failed on security test.</exception>
+            <exception cref="T:Forge.Configuration.Shared.InvalidConfigurationValueException">No server stream factory type definied.
+            or
+            No client stream factory type definied.</exception>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.TCPChannel.Connect">
+            <summary>
+            Connects this instance.
+            </summary>
+            <returns>SessionId</returns>
+            <exception cref="T:System.IO.IOException">Connection information has not been specified.</exception>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.TCPChannel.Connect(Forge.Net.Synapse.AddressEndPoint)">
+            <summary>
+            Connects the specified remote ep.
+            </summary>
+            <param name="remoteEp">The remote ep.</param>
+            <returns>SessionId</returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.TCPChannel.Disconnect(System.String)">
+            <summary>
+            Disconnects the specified session id.
+            </summary>
+            <param name="sessionId">The session id.</param>
+            <returns>
+            True, if the connection found and closed, otherwise False.
+            </returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.TCPChannel.SendMessage(System.String,Forge.Net.Remoting.Messaging.IMessage,System.Int64)">
+            <summary>
+            Sends the message.
+            </summary>
+            <param name="sessionId">The session id.</param>
+            <param name="message">The message.</param>
+            <param name="timeout">The timeout.</param>
+            <returns>
+            Response message or null
+            </returns>
+            <exception cref="T:Forge.Net.Remoting.ConnectionNotFoundException">
+            </exception>
+            <exception cref="T:System.IO.IOException">
+            Unable to connect remote host.
+            or
+            Unable to connect remote host.
+            </exception>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.TCPChannel.StartListening">
+            <summary>
+            Starts the listening.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.TCPChannel.StopListening">
+            <summary>
+            Stops the listening.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.TCPChannel.GetSessionInfo(System.String)">
+            <summary>
+            Gets the session info.
+            </summary>
+            <param name="sessionId">The session id.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.TCPChannel.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources
+            </summary>
+            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        </member>
+        <member name="T:Forge.Net.Remoting.Channels.TCPChannel.SessionMap">
+            <summary>
+            Connection session handler
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.TCPChannel.SessionMap.#ctor(Forge.Net.Remoting.Channels.TCPChannel,Forge.Net.Synapse.AddressEndPoint,Forge.Net.Synapse.AddressEndPoint,Forge.Net.Synapse.NetworkStream)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Channels.TCPChannel.SessionMap"/> class.
+            </summary>
+            <param name="channel">The channel.</param>
+            <param name="remoteEndPoint">The remote end point.</param>
+            <param name="localEndPoint">The local end point.</param>
+            <param name="stream">The stream.</param>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.TCPChannel.SessionMap.SessionId">
+            <summary>
+            Gets the session id.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.TCPChannel.SessionMap.RemoteEndPoint">
+            <summary>
+            Gets the remote end point.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.TCPChannel.SessionMap.LocalEndPoint">
+            <summary>
+            Gets the local end point.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.TCPChannel.SessionMap.Stream">
+            <summary>
+            Gets or sets the stream.
+            </summary>
+            <value>
+            The stream.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.TCPChannel.SessionMap.Reconnectable">
+            <summary>
+            Gets a value indicating whether this <see cref="T:Forge.Net.Remoting.Channels.TCPChannel.SessionMap"/> is reconnectable.
+            </summary>
+            <value>
+              <c>true</c> if reconnectable; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.TCPChannel.SessionMap.StartReceive">
+            <summary>
+            Begins the receive.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.TCPChannel.SessionMap.StartSend">
+            <summary>
+            Starts the send.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.TCPChannel.SessionMap.Send(Forge.Net.Remoting.Messaging.IMessage,System.Int64)">
+            <summary>
+            Sends the specified message.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="timeout">The timeout.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Forge.Net.Remoting.Channels.TCPChannel.StreamReceiveTask">
+            <summary>
+            Receive the content of a remote stream and store data in a temporary local stream
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.TCPChannel.StreamReceiveTask.#ctor(Forge.Net.Synapse.NetworkStream,System.String,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Channels.TCPChannel.StreamReceiveTask"/> class.
+            </summary>
+            <param name="networkStream">The network stream.</param>
+            <param name="tempStorageFolder">The temp storage folder.</param>
+            <param name="streamSize">Size of the stream.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.TCPChannel.StreamReceiveTask.Receive(System.Int64)">
+            <summary>
+            Receives the specified max stream size.
+            </summary>
+            <param name="maxStreamSize">Size of the max stream.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.TCPChannel.StreamReceiveTask.GetTempStream">
+            <summary>
+            Gets the temp stream.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Forge.Net.Remoting.Channels.TCPChannel.SendTask">
+            <summary>
+            Send data across the network
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.TCPChannel.SendTask.#ctor(Forge.Net.Remoting.Messaging.IMessage,System.Collections.Generic.List{System.IO.Stream},Forge.Net.Synapse.NetworkStream,Forge.Net.Remoting.Channels.TCPChannel,Forge.Net.Remoting.Messaging.Protocol)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Channels.TCPChannel.SendTask"/> class.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="streams">The stream tasks.</param>
+            <param name="streamLocal">The stream local.</param>
+            <param name="channelLocal">The channel local.</param>
+            <param name="protocol">The protocol.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.TCPChannel.SendTask.Finalize">
+            <summary>
+            Releases unmanaged resources and performs other cleanup operations before the
+            <see cref="T:Forge.Net.Remoting.Channels.TCPChannel.SendTask"/> is reclaimed by garbage collection.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.TCPChannel.SendTask.Exception">
+            <summary>
+            Gets the exception.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.TCPChannel.SendTask.Finished">
+            <summary>
+            Gets a value indicating whether this <see cref="T:Forge.Net.Remoting.Channels.TCPChannel.SendTask"/> is finished.
+            </summary>
+            <value>
+              <c>true</c> if finished; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.TCPChannel.SendTask.Connected">
+            <summary>
+            Gets a value indicating whether this <see cref="T:Forge.Net.Remoting.Channels.TCPChannel.SendTask"/> is connected.
+            </summary>
+            <value>
+              <c>true</c> if connected; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.TCPChannel.SendTask.WaitHandleForTimeoutEvent">
+            <summary>
+            Gets the wait handle for timeout event.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.TCPChannel.SendTask.AcknowledgeEvent">
+            <summary>
+            Gets the acknowledge event.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Remoting.Channels.TCPChannel.SendTask.ResponseMessage">
+            <summary>
+            Gets or sets the response message.
+            </summary>
+            <value>
+            The response message.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.TCPChannel.SendTask.ExecutingSendOnNetwork">
+            <summary>
+            Sends this instance.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Channels.TCPChannel.SendTask.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="T:Forge.Net.Remoting.ConfigSection.RemotingConfiguration">
+            <summary>
+            Configuration access helper class for remoting
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.ConfigSection.RemotingConfiguration.#cctor">
+            <summary>
+            Initializes the <see cref="T:Forge.Net.Remoting.ConfigSection.RemotingConfiguration"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.ConfigSection.RemotingConfiguration.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.ConfigSection.RemotingConfiguration"/> class.
+            </summary>
+        </member>
+        <member name="T:Forge.Net.Remoting.ConfigSection.RemotingSection">
+            <summary>
+            Configuration section for remoting
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.ConfigSection.RemotingSection.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.ConfigSection.RemotingSection"/> class.
+            </summary>
+        </member>
+        <member name="T:Forge.Net.Remoting.ConnectionNotFoundException">
+            <summary>
+            Occurs when a connection information not found.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.ConnectionNotFoundException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.ConnectionNotFoundException"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.ConnectionNotFoundException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.ConnectionNotFoundException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.ConnectionNotFoundException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.ConnectionNotFoundException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="ex">The ex.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.ConnectionNotFoundException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.ConnectionNotFoundException" /> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="info" /> parameter is null.</exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is null or <see cref="P:System.Exception.HResult" /> is zero (0).</exception>
+        </member>
+        <member name="T:Forge.Net.Remoting.InvalidContractDefinitionException">
+            <summary>
+            Exception for invalid contract definition scenario
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.InvalidContractDefinitionException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.InvalidContractDefinitionException"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.InvalidContractDefinitionException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.InvalidContractDefinitionException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.InvalidContractDefinitionException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.InvalidContractDefinitionException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="ex">The ex.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.InvalidContractDefinitionException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.InvalidContractDefinitionException" /> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="info" /> parameter is null.</exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is null or <see cref="P:System.Exception.HResult" /> is zero (0).</exception>
+        </member>
+        <member name="T:Forge.Net.Remoting.InvalidMessageException">
+            <summary>
+            Occurs when an invalid message detected
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.InvalidMessageException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.InvalidMessageException"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.InvalidMessageException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.InvalidMessageException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.InvalidMessageException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.InvalidMessageException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="ex">The ex.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.InvalidMessageException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.InvalidMessageException" /> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="info" /> parameter is null.</exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is null or <see cref="P:System.Exception.HResult" /> is zero (0).</exception>
+        </member>
+        <member name="T:Forge.Net.Remoting.InvalidProxyImplementationException">
+            <summary>
+            Exception for invalid proxy implementation scenario
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.InvalidProxyImplementationException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.InvalidProxyImplementationException"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.InvalidProxyImplementationException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.InvalidProxyImplementationException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.InvalidProxyImplementationException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.InvalidProxyImplementationException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="ex">The ex.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.InvalidProxyImplementationException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.InvalidProxyImplementationException" /> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="info" /> parameter is null.</exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is null or <see cref="P:System.Exception.HResult" /> is zero (0).</exception>
+        </member>
+        <member name="T:Forge.Net.Remoting.IRemoteContract">
+            <summary>
+            Represents the interface of all remote contracts
+            </summary>
+        </member>
+        <member name="T:Forge.Net.Remoting.MessageInvokeModeEnum">
+            <summary>
+            Represents the direction of the call of a method.
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.MessageInvokeModeEnum.RequestService">
+            <summary>
+            Client calls a remote method
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.MessageInvokeModeEnum.RequestCallback">
+            <summary>
+            Remote service calls a client method
+            </summary>
+        </member>
+        <member name="T:Forge.Net.Remoting.MessageSecurityException">
+            <summary>
+            Security failed scenario
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.MessageSecurityException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.MessageSecurityException"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.MessageSecurityException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.MessageSecurityException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.MessageSecurityException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.MessageSecurityException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="exception">The exception.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.MessageSecurityException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.MessageSecurityException" /> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="info" /> parameter is null.</exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is null or <see cref="P:System.Exception.HResult" /> is zero (0).</exception>
+        </member>
+        <member name="T:Forge.Net.Remoting.MessageTypeEnum">
+            <summary>
+            Represents the reliablility of a call
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.MessageTypeEnum.Datagram">
+            <summary>
+            Send message which does not wait for a response. Use this type with void methods. This type of message has acknowledge.
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.MessageTypeEnum.DatagramOneway">
+            <summary>
+            Send message which does not wait for a response. Use this type with void methods. This type of message has no acknowledge,
+            which means there is no guarantee the message will be delivered to the server.
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.MessageTypeEnum.Request">
+            <summary>
+            Request message for remote method which has return value.
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.MessageTypeEnum.Response">
+            <summary>
+            Response of a request which trnasfer the return value of the method.
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.MessageTypeEnum.Acknowledge">
+            <summary>
+            For reliable communication the datagram and the response will be acknowledged.
+            </summary>
+        </member>
+        <member name="T:Forge.Net.Remoting.Messaging.AcknowledgeMessage">
+            <summary>
+            Acknowledge message
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.AcknowledgeMessage.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Messaging.AcknowledgeMessage"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.AcknowledgeMessage.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Messaging.AcknowledgeMessage" /> class.
+            </summary>
+            <param name="correlationId">The correlation id.</param>
+        </member>
+        <member name="T:Forge.Net.Remoting.Messaging.IMessage">
+            <summary>
+            Represents any message
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Remoting.Messaging.IMessage.CorrelationId">
+            <summary>
+            Correlation of the message
+            </summary>
+            <value>
+            The correlation id.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Messaging.IMessage.MessageType">
+            <summary>
+            Gets the type of the message.
+            </summary>
+            <value>
+            The type of the message.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Messaging.IMessage.Context">
+            <summary>
+            Get the call context of the message
+            </summary>
+            <value>
+            The context.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Messaging.IMessage.AllowParallelExecution">
+            <summary>
+            Gets a value indicating whether [allow parallel execution].
+            </summary>
+            <value>
+            <c>true</c> if [allow parallel execution]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="T:Forge.Net.Remoting.Messaging.Message">
+            <summary>
+            Base class for messages
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.Message.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Messaging.Message"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.Message.#ctor(Forge.Net.Remoting.MessageTypeEnum)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Messaging.Message"/> class.
+            </summary>
+            <param name="messageType">Type of the message.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.Message.#ctor(System.String,Forge.Net.Remoting.MessageTypeEnum)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Messaging.Message"/> class.
+            </summary>
+            <param name="correlationId">The correlation id.</param>
+            <param name="messageType">Type of the message.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.Message.#ctor(System.String,Forge.Net.Remoting.MessageTypeEnum,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Messaging.Message"/> class.
+            </summary>
+            <param name="correlationId">The correlation unique identifier.</param>
+            <param name="messageType">Type of the message.</param>
+            <param name="allowParallelExecution">if set to <c>true</c> [allow parallel execution].</param>
+        </member>
+        <member name="P:Forge.Net.Remoting.Messaging.Message.CorrelationId">
+            <summary>
+            Correlation of the message
+            </summary>
+            <value>
+            The correlation id.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Messaging.Message.MessageType">
+            <summary>
+            Gets the type of the message.
+            </summary>
+            <value>
+            The type of the message.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Messaging.Message.Context">
+            <summary>
+            Get the call context of the message
+            </summary>
+            <value>
+            The context.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Messaging.Message.AllowParallelExecution">
+            <summary>
+            Gets a value indicating whether [allow parallel execution].
+            </summary>
+            <value>
+            <c>true</c> if [allow parallel execution]; otherwise, <c>false</c>.
+            </value>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.Message.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object"/> is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object"/> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.Message.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+            </returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.Message.ToString">
+            <summary>
+            Returns a <see cref="T:System.String"/> that represents this instance.
+            </summary>
+            <returns>
+            A <see cref="T:System.String"/> that represents this instance.
+            </returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.Message.CreateNewCorrelationId">
+            <summary>
+            Creates the new correlation id.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Forge.Net.Remoting.Messaging.MessageHeader">
+            <summary>
+            Represents the header of a message
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.MessageHeader.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Messaging.MessageHeader"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.MessageHeader.#ctor(System.String,System.Int32,Forge.Net.Remoting.Sinks.IMessageSinkConfiguration)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Messaging.MessageHeader"/> class.
+            </summary>
+            <param name="messageSinkId">The message sink id.</param>
+            <param name="messageLength">Length of the message.</param>
+            <param name="messageSinkConfiguration">The message sink configuration.</param>
+        </member>
+        <member name="P:Forge.Net.Remoting.Messaging.MessageHeader.MessageSinkId">
+            <summary>
+            Gets the message sink id.
+            </summary>
+            <value>
+            The message sink id.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Messaging.MessageHeader.MessageLength">
+            <summary>
+            Gets the length of the message.
+            </summary>
+            <value>
+            The length of the message.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Messaging.MessageHeader.MessageSinkConfiguration">
+            <summary>
+            Gets the message sink configuration.
+            </summary>
+            <value>
+            The message sink configuration.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Messaging.MessageHeader.MessageSinkConfigurationClassName">
+            <summary>
+            Gets the name of the message sink configuration class.
+            </summary>
+            <value>
+            The name of the message sink configuration class.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.MessageHeader.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object"/> is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object"/> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.MessageHeader.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+            </returns>
+        </member>
+        <member name="T:Forge.Net.Remoting.Messaging.MessageHeaderWithBody">
+            <summary>
+            Message Header with body
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.MessageHeaderWithBody.#ctor(Forge.Net.Remoting.Messaging.MessageHeader,System.Byte[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Messaging.MessageHeaderWithBody"/> class.
+            </summary>
+            <param name="messageHeader">The message header.</param>
+            <param name="data">The data.</param>
+        </member>
+        <member name="P:Forge.Net.Remoting.Messaging.MessageHeaderWithBody.Data">
+            <summary>
+            Gets the data.
+            </summary>
+            <value>
+            The data.
+            </value>
+        </member>
+        <member name="T:Forge.Net.Remoting.Messaging.MethodParameter">
+            <summary>
+            Represents a formal parameter item of a method
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.MethodParameter.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Messaging.MethodParameter"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.MethodParameter.#ctor(System.Int32,System.String,System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Messaging.MethodParameter"/> class.
+            </summary>
+            <param name="id">The id.</param>
+            <param name="className">Name of the class.</param>
+            <param name="value">The value.</param>
+        </member>
+        <member name="P:Forge.Net.Remoting.Messaging.MethodParameter.Id">
+            <summary>
+            Gets the id.
+            </summary>
+            <value>
+            The id.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Messaging.MethodParameter.ClassName">
+            <summary>
+            Gets the name of the class.
+            </summary>
+            <value>
+            The name of the class.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Messaging.MethodParameter.Value">
+            <summary>
+            Gets the value.
+            </summary>
+            <value>
+            The value.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Messaging.MethodParameter.Size">
+            <summary>
+            Gets the size.
+            </summary>
+            <value>
+            The size.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.MethodParameter.SetValueToNull">
+            <summary>
+            Sets the value to null.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.MethodParameter.SetValueToStream(System.IO.Stream)">
+            <summary>
+            Sets the value to stream.
+            </summary>
+            <param name="stream">The stream.</param>
+            <exception cref="T:System.ArgumentException">Stream parameter not allowed. Original value was not a stream.;stream</exception>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.MethodParameter.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object"/> is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object"/> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.MethodParameter.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+            </returns>
+        </member>
+        <member name="T:Forge.Net.Remoting.Messaging.Protocol">
+            <summary>
+            Transmission formatter
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.Protocol.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Messaging.Protocol"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.Protocol.Read(Forge.Net.Synapse.NetworkStream,System.Int32)">
+            <summary>
+            Reads the specified stream.
+            </summary>
+            <param name="stream">The stream.</param>
+            <param name="maxMessageSize">Size of the max message.</param>
+            <returns>Message header with body</returns>
+            <exception cref="T:Forge.Net.Remoting.ProtocolViolationException">
+            Invalid header length.
+            or
+            Invalid message length number format.
+            or
+            Invalid header length.
+            </exception>
+            <exception cref="T:Forge.Net.Remoting.MessageSecurityException">
+            Message header length is larger then the maximum allowed.
+            or
+            Message header length is larger then the maximum allowed.
+            or
+            Message length is larger then the maximum allowed.
+            </exception>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.Protocol.Write(Forge.Net.Synapse.NetworkStream,System.Byte[],System.String,Forge.Net.Remoting.Sinks.IMessageSinkConfiguration,System.Int32)">
+            <summary>
+            Writes the specified stream.
+            </summary>
+            <param name="stream">The stream.</param>
+            <param name="data">The data.</param>
+            <param name="messageSinkId">The message sink id.</param>
+            <param name="messageSinkConfiguration">The message sink configuration.</param>
+            <param name="maxMessageSize">Size of the max message.</param>
+            <exception cref="T:Forge.Net.Remoting.MessageSecurityException">
+            Provided data size is larger than the maximum allowed message size.
+            or
+            Serialized message size is larger then the maximum allowed size.
+            </exception>
+        </member>
+        <member name="T:Forge.Net.Remoting.Messaging.RequestMessage">
+            <summary>
+            Request message
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.RequestMessage.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Messaging.RequestMessage"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.RequestMessage.#ctor(System.String,Forge.Net.Remoting.MessageTypeEnum,Forge.Net.Remoting.MessageInvokeModeEnum,System.Type,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Messaging.RequestMessage"/> class.
+            </summary>
+            <param name="correlationId">The correlation id.</param>
+            <param name="messageType">Type of the message.</param>
+            <param name="messageInvokeMode">The message invoke mode.</param>
+            <param name="contract">The contract.</param>
+            <param name="methodName">Name of the method.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.RequestMessage.#ctor(System.String,Forge.Net.Remoting.MessageTypeEnum,Forge.Net.Remoting.MessageInvokeModeEnum,System.Type,System.String,Forge.Net.Remoting.Messaging.MethodParameter[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Messaging.RequestMessage"/> class.
+            </summary>
+            <param name="correlationId">The correlation id.</param>
+            <param name="messageType">Type of the message.</param>
+            <param name="messageInvokeMode">The message invoke mode.</param>
+            <param name="contract">The contract.</param>
+            <param name="methodName">Name of the method.</param>
+            <param name="methodParameters">The method parameters.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.RequestMessage.#ctor(System.String,Forge.Net.Remoting.MessageTypeEnum,Forge.Net.Remoting.MessageInvokeModeEnum,System.Type,System.String,Forge.Net.Remoting.Messaging.MethodParameter[],System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Messaging.RequestMessage"/> class.
+            </summary>
+            <param name="correlationId">The correlation unique identifier.</param>
+            <param name="messageType">Type of the message.</param>
+            <param name="messageInvokeMode">The message invoke mode.</param>
+            <param name="contract">The contract.</param>
+            <param name="methodName">Name of the method.</param>
+            <param name="methodParameters">The method parameters.</param>
+            <param name="allowParallelExecution">Allow parallel execution on the remote side</param>
+        </member>
+        <member name="P:Forge.Net.Remoting.Messaging.RequestMessage.ContractName">
+            <summary>
+            Gets the name of the contract.
+            </summary>
+            <value>
+            The name of the contract.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Messaging.RequestMessage.MethodName">
+            <summary>
+            Gets the name of the method.
+            </summary>
+            <value>
+            The name of the method.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Messaging.RequestMessage.MethodParameters">
+            <summary>
+            Gets the method parameters.
+            </summary>
+            <value>
+            The method parameters.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Messaging.RequestMessage.MessageInvokeMode">
+            <summary>
+            Gets the message invoke mode.
+            </summary>
+            <value>
+            The message invoke mode.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.RequestMessage.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object"/> is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object"/> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.RequestMessage.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+            </returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.RequestMessage.ToString">
+            <summary>
+            Returns a <see cref="T:System.String"/> that represents this instance.
+            </summary>
+            <returns>
+            A <see cref="T:System.String"/> that represents this instance.
+            </returns>
+        </member>
+        <member name="T:Forge.Net.Remoting.Messaging.ResponseMessage">
+            <summary>
+            Response message
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.ResponseMessage.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Messaging.ResponseMessage"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.ResponseMessage.#ctor(System.String,Forge.Net.Remoting.Messaging.MethodParameter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Messaging.ResponseMessage"/> class.
+            </summary>
+            <param name="correlationId">The correlation id.</param>
+            <param name="returnValue">The return value.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.ResponseMessage.#ctor(System.String,Forge.Net.Remoting.Messaging.MethodParameter,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Messaging.ResponseMessage"/> class.
+            </summary>
+            <param name="correlationId">The correlation id.</param>
+            <param name="returnValue">The return value.</param>
+            <param name="methodInvocationException">The method invocation exception.</param>
+        </member>
+        <member name="P:Forge.Net.Remoting.Messaging.ResponseMessage.MethodInvocationException">
+            <summary>
+            Gets the method invocation exception.
+            </summary>
+            <value>
+            The method invocation exception.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Messaging.ResponseMessage.ReturnValue">
+            <summary>
+            Gets the return value.
+            </summary>
+            <value>
+            The return value.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.ResponseMessage.SetReturnValueToNull">
+            <summary>
+            Sets the return value to null.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.ResponseMessage.SetReturnValueToStream(System.IO.Stream)">
+            <summary>
+            Sets the return value to stream.
+            </summary>
+            <param name="stream">The stream.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.ResponseMessage.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object"/> is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object"/> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.ResponseMessage.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+            </returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Messaging.ResponseMessage.ToString">
+            <summary>
+            Returns a <see cref="T:System.String"/> that represents this instance.
+            </summary>
+            <returns>
+            A <see cref="T:System.String"/> that represents this instance.
+            </returns>
+        </member>
+        <member name="T:Forge.Net.Remoting.MethodInvocationException">
+            <summary>
+            Occurs when a remote method invocation failed
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.MethodInvocationException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.MethodInvocationException"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.MethodInvocationException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.MethodInvocationException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.MethodInvocationException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.MethodInvocationException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="ex">The ex.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.MethodInvocationException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.MethodInvocationException" /> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="info" /> parameter is null.</exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is null or <see cref="P:System.Exception.HResult" /> is zero (0).</exception>
+        </member>
+        <member name="T:Forge.Net.Remoting.OperationContractAttribute">
+            <summary>
+            Indicates the method is a remote procedure or function and the level of the reliability
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.OperationContractAttribute.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.OperationContractAttribute"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.OperationContractAttribute.#ctor(Forge.Net.Remoting.OperationDirectionEnum,System.Boolean,System.Boolean,System.Int64,System.Int64)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.OperationContractAttribute"/> class.
+            </summary>
+            <param name="direction">The direction.</param>
+            <param name="isOneWay">if set to <c>true</c> [is one way].</param>
+            <param name="isReliable">if set to <c>true</c> [is reliable].</param>
+            <param name="callTimeout">The call timeout.</param>
+            <param name="returnTimeout">The return timeout.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.OperationContractAttribute.#ctor(Forge.Net.Remoting.OperationDirectionEnum,System.Boolean,System.Boolean,System.Int64,System.Int64,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.OperationContractAttribute"/> class.
+            </summary>
+            <param name="direction">The direction.</param>
+            <param name="isOneWay">if set to <c>true</c> [is one way].</param>
+            <param name="isReliable">if set to <c>true</c> [is reliable].</param>
+            <param name="callTimeout">The call timeout.</param>
+            <param name="returnTimeout">The return timeout.</param>
+            <param name="allowParallelExecution">if set to <c>true</c> [allow parallel execution].</param>
+        </member>
+        <member name="P:Forge.Net.Remoting.OperationContractAttribute.Direction">
+            <summary>
+            Gets or sets the direction.
+            </summary>
+            <value>
+            The direction.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.OperationContractAttribute.IsOneWay">
+            <summary>
+            Gets or sets a value indicating whether this instance is one way.
+            </summary>
+            <value>
+            <c>true</c> if this instance is one way; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.OperationContractAttribute.IsReliable">
+            <summary>
+            Gets or sets a value indicating whether this instance is reliable.
+            </summary>
+            <value>
+            <c>true</c> if this instance is reliable; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.OperationContractAttribute.CallTimeout">
+            <summary>
+            Gets or sets the timeout.
+            </summary>
+            <value>
+            The timeout.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.OperationContractAttribute.ReturnTimeout">
+            <summary>
+            Gets or sets the return timeout.
+            </summary>
+            <value>
+            The return timeout.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.OperationContractAttribute.AllowParallelExecution">
+            <summary>
+            Gets or sets a value indicating whether [allow parallel execution].
+            </summary>
+            <value>
+            <c>true</c> if [allow parallel execution]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="T:Forge.Net.Remoting.OperationDirectionEnum">
+            <summary>
+            Specifies the direction of the remote procedure call.
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.OperationDirectionEnum.ServerSide">
+            <summary>
+            Client can call the operation on the server.
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.OperationDirectionEnum.ClientSide">
+            <summary>
+            Server can call the operation on the client.
+            </summary>
+        </member>
+        <member name="T:Forge.Net.Remoting.ProtocolViolationException">
+            <summary>
+            Protocol failed scenario
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.ProtocolViolationException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.ProtocolViolationException"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.ProtocolViolationException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.ProtocolViolationException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.ProtocolViolationException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.ProtocolViolationException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="ex">The ex.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.ProtocolViolationException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.ProtocolViolationException" /> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="info" /> parameter is null.</exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is null or <see cref="P:System.Exception.HResult" /> is zero (0).</exception>
+        </member>
+        <member name="T:Forge.Net.Remoting.ProxyGenerationFailedException">
+            <summary>
+            Occurs when the proxy generation fails
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.ProxyGenerationFailedException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.ProxyGenerationFailedException"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.ProxyGenerationFailedException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.ProxyGenerationFailedException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.ProxyGenerationFailedException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.ProxyGenerationFailedException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="ex">The ex.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.ProxyGenerationFailedException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.ProxyGenerationFailedException" /> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="info" /> parameter is null.</exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is null or <see cref="P:System.Exception.HResult" /> is zero (0).</exception>
+        </member>
+        <member name="T:Forge.Net.Remoting.ProxyGenerator.ClientSideGenerator">
+            <summary>
+            Client side generator
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.ProxyGenerator.ClientSideGenerator.GenerateServiceMethod(System.Type,System.Reflection.MethodInfo,System.IO.FileStream)">
+            <summary>
+            Generate remote method on client side
+            </summary>
+            <param name="contractType">Type of the contract.</param>
+            <param name="method">The method.</param>
+            <param name="stream">The stream.</param>
+        </member>
+        <member name="T:Forge.Net.Remoting.ProxyGenerator.GeneratorBase">
+            <summary>
+            Helper constants and methods for generators
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.ProxyGenerator.GeneratorBase.WriteAbstractProxyClassHeader(System.Type,System.Boolean,System.IO.Stream)">
+            <summary>
+            Writes the abstract proxy class header.
+            </summary>
+            <param name="contractType">Type of the contract.</param>
+            <param name="isServiceProxy">if set to <c>true</c> [is service proxy].</param>
+            <param name="stream">The stream.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.ProxyGenerator.GeneratorBase.WriteImplementationClassHeader(System.Type,System.String,System.Boolean,System.IO.Stream)">
+            <summary>
+            Writes the implementation class header.
+            </summary>
+            <param name="contractType">Type of the contract.</param>
+            <param name="superClassType">Type of the super class.</param>
+            <param name="isServiceProxy">if set to <c>true</c> [is service proxy].</param>
+            <param name="stream">The stream.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.ProxyGenerator.GeneratorBase.WriteEmptyContructor(System.Boolean,System.String,System.IO.Stream)">
+            <summary>
+            Writes the empty contructor.
+            </summary>
+            <param name="isVisible">if set to <c>true</c> [is visible].</param>
+            <param name="typeName">Name of the type.</param>
+            <param name="stream">The stream.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.ProxyGenerator.GeneratorBase.WriteProxyContructor(System.Boolean,System.String,System.IO.Stream)">
+            <summary>
+            Writes the proxy contructor.
+            </summary>
+            <param name="isVisible">if set to <c>true</c> [is visible].</param>
+            <param name="typeName">Name of the type.</param>
+            <param name="stream">The stream.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.ProxyGenerator.GeneratorBase.WriteAbstractMethods(System.Collections.Generic.IList{Forge.Net.Remoting.Validators.MethodComparator},System.IO.Stream)">
+            <summary>
+            Writes the abstract methods.
+            </summary>
+            <param name="methods">The methods.</param>
+            <param name="stream">The stream.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.ProxyGenerator.GeneratorBase.WriteMethods(System.Collections.Generic.IList{Forge.Net.Remoting.Validators.MethodComparator},System.Boolean,System.IO.Stream)">
+            <summary>
+            Writes the methods.
+            </summary>
+            <param name="methods">The methods.</param>
+            <param name="writeOverride">if set to <c>true</c> [write override].</param>
+            <param name="stream">The stream.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.ProxyGenerator.GeneratorBase.WriteAbstractProperties(System.Collections.Generic.IList{Forge.Net.Remoting.Validators.PropertyComparator},System.IO.Stream)">
+            <summary>
+            Writes the abstract properties.
+            </summary>
+            <param name="prs">The property comparators.</param>
+            <param name="stream">The stream.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.ProxyGenerator.GeneratorBase.WriteProperties(System.Collections.Generic.IList{Forge.Net.Remoting.Validators.PropertyComparator},System.Boolean,System.IO.Stream)">
+            <summary>
+            Writes the properties.
+            </summary>
+            <param name="prs">The property comparators.</param>
+            <param name="writeOverride">if set to <c>true</c> [write override].</param>
+            <param name="stream">The stream.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.ProxyGenerator.GeneratorBase.WriteEvents(System.Collections.Generic.IList{Forge.Net.Remoting.Validators.EventComparator},System.IO.Stream)">
+            <summary>
+            Writes the events.
+            </summary>
+            <param name="evs">The event comparators.</param>
+            <param name="stream">The stream.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.ProxyGenerator.GeneratorBase.WriteEndClass(System.IO.Stream)">
+            <summary>
+            Writes the end class.
+            </summary>
+            <param name="stream">The stream.</param>
+        </member>
+        <member name="T:Forge.Net.Remoting.ProxyGenerator.ProxyGenerator`1">
+            <summary>
+            Generate client and server side objects
+            </summary>
+            <typeparam name="TContract">The type of the contract.</typeparam>
+        </member>
+        <member name="M:Forge.Net.Remoting.ProxyGenerator.ProxyGenerator`1.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.ProxyGenerator.ProxyGenerator`1"/> class.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Remoting.ProxyGenerator.ProxyGenerator`1.ContractType">
+            <summary>
+            Gets the type of the contract.
+            </summary>
+            <value>
+            The type of the contract.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Remoting.ProxyGenerator.ProxyGenerator`1.Generate(System.String)">
+            <summary>
+            Generates this instance.
+            </summary>
+            <param name="outputDir">The output dir.</param>
+            <exception cref="T:Forge.Net.Remoting.ProxyGenerationFailedException">Failed to generate proxy classes.</exception>
+        </member>
+        <member name="T:Forge.Net.Remoting.ProxyGenerator.ServiceSideGenerator">
+            <summary>
+            Generate remote method on client side
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.ProxyGenerator.ServiceSideGenerator.GenerateServiceMethod(System.Type,System.Reflection.MethodInfo,System.IO.FileStream)">
+            <summary>
+            Generate remote method on client side
+            </summary>
+            <param name="contractType">Type of the contract.</param>
+            <param name="method">The method.</param>
+            <param name="stream">The stream.</param>
+        </member>
+        <member name="T:Forge.Net.Remoting.ProxyGenerator.TypeDescriptor">
+            <summary>
+            Type descriptor for generator
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.ProxyGenerator.TypeDescriptor.#ctor(System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.ProxyGenerator.TypeDescriptor"/> class.
+            </summary>
+            <param name="contractType">Type of the contract.</param>
+        </member>
+        <member name="T:Forge.Net.Remoting.ProxyNotRegisteredException">
+            <summary>
+            Exception for proxy not found fail scenario
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.ProxyNotRegisteredException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.ProxyNotRegisteredException"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.ProxyNotRegisteredException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.ProxyNotRegisteredException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.ProxyNotRegisteredException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.ProxyNotRegisteredException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="ex">The ex.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.ProxyNotRegisteredException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.ProxyNotRegisteredException" /> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="info" /> parameter is null.</exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is null or <see cref="P:System.Exception.HResult" /> is zero (0).</exception>
+        </member>
+        <member name="T:Forge.Net.Remoting.Proxy.ContractClientSideDescriptor">
+            <summary>
+            Represents the client side descriptor of the contract
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Proxy.ContractClientSideDescriptor.#ctor(System.Type,System.String,System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Proxy.ContractClientSideDescriptor"/> class.
+            </summary>
+            <param name="contractType">Type of the contract.</param>
+            <param name="defaultChannelId">The default channel id.</param>
+            <param name="defaultProxyType">Default type of the proxy.</param>
+        </member>
+        <member name="P:Forge.Net.Remoting.Proxy.ContractClientSideDescriptor.ContractType">
+            <summary>
+            Gets the type of the contract.
+            </summary>
+            <value>
+            The type of the contract.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Proxy.ContractClientSideDescriptor.DefaultChannelId">
+            <summary>
+            Gets the default channel id.
+            </summary>
+            <value>
+            The default channel id.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Proxy.ContractClientSideDescriptor.DefaultProxyType">
+            <summary>
+            Gets the default type of the proxy.
+            </summary>
+            <value>
+            The default type of the proxy.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Proxy.ContractClientSideDescriptor.ImplementationPerChannel">
+            <summary>
+            Gets the implementation per channel.
+            </summary>
+            <value>
+            The implementation per channel.
+            </value>
+        </member>
+        <member name="T:Forge.Net.Remoting.Proxy.MethodTimeoutEnum">
+            <summary>
+            Represent the type of the method timeout
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.Proxy.MethodTimeoutEnum.CallTimeout">
+            <summary>
+            Remote method call timeout
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.Proxy.MethodTimeoutEnum.ReturnTimeout">
+            <summary>
+            Return timeout
+            </summary>
+        </member>
+        <member name="T:Forge.Net.Remoting.Proxy.ProxyBase">
+            <summary>
+            Base class for Proxies
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.Proxy.ProxyBase.PROXY_ID">
+            <summary>
+            Represents the constant which identifiy the proxy identifier in the call context
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.Proxy.ProxyBase.mChannel">
+            <summary>
+            The channel to used
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.Proxy.ProxyBase.mSessionId">
+            <summary>
+            The session identifier
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Proxy.ProxyBase.#ctor(Forge.Net.Remoting.Channels.Channel,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Proxy.ProxyBase"/> class.
+            </summary>
+            <param name="channel">The channel.</param>
+            <param name="sessionId">The session id.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Proxy.ProxyBase.Finalize">
+            <summary>
+            Releases unmanaged resources and performs other cleanup operations before the
+            <see cref="T:Forge.Net.Remoting.Proxy.ProxyBase"/> is reclaimed by garbage collection.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Remoting.Proxy.ProxyBase.Channel">
+            <summary>
+            Gets the channel.
+            </summary>
+            <value>
+            The channel.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Proxy.ProxyBase.ProxyId">
+            <summary>
+            Gets the proxy id.
+            </summary>
+            <value>
+            The proxy id.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Proxy.ProxyBase.SessionId">
+            <summary>
+            Gets the session id.
+            </summary>
+            <value>
+            The session id.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Proxy.ProxyBase.IsDisposed">
+            <summary>
+            Gets a value indicating whether this instance is disposed.
+            </summary>
+            <value>
+            <c>true</c> if this instance is disposed; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Remoting.Proxy.ProxyBase.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Proxy.ProxyBase.SendResponseManually(System.Object)">
+            <summary>
+            Sends the response manually.
+            </summary>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Proxy.ProxyBase.SendResponseManually(System.Object,System.Int64)">
+            <summary>
+            Sends the response manually.
+            </summary>
+            <param name="value">The value.</param>
+            <param name="returnTimeout">The return timeout.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Proxy.ProxyBase.GetTimeoutByMethod(System.Type,System.String,Forge.Net.Remoting.Messaging.MethodParameter[],Forge.Net.Remoting.Proxy.MethodTimeoutEnum)">
+            <summary>
+            Gets the timeout by method.
+            </summary>
+            <param name="serviceContract">The service contract.</param>
+            <param name="methodName">Name of the method.</param>
+            <param name="parameterTypes">The parameter types.</param>
+            <param name="timeoutType">Type of the timeout.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Proxy.ProxyBase.DoDisposeCheck">
+            <summary>
+            Does the dispose check.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Proxy.ProxyBase.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources
+            </summary>
+            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        </member>
+        <member name="T:Forge.Net.Remoting.Proxy.CreateProxyDelegate`1">
+            <summary>
+            Delegate for create a proxy asynchronously
+            </summary>
+            <typeparam name="TContract">The type of the contract.</typeparam>
+            <returns>The contract</returns>
+        </member>
+        <member name="T:Forge.Net.Remoting.Proxy.ProxyFactory`1">
+            <summary>
+            Helps create new proxy to the generic provided service interface
+            </summary>
+            <typeparam name="TContract">The type of the contract.</typeparam>
+        </member>
+        <member name="M:Forge.Net.Remoting.Proxy.ProxyFactory`1.#cctor">
+            <summary>
+            Initializes the <see cref="T:Forge.Net.Remoting.Proxy.ProxyFactory`1"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Proxy.ProxyFactory`1.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Proxy.ProxyFactory`1"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Proxy.ProxyFactory`1.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Proxy.ProxyFactory`1"/> class.
+            </summary>
+            <param name="channelId">The channel id.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Proxy.ProxyFactory`1.#ctor(System.String,System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Proxy.ProxyFactory`1"/> class.
+            </summary>
+            <param name="channelId">The channel id.</param>
+            <param name="realProxyType">Type of the real proxy.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Proxy.ProxyFactory`1.#ctor(System.String,System.Type,Forge.Net.Synapse.AddressEndPoint)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Proxy.ProxyFactory`1"/> class.
+            </summary>
+            <param name="channelId">The channel id.</param>
+            <param name="realProxyType">Type of the real proxy.</param>
+            <param name="remoteEp">The remote ep.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Proxy.ProxyFactory`1.#ctor(System.String,Forge.Net.Synapse.AddressEndPoint)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Proxy.ProxyFactory`1"/> class.
+            </summary>
+            <param name="channelId">The channel id.</param>
+            <param name="remoteEp">The remote ep.</param>
+        </member>
+        <member name="P:Forge.Net.Remoting.Proxy.ProxyFactory`1.ContractInterface">
+            <summary>
+            Gets the contract interface.
+            </summary>
+            <value>
+            The contract interface.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Proxy.ProxyFactory`1.RealProxyType">
+            <summary>
+            Gets the type of the real proxy.
+            </summary>
+            <value>
+            The type of the real proxy.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Proxy.ProxyFactory`1.RemoteEndPoint">
+            <summary>
+            Gets the remote end point.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Remoting.Proxy.ProxyFactory`1.Channel">
+            <summary>
+            Gets the channel.
+            </summary>
+            <value>
+            The channel.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Proxy.ProxyFactory`1.ExclusiveAddressUse">
+            <summary>
+            Gets or sets a value indicating whether [exclusive address use].
+            </summary>
+            <value>
+            <c>true</c>  if [exclusive address use]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Remoting.Proxy.ProxyFactory`1.BeginCreateProxy(System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the create proxy.
+            </summary>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Proxy.ProxyFactory`1.CreateProxy">
+            <summary>
+            Creates the proxy.
+            </summary>
+            <returns>Contract</returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Proxy.ProxyFactory`1.EndCreateProxy(System.IAsyncResult)">
+            <summary>
+            Ends the create proxy.
+            </summary>
+            <param name="asyncResult">The async result.</param>
+            <returns>Contract</returns>
+        </member>
+        <member name="T:Forge.Net.Remoting.Proxy.ProxyServices">
+            <summary>
+            Manage pre-defined proxy definitions
+            </summary>
+        </member>
+        <member name="E:Forge.Net.Remoting.Proxy.ProxyServices.EventInitialization">
+            <summary>
+            Occurs when [event initialization].
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Proxy.ProxyServices.#ctor">
+            <summary>
+            Prevents a default instance of the <see cref="T:Forge.Net.Remoting.Proxy.ProxyServices"/> class from being created.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Remoting.Proxy.ProxyServices.IsInitialized">
+            <summary>
+            Gets a value indicating whether [is initialized].
+            </summary>
+            <value>
+              <c>true</c> if [is initialized]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Remoting.Proxy.ProxyServices.Initialize">
+            <summary>
+            Initializes this instance.
+            </summary>
+            <exception cref="T:Forge.Configuration.Shared.InvalidConfigurationException">
+            Contract type not definied. Empty item found in configuration.
+            or
+            or
+            or
+            </exception>
+            <exception cref="T:Forge.Configuration.Shared.InvalidConfigurationValueException">
+            </exception>
+            <exception cref="T:Forge.Net.Remoting.InvalidProxyImplementationException">
+            </exception>
+        </member>
+        <member name="M:Forge.Net.Remoting.Proxy.ProxyServices.IsContractRegistered(System.Type)">
+            <summary>
+            Determines whether [is contract registered] [the specified contract type].
+            </summary>
+            <param name="contractType">Type of the contract.</param>
+            <returns>
+              <c>true</c> if [is contract registered] [the specified contract type]; otherwise, <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">contractType</exception>
+        </member>
+        <member name="M:Forge.Net.Remoting.Proxy.ProxyServices.RegisterContract(System.Type,System.String,System.Type)">
+            <summary>
+            Registers the contract.
+            </summary>
+            <param name="contractType">Type of the contract.</param>
+            <param name="defaultChannelId">The default channel id.</param>
+            <param name="defaultProxyType">Default type of the proxy.</param>
+            <exception cref="T:System.InvalidOperationException">Contract has already registered.</exception>
+        </member>
+        <member name="M:Forge.Net.Remoting.Proxy.ProxyServices.GetContractDefaults(System.Type)">
+            <summary>
+            Gets the contract defaults.
+            </summary>
+            <param name="contractType">Type of the contract.</param>
+            <returns>Client side contract descriptor</returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Proxy.ProxyServices.ChangeContractDefaults(System.Type,System.String,System.Type)">
+            <summary>
+            Changes the contract defaults.
+            </summary>
+            <param name="contractType">Type of the contract.</param>
+            <param name="defaultChannelId">The default channel id.</param>
+            <param name="defaultProxyType">Default type of the proxy.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Proxy.ProxyServices.RegisterImplementationForChannel(System.Type,System.String,System.Type)">
+            <summary>
+            Registers the implementation for channel.
+            </summary>
+            <param name="contractType">Type of the contract.</param>
+            <param name="channelId">The channel id.</param>
+            <param name="defaultImplementationType">Default type of the implementation.</param>
+        </member>
+        <member name="P:Forge.Net.Remoting.Proxy.ProxyServices.ContractDescriptors">
+            <summary>
+            Gets the contract descriptors.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Proxy.ProxyServices.ChannelReceiveMessageEventHandler(System.Object,Forge.Net.Remoting.Channels.ReceiveMessageEventArgs)">
+            <summary>
+            Channels the receive message event handler.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="e">The <see cref="T:Forge.Net.Remoting.Channels.ReceiveMessageEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="T:Forge.Net.Remoting.RemoteMethodInvocationException">
+            <summary>
+            Occurs when a remote method invocation throws an exception
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.RemoteMethodInvocationException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.RemoteMethodInvocationException"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.RemoteMethodInvocationException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.RemoteMethodInvocationException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.RemoteMethodInvocationException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.RemoteMethodInvocationException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="ex">The ex.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.RemoteMethodInvocationException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.RemoteMethodInvocationException" /> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="info" /> parameter is null.</exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is null or <see cref="P:System.Exception.HResult" /> is zero (0).</exception>
+        </member>
+        <member name="T:Forge.Net.Remoting.ServiceBase">
+            <summary>
+            Base class for services. Provide an implementation to send reply back to the caller manually.
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.ServiceBase.AUTO_SEND_REPLY_ERROR_MSG">
+            <summary>
+            Reply error message template
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.ServiceBase.mSingletonContainer">
+            <summary>
+            Singleton container
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.ServiceBase.mContractAndInstancePerSessionAndChannel">
+            <summary>
+            Contrant and instances storage
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.ServiceBase.mCallContextForReply">
+            <summary>
+            Call contexts
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.ServiceBase.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.ServiceBase"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.ServiceBase.SendResponseManually(System.Object)">
+            <summary>
+            Sends the response manually.
+            </summary>
+            <param name="value">The value.</param>
+            <exception cref="T:System.InvalidOperationException">There is no waiting response context found.</exception>
+        </member>
+        <member name="M:Forge.Net.Remoting.ServiceBase.SendResponseManually(System.Object,System.Int64)">
+            <summary>
+            Sends the response manually.
+            </summary>
+            <param name="value">The value.</param>
+            <param name="timeout">The timeout.</param>
+            <exception cref="T:System.InvalidOperationException">There is no waiting response context found.</exception>
+        </member>
+        <member name="M:Forge.Net.Remoting.ServiceBase.CheckProxyRegistered(Forge.Net.Remoting.Proxy.ProxyBase)">
+            <summary>
+            Checks the proxy registered.
+            </summary>
+            <param name="proxy">The proxy.</param>
+            <exception cref="T:Forge.Net.Remoting.ProxyNotRegisteredException"></exception>
+        </member>
+        <member name="M:Forge.Net.Remoting.ServiceBase.GetPeerProxyId(Forge.Net.Remoting.Proxy.ProxyBase)">
+            <summary>
+            Gets the peer proxy id.
+            </summary>
+            <param name="proxy">The proxy.</param>
+            <returns>Identifier of the proxy</returns>
+            <exception cref="T:Forge.Net.Remoting.ProxyNotRegisteredException"></exception>
+        </member>
+        <member name="M:Forge.Net.Remoting.ServiceBase.FindMethod(System.Type,System.String,System.Type[])">
+            <summary>
+            Finds the method.
+            </summary>
+            <param name="type">The type.</param>
+            <param name="methodName">Name of the method.</param>
+            <param name="methodParams">The method params.</param>
+            <returns>MedhotInfo</returns>
+            <exception cref="T:System.MissingMethodException">
+            </exception>
+        </member>
+        <member name="M:Forge.Net.Remoting.ServiceBase.GetTimeoutByMethod(System.Type,System.String,Forge.Net.Remoting.Messaging.MethodParameter[],Forge.Net.Remoting.Proxy.MethodTimeoutEnum)">
+            <summary>
+            Gets the timeout by method.
+            </summary>
+            <param name="serviceContract">The service contract.</param>
+            <param name="methodName">Name of the method.</param>
+            <param name="parameterTypes">The parameter types.</param>
+            <param name="timeoutType">Type of the timeout.</param>
+            <returns>Timeout value</returns>
+            <exception cref="T:Forge.Net.Remoting.InvalidProxyImplementationException">
+            </exception>
+        </member>
+        <member name="M:Forge.Net.Remoting.ServiceBase.RegisterProxy(Forge.Net.Remoting.Channels.Channel,System.Type,System.Type,System.String,System.Int64,Forge.Net.Remoting.Proxy.ProxyBase)">
+            <summary>
+            Registers the proxy.
+            </summary>
+            <param name="channel">The channel.</param>
+            <param name="contractType">Type of the contract.</param>
+            <param name="implType">Type of the impl.</param>
+            <param name="sessionId">The session id.</param>
+            <param name="proxyId">The proxy id.</param>
+            <param name="instance">The instance.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.ServiceBase.UnregisterProxy(Forge.Net.Remoting.Proxy.ProxyBase)">
+            <summary>
+            Unregisters the proxy.
+            </summary>
+            <param name="proxy">The proxy.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.ServiceBase.SendResponse(Forge.Net.Remoting.Channels.Channel,System.String,Forge.Net.Remoting.Messaging.RequestMessage,System.Type,System.Object,System.Exception,System.Int64)">
+            <summary>
+            Sends the response.
+            </summary>
+            <param name="channel">The channel.</param>
+            <param name="sessionId">The session id.</param>
+            <param name="rm">The rm.</param>
+            <param name="returnType">Type of the return.</param>
+            <param name="result">The result.</param>
+            <param name="methodException">The method exception.</param>
+            <param name="timeout">The timeout.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.ServiceBase.ChannelRegisterEventHandler(System.Object,Forge.Net.Remoting.Channels.ChannelRegistrationEventArgs)">
+            <summary>
+            Channels the register event handler.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="e">The <see cref="T:Forge.Net.Remoting.Channels.ChannelRegistrationEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.ServiceBase.ChannelUnregisteredEventHandler(System.Object,Forge.Net.Remoting.Channels.ChannelRegistrationEventArgs)">
+            <summary>
+            Channels the unregistered event handler.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="e">The <see cref="T:Forge.Net.Remoting.Channels.ChannelRegistrationEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.ServiceBase.ChannelReceiveMessageEventHandler(System.Object,Forge.Net.Remoting.Channels.ReceiveMessageEventArgs)">
+            <summary>
+            Channels the receive message event handler.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="e">The <see cref="T:Forge.Net.Remoting.Channels.ReceiveMessageEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="T:Forge.Net.Remoting.ServiceBase.ContractAndInstanceStruct">
+            <summary>
+            Contract and instances
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.ServiceBase.ContractAndInstanceStruct.#ctor(Forge.Net.Remoting.Channels.Channel,System.Type,System.Type,System.String,System.Int64,Forge.Net.Remoting.Proxy.ProxyBase)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.ServiceBase.ContractAndInstanceStruct"/> class.
+            </summary>
+            <param name="channel">The channel.</param>
+            <param name="contractType">Type of the contract.</param>
+            <param name="implType">Type of the impl.</param>
+            <param name="sessionId">The session id.</param>
+            <param name="proxyId">The proxy id.</param>
+            <param name="instance">The instance.</param>
+        </member>
+        <member name="P:Forge.Net.Remoting.ServiceBase.ContractAndInstanceStruct.Channel">
+            <summary>
+            Gets the channel.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Remoting.ServiceBase.ContractAndInstanceStruct.ContractType">
+            <summary>
+            Gets the type of the contract.
+            </summary>
+            <value>
+            The type of the contract.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.ServiceBase.ContractAndInstanceStruct.ImplType">
+            <summary>
+            Gets the type of the impl.
+            </summary>
+            <value>
+            The type of the impl.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.ServiceBase.ContractAndInstanceStruct.SessionId">
+            <summary>
+            Gets the session id.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Remoting.ServiceBase.ContractAndInstanceStruct.Instance">
+            <summary>
+            Gets the instance.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Remoting.ServiceBase.ContractAndInstanceStruct.ProxyId">
+            <summary>
+            Gets the proxy id.
+            </summary>
+        </member>
+        <member name="T:Forge.Net.Remoting.ServiceBase.CallContextForReply">
+            <summary>
+            Call context reply
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.ServiceBase.CallContextForReply.#ctor(Forge.Net.Remoting.Channels.Channel,System.String,Forge.Net.Remoting.Messaging.RequestMessage,System.Type,System.Int64)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.ServiceBase.CallContextForReply"/> class.
+            </summary>
+            <param name="channel">The channel.</param>
+            <param name="sessionId">The session id.</param>
+            <param name="message">The message.</param>
+            <param name="returnType">Type of the return.</param>
+            <param name="returnTimeout">The return timeout.</param>
+        </member>
+        <member name="P:Forge.Net.Remoting.ServiceBase.CallContextForReply.Channel">
+            <summary>
+            Gets the channel.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Remoting.ServiceBase.CallContextForReply.SessionId">
+            <summary>
+            Gets the session id.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Remoting.ServiceBase.CallContextForReply.Message">
+            <summary>
+            Gets the message.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Remoting.ServiceBase.CallContextForReply.ReturnType">
+            <summary>
+            Gets the type of the return.
+            </summary>
+            <value>
+            The type of the return.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.ServiceBase.CallContextForReply.ReturnTimeout">
+            <summary>
+            Gets the return timeout.
+            </summary>
+        </member>
+        <member name="T:Forge.Net.Remoting.ServiceContractAttribute">
+            <summary>
+            Represent that the marked interface is a service contract
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.ServiceContractAttribute.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.ServiceContractAttribute"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.ServiceContractAttribute.#ctor(Forge.Net.Remoting.WellKnownObjectModeEnum)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.ServiceContractAttribute"/> class.
+            </summary>
+            <param name="wellKnownObjectMode">The well known object mode.</param>
+        </member>
+        <member name="P:Forge.Net.Remoting.ServiceContractAttribute.WellKnownObjectMode">
+            <summary>
+            Gets or sets the well known object mode.
+            </summary>
+            <value>
+            The well known object mode.
+            </value>
+        </member>
+        <member name="T:Forge.Net.Remoting.ServiceInitializationStateEnum">
+            <summary>
+            Represents the state of the initialization
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.ServiceInitializationStateEnum.Before">
+            <summary>
+            Before
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.ServiceInitializationStateEnum.After">
+            <summary>
+            After
+            </summary>
+        </member>
+        <member name="T:Forge.Net.Remoting.ServiceInitializationStateEventArgs">
+            <summary>
+            Service initialization state event args
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.ServiceInitializationStateEventArgs.#ctor(Forge.Net.Remoting.ServiceInitializationStateEnum)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.ServiceInitializationStateEventArgs"/> class.
+            </summary>
+            <param name="state">The state.</param>
+        </member>
+        <member name="P:Forge.Net.Remoting.ServiceInitializationStateEventArgs.State">
+            <summary>
+            Gets the state.
+            </summary>
+            <value>
+            The state.
+            </value>
+        </member>
+        <member name="T:Forge.Net.Remoting.Service.ContractServiceSideDescriptor">
+            <summary>
+            Represents the service side description of the contract
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Service.ContractServiceSideDescriptor.#ctor(System.Type,System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Service.ContractServiceSideDescriptor"/> class.
+            </summary>
+            <param name="contractType">Type of the contract.</param>
+            <param name="defaultImplementationType">Default type of the implementation.</param>
+        </member>
+        <member name="P:Forge.Net.Remoting.Service.ContractServiceSideDescriptor.ContractType">
+            <summary>
+            Gets the type of the contract.
+            </summary>
+            <value>
+            The type of the contract.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Service.ContractServiceSideDescriptor.DefaultImplementationType">
+            <summary>
+            Gets the default type of the implementation.
+            </summary>
+            <value>
+            The default type of the implementation.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Service.ContractServiceSideDescriptor.ImplementationPerChannel">
+            <summary>
+            Gets the implementation per channel.
+            </summary>
+            <value>
+            The implementation per channel.
+            </value>
+        </member>
+        <member name="T:Forge.Net.Remoting.Service.IServiceFactory">
+            <summary>
+            Represent a service factory to administrate contract, channel and an implementation type
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Remoting.Service.IServiceFactory.ServiceContract">
+            <summary>
+            Gets the service contract.
+            </summary>
+            <value>
+            The service contract.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Service.IServiceFactory.Channel">
+            <summary>
+            Gets the channel.
+            </summary>
+            <value>
+            The channel.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Service.IServiceFactory.ImplementationType">
+            <summary>
+            Gets the type of the implementation.
+            </summary>
+            <value>
+            The type of the implementation.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Remoting.Service.IServiceFactory.Open">
+            <summary>
+            Opens this instance.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Service.IServiceFactory.Close">
+            <summary>
+            Closes this instance.
+            </summary>
+        </member>
+        <member name="T:Forge.Net.Remoting.Service.ServiceBaseServices">
+            <summary>
+            Manage pre-defined service definitions
+            </summary>
+        </member>
+        <member name="E:Forge.Net.Remoting.Service.ServiceBaseServices.EventInitialization">
+            <summary>
+            Occurs when [event initialization].
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Service.ServiceBaseServices.#ctor">
+            <summary>
+            Prevents a default instance of the <see cref="T:Forge.Net.Remoting.Service.ServiceBaseServices"/> class from being created.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Remoting.Service.ServiceBaseServices.IsInitialized">
+            <summary>
+            Gets a value indicating whether [is initialized].
+            </summary>
+            <value>
+              <c>true</c> if [is initialized]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Remoting.Service.ServiceBaseServices.Initialize">
+            <summary>
+            Initialize ServiceBase services. It also initialize channel services too.
+            </summary>
+            <exception cref="T:Forge.Configuration.Shared.InvalidConfigurationException">
+            Contract type not definied. Empty item found in configuration.
+            or
+            or
+            </exception>
+            <exception cref="T:Forge.Configuration.Shared.InvalidConfigurationValueException">
+            </exception>
+            <exception cref="T:Forge.Net.Remoting.InvalidProxyImplementationException">
+            </exception>
+        </member>
+        <member name="M:Forge.Net.Remoting.Service.ServiceBaseServices.IsContractRegistered(System.Type)">
+            <summary>
+            Determines whether [is contract registered] [the specified contract type].
+            </summary>
+            <param name="contractType">Type of the contract.</param>
+            <returns>
+              <c>true</c> if [is contract registered] [the specified contract type]; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Service.ServiceBaseServices.RegisterContract(System.Type,System.Type)">
+            <summary>
+            Registers the contract.
+            </summary>
+            <param name="contractType">Type of the contract.</param>
+            <param name="defaultImplementationType">Default type of the implementation.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Service.ServiceBaseServices.UnregisterContract(System.Type)">
+            <summary>
+            Unregister contract.
+            </summary>
+            <param name="contractType">Type of the contract.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Service.ServiceBaseServices.GetContractDefault(System.Type)">
+            <summary>
+            Gets the contract default.
+            </summary>
+            <param name="contractType">Type of the contract.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Service.ServiceBaseServices.ChangeContractDefaults(System.Type,System.Type)">
+            <summary>
+            Changes the contract defaults.
+            </summary>
+            <param name="contractType">Type of the contract.</param>
+            <param name="defaultImplementationType">Default type of the implementation.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Service.ServiceBaseServices.RegisterImplementationForChannel(System.Type,System.String,System.Type)">
+            <summary>
+            Registers the implementation for channel.
+            </summary>
+            <param name="contractType">Type of the contract.</param>
+            <param name="channelId">The channel id.</param>
+            <param name="defaultImplementationType">Default type of the implementation.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Service.ServiceBaseServices.UnregisterImplementationForChannel(System.Type,System.String)">
+            <summary>
+            Unregister implementation for channel.
+            </summary>
+            <param name="contractType">Type of the contract.</param>
+            <param name="channelId">The channel id.</param>
+        </member>
+        <member name="P:Forge.Net.Remoting.Service.ServiceBaseServices.ContractDescriptors">
+            <summary>
+            Gets the contract descriptors.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Service.ServiceBaseServices.ChannelRegisterEventHandler(System.Object,Forge.Net.Remoting.Channels.ChannelRegistrationEventArgs)">
+            <summary>
+            Channels the register event handler.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="e">The <see cref="T:Forge.Net.Remoting.Channels.ChannelRegistrationEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Service.ServiceBaseServices.ChannelUnregisteredEventHandler(System.Object,Forge.Net.Remoting.Channels.ChannelRegistrationEventArgs)">
+            <summary>
+            Channels the unregistered event handler.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="e">The <see cref="T:Forge.Net.Remoting.Channels.ChannelRegistrationEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Service.ServiceBaseServices.ChannelReceiveMessageEventHandler(System.Object,Forge.Net.Remoting.Channels.ReceiveMessageEventArgs)">
+            <summary>
+            Channels the receive message event handler.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="e">The <see cref="T:Forge.Net.Remoting.Channels.ReceiveMessageEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="T:Forge.Net.Remoting.Service.ServiceFactory`1">
+            <summary>
+            Represent a service factory implementation to administrate contract, channel and an implementation type.
+            You can assign a contract, an implementation and a channel to receive remote calls from clients.
+            </summary>
+            <typeparam name="TContract">The type of the contract.</typeparam>
+        </member>
+        <member name="M:Forge.Net.Remoting.Service.ServiceFactory`1.#cctor">
+            <summary>
+            Initializes the <see cref="T:Forge.Net.Remoting.Service.ServiceFactory`1"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Service.ServiceFactory`1.#ctor(System.String,System.Type)">
+            <summary>
+            Prevents a default instance of the <see cref="T:Forge.Net.Remoting.Service.ServiceFactory`1"/> class from being created.
+            </summary>
+            <param name="channelId">The channel id.</param>
+            <param name="implementationType">Type of the implementation.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Service.ServiceFactory`1.Finalize">
+            <summary>
+            Releases unmanaged resources and performs other cleanup operations before the
+            <see cref="T:Forge.Net.Remoting.Service.ServiceFactory`1"/> is reclaimed by garbage collection.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Remoting.Service.ServiceFactory`1.ServiceContract">
+            <summary>
+            Gets the service contract.
+            </summary>
+            <value>
+            The service contract.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Service.ServiceFactory`1.Channel">
+            <summary>
+            Gets the channel.
+            </summary>
+            <value>
+            The channel.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Service.ServiceFactory`1.ImplementationType">
+            <summary>
+            Gets the type of the implementation.
+            </summary>
+            <value>
+            The type of the implementation.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Remoting.Service.ServiceFactory`1.GetServiceFactory``1(System.String,System.Type)">
+            <summary>
+            Get a service factory to create and receive calls from a client.
+            </summary>
+            <typeparam name="TServiceContract">The type of the contract.</typeparam>
+            <param name="channelId">The channel id.</param>
+            <param name="implementationType">Type of the implementation.</param>
+            <returns>Service factory</returns>
+            <exception cref="T:System.ArgumentNullException">
+            channelId
+            or
+            implementationType
+            </exception>
+            <exception cref="T:Forge.Net.Remoting.ChannelNotFoundException"></exception>
+        </member>
+        <member name="M:Forge.Net.Remoting.Service.ServiceFactory`1.Open">
+            <summary>
+            Opens this instance.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Service.ServiceFactory`1.Close">
+            <summary>
+            Closes this instance.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Service.ServiceFactory`1.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="T:Forge.Net.Remoting.Sinks.BinaryMessageSink">
+            <summary>
+            Binary message sink with compression feature
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Sinks.BinaryMessageSink.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Sinks.BinaryMessageSink"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Sinks.BinaryMessageSink.#ctor(System.Boolean,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Sinks.BinaryMessageSink"/> class.
+            </summary>
+            <param name="compressData">if set to <c>true</c> [compress data].</param>
+            <param name="compressDataOverSize">Size of the compress data over.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Sinks.BinaryMessageSink.Initialize(Forge.Configuration.Shared.CategoryPropertyItem)">
+            <summary>
+            Initialize message sink from configuration
+            </summary>
+            <param name="pi">The pi.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Sinks.BinaryMessageSink.Serialize(Forge.Net.Remoting.Messaging.IMessage)">
+            <summary>
+            Serialize data and save it into the return object. Return object optionaly stores information to deserialization.
+            </summary>
+            <param name="message">The message.</param>
+            <returns>Message Sink parameters</returns>
+            <exception cref="T:System.FormatException"></exception>
+        </member>
+        <member name="M:Forge.Net.Remoting.Sinks.BinaryMessageSink.Deserialize(Forge.Net.Remoting.Sinks.MessageSinkParameters)">
+            <summary>
+            Deserialize data from the parameters with the provided configuration.
+            </summary>
+            <param name="parameters">The parameters.</param>
+            <returns>Deserialized message</returns>
+            <exception cref="T:System.FormatException">
+            </exception>
+        </member>
+        <member name="T:Forge.Net.Remoting.Sinks.BinarySerializerMessageSink">
+            <summary>
+            Binary serializer message sink with compression feature
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Sinks.BinarySerializerMessageSink.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Sinks.BinarySerializerMessageSink"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Sinks.BinarySerializerMessageSink.#ctor(System.Boolean,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Sinks.BinarySerializerMessageSink"/> class.
+            </summary>
+            <param name="compressData">if set to <c>true</c> [compress data].</param>
+            <param name="compressDataOverSize">Size of the compress data over.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Sinks.BinarySerializerMessageSink.Initialize(Forge.Configuration.Shared.CategoryPropertyItem)">
+            <summary>
+            Initialize message sink from configuration
+            </summary>
+            <param name="pi">The pi.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Sinks.BinarySerializerMessageSink.Serialize(Forge.Net.Remoting.Messaging.IMessage)">
+            <summary>
+            Serialize data and save it into the return object. Return object optionaly stores information to deserialization.
+            </summary>
+            <param name="message">The message.</param>
+            <returns>
+            Message sink parameters
+            </returns>
+            <exception cref="T:System.FormatException"></exception>
+        </member>
+        <member name="M:Forge.Net.Remoting.Sinks.BinarySerializerMessageSink.Deserialize(Forge.Net.Remoting.Sinks.MessageSinkParameters)">
+            <summary>
+            Deserialize data from the parameters with the provided configuration.
+            </summary>
+            <param name="parameters">The parameters.</param>
+            <returns>Deserialized message</returns>
+            <exception cref="T:System.FormatException">
+            </exception>
+        </member>
+        <member name="T:Forge.Net.Remoting.Sinks.IMessageSink">
+            <summary>
+            Represents the services if a message sink
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Remoting.Sinks.IMessageSink.MessageSinkId">
+            <summary>
+            Get the unique identifier of the sink.
+            </summary>
+            <value>
+            The message sink id.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Remoting.Sinks.IMessageSink.Serialize(Forge.Net.Remoting.Messaging.IMessage)">
+            <summary>
+            Serialize data and save it into the return object. Return object optionaly stores information to deserialization.
+            </summary>
+            <param name="message">The message.</param>
+            <returns>Serialized message content</returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Sinks.IMessageSink.Deserialize(Forge.Net.Remoting.Sinks.MessageSinkParameters)">
+            <summary>
+            Deserialize data from the parameters with the provided configuration.
+            </summary>
+            <param name="parameters">The parameters.</param>
+            <returns>Deserialized message content</returns>
+        </member>
+        <member name="T:Forge.Net.Remoting.Sinks.IMessageSinkConfiguration">
+            <summary>
+            Represents the configuration of a message
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Remoting.Sinks.IMessageSinkConfiguration.MessageSinkId">
+            <summary>
+            Gets the message sink id.
+            </summary>
+            <value>
+            The message sink id.
+            </value>
+        </member>
+        <member name="T:Forge.Net.Remoting.Sinks.MessageSinkBase">
+            <summary>
+            Base of the message sinks
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.Sinks.MessageSinkBase.mMessageSinkId">
+            <summary>
+            Message sink identifier
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.Sinks.MessageSinkBase.mCompressData">
+            <summary>
+            Compress data
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.Sinks.MessageSinkBase.mCompressDataOverSize">
+            <summary>
+            Compression over limit
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.Sinks.MessageSinkBase.mInitialized">
+            <summary>
+            Represents the initialization state of the sink
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Sinks.MessageSinkBase.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Sinks.MessageSinkBase"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Sinks.MessageSinkBase.#ctor(System.String,System.Boolean,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Sinks.MessageSinkBase"/> class.
+            </summary>
+            <param name="messageSinkId">The message sink id.</param>
+            <param name="compressData">if set to <c>true</c> [compress data].</param>
+            <param name="compressDataOverSize">Size of the compress data over.</param>
+        </member>
+        <member name="P:Forge.Net.Remoting.Sinks.MessageSinkBase.MessageSinkId">
+            <summary>
+            Get the unique identifier of the sink.
+            </summary>
+            <value>
+            The message sink id.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Sinks.MessageSinkBase.IsInitialized">
+            <summary>
+            Gets a value indicating whether this instance is initialized.
+            </summary>
+            <value>
+            <c>true</c> if this instance is initialized; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Remoting.Sinks.MessageSinkBase.Initialize(Forge.Configuration.Shared.CategoryPropertyItem)">
+            <summary>
+            Initialize message sink from configuration
+            </summary>
+            <param name="pi">The pi.</param>
+        </member>
+        <member name="M:Forge.Net.Remoting.Sinks.MessageSinkBase.Serialize(Forge.Net.Remoting.Messaging.IMessage)">
+            <summary>
+            Serialize data and save it into the return object. Return object optionaly stores information to deserialization.
+            </summary>
+            <param name="message">The message.</param>
+            <returns>
+            Serialized message content
+            </returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Sinks.MessageSinkBase.Deserialize(Forge.Net.Remoting.Sinks.MessageSinkParameters)">
+            <summary>
+            Deserialize data from the parameters with the provided configuration.
+            </summary>
+            <param name="parameters">The parameters.</param>
+            <returns>
+            Deserialized message content
+            </returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Sinks.MessageSinkBase.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object"/> is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object"/> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Sinks.MessageSinkBase.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+            </returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Sinks.MessageSinkBase.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Sinks.MessageSinkBase.Compress(System.Byte[])">
+            <summary>
+            Compresses the specified data.
+            </summary>
+            <param name="data">The data.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Sinks.MessageSinkBase.Decompress(System.Byte[])">
+            <summary>
+            Decompresses the specified data.
+            </summary>
+            <param name="data">The data.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Sinks.MessageSinkBase.DoDisposeCheck">
+            <summary>
+            Does the dispose check.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Sinks.MessageSinkBase.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources
+            </summary>
+            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        </member>
+        <member name="T:Forge.Net.Remoting.Sinks.MessageSinkConfiguration">
+            <summary>
+            Represents the the message sink which help to restore a message
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Sinks.MessageSinkConfiguration.#ctor(System.String,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Sinks.MessageSinkConfiguration"/> class.
+            </summary>
+            <param name="messageSinkId">The message sink id.</param>
+            <param name="decompressData">if set to <c>true</c> [decompress data].</param>
+        </member>
+        <member name="P:Forge.Net.Remoting.Sinks.MessageSinkConfiguration.MessageSinkId">
+            <summary>
+            Gets the message sink id.
+            </summary>
+            <value>
+            The message sink id.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Sinks.MessageSinkConfiguration.DecompressData">
+            <summary>
+            Gets a value indicating whether [decompress data].
+            </summary>
+            <value>
+              <c>true</c> if [decompress data]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Remoting.Sinks.MessageSinkConfiguration.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object"/> is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object"/> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Sinks.MessageSinkConfiguration.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+            </returns>
+        </member>
+        <member name="T:Forge.Net.Remoting.Sinks.MessageSinkParameters">
+            <summary>
+            Parameters for a serialized contents
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Sinks.MessageSinkParameters.#ctor(Forge.Net.Remoting.Sinks.IMessageSinkConfiguration,System.Byte[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Sinks.MessageSinkParameters"/> class.
+            </summary>
+            <param name="config">The config.</param>
+            <param name="data">The data.</param>
+        </member>
+        <member name="P:Forge.Net.Remoting.Sinks.MessageSinkParameters.ConfigurationToDeserialize">
+            <summary>
+            Gets the configuration to deserialize.
+            </summary>
+            <value>
+            The configuration to deserialize.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Sinks.MessageSinkParameters.SerializedData">
+            <summary>
+            Gets the serialized data.
+            </summary>
+            <value>
+            The serialized data.
+            </value>
+        </member>
+        <member name="T:Forge.Net.Remoting.Validators.ContractValidator">
+            <summary>
+            Validates a contract
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Validators.ContractValidator.ValidateContractIntegrity(System.Type)">
+            <summary>
+            Check integrity of the service contract
+            </summary>
+            <param name="contractInterface">The contract interface.</param>
+            <exception cref="T:Forge.Net.Remoting.InvalidContractDefinitionException">
+            </exception>
+        </member>
+        <member name="M:Forge.Net.Remoting.Validators.ContractValidator.GetWellKnownObjectMode(System.Type,Forge.Net.Remoting.WellKnownObjectModeEnum@)">
+            <summary>
+            Query and gets back the WellKnownObjectMode type of the provided contract
+            </summary>
+            <param name="type">The type.</param>
+            <param name="result">The result.</param>
+            <returns>True, if the provided type found, otherwise False.</returns>
+        </member>
+        <member name="T:Forge.Net.Remoting.Validators.EventComparator">
+            <summary>
+            Represents an event information
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Validators.EventComparator.#ctor(System.Reflection.EventInfo)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Validators.EventComparator"/> class.
+            </summary>
+            <param name="ei">The ei.</param>
+        </member>
+        <member name="P:Forge.Net.Remoting.Validators.EventComparator.EventInfo">
+            <summary>
+            Gets the event info.
+            </summary>
+            <value>
+            The event info.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Remoting.Validators.EventComparator.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object"/> is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object"/> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Validators.EventComparator.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+            </returns>
+        </member>
+        <member name="T:Forge.Net.Remoting.Validators.ImplementationValidator">
+            <summary>
+            Validate proxy implementation
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Validators.ImplementationValidator.ValidateProxyIntegration(System.Type)">
+            <summary>
+            Check integrity of the provided proxy implementation
+            </summary>
+            <param name="implClass">The impl class.</param>
+            <exception cref="T:Forge.Net.Remoting.InvalidProxyImplementationException">
+            </exception>
+        </member>
+        <member name="M:Forge.Net.Remoting.Validators.ImplementationValidator.ValidateImplementationIntegrity(System.Type)">
+            <summary>
+            Check the integrity of the provided implementation
+            </summary>
+            <param name="implClass">The impl class.</param>
+            <exception cref="T:System.ArgumentNullException">implClass</exception>
+            <exception cref="T:Forge.Net.Remoting.InvalidProxyImplementationException">
+            </exception>
+        </member>
+        <member name="T:Forge.Net.Remoting.Validators.MethodComparator">
+            <summary>
+            Helpers compare two methods
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Validators.MethodComparator.#ctor(System.Reflection.MethodInfo)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Validators.MethodComparator"/> class.
+            </summary>
+            <param name="method">The method.</param>
+        </member>
+        <member name="P:Forge.Net.Remoting.Validators.MethodComparator.Method">
+            <summary>
+            Gets the method.
+            </summary>
+            <value>
+            The method.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Remoting.Validators.MethodComparator.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object"/> is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object"/> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Validators.MethodComparator.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+            </returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Validators.MethodComparator.ToString">
+            <summary>
+            Returns a <see cref="T:System.String"/> that represents this instance.
+            </summary>
+            <returns>
+            A <see cref="T:System.String"/> that represents this instance.
+            </returns>
+        </member>
+        <member name="T:Forge.Net.Remoting.Validators.PropertyComparator">
+            <summary>
+            Represents a property info
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Remoting.Validators.PropertyComparator.#ctor(System.Reflection.PropertyInfo)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Remoting.Validators.PropertyComparator"/> class.
+            </summary>
+            <param name="pi">The pi.</param>
+        </member>
+        <member name="P:Forge.Net.Remoting.Validators.PropertyComparator.PropertyInfo">
+            <summary>
+            Gets the property info.
+            </summary>
+            <value>
+            The property info.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Validators.PropertyComparator.GetMethod">
+            <summary>
+            Gets the get method.
+            </summary>
+            <value>
+            The get method.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Remoting.Validators.PropertyComparator.SetMethod">
+            <summary>
+            Gets the set method.
+            </summary>
+            <value>
+            The set method.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Remoting.Validators.PropertyComparator.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object"/> is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object"/> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Forge.Net.Remoting.Validators.PropertyComparator.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+            </returns>
+        </member>
+        <member name="T:Forge.Net.Remoting.WellKnownObjectModeEnum">
+            <summary>
+            Defines how well-known objects are activated.
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.WellKnownObjectModeEnum.Singleton">
+            <summary>
+            Every incoming message is serviced by the same object instance. Instance never released.
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.WellKnownObjectModeEnum.SingleCall">
+            <summary>
+            Every incoming message is serviced by a new object instance. After the response sent, instance will be dropped.
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Remoting.WellKnownObjectModeEnum.PerSession">
+            <summary>
+            Every incoming message is serviced by the same object instance per network session. When the session closed, instance will be dropped.
+            </summary>
+        </member>
+    </members>
+</doc>

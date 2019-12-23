@@ -1,0 +1,305 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Forge.UpdateFramework.Client</name>
+    </assembly>
+    <members>
+        <member name="T:Forge.UpdateFramework.Client.Configuration.DirectoryEntry">
+            <summary>
+            Represents a directory entry
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.Client.Configuration.DirectoryEntry.#ctor(System.String,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.UpdateFramework.Client.Configuration.DirectoryEntry"/> class.
+            </summary>
+            <param name="absolutePath">The absolute path.</param>
+            <param name="excludeSubFolders">if set to <c>true</c> [exclude sub folders].</param>
+        </member>
+        <member name="M:Forge.UpdateFramework.Client.Configuration.DirectoryEntry.#ctor(System.String,Forge.Configuration.Shared.CategoryPropertyItem)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.UpdateFramework.Client.Configuration.DirectoryEntry"/> class.
+            </summary>
+            <param name="codeBaseFolder">The code base folder.</param>
+            <param name="item">The item.</param>
+        </member>
+        <member name="P:Forge.UpdateFramework.Client.Configuration.DirectoryEntry.FolderName">
+            <summary>
+            Gets the name of the folder.
+            </summary>
+            <value>
+            The name of the folder.
+            </value>
+        </member>
+        <member name="P:Forge.UpdateFramework.Client.Configuration.DirectoryEntry.IncludeSubFolders">
+            <summary>
+            Gets a value indicating whether [exclude sub folders].
+            </summary>
+            <value>
+              <c>true</c> if [exclude sub folders]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:Forge.UpdateFramework.Client.Configuration.DirectoryEntry.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+            </returns>
+        </member>
+        <member name="M:Forge.UpdateFramework.Client.Configuration.DirectoryEntry.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object"/> is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object"/> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="T:Forge.UpdateFramework.Client.Configuration.Settings">
+            <summary>
+            Updater client settings
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.Client.Configuration.Settings.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.UpdateFramework.Client.Configuration.Settings"/> class.
+            </summary>
+        </member>
+        <member name="P:Forge.UpdateFramework.Client.Configuration.Settings.ProductId">
+            <summary>
+            Gets the product id.
+            </summary>
+        </member>
+        <member name="P:Forge.UpdateFramework.Client.Configuration.Settings.DownloadFolder">
+            <summary>
+            Gets or sets the download folder.
+            </summary>
+            <value>
+            The download folder.
+            </value>
+        </member>
+        <member name="P:Forge.UpdateFramework.Client.Configuration.Settings.Collectors">
+            <summary>
+            Gets the collectors.
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.Client.Configuration.Settings.Clone">
+            <summary>
+            Creates a new object that is a copy of the current instance.
+            </summary>
+            <returns>
+            A new object that is a copy of this instance.
+            </returns>
+        </member>
+        <member name="M:Forge.UpdateFramework.Client.Configuration.Settings.Initialize">
+            <summary>
+            Initializes this instance.
+            </summary>
+        </member>
+        <member name="T:Forge.UpdateFramework.Client.FileCollector">
+            <summary>
+            Collects file data
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.Client.FileCollector.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.UpdateFramework.Client.FileCollector"/> class.
+            </summary>
+        </member>
+        <member name="P:Forge.UpdateFramework.Client.FileCollector.IsInitialized">
+            <summary>
+            Gets a value indicating whether this instance is initialized.
+            </summary>
+            <value>
+            	<c>true</c> if this instance is initialized; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.UpdateFramework.Client.FileCollector.CodeBaseFolder">
+            <summary>
+            Gets or sets the work folder.
+            </summary>
+            <value>
+            The work folder.
+            </value>
+        </member>
+        <member name="P:Forge.UpdateFramework.Client.FileCollector.FolderExclusions">
+            <summary>
+            Gets or sets the code base folders exclude.
+            </summary>
+            <value>
+            The code base folders exclude.
+            </value>
+        </member>
+        <member name="P:Forge.UpdateFramework.Client.FileCollector.ExternalFolders">
+            <summary>
+            Gets or sets the external folders.
+            </summary>
+            <value>
+            The external folders.
+            </value>
+        </member>
+        <member name="P:Forge.UpdateFramework.Client.FileCollector.ExternalFiles">
+            <summary>
+            Gets or sets the external files.
+            </summary>
+            <value>
+            The external files.
+            </value>
+        </member>
+        <member name="P:Forge.UpdateFramework.Client.FileCollector.PerformSecurityTestOnFolders">
+            <summary>
+            Gets or sets a value indicating whether [perform security test on folders].
+            </summary>
+            <value>
+            	<c>true</c> if [perform security test on folders]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.UpdateFramework.Client.FileCollector.ExtensionVsDescriptor">
+            <summary>
+            Gets the extension vs descriptor.
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.Client.FileCollector.Initialize(Forge.Configuration.Shared.CategoryPropertyItem)">
+            <summary>
+            Initializes the specified configuration.
+            </summary>
+            <param name="configuration">The configuration.</param>
+        </member>
+        <member name="M:Forge.UpdateFramework.Client.FileCollector.Collect(System.Collections.Generic.Dictionary{System.String,Forge.UpdateFramework.DescriptorBase})">
+            <summary>
+            Collects the specified update data.
+            </summary>
+            <param name="updateData">The update data.</param>
+        </member>
+        <member name="T:Forge.UpdateFramework.Client.Proxy.UpdateServiceAbstractClientProxy">
+            <summary>
+            Update service client side proxy
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.Client.Proxy.UpdateServiceAbstractClientProxy.#ctor(Forge.Net.Remoting.Channels.Channel,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.UpdateFramework.Client.Proxy.UpdateServiceAbstractClientProxy"/> class.
+            </summary>
+            <param name="channel">The channel.</param>
+            <param name="sessionId">The session id.</param>
+        </member>
+        <member name="M:Forge.UpdateFramework.Client.Proxy.UpdateServiceAbstractClientProxy.CheckUpdatePush">
+            <summary>
+            Service orders the client to execute the update search process
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.Client.Proxy.UpdateServiceAbstractClientProxy.SendClientContentDescription(Forge.UpdateFramework.Contracts.UpdateRequestArgs)">
+            <summary>
+            Sends the client content description.
+            </summary>
+            <param name="args">The arguments</param>
+            <returns></returns>
+        </member>
+        <member name="T:Forge.UpdateFramework.Client.Proxy.UpdateServiceClientImpl">
+            <summary>
+            Update service client side proxy
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.Client.Proxy.UpdateServiceClientImpl.#ctor(Forge.Net.Remoting.Channels.Channel,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.UpdateFramework.Client.Proxy.UpdateServiceClientImpl"/> class.
+            </summary>
+            <param name="channel">The channel.</param>
+            <param name="sessionId">The session id.</param>
+        </member>
+        <member name="M:Forge.UpdateFramework.Client.Proxy.UpdateServiceClientImpl.CheckUpdatePush">
+            <summary>
+            Service orders the client to execute the update search process
+            </summary>
+        </member>
+        <member name="T:Forge.UpdateFramework.Client.Updater">
+            <summary>
+            Update Manager implementation for the clients
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.Client.Updater.#ctor">
+            <summary>
+            Prevents a default instance of the <see cref="T:Forge.UpdateFramework.Client.Updater"/> class from being created.
+            </summary>
+        </member>
+        <member name="P:Forge.UpdateFramework.Client.Updater.Instance">
+            <summary>
+            Gets the instance.
+            </summary>
+        </member>
+        <member name="P:Forge.UpdateFramework.Client.Updater.IsInitialized">
+            <summary>
+            Gets a value indicating whether this instance is initialized.
+            </summary>
+            <value>
+            	<c>true</c> if this instance is initialized; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.UpdateFramework.Client.Updater.Settings">
+            <summary>
+            Gets the settings.
+            </summary>
+        </member>
+        <member name="P:Forge.UpdateFramework.Client.Updater.Status">
+            <summary>
+            Gets the status.
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.Client.Updater.Initialize">
+            <summary>
+            Initializes the updater.
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.Client.Updater.CheckUpdate">
+            <summary>
+            Checks for updates immediatelly.
+            </summary>
+        </member>
+        <member name="T:Forge.UpdateFramework.Client.UpdaterStatusEnum">
+            <summary>
+            States of the client updater
+            </summary>
+        </member>
+        <member name="F:Forge.UpdateFramework.Client.UpdaterStatusEnum.UpdateNotFound">
+            <summary>
+            Update not found or the updater has no task
+            </summary>
+        </member>
+        <member name="F:Forge.UpdateFramework.Client.UpdaterStatusEnum.CheckingUpdates">
+            <summary>
+            Collecting update data and communicating with the update server
+            </summary>
+        </member>
+        <member name="F:Forge.UpdateFramework.Client.UpdaterStatusEnum.ReadyToDownloadUpdates">
+            <summary>
+            Waiting for user permission to download updates from the update server
+            </summary>
+        </member>
+        <member name="F:Forge.UpdateFramework.Client.UpdaterStatusEnum.DownloadingUpdates">
+            <summary>
+            Downloading updates from the update server
+            </summary>
+        </member>
+        <member name="F:Forge.UpdateFramework.Client.UpdaterStatusEnum.ReadyToInstallUpdates">
+            <summary>
+            Waiting for user permission to install downloaded updates
+            </summary>
+        </member>
+        <member name="F:Forge.UpdateFramework.Client.UpdaterStatusEnum.UpdateInProgess">
+            <summary>
+            Executing update procedure
+            </summary>
+        </member>
+        <member name="T:Forge.UpdateFramework.Client.UpdateServiceLocator">
+            <summary>
+            Finds the Update Framework Service on the TerraGraf network and creates proxies
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.Client.UpdateServiceLocator.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.UpdateFramework.Client.UpdateServiceLocator"/> class.
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -12,11 +12,11 @@ using Forge.Collections;
 using Forge.Configuration;
 using Forge.Configuration.Shared;
 using Forge.EventRaiser;
+using Forge.Logging;
 using Forge.Net.Remoting.Messaging;
 using Forge.Net.Remoting.Sinks;
 using Forge.Net.Synapse;
 using Forge.Reflection;
-using log4net;
 
 namespace Forge.Net.Remoting.Channels
 {

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Forge.Configuration;
 using Forge.Configuration.Shared;
+using Forge.Logging;
 using Forge.Management;
 using Forge.Net.Remoting;
 using Forge.Net.Remoting.Channels;
@@ -20,7 +21,6 @@ using Forge.Net.Synapse;
 using Forge.Net.Synapse.NetworkFactory;
 using Forge.Net.TerraGraf;
 using Forge.Net.TerraGraf.Contexts;
-using log4net;
 
 namespace Forge.Net.Services.Services
 {
@@ -31,6 +31,7 @@ namespace Forge.Net.Services.Services
     /// <typeparam name="TIServiceProxyType">The type of the I service proxy type.</typeparam>
     /// <typeparam name="TServiceProxyImplementationType">The type of the service proxy impl type.</typeparam>
     /// <typeparam name="TServiceType">The type of the service type.</typeparam>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1005:AvoidExcessiveParametersOnGenericTypes")]
     public abstract class RemoteServiceBase<TIServiceProxyType, TServiceProxyImplementationType, TServiceType> : ManagerBase, IRemoteService
         where TIServiceProxyType : IRemoteContract
         where TServiceProxyImplementationType : IRemoteContract
@@ -44,21 +45,26 @@ namespace Forge.Net.Services.Services
         /// <summary>
         /// Logger
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes")]
         protected readonly ILog LOGGER = LogManager.GetLogger(typeof(TServiceType));
 
         /// <summary>
         /// Log prefix for log messages
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields")]
         protected readonly string LOG_PREFIX = typeof(TServiceType).Name;
 
         /// <summary>
         /// Priority of the service
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields")]
         protected long mPriority = 0;
 
         /// <summary>
         /// The service descriptor
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields")]
         protected IServiceDescriptor mServiceDescriptor = null;
 
         #endregion
@@ -90,6 +96,7 @@ namespace Forge.Net.Services.Services
         /// <value>
         /// The instance.
         /// </value>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1000:DoNotDeclareStaticMembersOnGenericTypes")]
         public static TServiceType Instance
         {
             [MethodImpl(MethodImplOptions.Synchronized)]
@@ -214,8 +221,9 @@ namespace Forge.Net.Services.Services
         /// <returns>
         /// Manager State
         /// </returns>
-        /// <exception cref="Forge.Configuration.Shared.InvalidConfigurationException"></exception>
         /// <exception cref="InvalidConfigurationException"></exception>
+        /// <exception cref="InvalidConfigurationException"></exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object)")]
         [MethodImpl(MethodImplOptions.Synchronized)]
         public virtual ManagerStateEnum Start(long priority, IServiceDescriptor serviceDescriptor)
         {
@@ -279,6 +287,7 @@ namespace Forge.Net.Services.Services
         /// <returns>
         /// Manager State
         /// </returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object)")]
         [MethodImpl(MethodImplOptions.Synchronized)]
         public override ManagerStateEnum Stop()
         {
@@ -325,6 +334,7 @@ namespace Forge.Net.Services.Services
         /// Looks up channel.
         /// </summary>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "LookUp")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         protected virtual Channel LookUpChannel()
         {
@@ -360,6 +370,10 @@ namespace Forge.Net.Services.Services
         /// <param name="channel">The channel.</param>
         /// <param name="priority">The priority.</param>
         /// <param name="serviceDescriptor">The service descriptor.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object,System.Object)")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.Int64.ToString")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.Int32.ToString")]
         protected virtual void RegisterToPeerContext(Channel channel, long priority, IServiceDescriptor serviceDescriptor)
         {
             if (channel == null) ThrowHelper.ThrowArgumentNullException("channel");

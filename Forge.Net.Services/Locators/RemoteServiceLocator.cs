@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using Forge.Collections;
 using Forge.Configuration;
 using Forge.Configuration.Shared;
+using Forge.Logging;
 using Forge.Management;
 using Forge.Net.Remoting;
 using Forge.Net.Remoting.Channels;
@@ -21,7 +22,6 @@ using Forge.Net.Synapse.NetworkFactory;
 using Forge.Net.TerraGraf;
 using Forge.Net.TerraGraf.Contexts;
 using Forge.Net.TerraGraf.NetworkPeers;
-using log4net;
 
 namespace Forge.Net.Services.Locators
 {
@@ -32,6 +32,7 @@ namespace Forge.Net.Services.Locators
     /// <typeparam name="TIProxyType">The type of the I proxy type.</typeparam>
     /// <typeparam name="TProxyImplementationType">The type of the proxy impl type.</typeparam>
     /// <typeparam name="TLocatorType">The type of the locator type.</typeparam>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1005:AvoidExcessiveParametersOnGenericTypes")]
     public abstract class RemoteServiceLocator<TIProxyType, TProxyImplementationType, TLocatorType> : ManagerBase, IRemoteServiceLocator<TIProxyType>
         where TIProxyType : IRemoteContract
         where TProxyImplementationType : ProxyBase
@@ -45,16 +46,21 @@ namespace Forge.Net.Services.Locators
         /// <summary>
         /// The peers vs providers
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields")]
         protected readonly Dictionary<INetworkPeer, ServiceProvider> mPeersVsProviders = new Dictionary<INetworkPeer, ServiceProvider>();
 
         /// <summary>
         /// Logger
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "LOGGER")]
         protected static readonly ILog LOGGER = LogManager.GetLogger(typeof(TLocatorType));
 
         /// <summary>
         /// Log prefix for log messages
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields")]
         protected readonly string LOG_PREFIX = typeof(TLocatorType).Name;
 
         private ServiceProvider mPreferedServiceProvider = null;
@@ -132,6 +138,7 @@ namespace Forge.Net.Services.Locators
         /// <value>
         /// The available service providers.
         /// </value>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public ListSpecialized<ServiceProvider> AvailableServiceProviders
         {
             get
@@ -183,6 +190,7 @@ namespace Forge.Net.Services.Locators
         /// <returns>
         /// Manager State
         /// </returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object)")]
         [MethodImpl(MethodImplOptions.Synchronized)]
         public override ManagerStateEnum Start()
         {
@@ -310,6 +318,7 @@ namespace Forge.Net.Services.Locators
         /// Called when [prefered service provider changed].
         /// </summary>
         /// <param name="provider">The provider.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Prefered")]
         protected virtual void OnPreferedServiceProviderChanged(ServiceProvider provider)
         {
             RaiseEvent(EventPreferedServiceProviderChanged, this, new PreferedServiceProviderChangedEventArgs(provider));
@@ -319,6 +328,9 @@ namespace Forge.Net.Services.Locators
         /// Looks up channel.
         /// </summary>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "LookUp")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object,System.Object)")]
         protected virtual Channel LookUpChannel()
         {
             Channel channel = ChannelServices.GetChannelById(this.ChannelId);
@@ -346,6 +358,9 @@ namespace Forge.Net.Services.Locators
         /// <summary>
         /// Finds the service providers.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object)")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object,System.Object,System.Object)")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.Int32.ToString")]
         protected virtual void FindService()
         {
             ListSpecialized<ServiceProvider> providers = new ListSpecialized<ServiceProvider>();
@@ -417,6 +432,7 @@ namespace Forge.Net.Services.Locators
         /// </summary>
         /// <param name="peer">The peer.</param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1806:DoNotIgnoreMethodResults", MessageId = "System.Int64.TryParse(System.String,System.Int64@)")]
         protected virtual ServiceProvider CheckServiceAvailable(INetworkPeer peer)
         {

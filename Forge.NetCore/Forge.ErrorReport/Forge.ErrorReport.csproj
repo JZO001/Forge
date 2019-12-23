@@ -1,0 +1,110 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp3.1;net461</TargetFrameworks>
+    <Version>1.0.0.3</Version>
+    <Copyright>Copyright © Zoltan Juhasz, 2012-2019</Copyright>
+    <Description>Contains the interfaces of the Error Report Framework</Description>
+    <Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
+    <Company>Forge Project Contributor(s)</Company>
+    <PackageId>Forge.ErrorReport</PackageId>
+    <Authors>Zoltan Juhasz</Authors>
+    <AssemblyVersion>1.0.0.3</AssemblyVersion>
+    <Title>Error Report Framework</Title>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <ProjectGuid>{C7A8F803-2AF4-4211-8EF4-BB62A9EC0B34}</ProjectGuid>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp3.1|AnyCPU'">
+    <DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.ErrorReport\Forge.ErrorReport.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp3.1|AnyCPU'">
+    <DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.ErrorReport\Forge.ErrorReport.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="log4net" Version="2.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\Forge.ErrorReport\ConfigSection\ErrorReportConfiguration.cs" Link="ConfigSection\ErrorReportConfiguration.cs" />
+    <Compile Include="..\..\Forge.ErrorReport\ConfigSection\ErrorReportSection.cs" Link="ConfigSection\ErrorReportSection.cs" />
+    <Compile Include="..\..\Forge.ErrorReport\Consts.cs" Link="Consts.cs" />
+    <Compile Include="..\..\Forge.ErrorReport\Contracts\IErrorReportSendContract.cs" Link="Contracts\IErrorReportSendContract.cs" />
+    <Compile Include="..\..\Forge.ErrorReport\Filter\ArithmeticFilter.cs" Link="Filter\ArithmeticFilter.cs" />
+    <Compile Include="..\..\Forge.ErrorReport\Filter\ArithmeticFilterOperandEnum.cs" Link="Filter\ArithmeticFilterOperandEnum.cs" />
+    <Compile Include="..\..\Forge.ErrorReport\Filter\FilterBase.cs" Link="Filter\FilterBase.cs" />
+    <Compile Include="..\..\Forge.ErrorReport\Filter\FilterMemberNameAndValue.cs" Link="Filter\FilterMemberNameAndValue.cs" />
+    <Compile Include="..\..\Forge.ErrorReport\Filter\GroupFilter.cs" Link="Filter\GroupFilter.cs" />
+    <Compile Include="..\..\Forge.ErrorReport\Filter\GroupFilterLoginEnum.cs" Link="Filter\GroupFilterLoginEnum.cs" />
+    <Compile Include="..\..\Forge.ErrorReport\Filter\IErrorReportFilter.cs" Link="Filter\IErrorReportFilter.cs" />
+    <Compile Include="..\..\Forge.ErrorReport\Filter\LikeFilter.cs" Link="Filter\LikeFilter.cs" />
+    <Compile Include="..\..\Forge.ErrorReport\Filter\LikeMatchModeFilterEnum.cs" Link="Filter\LikeMatchModeFilterEnum.cs" />
+    <Compile Include="..\..\Forge.ErrorReport\ReportPackage.cs" Link="ReportPackage.cs" />
+    <Compile Include="..\..\Forge.ErrorReport\ReportPackageDescriptor.cs" Link="ReportPackageDescriptor.cs" />
+    <Compile Include="..\..\Forge.ErrorReport\Sink\IErrorReportPackageSink.cs" Link="Sink\IErrorReportPackageSink.cs" />
+    <Compile Include="..\..\Forge.ErrorReport\Sink\SinkBase.cs" Link="Sink\SinkBase.cs" />
+    <Compile Include="..\..\Forge.ErrorReport\Sink\SmtpSink.cs" Link="Sink\SmtpSink.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+    <PackageReference Include="System.Configuration.ConfigurationManager">
+      <Version>4.7.0</Version>
+    </PackageReference>
+    <Reference Include="Forge.Base">
+      <HintPath>..\Forge.Base\bin\netcoreapp3.1\Forge.Base.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <Name>Forge.Base</Name>
+    </Reference>
+    <Reference Include="Forge.Net.Remoting">
+      <HintPath>..\Forge.Net.Remoting\bin\netcoreapp3.1\Forge.Net.Remoting.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <Name>Forge.Net.Remoting</Name>
+    </Reference>
+    <Reference Include="Forge.ORM.NHibernateExtension">
+      <HintPath>..\Forge.ORM.NHibernateExtension\bin\netcoreapp3.1\Forge.ORM.NHibernateExtension.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <Name>Forge.ORM.NHibernateExtension</Name>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net461'">
+    <Reference Include="System.Configuration" />
+    <Reference Include="Forge.Base">
+      <HintPath>..\Forge.Base\bin\net40\Forge.Base.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <Name>Forge.Base</Name>
+    </Reference>
+    <Reference Include="Forge.Net.Remoting">
+      <HintPath>..\Forge.Net.Remoting\bin\net40\Forge.Net.Remoting.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <Name>Forge.Net.Remoting</Name>
+    </Reference>
+    <Reference Include="Forge.ORM.NHibernateExtension">
+      <HintPath>..\Forge.ORM.NHibernateExtension\bin\net461\Forge.ORM.NHibernateExtension.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <Name>Forge.ORM.NHibernateExtension</Name>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ConfigSection\" />
+    <Folder Include="Contracts\" />
+    <Folder Include="Filter\" />
+    <Folder Include="Sink\" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="echo F|xcopy /r /y &quot;$(TargetPath)&quot; &quot;$(ProjectDir)bin\$(TargetFramework)\$(TargetFileName)&quot;&#xD;&#xA;" />
+  </Target>
+
+</Project>

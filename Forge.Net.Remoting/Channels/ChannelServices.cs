@@ -9,9 +9,9 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Forge.Configuration.Shared;
 using Forge.EventRaiser;
+using Forge.Logging;
 using Forge.Net.Remoting.ConfigSection;
 using Forge.Reflection;
-using log4net;
 
 namespace Forge.Net.Remoting.Channels
 {

@@ -82,6 +82,13 @@ namespace Forge
         /// <value>
         /// <c>true</c> if [is unique identifier thread]; otherwise, <c>false</c>.
         /// </value>
+#if NETCOREAPP3_1
+        public static bool IsUIThread()
+        {
+            return System.Windows.Forms.Application.MessageLoop ||
+                System.Windows.Threading.Dispatcher.FromThread(Thread.CurrentThread) != null;
+        }
+#else
         public static bool IsUIThread()
         {
             return System.Windows.Forms.Application.MessageLoop ||
@@ -90,6 +97,7 @@ namespace Forge
                     :
                     false);
         }
+#endif
 
     }
 

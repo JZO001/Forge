@@ -4,8 +4,8 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Logging;
 using System.Collections.Generic;
-using log4net;
 
 namespace Forge.Collections
 {

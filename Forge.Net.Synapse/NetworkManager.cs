@@ -11,9 +11,9 @@ using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Forge.EventRaiser;
+using Forge.Logging;
 using Forge.Net.Synapse.NetworkFactory;
 using Forge.Net.Synapse.NetworkServices;
-using log4net;
 
 namespace Forge.Net.Synapse
 {
@@ -28,7 +28,7 @@ namespace Forge.Net.Synapse
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger("Forge.Net.Synapse.NetworkManager");
+        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(NetworkManager));
 
         private static readonly IServerStreamFactory mDefaultServerStreamFactory = new DefaultServerStreamFactory();
 

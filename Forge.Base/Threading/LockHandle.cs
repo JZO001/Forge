@@ -4,10 +4,10 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using log4net;
 
 namespace Forge.Threading
 {

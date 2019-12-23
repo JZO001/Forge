@@ -1,0 +1,262 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Forge.Persistence.StorageProviders.HibernateStorageProvider</name>
+    </assembly>
+    <members>
+        <member name="T:Forge.Persistence.StorageProviders.HibernateStorageProvider.EntityModel.PersistentStorageAllocationTable">
+            <summary>
+            Store allocation table serialized data
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.HibernateStorageProvider.EntityModel.PersistentStorageAllocationTable.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.HibernateStorageProvider.EntityModel.PersistentStorageAllocationTable"/> class.
+            </summary>
+        </member>
+        <member name="P:Forge.Persistence.StorageProviders.HibernateStorageProvider.EntityModel.PersistentStorageAllocationTable.ItemAllocationTableData">
+            <summary>
+            Gets or sets the item allocation table data.
+            </summary>
+            <value>
+            The item allocation table data.
+            </value>
+        </member>
+        <member name="T:Forge.Persistence.StorageProviders.HibernateStorageProvider.EntityModel.PersistentStorageItem">
+            <summary>
+            Store serialized item data
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.HibernateStorageProvider.EntityModel.PersistentStorageItem.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.HibernateStorageProvider.EntityModel.PersistentStorageItem"/> class.
+            </summary>
+        </member>
+        <member name="P:Forge.Persistence.StorageProviders.HibernateStorageProvider.EntityModel.PersistentStorageItem.EntryData">
+            <summary>
+            Gets or sets the entry data.
+            </summary>
+            <value>
+            The entity data.
+            </value>
+        </member>
+        <member name="T:Forge.Persistence.StorageProviders.HibernateStorageProvider.FailSafeFactory">
+            <summary>
+            Helps to create storage provider in safe mode
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.HibernateStorageProvider.FailSafeFactory.FailSafeStartStorageProvider``1(System.String,System.Boolean,System.Boolean@)">
+            <summary>
+            Fails the safe start storage provider.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="storageId">The storage id.</param>
+            <param name="enableReset">if set to <c>true</c> [enable reset].</param>
+            <param name="hasError">if set to <c>true</c> [has error].</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.HibernateStorageProvider.FailSafeFactory.FailSafeStartStorageProvider``1(System.String,System.Boolean,System.Boolean,System.Boolean@)">
+            <summary>
+            Fails the safe start storage provider.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="storageId">The storage id.</param>
+            <param name="compressContent">if set to <c>true</c> [compress content].</param>
+            <param name="enableReset">if set to <c>true</c> [enable reset].</param>
+            <param name="hasError">if set to <c>true</c> [has error].</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.HibernateStorageProvider.FailSafeFactory.FailSafeStartStorageProvider``1(System.String,Forge.Persistence.Formatters.IDataFormatter{``0},System.Boolean,System.Boolean@)">
+            <summary>
+            Fails the safe start storage provider.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="storageId">The storage id.</param>
+            <param name="dataFormatter">The data formatter.</param>
+            <param name="enableReset">if set to <c>true</c> [enable reset].</param>
+            <param name="hasError">if set to <c>true</c> [has error].</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.HibernateStorageProvider.FailSafeFactory.FailSafeStartStorageProvider``1(System.String,Forge.Persistence.Formatters.IDataFormatter{``0},System.Boolean,System.Boolean,System.Boolean@)">
+            <summary>
+            Fails the safe start storage provider.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="storageId">The storage id.</param>
+            <param name="dataFormatter">The data formatter.</param>
+            <param name="compressContent">if set to <c>true</c> [compress content].</param>
+            <param name="enableReset">if set to <c>true</c> [enable reset].</param>
+            <param name="hasError">if set to <c>true</c> [has error].</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.HibernateStorageProvider.FailSafeFactory.FailSafeStartStorageProvider``1(System.String,Forge.Configuration.Shared.CategoryPropertyItem,System.Boolean,System.Boolean@)">
+            <summary>
+            Fails the safe start storage provider.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="storageId">The storage identifier.</param>
+            <param name="configItem">The configuration item.</param>
+            <param name="enableReset">if set to <c>true</c> [enable reset].</param>
+            <param name="hasError">if set to <c>true</c> [has error].</param>
+            <returns></returns>
+        </member>
+        <member name="T:Forge.Persistence.StorageProviders.HibernateStorageProvider.HibernateStorageProvider`1">
+            <summary>
+            Hibernate based storage provider
+            </summary>
+            <typeparam name="T">Generic type</typeparam>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.HibernateStorageProvider.HibernateStorageProvider`1.#cctor">
+            <summary>
+            Initializes the <see cref="T:Forge.Persistence.StorageProviders.HibernateStorageProvider.HibernateStorageProvider`1"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.HibernateStorageProvider.HibernateStorageProvider`1.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.HibernateStorageProvider.HibernateStorageProvider`1"/> class.
+            </summary>
+            <param name="storageId">The storage id.</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.HibernateStorageProvider.HibernateStorageProvider`1.#ctor(System.String,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.HibernateStorageProvider.HibernateStorageProvider`1"/> class.
+            </summary>
+            <param name="storageId">The storage id.</param>
+            <param name="compressContent">if set to <c>true</c> [compress content].</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.HibernateStorageProvider.HibernateStorageProvider`1.#ctor(System.String,Forge.Persistence.Formatters.IDataFormatter{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.HibernateStorageProvider.HibernateStorageProvider`1"/> class.
+            </summary>
+            <param name="storageId">The storage id.</param>
+            <param name="dataFormatter">The data formatter.</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.HibernateStorageProvider.HibernateStorageProvider`1.#ctor(System.String,Forge.Persistence.Formatters.IDataFormatter{`0},System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.HibernateStorageProvider.HibernateStorageProvider`1"/> class.
+            </summary>
+            <param name="storageId">The storage id.</param>
+            <param name="dataFormatter">The data formatter.</param>
+            <param name="compressContent">if set to <c>true</c> [compress content].</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.HibernateStorageProvider.HibernateStorageProvider`1.#ctor(System.String,Forge.Configuration.Shared.CategoryPropertyItem)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.HibernateStorageProvider.HibernateStorageProvider`1"/> class.
+            </summary>
+            <param name="storageId">The storage id.</param>
+            <param name="configItem">The config item.</param>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.HibernateStorageProvider.HibernateStorageProvider`1.Add(`0)">
+            <summary>
+            Adds the specified o.
+            </summary>
+            <param name="o">The o.</param>
+            <exception cref="T:Forge.Persistence.StorageProviders.PersistenceException"></exception>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.HibernateStorageProvider.HibernateStorageProvider`1.AddRange(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Adds the range.
+            </summary>
+            <param name="o">The o.</param>
+            <exception cref="T:Forge.Persistence.StorageProviders.PersistenceException">Unable to add object.</exception>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.HibernateStorageProvider.HibernateStorageProvider`1.Insert(System.Int32,`0)">
+            <summary>
+            Inserts the specified index.
+            </summary>
+            <param name="index">The index.</param>
+            <param name="o">The o.</param>
+            <exception cref="T:Forge.Persistence.StorageProviders.PersistenceException"></exception>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.HibernateStorageProvider.HibernateStorageProvider`1.Remove(`0)">
+            <summary>
+            Removes the specified o.
+            </summary>
+            <param name="o">The o.</param>
+            <returns>
+            True, if the collection modified, otherwise False.
+            </returns>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.HibernateStorageProvider.HibernateStorageProvider`1.RemoveAt(System.Int32)">
+            <summary>
+            Removes at.
+            </summary>
+            <param name="index">The index.</param>
+            <exception cref="T:Forge.Persistence.StorageProviders.PersistenceException"></exception>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.HibernateStorageProvider.HibernateStorageProvider`1.Clear">
+            <summary>
+            Clears this instance.
+            </summary>
+        </member>
+        <member name="P:Forge.Persistence.StorageProviders.HibernateStorageProvider.HibernateStorageProvider`1.Item(System.Int32)">
+            <summary>
+            Gets the object at the specified index.
+            </summary>
+            <value>
+            The value
+            </value>
+            <param name="index">The index.</param>
+            <returns>Item</returns>
+        </member>
+        <member name="P:Forge.Persistence.StorageProviders.HibernateStorageProvider.HibernateStorageProvider`1.Count">
+            <summary>
+            Gets the count.
+            </summary>
+            <value>
+            The count.
+            </value>
+        </member>
+        <member name="P:Forge.Persistence.StorageProviders.HibernateStorageProvider.HibernateStorageProvider`1.IsEmpty">
+            <summary>
+            Gets a value indicating whether this instance is empty.
+            </summary>
+            <value>
+              <c>true</c> if this instance is empty; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.HibernateStorageProvider.HibernateStorageProvider`1.GetEnumerator">
+            <summary>
+            Gets the enumerator.
+            </summary>
+            <returns>Enumerator of generic items</returns>
+        </member>
+        <member name="P:Forge.Persistence.StorageProviders.HibernateStorageProvider.HibernateStorageProvider`1.CompressContent">
+            <summary>
+            Gets a value indicating whether [compress content].
+            </summary>
+            <value>
+              <c>true</c> if [compress content]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.HibernateStorageProvider.HibernateStorageProvider`1.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources
+            </summary>
+            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        </member>
+        <member name="T:Forge.Persistence.StorageProviders.HibernateStorageProvider.ItemTable">
+            <summary>
+            Allocation table
+            </summary>
+        </member>
+        <member name="M:Forge.Persistence.StorageProviders.HibernateStorageProvider.ItemTable.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Persistence.StorageProviders.HibernateStorageProvider.ItemTable"/> class.
+            </summary>
+        </member>
+        <member name="P:Forge.Persistence.StorageProviders.HibernateStorageProvider.ItemTable.ItemIds">
+            <summary>
+            Gets the item ids.
+            </summary>
+        </member>
+        <member name="P:Forge.Persistence.StorageProviders.HibernateStorageProvider.ItemTable.ItemUid">
+            <summary>
+            Gets or sets the item uid.
+            </summary>
+            <value>
+            The item uid.
+            </value>
+        </member>
+    </members>
+</doc>

@@ -10,7 +10,7 @@ using System.Configuration;
 using System.Data.SqlClient;
 using Forge.Configuration.Shared;
 using Forge.DatabaseManagement.SqlServer2008.Properties;
-using log4net;
+using Forge.Logging;
 
 namespace Forge.DatabaseManagement.SqlServer2008
 {

@@ -4,9 +4,9 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Logging;
 using System;
 using System.IO;
-using log4net;
 
 namespace Forge.Net.Remoting.Channels
 {

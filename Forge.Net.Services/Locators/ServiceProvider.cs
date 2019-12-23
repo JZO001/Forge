@@ -36,6 +36,7 @@ namespace Forge.Net.Services.Locators
         /// <param name="ep">The ep.</param>
         /// <param name="priority">The priority.</param>
         /// <param name="properties">The properties.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "ep")]
         public ServiceProvider(INetworkPeer peer, AddressEndPoint ep, long priority, Dictionary<string, PropertyItem> properties)
         {
             if (peer == null)

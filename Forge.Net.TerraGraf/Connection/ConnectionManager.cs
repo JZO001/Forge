@@ -12,14 +12,17 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Forge.Collections;
+using Forge.Logging;
 using Forge.Net.Synapse;
 using Forge.Net.Synapse.NATUPnP;
 using Forge.Net.TerraGraf.Configuration;
 using Forge.Net.TerraGraf.Formatters;
 using Forge.Net.TerraGraf.Messaging;
 using Forge.Net.TerraGraf.NetworkPeers;
-using log4net;
+#if NETCOREAPP3_1
+#else
 using NATUPNPLib;
+#endif
 
 namespace Forge.Net.TerraGraf.Connection
 {
@@ -33,7 +36,7 @@ namespace Forge.Net.TerraGraf.Connection
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger("Forge.Net.TerraGraf.Connection.ConnectionManager");
+        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(ConnectionManager));
 
         private Forge.Threading.ThreadPool mThreadPool = new Forge.Threading.ThreadPool("TerraGraf_Network_Connection");
 
@@ -167,6 +170,9 @@ namespace Forge.Net.TerraGraf.Connection
             }
         }
 
+#if NETCOREAPP3_1
+#else
+
         /// <summary>
         /// Initializes the NATUPnP service.
         /// </summary>
@@ -280,6 +286,8 @@ namespace Forge.Net.TerraGraf.Connection
                 if (LOGGER.IsErrorEnabled) LOGGER.Error("CONNECTION_MANAGER, failed to initialize NATUPnP service.", ex);
             }
         }
+
+#endif
 
         /// <summary>
         /// Initializes the TCP connections.

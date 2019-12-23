@@ -13,6 +13,7 @@ using System.Threading;
 using Forge.Collections;
 using Forge.Configuration.Shared;
 using Forge.IO;
+using Forge.Logging;
 using Forge.Net.Remoting.Messaging;
 using Forge.Net.Remoting.Sinks;
 using Forge.Net.Synapse;
@@ -20,7 +21,6 @@ using Forge.Net.Synapse.NetworkFactory;
 using Forge.Net.Synapse.NetworkServices;
 using Forge.Reflection;
 using Forge.Threading;
-using log4net;
 
 namespace Forge.Net.Remoting.Channels
 {

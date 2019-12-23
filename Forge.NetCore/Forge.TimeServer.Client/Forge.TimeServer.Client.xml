@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Forge.TimeServer.Client</name>
+    </assembly>
+    <members>
+        <member name="T:Forge.TimeServer.Client.TimeServerClientImpl">
+            <summary>
+            Client proxy for time server call
+            </summary>
+        </member>
+        <member name="M:Forge.TimeServer.Client.TimeServerClientImpl.#ctor(Forge.Net.Remoting.Channels.Channel,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.TimeServer.Client.TimeServerClientImpl"/> class.
+            </summary>
+            <param name="channel">The channel.</param>
+            <param name="sessionId">The session id.</param>
+        </member>
+        <member name="M:Forge.TimeServer.Client.TimeServerClientImpl.GetUTCDateTime">
+            <summary>
+            Gets the UTC date time.
+            </summary>
+            <returns></returns>
+            <exception cref="T:Forge.Net.Remoting.RemoteMethodInvocationException">
+            Unable to call remote method. See inner exception for details.
+            or
+            An exception arrived from the remote side. See inner exception for details.
+            </exception>
+        </member>
+        <member name="T:Forge.TimeServer.Client.TimeServerServiceLocator">
+            <summary>
+            Finds the time server service on the network
+            </summary>
+        </member>
+        <member name="M:Forge.TimeServer.Client.TimeServerServiceLocator.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.TimeServer.Client.TimeServerServiceLocator"/> class.
+            </summary>
+        </member>
+    </members>
+</doc>

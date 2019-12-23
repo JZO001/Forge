@@ -8,8 +8,8 @@ using System.Diagnostics;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using Forge.Configuration.Shared;
+using Forge.Logging;
 using Forge.Net.Synapse.NetworkServices;
-using log4net;
 
 namespace Forge.Net.Synapse.NetworkFactory
 {
@@ -22,7 +22,7 @@ namespace Forge.Net.Synapse.NetworkFactory
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger("Forge.Net.Synapse.SslClientStreamFactory");
+        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(SslClientStreamFactory));
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string mServerNameOnCertificate = string.Empty;

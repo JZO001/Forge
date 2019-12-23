@@ -11,9 +11,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using Forge.Configuration.Shared;
+using Forge.Logging;
 using Forge.Net.Synapse;
 using Forge.Net.TerraGraf.ConfigSection;
-using log4net;
 
 namespace Forge.Net.TerraGraf.Configuration
 {
@@ -27,7 +27,7 @@ namespace Forge.Net.TerraGraf.Configuration
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger("Forge.Net.TerraGraf.Configuration.TCPConnectionSettings");
+        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(TCPConnectionSettings));
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private List<ConnectionEntry> mEndPoints = new List<ConnectionEntry>();

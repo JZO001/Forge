@@ -1,0 +1,119 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp3.1;net461</TargetFrameworks>
+    <Version>1.0.0.3</Version>
+    <Copyright>Copyright © Zoltan Juhasz, 2012-2019</Copyright>
+    <Description>Service side for Error Report Framework</Description>
+    <Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
+    <Company>Forge Project Contributor(s)</Company>
+    <PackageId>Forge.ErrorReport.Service</PackageId>
+    <Authors>Zoltan Juhasz</Authors>
+    <AssemblyVersion>1.0.0.3</AssemblyVersion>
+    <Title>Error Report Service</Title>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <ProjectGuid>{D4C8AAD5-EC16-444B-992E-6E0B71200B03}</ProjectGuid>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp3.1|AnyCPU'">
+    <DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.ErrorReport.Service\Forge.ErrorReport.Service.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp3.1|AnyCPU'">
+    <DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.ErrorReport.Service\Forge.ErrorReport.Service.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\Forge.ErrorReport.Service\ErrorReportServiceImpl.cs" Link="ErrorReportServiceImpl.cs" />
+    <Compile Include="..\..\Forge.ErrorReport.Service\ErrorReportServiceManager.cs" Link="ErrorReportServiceManager.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+    <PackageReference Include="System.Configuration.ConfigurationManager">
+      <Version>4.7.0</Version>
+    </PackageReference>
+    <Reference Include="Forge.Base">
+      <HintPath>..\Forge.Base\bin\netcoreapp3.1\Forge.Base.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <Name>Forge.Base</Name>
+    </Reference>
+    <Reference Include="Forge.Net.Synapse">
+      <HintPath>..\Forge.Net.Synapse\bin\netcoreapp3.1\Forge.Net.Synapse.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <Name>Forge.Net.Synapse</Name>
+    </Reference>
+    <Reference Include="Forge.Net.TerraGraf">
+      <HintPath>..\Forge.Net.TerraGraf\bin\netcoreapp3.1\Forge.Net.TerraGraf.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <Name>Forge.Net.TerraGraf</Name>
+    </Reference>
+    <Reference Include="Forge.Net.Remoting">
+      <HintPath>..\Forge.Net.Remoting\bin\netcoreapp3.1\Forge.Net.Remoting.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <Name>Forge.Net.Remoting</Name>
+    </Reference>
+    <Reference Include="Forge.Net.Services">
+      <HintPath>..\Forge.Net.Services\bin\netcoreapp3.1\Forge.Net.Services.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <Name>Forge.Net.Services</Name>
+    </Reference>
+    <Reference Include="Forge.ErrorReport">
+      <HintPath>..\Forge.ErrorReport\bin\netcoreapp3.1\Forge.ErrorReport.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <Name>Forge.ErrorReport</Name>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net461'">
+    <Reference Include="System.Configuration" />
+    <Reference Include="Forge.Base">
+      <HintPath>..\Forge.Base\bin\net40\Forge.Base.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <Name>Forge.Base</Name>
+    </Reference>
+    <Reference Include="Forge.Net.Synapse">
+      <HintPath>..\Forge.Net.Synapse\bin\net40\Forge.Net.Synapse.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <Name>Forge.Net.Synapse</Name>
+    </Reference>
+    <Reference Include="Forge.Net.TerraGraf">
+      <HintPath>..\Forge.Net.TerraGraf\bin\net40\Forge.Net.TerraGraf.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <Name>Forge.Net.TerraGraf</Name>
+    </Reference>
+    <Reference Include="Forge.Net.Remoting">
+      <HintPath>..\Forge.Net.Remoting\bin\net40\Forge.Net.Remoting.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <Name>Forge.Net.Remoting</Name>
+    </Reference>
+    <Reference Include="Forge.Net.Services">
+      <HintPath>..\Forge.Net.Services\bin\net40\Forge.Net.Services.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <Name>Forge.Net.Services</Name>
+    </Reference>
+    <Reference Include="Forge.ErrorReport">
+      <HintPath>..\Forge.ErrorReport\bin\net461\Forge.ErrorReport.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <Name>Forge.ErrorReport</Name>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="echo F|xcopy /r /y &quot;$(TargetPath)&quot; &quot;$(ProjectDir)bin\$(TargetFramework)\$(TargetFileName)&quot;&#xD;&#xA;" />
+  </Target>
+
+</Project>

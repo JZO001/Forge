@@ -7,8 +7,8 @@
 using System;
 using System.Threading;
 using System.Windows.Forms;
+using Forge.Logging;
 using Forge.RemoteDesktop.Client.Properties;
-using log4net;
 
 namespace Forge.RemoteDesktop.Client
 {

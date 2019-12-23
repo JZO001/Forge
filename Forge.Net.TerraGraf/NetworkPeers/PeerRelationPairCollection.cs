@@ -7,8 +7,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Forge.Logging;
 using Forge.Net.TerraGraf.NetworkInfo;
-using log4net;
 
 namespace Forge.Net.TerraGraf.NetworkPeers
 {
@@ -23,7 +23,7 @@ namespace Forge.Net.TerraGraf.NetworkPeers
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger("Forge.Net.TerraGraf.NetworkPeers.PeerRelationPairCollection");
+        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(PeerRelationPairCollection));
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private List<PeerRelationPair> mPeerRelationPairs = new List<PeerRelationPair>();

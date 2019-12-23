@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Forge.TimeServer.Service</name>
+    </assembly>
+    <members>
+        <member name="T:Forge.TimeServer.Service.TimeServerServiceImpl">
+            <summary>
+            Time Server singleton implementation
+            </summary>
+        </member>
+        <member name="M:Forge.TimeServer.Service.TimeServerServiceImpl.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.TimeServer.Service.TimeServerServiceImpl"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.TimeServer.Service.TimeServerServiceImpl.GetUTCDateTime">
+            <summary>
+            Gets the UTC date time.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.TimeServer.Service.TimeServerServiceImpl.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="T:Forge.TimeServer.Service.TimeServerServiceManager">
+            <summary>
+            Time Server Service Manager
+            </summary>
+        </member>
+        <member name="M:Forge.TimeServer.Service.TimeServerServiceManager.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.TimeServer.Service.TimeServerServiceManager"/> class.
+            </summary>
+        </member>
+    </members>
+</doc>

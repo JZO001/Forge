@@ -10,6 +10,7 @@ namespace Forge.Net.Services
     /// <summary>
     /// Represents the state of a service
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1711:IdentifiersShouldNotHaveIncorrectSuffix")]
     public enum ServiceStateEnum
     {
         /// <summary>

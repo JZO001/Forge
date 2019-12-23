@@ -1,0 +1,3393 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Forge.Net.Synapse</name>
+    </assembly>
+    <members>
+        <member name="T:Forge.Net.Synapse.AddressEndPoint">
+            <summary>
+            Represent a host and a port
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Synapse.AddressEndPoint.Any">
+            <summary>
+            Represents that the id of a network peer does not matter
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Synapse.AddressEndPoint.IPv6Any">
+            <summary>
+            Represents that the id of a network peer does not matter
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Synapse.AddressEndPoint.Broadcast">
+            <summary>
+            Represents the broadcast address
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.AddressEndPoint.#ctor(System.String,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.AddressEndPoint"/> class.
+            </summary>
+            <param name="host">The host.</param>
+            <param name="port">The port.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.AddressEndPoint.#ctor(System.String,System.Int32,System.Net.Sockets.AddressFamily)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.AddressEndPoint"/> class.
+            </summary>
+            <param name="host">The host.</param>
+            <param name="port">The port.</param>
+            <param name="family">The family.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.AddressEndPoint.Parse(System.String)">
+            <summary>
+            Parses the specified host and port.
+            </summary>
+            <param name="hostAndPort">The host and port.</param>
+            <returns>AddressEndPoint</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.AddressEndPoint.Parse(System.Net.IPEndPoint)">
+            <summary>
+            Parses the specified end point.
+            </summary>
+            <param name="endPoint">The end point.</param>
+            <returns>AddressEndPoint</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.AddressEndPoint.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object"/> is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object"/> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.AddressEndPoint.Equals(Forge.Net.Synapse.AddressEndPoint)">
+            <summary>
+            Equalses the specified other.
+            </summary>
+            <param name="other">The other.</param>
+            <returns>True, if the other instance is equals with this.</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.AddressEndPoint.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+            </returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.AddressEndPoint.ToString">
+            <summary>
+            Returns a <see cref="T:System.String"/> that represents this instance.
+            </summary>
+            <returns>
+            A <see cref="T:System.String"/> that represents this instance.
+            </returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.AddressEndPoint.ValidateTcpPort(System.Int32)">
+            <summary>
+            Validates the TCP port.
+            </summary>
+            <param name="port">The port.</param>
+            <returns></returns>
+        </member>
+        <member name="P:Forge.Net.Synapse.AddressEndPoint.AddressFamily">
+            <summary>
+            Gets the address family to which the endpoint belongs.
+            </summary>
+            <returns>One of the <see cref="T:System.Net.Sockets.AddressFamily" /> values.</returns>
+              <PermissionSet>
+              <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+              </PermissionSet>
+            <exception cref="T:System.NotImplementedException">Any attempt is made to get or set the property when the property is not overridden in a descendant class.</exception>
+        </member>
+        <member name="P:Forge.Net.Synapse.AddressEndPoint.Host">
+            <summary>
+            Gets the host.
+            </summary>
+            <value>
+            The host.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.AddressEndPoint.Port">
+            <summary>
+            Gets the port.
+            </summary>
+            <value>
+            The port.
+            </value>
+        </member>
+        <member name="T:Forge.Net.Synapse.ConnectionEventArgs">
+            <summary>
+            Represent the arguments of a new network connection event
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.ConnectionEventArgs.#ctor(System.Int64,System.Net.EndPoint,Forge.Net.Synapse.NetworkStream)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.ConnectionEventArgs"/> class.
+            </summary>
+            <param name="serverId">The server id.</param>
+            <param name="endPoint">The end point.</param>
+            <param name="stream">The stream.</param>
+        </member>
+        <member name="P:Forge.Net.Synapse.ConnectionEventArgs.ServerId">
+            <summary>
+            Gets the server id.
+            </summary>
+            <value>
+            The server id.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.ConnectionEventArgs.NetworkStream">
+            <summary>
+            Gets the network stream.
+            </summary>
+            <value>
+            The network stream.
+            </value>
+        </member>
+        <member name="T:Forge.Net.Synapse.Firewall.FirewallException">
+            <summary>
+            Occurs when a firewall operation failed
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.Firewall.FirewallException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.Firewall.FirewallException"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.Firewall.FirewallException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.Firewall.FirewallException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.Firewall.FirewallException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.Firewall.FirewallException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="ex">The ex.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.Firewall.FirewallException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.Firewall.FirewallException"/> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="info"/> parameter is null. </exception>
+              
+            <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is null or <see cref="P:System.Exception.HResult"/> is zero (0). </exception>
+        </member>
+        <member name="T:Forge.Net.Synapse.Icmp.ExecuteDelegate">
+            <summary>
+            Delegate for async execution
+            </summary>
+            <param name="host">The host.</param>
+            <param name="dataLength">Length of the data.</param>
+            <param name="pingCount">The ping count.</param>
+            <param name="timeout">The timeout.</param>
+            <param name="waitTimeBetweenAttempts">The wait time between attempts.</param>
+        </member>
+        <member name="T:Forge.Net.Synapse.Icmp.Ping">
+            <summary>
+            ICMP Ping implementation
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Synapse.Icmp.Ping.DEFAULT_PACKET_SIZE">
+            <summary>
+            Default packet size for icmp
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Synapse.Icmp.Ping.DEFAULT_PING_COUNTER">
+            <summary>
+            Default attempt number on an execution
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Synapse.Icmp.Ping.DEFAULT_PING_TIMEOUT">
+            <summary>
+            Default timeout for a ping attempt
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Synapse.Icmp.Ping.DEFAULT_WAITTIME_ATTEMPTS">
+            <summary>
+            Wait time between attempts
+            </summary>
+        </member>
+        <member name="E:Forge.Net.Synapse.Icmp.Ping.EventPingResult">
+            <summary>
+            Occurs when [event ping result].
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.Icmp.Ping.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.Icmp.Ping"/> class.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Synapse.Icmp.Ping.AveragePingTime">
+            <summary>
+            Gets the average ping time.
+            </summary>
+            <value>
+            The average ping time.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.Icmp.Ping.RemoteIpAddress">
+            <summary>
+            Gets the remote ip address.
+            </summary>
+            <value>
+            The remote ip address.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.Icmp.Ping.MaximumPingTime">
+            <summary>
+            Gets the maximum ping time.
+            </summary>
+            <value>
+            The maximum ping time.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.Icmp.Ping.MinimumPingTime">
+            <summary>
+            Gets the minimum ping time.
+            </summary>
+            <value>
+            The minimum ping time.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.Icmp.Ping.PacketLost">
+            <summary>
+            Gets the packet lost.
+            </summary>
+            <value>
+            The packet lost.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.Icmp.Ping.PacketLostPercent">
+            <summary>
+            Gets the packet lost percent.
+            </summary>
+            <value>
+            The packet lost percent.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.Icmp.Ping.PacketReceived">
+            <summary>
+            Gets the packet received.
+            </summary>
+            <value>
+            The packet received.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.Icmp.Ping.PacketSent">
+            <summary>
+            Gets the packet sent.
+            </summary>
+            <value>
+            The packet sent.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.Icmp.Ping.IsFinished">
+            <summary>
+            Gets a value indicating whether this instance is finished.
+            </summary>
+            <value>
+            	<c>true</c> if this instance is finished; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.Icmp.Ping.SyncEventRaiser">
+            <summary>
+            Gets or sets a value indicating whether [sync event raiser].
+            </summary>
+            <value>
+              <c>true</c> if [sync event raiser]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.Icmp.Ping.UIInvocationOnEvents">
+            <summary>
+            Gets or sets a value indicating whether [UI invoke on events].
+            </summary>
+            <value>
+              <c>true</c> if [UI invoke on events]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.Icmp.Ping.ParallelInvocationOnEvents">
+            <summary>
+            Gets or sets a value indicating whether [parallel invocation on events].
+            </summary>
+            <value>
+            	<c>true</c> if [parallel invocation on events]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Synapse.Icmp.Ping.BeginExecute(System.String,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the execute.
+            </summary>
+            <param name="host">The host.</param>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.Icmp.Ping.BeginExecute(System.String,System.Int32,System.Int32,System.Int32,System.Int32,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the execute.
+            </summary>
+            <param name="host">The host.</param>
+            <param name="dataLength">Length of the data.</param>
+            <param name="pingCount">The ping count.</param>
+            <param name="timeout">The timeout.</param>
+            <param name="waitTimeBetweenAttempts">The wait time between attempts.</param>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.Icmp.Ping.Execute(System.String)">
+            <summary>
+            Pings the specified host.
+            </summary>
+            <param name="host">The host.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.Icmp.Ping.Execute(System.String,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Pings the specified host.
+            </summary>
+            <param name="host">The host.</param>
+            <param name="dataLength">Length of the data.</param>
+            <param name="pingCount">The ping count.</param>
+            <param name="timeout">The timeout.</param>
+            <param name="waitTimeBetweenAttempts">The wait time between attempts.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.Icmp.Ping.EndExecute(System.IAsyncResult)">
+            <summary>
+            Ends the execute.
+            </summary>
+            <param name="asyncResult">The async result.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.Icmp.Ping.Abort">
+            <summary>
+            Aborts the current operation(s).
+            </summary>
+        </member>
+        <member name="T:Forge.Net.Synapse.Icmp.PingResultEnum">
+            <summary>
+            Ping operation result types
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Synapse.Icmp.PingResultEnum.Result">
+            <summary>
+            State of a normal ping operation
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Synapse.Icmp.PingResultEnum.Finished">
+            <summary>
+            Occurs when the ping task finished
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Synapse.Icmp.PingResultEnum.HostNotFoundError">
+            <summary>
+            Occurs when the remote host did not found
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Synapse.Icmp.PingResultEnum.BadPacketError">
+            <summary>
+            Occurs when the icmp packet creation failed
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Synapse.Icmp.PingResultEnum.SocketError">
+            <summary>
+            Occurs when the icmp packet failed to send  
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Synapse.Icmp.PingResultEnum.RequestTimeout">
+            <summary>
+            Occurs when the icmp request timed out
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Synapse.Icmp.PingResultEnum.NoResponse">
+            <summary>
+            Occurs when the remote side did not respond
+            </summary>
+        </member>
+        <member name="T:Forge.Net.Synapse.Icmp.PingResultEventArgs">
+            <summary>
+            Event arguments for ping results
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.Icmp.PingResultEventArgs.#ctor(Forge.Net.Synapse.Icmp.PingResultEnum)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.Icmp.PingResultEventArgs"/> class.
+            </summary>
+            <param name="result">The result.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.Icmp.PingResultEventArgs.#ctor(System.Net.IPAddress,System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.Icmp.PingResultEventArgs"/> class.
+            </summary>
+            <param name="address">The address.</param>
+            <param name="receivedBytes">The received bytes.</param>
+            <param name="responseTime">The response time.</param>
+        </member>
+        <member name="P:Forge.Net.Synapse.Icmp.PingResultEventArgs.PingResultType">
+            <summary>
+            Gets the type of the ping result.
+            </summary>
+            <value>
+            The type of the ping result.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.Icmp.PingResultEventArgs.IPAddress">
+            <summary>
+            Gets the IP address.
+            </summary>
+            <value>
+            The IP address.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.Icmp.PingResultEventArgs.ReceivedBytes">
+            <summary>
+            Gets the received bytes.
+            </summary>
+            <value>
+            The received bytes.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.Icmp.PingResultEventArgs.ResponseTime">
+            <summary>
+            Gets the response time.
+            </summary>
+            <value>
+            The response time.
+            </value>
+        </member>
+        <member name="T:Forge.Net.Synapse.NATUPnP.ProtocolEnum">
+            <summary>
+            Represents the supported ip protocol types for the UPnP mappings
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Synapse.NATUPnP.ProtocolEnum.TCP">
+            <summary>
+            TCP protocol
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Synapse.NATUPnP.ProtocolEnum.UDP">
+            <summary>
+            UDP protocol
+            </summary>
+        </member>
+        <member name="T:Forge.Net.Synapse.NetworkFactory.DefaultClientStreamFactory">
+            <summary>
+            Client side stream factory
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.DefaultClientStreamFactory.#ctor">
+            <summary>
+            Prevents a default instance of the <see cref="T:Forge.Net.Synapse.NetworkFactory.DefaultClientStreamFactory"/> class from being created.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.DefaultClientStreamFactory.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.NetworkFactory.DefaultClientStreamFactory"/> class.
+            </summary>
+            <param name="receiveBufferSize">Size of the receive buffer.</param>
+            <param name="sendBufferSize">Size of the send buffer.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.DefaultClientStreamFactory.CreateNetworkStream(Forge.Net.Synapse.NetworkServices.ITcpClient)">
+            <summary>
+            Creates the network stream.
+            </summary>
+            <param name="tcpClient">The TcpClient service</param>
+            <returns>Network Stream instance</returns>
+        </member>
+        <member name="T:Forge.Net.Synapse.NetworkFactory.DefaultNetworkFactory">
+            <summary>
+            Represents the default network factory for .NET low level sockets
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.DefaultNetworkFactory.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.NetworkFactory.DefaultNetworkFactory"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.DefaultNetworkFactory.CreateTcpClient">
+            <summary>
+            Creates the TCP client.
+            </summary>
+            <returns>TcpClient implementation</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.DefaultNetworkFactory.CreateTcpListener(System.Int32)">
+            <summary>
+            Creates the TCP listener.
+            </summary>
+            <param name="port">The port.</param>
+            <returns>TcpClient implementation</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.DefaultNetworkFactory.CreateTcpListener(Forge.Net.Synapse.AddressEndPoint)">
+            <summary>
+            Creates the TCP listener.
+            </summary>
+            <param name="endPoint">The end point.</param>
+            <returns>TcpClient implementation</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.DefaultNetworkFactory.CreateUdpClient">
+            <summary>
+            Creates the UDP client.
+            </summary>
+            <returns>UdpClient implementation</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.DefaultNetworkFactory.CreateUdpClient(System.Int32)">
+            <summary>
+            Creates the UDP client.
+            </summary>
+            <param name="port">The port.</param>
+            <returns>UdpClient implementation</returns>
+        </member>
+        <member name="T:Forge.Net.Synapse.NetworkFactory.DefaultServerStreamFactory">
+            <summary>
+            Simple server stream factory
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.DefaultServerStreamFactory.#ctor">
+            <summary>
+            Prevents a default instance of the <see cref="T:Forge.Net.Synapse.NetworkFactory.DefaultServerStreamFactory"/> class from being created.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.DefaultServerStreamFactory.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.NetworkFactory.DefaultServerStreamFactory"/> class.
+            </summary>
+            <param name="receiveBufferSize">Size of the receive buffer.</param>
+            <param name="sendBufferSize">Size of the send buffer.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.DefaultServerStreamFactory.CreateNetworkStream(Forge.Net.Synapse.NetworkServices.ITcpClient)">
+            <summary>
+            Creates the stream.
+            </summary>
+            <param name="tcpClient">Tcp Client service</param>
+            <returns>Network Stream instance</returns>
+        </member>
+        <member name="T:Forge.Net.Synapse.NetworkFactory.SocketWrapper">
+            <summary>
+            Wrapper class for Socket.NET
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.#ctor(System.Net.Sockets.Socket)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.NetworkFactory.SocketWrapper"/> class.
+            </summary>
+            <param name="socket">The socket.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.Finalize">
+            <summary>
+            Releases unmanaged resources and performs other cleanup operations before the
+            <see cref="T:Forge.Net.Synapse.NetworkFactory.SocketWrapper"/> is reclaimed by garbage collection.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.SocketWrapper.AddressFamily">
+            <summary>
+            Gets the address family.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.BeginAccept(System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the accept.
+            </summary>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.Accept">
+            <summary>
+            Accepts a new incoming connection.
+            </summary>
+            <returns>Socket implementation</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.EndAccept(System.IAsyncResult)">
+            <summary>
+            Ends the accept.
+            </summary>
+            <param name="asyncResult">The async result.</param>
+            <returns>Socket implementation</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.BeginConnect(System.Net.EndPoint,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the connect.
+            </summary>
+            <param name="endPoint">The end point.</param>
+            <param name="callBack">The call back.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.BeginConnect(System.String,System.Int32,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the connect.
+            </summary>
+            <param name="host">The host.</param>
+            <param name="port">The port.</param>
+            <param name="callBack">The call back.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.Bind(System.Net.EndPoint)">
+            <summary>
+            Binds the specified end point.
+            </summary>
+            <param name="endPoint">The end point.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.Connect(System.Net.EndPoint)">
+            <summary>
+            Connects the specified end point.
+            </summary>
+            <param name="endPoint">The end point.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.Connect(System.String,System.Int32)">
+            <summary>
+            Connects the specified host.
+            </summary>
+            <param name="host">The host.</param>
+            <param name="port">The port.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.EndConnect(System.IAsyncResult)">
+            <summary>
+            Ends the connect.
+            </summary>
+            <param name="asyncResult">The async result.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.BeginReceive(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the receive.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="size">The size.</param>
+            <param name="callBack">The call back.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.BeginReceiveFrom(System.Byte[],System.Int32,System.Int32,System.Net.EndPoint@,System.AsyncCallback,System.Object)">
+            <summary>
+            Receives from.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="size">The size.</param>
+            <param name="remoteEp">The remote ep.</param>
+            <param name="callBack">The call back.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.BeginSend(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the send.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="offset"></param>
+            <param name="size"></param>
+            <param name="callBack">The call back.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.BeginSendTo(System.Byte[],System.Int32,System.Int32,System.Net.EndPoint,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the send to.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="size">The size.</param>
+            <param name="remoteEp">The remote ep.</param>
+            <param name="callBack">The call back.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.Receive(System.Byte[])">
+            <summary>
+            Receives the specified buffer.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <returns>Number of received bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.Receive(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Receives the specified buffer.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="size">The size.</param>
+            <returns>Number of received bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.ReceiveFrom(System.Byte[],System.Net.EndPoint@)">
+            <summary>
+            Receives from.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="remoteEp">The remote ep.</param>
+            <returns>Number of received bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.ReceiveFrom(System.Byte[],System.Int32,System.Int32,System.Net.EndPoint@)">
+            <summary>
+            Receives from.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="size">The size.</param>
+            <param name="remoteEp">The remote ep.</param>
+            <returns>Number of received bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.Send(System.Byte[])">
+            <summary>
+            Sends the specified buffer.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <returns>Number of sent bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.Send(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Sends the specified buffer.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="size">The size.</param>
+            <returns>Number of sent bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.SendTo(System.Byte[],System.Net.EndPoint)">
+            <summary>
+            Sends to.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="remoteEp">The remote ep.</param>
+            <returns>Number of sent bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.SendTo(System.Byte[],System.Int32,System.Int32,System.Net.EndPoint)">
+            <summary>
+            Sends to.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="size">The size.</param>
+            <param name="remoteEp">The remote ep.</param>
+            <returns>Number of sent bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.EndReceive(System.IAsyncResult)">
+            <summary>
+            Ends the receive.
+            </summary>
+            <param name="asyncResult">The async result.</param>
+            <returns>Number of received bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.EndReceiveFrom(System.IAsyncResult,System.Net.EndPoint@)">
+            <summary>
+            Ends the receive from.
+            </summary>
+            <param name="asyncResult">The async result.</param>
+            <param name="remoteEp">The remote ep.</param>
+            <returns>Number of received bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.EndSend(System.IAsyncResult)">
+            <summary>
+            Ends the send.
+            </summary>
+            <param name="asyncResult">The async result.</param>
+            <returns>Number of received bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.EndSendTo(System.IAsyncResult)">
+            <summary>
+            Ends the send to.
+            </summary>
+            <param name="asyncResult">The async result.</param>
+            <returns>Number of received bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.Listen(System.Int32)">
+            <summary>
+            Listens the specified backlog.
+            </summary>
+            <param name="backlog">The backlog.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.Pool(System.Int32,System.Net.Sockets.SelectMode)">
+            <summary>
+            Detect the status of the socket
+            </summary>
+            <param name="microSeconds">The micro seconds.</param>
+            <param name="selectMode">The select mode.</param>
+            <returns>True, if the socket is active, otherwise False.</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.Close">
+            <summary>
+            Closes this instance.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.Close(System.Int32)">
+            <summary>
+            Close the socket and wait for the specified time.
+            </summary>
+            <param name="timeout">The timeout value.</param>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.SocketWrapper.Available">
+            <summary>
+            Gets the available bytes.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.SocketWrapper.Connected">
+            <summary>
+            Gets a value indicating whether this <see cref="T:Forge.Net.Synapse.NetworkServices.ISocket"/> is connected.
+            </summary>
+            <value>
+              <c>true</c> if connected; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.SocketWrapper.EnableBroadcast">
+            <summary>
+            Gets or sets a value indicating whether [enable broadcast].
+            </summary>
+            <value>
+              <c>true</c> if [enable broadcast]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.SocketWrapper.LocalEndPoint">
+            <summary>
+            Gets the local end point.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.SocketWrapper.NoDelay">
+            <summary>
+            Gets or sets a value indicating whether [no delay].
+            </summary>
+            <value>
+              <c>true</c> if [no delay]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.SocketWrapper.ReceiveBufferSize">
+            <summary>
+            Gets or sets the size of the receive buffer.
+            </summary>
+            <value>
+            The size of the receive buffer.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.SocketWrapper.ReceiveTimeout">
+            <summary>
+            Gets or sets the receive timeout.
+            </summary>
+            <value>
+            The receive timeout.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.SocketWrapper.RemoteEndPoint">
+            <summary>
+            Gets or sets the remote end point.
+            </summary>
+            <value>
+            The remote end point.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.SocketWrapper.SendBufferSize">
+            <summary>
+            Gets or sets the size of the send buffer.
+            </summary>
+            <value>
+            The size of the send buffer.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.SocketWrapper.SendTimeout">
+            <summary>
+            Gets or sets the send timeout.
+            </summary>
+            <value>
+            The send timeout.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.SocketWrapper.ProtocolType">
+            <summary>
+            Gets the type of the protocol.
+            </summary>
+            <value>
+            The type of the protocol.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.SocketWrapper.SocketType">
+            <summary>
+            Gets the type of the socket.
+            </summary>
+            <value>
+            The type of the socket.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.SocketWrapper.Ttl">
+            <summary>
+            Gets or sets the TTL.
+            </summary>
+            <value>
+            The TTL.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.SocketWrapper.ExclusiveAddressUse">
+            <summary>
+            Gets or sets a value indicating whether [exclusive address use].
+            </summary>
+            <value>
+              <c>true</c> if [exclusive address use]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.SocketWrapper.IsBound">
+            <summary>
+            Gets a value indicating whether this instance is bound.
+            </summary>
+            <value>
+              <c>true</c> if this instance is bound; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.Shutdown(System.Net.Sockets.SocketShutdown)">
+            <summary>
+            Shutdowns the socket.
+            </summary>
+            <param name="how">The how.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.SetKeepAliveValues(System.Boolean,System.Int32,System.Int32)">
+            <summary>
+            Sets the keep alive values.
+            </summary>
+            <param name="state">if set to <c>true</c> [state].</param>
+            <param name="keepAliveTime">The keep alive time.</param>
+            <param name="keepAliveInterval">The keep alive interval.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SocketWrapper.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="T:Forge.Net.Synapse.NetworkFactory.SslClientStreamFactory">
+            <summary>
+            SSL Client Stream Factory
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SslClientStreamFactory.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.NetworkFactory.SslClientStreamFactory"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SslClientStreamFactory.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.NetworkFactory.SslClientStreamFactory"/> class.
+            </summary>
+            <param name="serverNameOnCertificate">The server name on certificate.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SslClientStreamFactory.#ctor(System.String,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.NetworkFactory.SslClientStreamFactory"/> class.
+            </summary>
+            <param name="serverNameOnCertificate">The server name on certificate.</param>
+            <param name="receiveBufferSize">Size of the receive buffer.</param>
+            <param name="sendBufferSize">Size of the send buffer.</param>
+            <param name="skipSslPolicyErrors">if set to <c>true</c> [skip SSL policy errors].</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SslClientStreamFactory.#ctor(System.String,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.NetworkFactory.SslClientStreamFactory"/> class.
+            </summary>
+            <param name="serverNameOnCertificate">The server name on certificate.</param>
+            <param name="skipSslPolicyErrors">if set to <c>true</c> [skip SSL policy errors].</param>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.SslClientStreamFactory.ServerNameOnCertificate">
+            <summary>
+            Gets or sets the server name on certificate.
+            </summary>
+            <value>
+            The server name on certificate.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.SslClientStreamFactory.SkipSslPolicyErrors">
+            <summary>
+            Gets or sets a value indicating whether [skip SSL policy errors].
+            </summary>
+            <value>
+            	<c>true</c> if [skip SSL policy errors]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SslClientStreamFactory.Initialize(Forge.Configuration.Shared.CategoryPropertyItem)">
+            <summary>
+            Initializes the specified config item.
+            </summary>
+            <param name="configItem">The config item.</param>
+            <exception cref="T:Forge.Configuration.Shared.InvalidConfigurationValueException">ServerNameOnCertificate value is invalid.</exception>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SslClientStreamFactory.CreateNetworkStream(Forge.Net.Synapse.NetworkServices.ITcpClient)">
+            <summary>
+            Creates the network stream.
+            </summary>
+            <param name="tcpClient"></param>
+            <returns>Network Stream instance</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SslClientStreamFactory.ValidateServerCertificate(System.Object,System.Security.Cryptography.X509Certificates.X509Certificate,System.Security.Cryptography.X509Certificates.X509Chain,System.Net.Security.SslPolicyErrors)">
+            <summary>
+            Validates the server certificate.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="certificate">The certificate.</param>
+            <param name="chain">The chain.</param>
+            <param name="sslPolicyErrors">The SSL policy errors.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Forge.Net.Synapse.NetworkFactory.SslServerStreamFactory">
+            <summary>
+            SSL Server Stream Factory
+            </summary>
+        </member>
+        <member name="F:Forge.Net.Synapse.NetworkFactory.SslServerStreamFactory.mCertificate">
+            <summary>
+            Represents the used certificate
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SslServerStreamFactory.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.NetworkFactory.SslServerStreamFactory"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SslServerStreamFactory.#ctor(System.Security.Cryptography.X509Certificates.X509Certificate)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.NetworkFactory.SslServerStreamFactory"/> class.
+            </summary>
+            <param name="certificate">The certificate.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SslServerStreamFactory.#ctor(System.Security.Cryptography.X509Certificates.X509Certificate,System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.NetworkFactory.SslServerStreamFactory"/> class.
+            </summary>
+            <param name="certificate">The certificate.</param>
+            <param name="receiveBufferSize">Size of the receive buffer.</param>
+            <param name="sendBufferSize">Size of the send buffer.</param>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.SslServerStreamFactory.Protocol">
+            <summary>
+            Gets or sets the protocol.
+            </summary>
+            <value>
+            The protocol.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SslServerStreamFactory.Initialize(Forge.Configuration.Shared.CategoryPropertyItem)">
+            <summary>
+            Initializes the specified config item.
+            </summary>
+            <param name="configItem">The config item.</param>
+            <exception cref="T:Forge.Configuration.Shared.InvalidConfigurationValueException">CertificateSource value is invalid.
+            or
+            CertificateSource value is invalid.
+            or
+            CertificateFile value is invalid.
+            or
+            Password value is invalid.
+            or
+            Subject value is invalid.
+            or
+            CertificateSource value is invalid.</exception>
+            <exception cref="T:Forge.Configuration.Shared.InvalidConfigurationException">Invalid certificate.
+            or
+            Failed to find certificate.
+            or
+            Failed to find certificate.</exception>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.SslServerStreamFactory.CreateNetworkStream(Forge.Net.Synapse.NetworkServices.ITcpClient)">
+            <summary>
+            Creates the stream.
+            </summary>
+            <param name="tcpClient">The TCP client.</param>
+            <returns>Network Stream instance</returns>
+        </member>
+        <member name="T:Forge.Net.Synapse.NetworkFactory.StreamFactoryBase">
+            <summary>
+            Base class for stream factories. Contains helper methods for cofiguration parsing.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.StreamFactoryBase.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.NetworkFactory.StreamFactoryBase"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.StreamFactoryBase.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.NetworkFactory.StreamFactoryBase"/> class.
+            </summary>
+            <param name="receiveBufferSize">Size of the receive buffer.</param>
+            <param name="sendBufferSize">Size of the send buffer.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.StreamFactoryBase.#ctor(System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.NetworkFactory.StreamFactoryBase"/> class.
+            </summary>
+            <param name="receiveBufferSize">Size of the receive buffer.</param>
+            <param name="sendBufferSize">Size of the send buffer.</param>
+            <param name="noDelay">if set to <c>true</c> [no delay].</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.StreamFactoryBase.Finalize">
+            <summary>
+            Finalizes an instance of the <see cref="T:Forge.Net.Synapse.NetworkFactory.StreamFactoryBase"/> class.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.StreamFactoryBase.IsInitialized">
+            <summary>
+            Gets a value indicating whether this instance is initialized.
+            </summary>
+            <value>
+            <c>true</c> if this instance is initialized; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.StreamFactoryBase.ReceiveBufferSize">
+            <summary>
+            Gets or sets the size of the receive buffer.
+            </summary>
+            <value>
+            The size of the receive buffer.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.StreamFactoryBase.SendBufferSize">
+            <summary>
+            Gets or sets the size of the send buffer.
+            </summary>
+            <value>
+            The size of the send buffer.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.StreamFactoryBase.NoDelay">
+            <summary>
+            Gets or sets a value of no delay
+            </summary>
+            <value>
+              <c>true</c> if [no delay]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.StreamFactoryBase.ReceiveTimeout">
+            <summary>
+            Gets or sets the receive timeout.
+            </summary>
+            <value>
+            The receive timeout.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.StreamFactoryBase.SendTimeout">
+            <summary>
+            Gets or sets the send timeout.
+            </summary>
+            <value>
+            The send timeout.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.StreamFactoryBase.Initialize(Forge.Configuration.Shared.CategoryPropertyItem)">
+            <summary>
+            Initializes the specified config item.
+            </summary>
+            <param name="configItem">The config item.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.StreamFactoryBase.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.StreamFactoryBase.DoInitializeCheck">
+            <summary>
+            Does the initialize check.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.StreamFactoryBase.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources
+            </summary>
+            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.StreamFactoryBase.ParseIntValue(Forge.Configuration.Shared.CategoryPropertyItem,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            Parses the int value.
+            </summary>
+            <param name="root">The root.</param>
+            <param name="entryId">The entry id.</param>
+            <param name="minValue">The min value.</param>
+            <param name="maxValue">The max value.</param>
+            <param name="value">The value.</param>
+            <returns>True, if the parse method was succeeded, otherwise False.</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.StreamFactoryBase.ParseBooleanValue(Forge.Configuration.Shared.CategoryPropertyItem,System.String)">
+            <summary>
+            Parses the boolean value.
+            </summary>
+            <param name="root">The root.</param>
+            <param name="entryId">The entry id.</param>
+            <returns>True, if the parse method was succeeded, otherwise False.</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.StreamFactoryBase.ParseStringValue(Forge.Configuration.Shared.CategoryPropertyItem,System.String,System.String)">
+            <summary>
+            Parses the string value.
+            </summary>
+            <param name="root">The root.</param>
+            <param name="entryId">The entry id.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns>True, if the parse method was succeeded, otherwise False.</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.StreamFactoryBase.ParseEnumValue``1(Forge.Configuration.Shared.CategoryPropertyItem,System.String)">
+            <summary>
+            Parses the enum value.
+            </summary>
+            <typeparam name="TEnum">The type of the enum.</typeparam>
+            <param name="root">The root.</param>
+            <param name="entryId">The entry unique identifier.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Forge.Net.Synapse.NetworkFactory.TcpClientWrapper">
+            <summary>
+            Wrapper for Tcp Client
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.TcpClientWrapper.#ctor(System.Net.Sockets.TcpClient)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.NetworkFactory.TcpClientWrapper"/> class.
+            </summary>
+            <param name="tcpClient">The TCP client.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.TcpClientWrapper.Finalize">
+            <summary>
+            Releases unmanaged resources and performs other cleanup operations before the
+            <see cref="T:Forge.Net.Synapse.NetworkFactory.TcpClientWrapper"/> is reclaimed by garbage collection.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.TcpClientWrapper.BeginConnect(System.String,System.Int32,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the connect.
+            </summary>
+            <param name="host">The host.</param>
+            <param name="port">The port.</param>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.TcpClientWrapper.BeginConnect(Forge.Net.Synapse.AddressEndPoint,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the connect.
+            </summary>
+            <param name="localEp">The local ep.</param>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.TcpClientWrapper.Connect(System.String,System.Int32)">
+            <summary>
+            Connects the specified host.
+            </summary>
+            <param name="host">The host.</param>
+            <param name="port">The port.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.TcpClientWrapper.Connect(Forge.Net.Synapse.AddressEndPoint)">
+            <summary>
+            Connects the specified local ep.
+            </summary>
+            <param name="localEp">The local ep.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.TcpClientWrapper.Close">
+            <summary>
+            Closes this instance.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.TcpClientWrapper.GetStream">
+            <summary>
+            Gets the stream.
+            </summary>
+            <returns>Network Stream instance</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.TcpClientWrapper.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.TcpClientWrapper.Available">
+            <summary>
+            Gets the available.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.TcpClientWrapper.Client">
+            <summary>
+            Gets the client.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.TcpClientWrapper.Connected">
+            <summary>
+            Gets a value indicating whether this <see cref="T:Forge.Net.Synapse.NetworkServices.ITcpClient"/> is connected.
+            </summary>
+            <value>
+              <c>true</c> if connected; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.TcpClientWrapper.ExclusiveAddressUse">
+            <summary>
+            Gets or sets a value indicating whether [exclusive address use].
+            </summary>
+            <value>
+              <c>true</c> if [exclusive address use]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.TcpClientWrapper.NoDelay">
+            <summary>
+            Gets or sets a value indicating whether [no delay].
+            </summary>
+            <value>
+              <c>true</c> if [no delay]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.TcpClientWrapper.ReceiveBufferSize">
+            <summary>
+            Gets or sets the size of the receive buffer.
+            </summary>
+            <value>
+            The size of the receive buffer.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.TcpClientWrapper.ReceiveTimeout">
+            <summary>
+            Gets or sets the receive timeout.
+            </summary>
+            <value>
+            The receive timeout.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.TcpClientWrapper.SendBufferSize">
+            <summary>
+            Gets or sets the size of the send buffer.
+            </summary>
+            <value>
+            The size of the send buffer.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.TcpClientWrapper.SendTimeout">
+            <summary>
+            Gets or sets the send timeout.
+            </summary>
+            <value>
+            The send timeout.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.TcpClientWrapper.DoDisposeCheck">
+            <summary>
+            Does the dispose check.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.TcpClientWrapper.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources
+            </summary>
+            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        </member>
+        <member name="T:Forge.Net.Synapse.NetworkFactory.TcpListenerWrapper">
+            <summary>
+            Wrapper for TcpListener
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.TcpListenerWrapper.#ctor(System.Net.Sockets.TcpListener)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.NetworkFactory.TcpListenerWrapper"/> class.
+            </summary>
+            <param name="listener">The listener.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.TcpListenerWrapper.AcceptSocket">
+            <summary>
+            Accepts the socket.
+            </summary>
+            <returns>Socket instance</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.TcpListenerWrapper.AcceptTcpClient">
+            <summary>
+            Accepts the TCP client.
+            </summary>
+            <returns>TcpClient implementation</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.TcpListenerWrapper.BeginAcceptSocket(System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the accept socket.
+            </summary>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.TcpListenerWrapper.BeginAcceptTcpClient(System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the accept TCP client.
+            </summary>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.TcpListenerWrapper.EndAcceptSocket(System.IAsyncResult)">
+            <summary>
+            Ends the accept socket.
+            </summary>
+            <param name="asyncResult">The async result.</param>
+            <returns>Socket implementation</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.TcpListenerWrapper.EndAcceptTcpClient(System.IAsyncResult)">
+            <summary>
+            Ends the accept TCP client.
+            </summary>
+            <param name="asyncResult">The async result.</param>
+            <returns>TcpClient implementation</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.TcpListenerWrapper.Pending">
+            <summary>
+            Pendings this instance.
+            </summary>
+            <returns>True, if a connection waiting to receive, otherwise False.</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.TcpListenerWrapper.Start">
+            <summary>
+            Starts listening.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.TcpListenerWrapper.Start(System.Int32)">
+            <summary>
+            Starts the listening.
+            </summary>
+            <param name="backlog">The backlog value means, how many incoming connection queued.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.TcpListenerWrapper.Stop">
+            <summary>
+            Stops this instance.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.TcpListenerWrapper.ExclusiveAddressUse">
+            <summary>
+            Gets or sets a value indicating whether [exclusive address use].
+            </summary>
+            <value>
+              <c>true</c> if [exclusive address use]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.TcpListenerWrapper.LocalEndpoint">
+            <summary>
+            Gets the local endpoint.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.TcpListenerWrapper.Server">
+            <summary>
+            Gets the server socket.
+            </summary>
+        </member>
+        <member name="T:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper">
+            <summary>
+            Wrapper for .NET UdpClient
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.#ctor(System.Net.Sockets.UdpClient)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper"/> class.
+            </summary>
+            <param name="udpClient">The UDP client.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.Finalize">
+            <summary>
+            Releases unmanaged resources and performs other cleanup operations before the
+            <see cref="T:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper"/> is reclaimed by garbage collection.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.Available">
+            <summary>
+            Gets the available.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.Client">
+            <summary>
+            Gets the client.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.EnableBroadcast">
+            <summary>
+            Gets or sets a value indicating whether [enable broadcast].
+            </summary>
+            <value>
+              <c>true</c> if [enable broadcast]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.Ttl">
+            <summary>
+            Gets or sets the TTL.
+            </summary>
+            <value>
+            The TTL.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.BeginReceive(System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the receive.
+            </summary>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.Receive(Forge.Net.Synapse.AddressEndPoint@)">
+            <summary>
+            Receives the specified remote ep.
+            </summary>
+            <param name="remoteEp">The remote ep.</param>
+            <returns>Received data</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.EndReceive(System.IAsyncResult,Forge.Net.Synapse.AddressEndPoint@)">
+            <summary>
+            Ends the receive.
+            </summary>
+            <param name="asyncResult">The async result.</param>
+            <param name="remoteEp">The remote ep.</param>
+            <returns>Received data</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.BeginSend(System.Byte[],System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the send.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.BeginSend(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the send.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="size">The size.</param>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.BeginSend(System.Byte[],System.Int32,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the send.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="size">The size.</param>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.BeginSend(System.Byte[],Forge.Net.Synapse.AddressEndPoint,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the send.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="remoteEp">The remote ep.</param>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.BeginSend(System.Byte[],System.Int32,Forge.Net.Synapse.AddressEndPoint,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the send.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="size">The size.</param>
+            <param name="remoteEp">The remote ep.</param>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.BeginSend(System.Byte[],System.Int32,System.Int32,Forge.Net.Synapse.AddressEndPoint,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the send.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="size">The size.</param>
+            <param name="remoteEp">The remote ep.</param>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.BeginSend(System.Byte[],System.String,System.Int32,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the send.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="hostName">Name of the host.</param>
+            <param name="port">The port.</param>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.BeginSend(System.Byte[],System.Int32,System.String,System.Int32,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the send.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="size">The size.</param>
+            <param name="hostName">Name of the host.</param>
+            <param name="port">The port.</param>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.BeginSend(System.Byte[],System.Int32,System.Int32,System.String,System.Int32,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the send.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="size">The size.</param>
+            <param name="hostName">Name of the host.</param>
+            <param name="port">The port.</param>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.Send(System.Byte[])">
+            <summary>
+            Sends the specified buffer.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <returns>Number of sent bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.Send(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Sends the specified buffer.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="size">The size.</param>
+            <returns>Number of sent bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.Send(System.Byte[],System.Int32)">
+            <summary>
+            Sends the specified buffer.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="size">The size.</param>
+            <returns>Number of sent bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.Send(System.Byte[],Forge.Net.Synapse.AddressEndPoint)">
+            <summary>
+            Sends the specified buffer.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="remoteEp">The remote ep.</param>
+            <returns>Number of sent bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.Send(System.Byte[],System.Int32,Forge.Net.Synapse.AddressEndPoint)">
+            <summary>
+            Sends the specified buffer.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="size">The size.</param>
+            <param name="remoteEp">The remote ep.</param>
+            <returns>Number of sent bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.Send(System.Byte[],System.Int32,System.Int32,Forge.Net.Synapse.AddressEndPoint)">
+            <summary>
+            Sends the specified buffer.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="size">The size.</param>
+            <param name="remoteEp">The remote ep.</param>
+            <returns>
+            Number of sent bytes
+            </returns>
+            <exception cref="T:System.ArgumentNullException">buffer</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">bytes</exception>
+            <exception cref="T:System.InvalidOperationException">UdpClient is already connected.</exception>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.Send(System.Byte[],System.String,System.Int32)">
+            <summary>
+            Sends the specified buffer.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="hostName">Name of the host.</param>
+            <param name="port">The port.</param>
+            <returns>
+            Number of sent bytes
+            </returns>
+            <exception cref="T:System.ArgumentNullException">buffer</exception>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.Send(System.Byte[],System.Int32,System.String,System.Int32)">
+            <summary>
+            Sends the specified buffer.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="size">The size.</param>
+            <param name="hostName">Name of the host.</param>
+            <param name="port">The port.</param>
+            <returns>
+            Number of sent bytes
+            </returns>
+            <exception cref="T:System.ArgumentNullException">buffer</exception>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.Send(System.Byte[],System.Int32,System.Int32,System.String,System.Int32)">
+            <summary>
+            Sends the specified buffer.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="size">The size.</param>
+            <param name="hostName">Name of the host.</param>
+            <param name="port">The port.</param>
+            <returns>Number of sent bytes</returns>
+            <exception cref="T:System.ArgumentNullException">buffer</exception>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.EndSend(System.IAsyncResult)">
+            <summary>
+            Ends the receive.
+            </summary>
+            <param name="asyncResult">The async result.</param>
+            <returns>Number of sent bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.EndSend(System.IAsyncResult,Forge.Net.Synapse.AddressEndPoint)">
+            <summary>
+            Ends the send.
+            </summary>
+            <param name="asyncResult">The async result.</param>
+            <param name="remoteEp">Not used.</param>
+            <returns>Number of sent bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.Connect(System.Int32)">
+            <summary>
+            Connects the specified port.
+            </summary>
+            <param name="port">The port.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.Connect(Forge.Net.Synapse.AddressEndPoint)">
+            <summary>
+            Connects the specified local ep.
+            </summary>
+            <param name="localEp">The local ep.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.Close">
+            <summary>
+            Closes this instance.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.DoDisposeCheck">
+            <summary>
+            Does the dispose check.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkFactory.UdpClientWrapper.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources
+            </summary>
+            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        </member>
+        <member name="T:Forge.Net.Synapse.NetworkManager">
+            <summary>
+            Network manager
+            </summary>
+        </member>
+        <member name="E:Forge.Net.Synapse.NetworkManager.NetworkPeerConnected">
+            <summary>
+            Occurs when [network peer connected].
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkManager.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.NetworkManager"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkManager.#ctor(Forge.Net.Synapse.NetworkServices.INetworkFactory)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.NetworkManager"/> class.
+            </summary>
+            <param name="networkFactory">The network factory.</param>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkManager.DefaultServerStreamFactory">
+            <summary>
+            Gets the default server stream factory.
+            </summary>
+            <value>
+            The default server stream factory.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkManager.DefaultClientStreamFactory">
+            <summary>
+            Gets the default client stream factory.
+            </summary>
+            <value>
+            The default client stream factory.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkManager.DefaultSocketReceiveBufferSize">
+            <summary>
+            Gets the default size of the socket buffer.
+            </summary>
+            <value>
+            The default size of the socket buffer.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkManager.DefaultSocketSendBufferSize">
+            <summary>
+            Gets the default size of the socket send buffer.
+            </summary>
+            <value>
+            The default size of the socket send buffer.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkManager.DefaultSocketKeepAliveTime">
+            <summary>
+            Gets or sets the default socket keep alive time.
+            </summary>
+            <value>
+            The default socket keep alive time.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkManager.DefaultSocketKeepAliveTimeInterval">
+            <summary>
+            Gets or sets the default socket keep alive time interval.
+            </summary>
+            <value>
+            The default socket keep alive time interval.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkManager.DefaultUseSocketKeepAlive">
+            <summary>
+            Gets or sets a value indicating whether [default use socket keep alive].
+            </summary>
+            <value>
+            <c>true</c> if [default use socket keep alive]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkManager.NetworkFactory">
+            <summary>
+            Gets the network factory.
+            </summary>
+            <value>
+            The network factory.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkManager.ServerStreamFactory">
+            <summary>
+            Gets or sets the server stream factory.
+            </summary>
+            <value>
+            The server stream factory.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkManager.ClientStreamFactory">
+            <summary>
+            Gets or sets the client stream factory.
+            </summary>
+            <value>
+            The client stream factory.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkManager.SocketKeepAliveTime">
+            <summary>
+            Gets or sets the socket keep alive time.
+            </summary>
+            <value>
+            The socket keep alive time.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkManager.SocketKeepAliveTimeInterval">
+            <summary>
+            Gets or sets the socket keep alive time interval.
+            </summary>
+            <value>
+            The socket keep alive time interval.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkManager.UseSocketKeepAlive">
+            <summary>
+            Gets or sets a value indicating whether [use socket keep alive].
+            </summary>
+            <value>
+              <c>true</c> if [use socket keep alive]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkManager.SocketReceiveBufferSize">
+            <summary>
+            Gets or sets the default size of the buffer.
+            </summary>
+            <value>
+            The default size of the buffer.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkManager.SocketSendBufferSize">
+            <summary>
+            Gets or sets the size of the socket send buffer.
+            </summary>
+            <value>
+            The size of the socket send buffer.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkManager.NoDelay">
+            <summary>
+            Gets or sets a value indicating whether [no delay].
+            </summary>
+            <value>
+              <c>true</c> if [no delay]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkManager.IsDisposed">
+            <summary>
+            Gets a value indicating whether this instance is disposed.
+            </summary>
+            <value>
+            	<c>true</c> if this instance is disposed; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkManager.SetKeepAliveValues(System.Net.Sockets.Socket,System.Boolean,System.Int32,System.Int32)">
+            <summary>
+            Sets the keep alive values.
+            </summary>
+            <param name="socket">The socket.</param>
+            <param name="state">if set to <c>true</c> [state].</param>
+            <param name="keepAliveTime">The keep alive time. Specifies the connection idle time in milliseconds before TCP will begin sending keepalives, if keepalives are enabled on a connection.</param>
+            <param name="keepAliveInterval">The keep alive interval. Specifies the time in milliseconds between retransmissions of keepalives, once the KeepAliveTime has expired. Once KeepAliveTime has expired, keepalives are sent every KeepAliveInterval milliseconds until a response is received, up to a maximum of MaxDataRetries before the connection is terminated.</param>
+            <returns>value</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkManager.StartServer(System.Int32)">
+            <summary>
+            Starts the server.
+            </summary>
+            <param name="localPort">The local port.</param>
+            <returns>Identifier of the listener</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkManager.StartServer(Forge.Net.Synapse.AddressEndPoint)">
+            <summary>
+            Starts the server.
+            </summary>
+            <param name="endPoint">The end point.</param>
+            <returns>Identifier of the listener</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkManager.StartServer(Forge.Net.Synapse.AddressEndPoint,Forge.Net.Synapse.NetworkServices.IServerStreamFactory)">
+            <summary>
+            Starts the server.
+            </summary>
+            <param name="endPoint">The end point.</param>
+            <param name="serverStreamFactory">The server stream factory.</param>
+            <returns>Identifier of the listener</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkManager.StopServer(System.Int64)">
+            <summary>
+            Stops the server.
+            </summary>
+            <param name="serverId">The server id.</param>
+            <returns>True, if the server stopped, otherwise False.</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkManager.StopServers">
+            <summary>
+            Stops the servers.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkManager.BeginConnect(Forge.Net.Synapse.AddressEndPoint,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the connect.
+            </summary>
+            <param name="endPoint">The end point.</param>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkManager.BeginConnect(Forge.Net.Synapse.AddressEndPoint,Forge.Net.Synapse.NetworkServices.IClientStreamFactory,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the connect.
+            </summary>
+            <param name="endPoint">The end point.</param>
+            <param name="clientStreamFactory">The client stream factory.</param>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkManager.BeginConnect(Forge.Net.Synapse.AddressEndPoint,System.Int32,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the connect.
+            </summary>
+            <param name="endPoint">The end point.</param>
+            <param name="bufferSize">Size of the buffer.</param>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkManager.BeginConnect(Forge.Net.Synapse.AddressEndPoint,System.Int32,Forge.Net.Synapse.NetworkServices.IClientStreamFactory,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the connect.
+            </summary>
+            <param name="endPoint">The end point.</param>
+            <param name="bufferSize">Size of the buffer.</param>
+            <param name="clientStreamFactory">The client stream factory.</param>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkManager.Connect(Forge.Net.Synapse.AddressEndPoint)">
+            <summary>
+            Connects the specified end point.
+            </summary>
+            <param name="endPoint">The end point.</param>
+            <returns>Network Stream instance</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkManager.Connect(Forge.Net.Synapse.AddressEndPoint,Forge.Net.Synapse.NetworkServices.IClientStreamFactory)">
+            <summary>
+            Connects the specified end point.
+            </summary>
+            <param name="endPoint">The end point.</param>
+            <param name="clientStreamFactory">The client stream factory.</param>
+            <returns>Network Stream instance</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkManager.Connect(Forge.Net.Synapse.AddressEndPoint,System.Int32)">
+            <summary>
+            Connects the specified end point.
+            </summary>
+            <param name="endPoint">The end point.</param>
+            <param name="bufferSize">Size of the buffer.</param>
+            <returns>Network Stream instance</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkManager.Connect(Forge.Net.Synapse.AddressEndPoint,System.Int32,Forge.Net.Synapse.NetworkServices.IClientStreamFactory)">
+            <summary>
+            Connects the specified end point.
+            </summary>
+            <param name="endPoint">The end point.</param>
+            <param name="bufferSize">Size of the buffer.</param>
+            <param name="clientStreamFactory">The client stream factory.</param>
+            <returns>
+            Network Stream instance
+            </returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkManager.EndConnect(System.IAsyncResult)">
+            <summary>
+            Ends the connect.
+            </summary>
+            <param name="asyncResult">The async result.</param>
+            <returns>
+            Network Stream instance
+            </returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkManager.GetServerEndPoint(System.Int64)">
+            <summary>
+            Gets the server end point.
+            </summary>
+            <param name="serverId">The server id.</param>
+            <returns>AddressEndPoint</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkManager.IsServerEndPointExist(Forge.Net.Synapse.AddressEndPoint)">
+            <summary>
+            Determines whether [is server end point exist] [the specified end point].
+            </summary>
+            <param name="endPoint">The end point.</param>
+            <returns>
+              <c>true</c> if [is server end point exist] [the specified end point]; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkManager.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkManager.ServerContainer.#ctor(System.Int64,Forge.Net.Synapse.NetworkServices.ITcpListener,Forge.Net.Synapse.NetworkManager,Forge.Net.Synapse.NetworkServices.IServerStreamFactory)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.NetworkManager.ServerContainer"/> class.
+            </summary>
+            <param name="serverId">The server id.</param>
+            <param name="listener">The listener.</param>
+            <param name="manager">The manager.</param>
+            <param name="serverStreamFactory">The stream factory.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkManager.ServerContainer.Initialize">
+            <summary>
+            Initializes this instance.
+            </summary>
+        </member>
+        <member name="T:Forge.Net.Synapse.NetworkServices.IClientStreamFactory">
+            <summary>
+            Factory for client side streams
+            </summary>
+        </member>
+        <member name="T:Forge.Net.Synapse.NetworkServices.INetworkFactory">
+            <summary>
+            Represents the service methods for a Network factory
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.INetworkFactory.CreateTcpListener(System.Int32)">
+            <summary>
+            Creates the TCP listener.
+            </summary>
+            <param name="port">The port.</param>
+            <returns>TcpListener implementation</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.INetworkFactory.CreateTcpListener(Forge.Net.Synapse.AddressEndPoint)">
+            <summary>
+            Creates the TCP listener.
+            </summary>
+            <param name="endPoint">The end point.</param>
+            <returns>TcpListener implementation</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.INetworkFactory.CreateTcpClient">
+            <summary>
+            Creates the TCP client.
+            </summary>
+            <returns>TcpClient implementation</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.INetworkFactory.CreateUdpClient">
+            <summary>
+            Creates the UDP client.
+            </summary>
+            <returns>UdpClient implementation</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.INetworkFactory.CreateUdpClient(System.Int32)">
+            <summary>
+            Creates the UDP client.
+            </summary>
+            <param name="port">The port.</param>
+            <returns>UdpClient implementation</returns>
+        </member>
+        <member name="T:Forge.Net.Synapse.NetworkServices.IServerStreamFactory">
+            <summary>
+            Stream factory for server side
+            </summary>
+        </member>
+        <member name="T:Forge.Net.Synapse.NetworkServices.ISocket">
+            <summary>
+            Basic socket functions
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ISocket.BeginAccept(System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the accept.
+            </summary>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ISocket.Accept">
+            <summary>
+            Accepts a new incoming connection.
+            </summary>
+            <returns>Socket implementation</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ISocket.EndAccept(System.IAsyncResult)">
+            <summary>
+            Ends the accept.
+            </summary>
+            <param name="asyncResult">The async result.</param>
+            <returns>Socket implementation</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ISocket.BeginConnect(System.Net.EndPoint,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the connect.
+            </summary>
+            <param name="endPoint">The end point.</param>
+            <param name="callBack">The call back.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ISocket.BeginConnect(System.String,System.Int32,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the connect.
+            </summary>
+            <param name="host">The host.</param>
+            <param name="port">The port.</param>
+            <param name="callBack">The call back.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ISocket.Bind(System.Net.EndPoint)">
+            <summary>
+            Binds the specified end point.
+            </summary>
+            <param name="endPoint">The end point.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ISocket.Connect(System.Net.EndPoint)">
+            <summary>
+            Connects the specified end point.
+            </summary>
+            <param name="endPoint">The end point.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ISocket.Connect(System.String,System.Int32)">
+            <summary>
+            Connects the specified host.
+            </summary>
+            <param name="host">The host.</param>
+            <param name="port">The port.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ISocket.EndConnect(System.IAsyncResult)">
+            <summary>
+            Ends the connect.
+            </summary>
+            <param name="asyncResult">The async result.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ISocket.SetKeepAliveValues(System.Boolean,System.Int32,System.Int32)">
+            <summary>
+            Sets the keep alive values.
+            </summary>
+            <param name="state">if set to <c>true</c> [state].</param>
+            <param name="keepAliveTime">The keep alive time.</param>
+            <param name="keepAliveInterval">The keep alive interval.</param>
+            <returns>value</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ISocket.BeginReceive(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the receive.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="size">The size.</param>
+            <param name="callBack">The call back.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ISocket.BeginReceiveFrom(System.Byte[],System.Int32,System.Int32,System.Net.EndPoint@,System.AsyncCallback,System.Object)">
+            <summary>
+            Receives from.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="size">The size.</param>
+            <param name="remoteEp">The remote ep.</param>
+            <param name="callBack">The call back.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ISocket.BeginSend(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the send.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="size">The size.</param>
+            <param name="callBack">The call back.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ISocket.BeginSendTo(System.Byte[],System.Int32,System.Int32,System.Net.EndPoint,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the send to.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="size">The size.</param>
+            <param name="remoteEp">The remote ep.</param>
+            <param name="callBack">The call back.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ISocket.Receive(System.Byte[])">
+            <summary>
+            Receives the specified buffer.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <returns>Number of received bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ISocket.Receive(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Receives the specified buffer.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="size">The size.</param>
+            <returns>Number of received bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ISocket.ReceiveFrom(System.Byte[],System.Net.EndPoint@)">
+            <summary>
+            Receives from.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="remoteEp">The remote ep.</param>
+            <returns>Number of received bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ISocket.ReceiveFrom(System.Byte[],System.Int32,System.Int32,System.Net.EndPoint@)">
+            <summary>
+            Receives from.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="size">The size.</param>
+            <param name="remoteEp">The remote ep.</param>
+            <returns>Number of received bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ISocket.Send(System.Byte[])">
+            <summary>
+            Sends the specified buffer.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <returns>Number of sent bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ISocket.Send(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Sends the specified buffer.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="size">The size.</param>
+            <returns>Number of sent bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ISocket.SendTo(System.Byte[],System.Net.EndPoint)">
+            <summary>
+            Sends to.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="remoteEp">The remote ep.</param>
+            <returns>Number of sent bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ISocket.SendTo(System.Byte[],System.Int32,System.Int32,System.Net.EndPoint)">
+            <summary>
+            Sends to.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="size">The size.</param>
+            <param name="remoteEp">The remote ep.</param>
+            <returns>Number of sent bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ISocket.EndReceive(System.IAsyncResult)">
+            <summary>
+            Ends the receive.
+            </summary>
+            <param name="asyncResult">The async result.</param>
+            <returns>Number of received bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ISocket.EndReceiveFrom(System.IAsyncResult,System.Net.EndPoint@)">
+            <summary>
+            Ends the receive from.
+            </summary>
+            <param name="asyncResult">The async result.</param>
+            <param name="remoteEp">The remote ep.</param>
+            <returns>Number of received bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ISocket.EndSend(System.IAsyncResult)">
+            <summary>
+            Ends the send.
+            </summary>
+            <param name="asyncResult">The async result.</param>
+            <returns>Number of sent bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ISocket.EndSendTo(System.IAsyncResult)">
+            <summary>
+            Ends the send to.
+            </summary>
+            <param name="asyncResult">The async result.</param>
+            <returns>Number of sent bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ISocket.Listen(System.Int32)">
+            <summary>
+            Listens the specified backlog.
+            </summary>
+            <param name="backlog">The backlog.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ISocket.Pool(System.Int32,System.Net.Sockets.SelectMode)">
+            <summary>
+            Detect the status of the socket
+            </summary>
+            <param name="microSeconds">The micro seconds.</param>
+            <param name="selectMode">The select mode.</param>
+            <returns>True, if select mode state is valid</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ISocket.Close">
+            <summary>
+            Closes this instance.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ISocket.Close(System.Int32)">
+            <summary>
+            Close the socket and wait for the specified time.
+            </summary>
+            <param name="timeout">The timeout.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ISocket.Shutdown(System.Net.Sockets.SocketShutdown)">
+            <summary>
+            Shutdowns the socket.
+            </summary>
+            <param name="how">The how.</param>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.ISocket.AddressFamily">
+            <summary>
+            Gets the address family.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.ISocket.Available">
+            <summary>
+            Gets the available.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.ISocket.Connected">
+            <summary>
+            Gets a value indicating whether this <see cref="T:Forge.Net.Synapse.NetworkServices.ISocket"/> is connected.
+            </summary>
+            <value>
+              <c>true</c> if connected; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.ISocket.EnableBroadcast">
+            <summary>
+            Gets or sets a value indicating whether [enable broadcast].
+            </summary>
+            <value>
+              <c>true</c> if [enable broadcast]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.ISocket.ExclusiveAddressUse">
+            <summary>
+            Gets or sets a value indicating whether [exclusive address use].
+            </summary>
+            <value>
+              <c>true</c> if [exclusive address use]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.ISocket.IsBound">
+            <summary>
+            Gets a value indicating whether this instance is bound.
+            </summary>
+            <value>
+              <c>true</c> if this instance is bound; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.ISocket.LocalEndPoint">
+            <summary>
+            Gets the local end point.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.ISocket.NoDelay">
+            <summary>
+            Gets or sets a value indicating whether [no delay].
+            </summary>
+            <value>
+              <c>true</c> if [no delay]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.ISocket.ReceiveBufferSize">
+            <summary>
+            Gets or sets the size of the receive buffer.
+            </summary>
+            <value>
+            The size of the receive buffer.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.ISocket.ReceiveTimeout">
+            <summary>
+            Gets or sets the receive timeout.
+            </summary>
+            <value>
+            The receive timeout.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.ISocket.RemoteEndPoint">
+            <summary>
+            Gets or sets the remote end point.
+            </summary>
+            <value>
+            The remote end point.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.ISocket.SendBufferSize">
+            <summary>
+            Gets or sets the size of the send buffer.
+            </summary>
+            <value>
+            The size of the send buffer.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.ISocket.SendTimeout">
+            <summary>
+            Gets or sets the send timeout.
+            </summary>
+            <value>
+            The send timeout.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.ISocket.ProtocolType">
+            <summary>
+            Gets the type of the protocol.
+            </summary>
+            <value>
+            The type of the protocol.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.ISocket.SocketType">
+            <summary>
+            Gets the type of the socket.
+            </summary>
+            <value>
+            The type of the socket.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.ISocket.Ttl">
+            <summary>
+            Gets or sets the TTL.
+            </summary>
+            <value>
+            The TTL.
+            </value>
+        </member>
+        <member name="T:Forge.Net.Synapse.NetworkServices.IStreamFactory">
+            <summary>
+            Common base for stream factory interface
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.IStreamFactory.IsInitialized">
+            <summary>
+            Gets a value indicating whether this instance is initialized.
+            </summary>
+            <value>
+            	<c>true</c> if this instance is initialized; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.IStreamFactory.ReceiveBufferSize">
+            <summary>
+            Gets or sets the size of the receive buffer.
+            </summary>
+            <value>
+            The size of the receive buffer.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.IStreamFactory.SendBufferSize">
+            <summary>
+            Gets or sets the size of the send buffer.
+            </summary>
+            <value>
+            The size of the send buffer.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.IStreamFactory.NoDelay">
+            <summary>
+            Gets or sets a value of no delay.
+            </summary>
+            <value>
+              <c>true</c> if [no delay]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.IStreamFactory.ReceiveTimeout">
+            <summary>
+            Gets or sets the receive timeout.
+            </summary>
+            <value>
+            The receive timeout.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.IStreamFactory.SendTimeout">
+            <summary>
+            Gets or sets the send timeout.
+            </summary>
+            <value>
+            The send timeout.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.IStreamFactory.Initialize(Forge.Configuration.Shared.CategoryPropertyItem)">
+            <summary>
+            Initializes the specified config item.
+            </summary>
+            <param name="configItem">The config item.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.IStreamFactory.CreateNetworkStream(Forge.Net.Synapse.NetworkServices.ITcpClient)">
+            <summary>
+            Creates the network stream.
+            </summary>
+            <param name="tcpClient">The TCP client.</param>
+            <returns>Network Stream instance</returns>
+        </member>
+        <member name="T:Forge.Net.Synapse.NetworkServices.ITcpClient">
+            <summary>
+            Represents TcpClient services
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ITcpClient.BeginConnect(System.String,System.Int32,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the connect.
+            </summary>
+            <param name="host">The host.</param>
+            <param name="port">The port.</param>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ITcpClient.BeginConnect(Forge.Net.Synapse.AddressEndPoint,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the connect.
+            </summary>
+            <param name="localEp">The local ep.</param>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ITcpClient.Connect(System.String,System.Int32)">
+            <summary>
+            Connects the specified host.
+            </summary>
+            <param name="host">The host.</param>
+            <param name="port">The port.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ITcpClient.Connect(Forge.Net.Synapse.AddressEndPoint)">
+            <summary>
+            Connects the specified local ep.
+            </summary>
+            <param name="localEp">The local ep.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ITcpClient.Close">
+            <summary>
+            Closes this instance.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ITcpClient.GetStream">
+            <summary>
+            Gets the stream.
+            </summary>
+            <returns>Network Stream instance</returns>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.ITcpClient.Available">
+            <summary>
+            Gets the available.
+            </summary>
+            <value>
+            The available bytes.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.ITcpClient.Client">
+            <summary>
+            Gets the client.
+            </summary>
+            <value>
+            The client.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.ITcpClient.Connected">
+            <summary>
+            Gets a value indicating whether this <see cref="T:Forge.Net.Synapse.NetworkServices.ITcpClient"/> is connected.
+            </summary>
+            <value>
+              <c>true</c> if connected; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.ITcpClient.ExclusiveAddressUse">
+            <summary>
+            Gets or sets a value indicating whether [exclusive address use].
+            </summary>
+            <value>
+              <c>true</c> if [exclusive address use]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.ITcpClient.NoDelay">
+            <summary>
+            Gets or sets a value indicating whether [no delay].
+            </summary>
+            <value>
+              <c>true</c> if [no delay]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.ITcpClient.ReceiveBufferSize">
+            <summary>
+            Gets or sets the size of the receive buffer.
+            </summary>
+            <value>
+            The size of the receive buffer.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.ITcpClient.ReceiveTimeout">
+            <summary>
+            Gets or sets the receive timeout.
+            </summary>
+            <value>
+            The receive timeout.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.ITcpClient.SendBufferSize">
+            <summary>
+            Gets or sets the size of the send buffer.
+            </summary>
+            <value>
+            The size of the send buffer.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.ITcpClient.SendTimeout">
+            <summary>
+            Gets or sets the send timeout.
+            </summary>
+            <value>
+            The send timeout.
+            </value>
+        </member>
+        <member name="T:Forge.Net.Synapse.NetworkServices.ITcpListener">
+            <summary>
+            Represents a TcpListener service methods
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ITcpListener.AcceptSocket">
+            <summary>
+            Accepts the socket.
+            </summary>
+            <returns>Socket implementation</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ITcpListener.AcceptTcpClient">
+            <summary>
+            Accepts the TCP client.
+            </summary>
+            <returns>TcpClient implementation</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ITcpListener.BeginAcceptSocket(System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the accept socket.
+            </summary>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ITcpListener.BeginAcceptTcpClient(System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the accept TCP client.
+            </summary>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ITcpListener.EndAcceptSocket(System.IAsyncResult)">
+            <summary>
+            Ends the accept socket.
+            </summary>
+            <param name="asyncResult">The async result.</param>
+            <returns>Socket implementation</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ITcpListener.EndAcceptTcpClient(System.IAsyncResult)">
+            <summary>
+            Ends the accept TCP client.
+            </summary>
+            <param name="asyncResult">The async result.</param>
+            <returns>TcpClient implementation</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ITcpListener.Pending">
+            <summary>
+            Pendings this instance.
+            </summary>
+            <returns>True, if an incoming connection is waiting</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ITcpListener.Start">
+            <summary>
+            Starts this instance.
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ITcpListener.Start(System.Int32)">
+            <summary>
+            Starts the specified backlog.
+            </summary>
+            <param name="backlog">The backlog.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.ITcpListener.Stop">
+            <summary>
+            Stops this instance.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.ITcpListener.ExclusiveAddressUse">
+            <summary>
+            Gets or sets a value indicating whether [exclusive address use].
+            </summary>
+            <value>
+              <c>true</c> if [exclusive address use]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.ITcpListener.LocalEndpoint">
+            <summary>
+            Gets the local endpoint.
+            </summary>
+            <value>
+            The local endpoint.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.ITcpListener.Server">
+            <summary>
+            Gets the server socket.
+            </summary>
+            <value>
+            The server.
+            </value>
+        </member>
+        <member name="T:Forge.Net.Synapse.NetworkServices.IUdpClient">
+            <summary>
+            Represents UdpClient services
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.IUdpClient.Available">
+            <summary>
+            Gets the available.
+            </summary>
+            <value>
+            The available.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.IUdpClient.Client">
+            <summary>
+            Gets the client.
+            </summary>
+            <value>
+            The client.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.IUdpClient.EnableBroadcast">
+            <summary>
+            Gets or sets a value indicating whether [enable broadcast].
+            </summary>
+            <value>
+              <c>true</c> if [enable broadcast]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkServices.IUdpClient.Ttl">
+            <summary>
+            Gets or sets the TTL.
+            </summary>
+            <value>
+            The TTL.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.IUdpClient.BeginReceive(System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the receive.
+            </summary>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.IUdpClient.Receive(Forge.Net.Synapse.AddressEndPoint@)">
+            <summary>
+            Receives the specified remote ep.
+            </summary>
+            <param name="remoteEp">The remote ep.</param>
+            <returns>Number of received bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.IUdpClient.EndReceive(System.IAsyncResult,Forge.Net.Synapse.AddressEndPoint@)">
+            <summary>
+            Ends the receive.
+            </summary>
+            <param name="asyncResult">The async result.</param>
+            <param name="remoteEp">The remote ep.</param>
+            <returns>Number of received bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.IUdpClient.BeginSend(System.Byte[],System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the send.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.IUdpClient.BeginSend(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the send.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="size">The size.</param>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.IUdpClient.BeginSend(System.Byte[],System.Int32,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the send.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="size">The size.</param>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.IUdpClient.BeginSend(System.Byte[],Forge.Net.Synapse.AddressEndPoint,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the send.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="remoteEp">The remote ep.</param>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.IUdpClient.BeginSend(System.Byte[],System.Int32,Forge.Net.Synapse.AddressEndPoint,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the send.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="size">The size.</param>
+            <param name="remoteEp">The remote ep.</param>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.IUdpClient.BeginSend(System.Byte[],System.Int32,System.Int32,Forge.Net.Synapse.AddressEndPoint,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the send.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="size">The size.</param>
+            <param name="remoteEp">The remote ep.</param>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.IUdpClient.BeginSend(System.Byte[],System.String,System.Int32,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the send.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="hostName">Name of the host.</param>
+            <param name="port">The port.</param>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.IUdpClient.BeginSend(System.Byte[],System.Int32,System.String,System.Int32,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the send.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="size">The size.</param>
+            <param name="hostName">Name of the host.</param>
+            <param name="port">The port.</param>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.IUdpClient.BeginSend(System.Byte[],System.Int32,System.Int32,System.String,System.Int32,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins the send.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="size">The size.</param>
+            <param name="hostName">Name of the host.</param>
+            <param name="port">The port.</param>
+            <param name="callback">The callback.</param>
+            <param name="state">The state.</param>
+            <returns>Async property</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.IUdpClient.Send(System.Byte[])">
+            <summary>
+            Sends the specified buffer.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <returns>Number of sent bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.IUdpClient.Send(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Sends the specified buffer.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="size">The size.</param>
+            <returns>Number of sent bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.IUdpClient.Send(System.Byte[],System.Int32)">
+            <summary>
+            Sends the specified buffer.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="size">The size.</param>
+            <returns>Number of sent bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.IUdpClient.Send(System.Byte[],Forge.Net.Synapse.AddressEndPoint)">
+            <summary>
+            Sends the specified buffer.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="remoteEp">The remote ep.</param>
+            <returns>Number of sent bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.IUdpClient.Send(System.Byte[],System.Int32,Forge.Net.Synapse.AddressEndPoint)">
+            <summary>
+            Sends the specified buffer.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="size">The size.</param>
+            <param name="remoteEp">The remote ep.</param>
+            <returns>Number of sent bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.IUdpClient.Send(System.Byte[],System.Int32,System.Int32,Forge.Net.Synapse.AddressEndPoint)">
+            <summary>
+            Sends the specified buffer.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="size">The size.</param>
+            <param name="remoteEp">The remote ep.</param>
+            <returns>Number of sent bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.IUdpClient.Send(System.Byte[],System.String,System.Int32)">
+            <summary>
+            Sends the specified buffer.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="hostName">Name of the host.</param>
+            <param name="port">The port.</param>
+            <returns>Number of sent bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.IUdpClient.Send(System.Byte[],System.Int32,System.String,System.Int32)">
+            <summary>
+            Sends the specified buffer.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="size">The size.</param>
+            <param name="hostName">Name of the host.</param>
+            <param name="port">The port.</param>
+            <returns>Number of sent bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.IUdpClient.Send(System.Byte[],System.Int32,System.Int32,System.String,System.Int32)">
+            <summary>
+            Sends the specified buffer.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="size">The size.</param>
+            <param name="hostName">Name of the host.</param>
+            <param name="port">The port.</param>
+            <returns>Number of sent bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.IUdpClient.EndSend(System.IAsyncResult)">
+            <summary>
+            Ends the receive.
+            </summary>
+            <param name="asyncResult">The async result.</param>
+            <returns>Number of sent bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.IUdpClient.EndSend(System.IAsyncResult,Forge.Net.Synapse.AddressEndPoint)">
+            <summary>
+            Ends the send.
+            </summary>
+            <param name="asyncResult">The async result.</param>
+            <param name="remoteEp">The remote ep.</param>
+            <returns>Number of sent bytes</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.IUdpClient.Connect(System.Int32)">
+            <summary>
+            Connects the specified port.
+            </summary>
+            <param name="port">The port.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.IUdpClient.Connect(Forge.Net.Synapse.AddressEndPoint)">
+            <summary>
+            Connects the specified local ep.
+            </summary>
+            <param name="localEp">The local ep.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkServices.IUdpClient.Close">
+            <summary>
+            Closes this instance.
+            </summary>
+        </member>
+        <member name="T:Forge.Net.Synapse.NetworkStream">
+            <summary>
+            Network stream
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkStream.#ctor(Forge.Net.Synapse.NetworkServices.ISocket)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.NetworkStream"/> class.
+            </summary>
+            <param name="socket">The socket.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkStream.#ctor(System.Net.Sockets.NetworkStream,Forge.Net.Synapse.NetworkServices.ISocket)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.NetworkStream"/> class.
+            </summary>
+            <param name="stream">The stream.</param>
+            <param name="socket">The socket.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkStream.#ctor(System.Net.Security.SslStream,Forge.Net.Synapse.NetworkServices.ISocket)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.Net.Synapse.NetworkStream"/> class.
+            </summary>
+            <param name="sslStream">The SSL stream.</param>
+            <param name="socket">The socket.</param>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkStream.Finalize">
+            <summary>
+            Releases unmanaged resources and performs other cleanup operations before the
+            <see cref="T:Forge.Net.Synapse.NetworkStream"/> is reclaimed by garbage collection.
+            </summary>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkStream.Id">
+            <summary>
+            Gets the id.
+            </summary>
+            <value>
+            The id.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkStream.CanRead">
+            <summary>
+            When overridden in a derived class, gets a value indicating whether the current stream supports reading.
+            </summary>
+            <returns>true if the stream supports reading; otherwise, false.</returns>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkStream.CanSeek">
+            <summary>
+            When overridden in a derived class, gets a value indicating whether the current stream supports seeking.
+            </summary>
+            <returns>true if the stream supports seeking; otherwise, false.</returns>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkStream.CanWrite">
+            <summary>
+            When overridden in a derived class, gets a value indicating whether the current stream supports writing.
+            </summary>
+            <returns>true if the stream supports writing; otherwise, false.</returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkStream.Flush">
+            <summary>
+            When overridden in a derived class, clears all buffers for this stream and causes any buffered data to be written to the underlying device.
+            </summary>
+            <exception cref="T:System.IO.IOException">An I/O error occurs. </exception>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkStream.Length">
+            <summary>
+            When overridden in a derived class, gets the length in bytes of the stream.
+            </summary>
+            <returns>A long value representing the length of the stream in bytes.</returns>
+            <exception cref="T:System.NotSupportedException">A class derived from Stream does not support seeking.</exception>
+            <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkStream.Position">
+            <summary>
+            When overridden in a derived class, gets or sets the position within the current stream.
+            </summary>
+            <returns>The current position within the stream.</returns>
+            <exception cref="T:System.IO.IOException">An I/O error occurs.</exception>
+            <exception cref="T:System.NotSupportedException">The stream does not support seeking.</exception>
+            <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkStream.Read(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            When overridden in a derived class, reads a sequence of bytes from the current stream and advances the position within the stream by the number of bytes read.
+            </summary>
+            <param name="buffer">An array of bytes. When this method returns, the buffer contains the specified byte array with the values between <paramref name="offset" /> and (<paramref name="offset" /> + <paramref name="count" /> - 1) replaced by the bytes read from the current source.</param>
+            <param name="offset">The zero-based byte offset in <paramref name="buffer" /> at which to begin storing the data read from the current stream.</param>
+            <param name="count">The maximum number of bytes to be read from the current stream.</param>
+            <returns>
+            The total number of bytes read into the buffer. This can be less than the number of bytes requested if that many bytes are not currently available, or zero (0) if the end of the stream has been reached.
+            </returns>
+            <exception cref="T:System.ArgumentException">The sum of <paramref name="offset" /> and <paramref name="count" /> is larger than the buffer length.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="buffer" /> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="offset" /> or <paramref name="count" /> is negative.</exception>
+            <exception cref="T:System.IO.IOException">An I/O error occurs.</exception>
+            <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
+            <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkStream.Seek(System.Int64,System.IO.SeekOrigin)">
+            <summary>
+            When overridden in a derived class, sets the position within the current stream.
+            </summary>
+            <param name="offset">A byte offset relative to the <paramref name="origin" /> parameter.</param>
+            <param name="origin">A value of type <see cref="T:System.IO.SeekOrigin" /> indicating the reference point used to obtain the new position.</param>
+            <returns>
+            The new position within the current stream.
+            </returns>
+            <exception cref="T:System.IO.IOException">An I/O error occurs.</exception>
+            <exception cref="T:System.NotSupportedException">The stream does not support seeking, such as if the stream is constructed from a pipe or console output.</exception>
+            <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkStream.SetLength(System.Int64)">
+            <summary>
+            When overridden in a derived class, sets the length of the current stream.
+            </summary>
+            <param name="value">The desired length of the current stream in bytes.</param>
+            <exception cref="T:System.IO.IOException">An I/O error occurs.</exception>
+            <exception cref="T:System.NotSupportedException">The stream does not support both writing and seeking, such as if the stream is constructed from a pipe or console output.</exception>
+            <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkStream.Write(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            When overridden in a derived class, writes a sequence of bytes to the current stream and advances the current position within this stream by the number of bytes written.
+            </summary>
+            <param name="buffer">An array of bytes. This method copies <paramref name="count" /> bytes from <paramref name="buffer" /> to the current stream.</param>
+            <param name="offset">The zero-based byte offset in <paramref name="buffer" /> at which to begin copying bytes to the current stream.</param>
+            <param name="count">The number of bytes to be written to the current stream.</param>
+            <exception cref="T:System.ArgumentException">The sum of <paramref name="offset" /> and <paramref name="count" /> is greater than the buffer length.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="buffer" /> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="offset" /> or <paramref name="count" /> is negative.</exception>
+            <exception cref="T:System.IO.IOException">An I/O error occurs.</exception>
+            <exception cref="T:System.NotSupportedException">The stream does not support writing.</exception>
+            <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkStream.SendBufferSize">
+            <summary>
+            Gets or sets the size of the send buffer of the underlying socket.
+            </summary>
+            <value>
+            The size of the send buffer.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkStream.ReceiveBufferSize">
+            <summary>
+            Gets or sets the size of the receive buffer of the underlying socket.
+            </summary>
+            <value>
+            The size of the receive buffer.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkStream.NoDelay">
+            <summary>
+            Gets or sets a value indicating whether [no delay].
+            </summary>
+            <value>
+              <c>true</c> if [no delay]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkStream.SetKeepAliveValues(System.Boolean,System.Int32,System.Int32)">
+            <summary>
+            Sets the keep alive values.
+            </summary>
+            <param name="state">if set to <c>true</c> [state].</param>
+            <param name="keepAliveTime">The keep alive time.</param>
+            <param name="keepAliveInterval">The keep alive interval.</param>
+            <returns></returns>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkStream.Connected">
+            <summary>
+            Gets a value indicating whether this <see cref="T:Forge.Net.Synapse.NetworkStream"/> is connected.
+            </summary>
+            <value>
+              <c>true</c> if connected; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkStream.ReceiveTimeout">
+            <summary>
+            Gets or sets the receive timeout.
+            </summary>
+            <value>
+            The receive timeout.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkStream.SendTimeout">
+            <summary>
+            Gets or sets the send timeout.
+            </summary>
+            <value>
+            The send timeout.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkStream.LocalEndPoint">
+            <summary>
+            Gets the local end point.
+            </summary>
+            <value>
+            The local end point.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkStream.RemoteEndPoint">
+            <summary>
+            Gets the remote end point.
+            </summary>
+            <value>
+            The remote end point.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkStream.Ttl">
+            <summary>
+            Gets or sets the TimeToLive value of the underlying socket.
+            </summary>
+            <value>
+            The TTL.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkStream.CipherAlgorithm">
+            <summary>
+            Gets the cipher algorithm.
+            </summary>
+            <value>
+            The cipher algorithm.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkStream.CipherStrength">
+            <summary>
+            Gets the cipher strength.
+            </summary>
+            <value>
+            The cipher strength.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkStream.HashAlgorithm">
+            <summary>
+            Gets the hash algorithm.
+            </summary>
+            <value>
+            The hash algorithm.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkStream.HashStrength">
+            <summary>
+            Gets the hash strength.
+            </summary>
+            <value>
+            The hash strength.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkStream.SslProtocol">
+            <summary>
+            Gets the SSL protocol.
+            </summary>
+            <value>
+            The SSL protocol.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkStream.IsAuthenticated">
+            <summary>
+            Gets a value indicating whether this instance is authenticated.
+            </summary>
+            <value>
+            	<c>true</c> if this instance is authenticated; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkStream.IsEncrypted">
+            <summary>
+            Gets a value indicating whether this instance is encrypted.
+            </summary>
+            <value>
+            	<c>true</c> if this instance is encrypted; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkStream.IsMutuallyAuthenticated">
+            <summary>
+            Gets a value indicating whether this instance is mutually authenticated.
+            </summary>
+            <value>
+            	<c>true</c> if this instance is mutually authenticated; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkStream.IsSigned">
+            <summary>
+            Gets a value indicating whether this instance is signed.
+            </summary>
+            <value>
+              <c>true</c> if this instance is signed; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkStream.LocalCertificate">
+            <summary>
+            Gets the local certificate.
+            </summary>
+            <value>
+            The local certificate.
+            </value>
+        </member>
+        <member name="P:Forge.Net.Synapse.NetworkStream.RemoteCertificate">
+            <summary>
+            Gets the remote certificate.
+            </summary>
+            <value>
+            The remote certificate.
+            </value>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkStream.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+            </returns>
+        </member>
+        <member name="M:Forge.Net.Synapse.NetworkStream.Dispose(System.Boolean)">
+            <summary>
+            Releases the unmanaged resources used by the <see cref="T:System.IO.Stream"/> and optionally releases the managed resources.
+            </summary>
+            <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        </member>
+        <member name="T:Forge.Net.Synapse.TcpKeepAlive">
+            <summary>
+            Represents the struct which helps to set keep alive timers on a socket
+            </summary>
+        </member>
+        <member name="M:Forge.Net.Synapse.TcpKeepAlive.ToArray">
+            <summary>
+            Toes the array.
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

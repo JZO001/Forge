@@ -5,8 +5,8 @@
 ***********************************************************************/
 
 using System;
+using Forge.Logging;
 using Forge.ORM.NHibernateExtension.Model;
-using log4net;
 using NHibernate;
 using NHibernate.Proxy;
 

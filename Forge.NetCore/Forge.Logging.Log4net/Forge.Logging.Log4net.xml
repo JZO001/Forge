@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Forge.Logging.Log4net</name>
+    </assembly>
+    <members>
+        <member name="T:Forge.Logging.Log4net.Log4NetLog">
+            <summary>Log wrapper implementation</summary>
+            <seealso cref="T:Forge.Logging.ILog" />
+        </member>
+        <member name="T:Forge.Logging.Log4net.Log4NetManager">
+            <summary>Log4Net wrapper implementation</summary>
+            <seealso cref="T:Forge.Logging.ILoggerWrapper" />
+        </member>
+        <member name="P:Forge.Logging.Log4net.Log4NetManager.Instance">
+            <summary>Gets the singleton instance.</summary>
+            <value>The instance.</value>
+        </member>
+        <member name="M:Forge.Logging.Log4net.Log4NetManager.InitializeFromAppConfig">
+            <summary>Initializes from application configuration.</summary>
+        </member>
+        <member name="M:Forge.Logging.Log4net.Log4NetManager.InitializeFromConfigFile(System.String)">
+            <summary>Initializes from configuration file.</summary>
+            <param name="configFileFullPath">The configuration file full path.</param>
+        </member>
+        <member name="M:Forge.Logging.Log4net.Log4NetManager.InitializeFromConfigFile(System.IO.FileInfo)">
+            <summary>Initializes from configuration file.</summary>
+            <param name="configFileInfo">The configuration file information.</param>
+        </member>
+        <member name="M:Forge.Logging.Log4net.Log4NetManager.GetLogger(System.String,System.String)">
+            <summary>Gets the logger.</summary>
+            <param name="repository">The repository.</param>
+            <param name="name">The name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Logging.Log4net.Log4NetManager.GetLogger(System.Reflection.Assembly,System.Type)">
+            <summary>Gets the logger.</summary>
+            <param name="repositoryAssembly">The repository assembly.</param>
+            <param name="type">The type.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Logging.Log4net.Log4NetManager.GetLogger(System.String,System.Type)">
+            <summary>Gets the logger.</summary>
+            <param name="repository">The repository.</param>
+            <param name="type">The type.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Logging.Log4net.Log4NetManager.GetLogger(System.Type)">
+            <summary>Gets the logger.</summary>
+            <param name="type">The type.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Logging.Log4net.Log4NetManager.GetLogger(System.Reflection.Assembly,System.String)">
+            <summary>Gets the logger.</summary>
+            <param name="repositoryAssembly">The repository assembly.</param>
+            <param name="name">The name.</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

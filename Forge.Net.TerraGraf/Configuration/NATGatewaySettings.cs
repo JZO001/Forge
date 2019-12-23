@@ -10,10 +10,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Forge.Configuration.Shared;
+using Forge.Logging;
 using Forge.Net.Synapse;
 using Forge.Net.TerraGraf.ConfigSection;
 using Forge.Net.TerraGraf.NetworkPeers;
-using log4net;
 
 namespace Forge.Net.TerraGraf.Configuration
 {
@@ -27,7 +27,7 @@ namespace Forge.Net.TerraGraf.Configuration
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger("Forge.Net.TerraGraf.Configuration.NATGatewaySettings");
+        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(NATGatewaySettings));
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private List<AddressEndPoint> mEndPoints = new List<AddressEndPoint>();

@@ -9,8 +9,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using Forge.Configuration.Shared;
+using Forge.Logging;
 using Forge.Net.TerraGraf.ConfigSection;
-using log4net;
 
 namespace Forge.Net.TerraGraf.Configuration
 {
@@ -24,7 +24,7 @@ namespace Forge.Net.TerraGraf.Configuration
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger("Forge.Net.TerraGraf.Configuration.NetworkContextSettings");
+        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(NetworkContextSettings));
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string mName = string.Empty;

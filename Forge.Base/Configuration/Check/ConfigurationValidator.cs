@@ -4,10 +4,10 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Logging;
 using System;
 using System.Configuration;
 using System.Diagnostics;
-using log4net;
 
 namespace Forge.Configuration.Check
 {

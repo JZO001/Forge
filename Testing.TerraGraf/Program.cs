@@ -15,7 +15,7 @@ namespace Testing.TerraGraf
         [STAThread]
         static void Main()
         {
-            log4net.Config.XmlConfigurator.Configure();
+            Forge.Logging.Log4net.Log4NetManager.InitializeFromAppConfig();
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

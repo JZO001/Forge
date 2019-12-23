@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Forge.Extensions</name>
+    </assembly>
+    <members>
+        <member name="T:Forge.ExtensionMethodsISet">
+            <summary>
+            Extension methods for ISet
+            </summary>
+        </member>
+        <member name="M:Forge.ExtensionMethodsISet.AddRange``1(System.Collections.Generic.ISet{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Adds the entire collection to the current instance of set.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="set">The set.</param>
+            <param name="collection">The collection.</param>
+        </member>
+        <member name="M:Forge.ExtensionMethodsISet.ForEach``1(System.Collections.Generic.ISet{``0},Forge.Action{``0})">
+            <summary>
+            Execute the specified action on each element of the set
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="set">The set.</param>
+            <param name="action">The action.</param>
+        </member>
+        <member name="M:Forge.ExtensionMethodsISet.TrueForAll``1(System.Collections.Generic.ISet{``0},System.Predicate{``0})">
+            <summary>
+            Examine the items of the set
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="set">The set.</param>
+            <param name="match">The match.</param>
+            <returns>True, if the all items matches with the predicate, otherwise false</returns>
+        </member>
+        <member name="M:Forge.ExtensionMethodsISet.Exists``1(System.Collections.Generic.ISet{``0},System.Predicate{``0})">
+            <summary>
+            Finds the first item in the ISet which matches with the predicate and result true, otherwise false.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="set">The set.</param>
+            <param name="match">The match.</param>
+            <returns>True, if an item matches with predicate, otherwise false.</returns>
+        </member>
+        <member name="M:Forge.ExtensionMethodsISet.Find``1(System.Collections.Generic.ISet{``0},System.Predicate{``0})">
+            <summary>
+            Finds the first match element.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="set">The set.</param>
+            <param name="match">The match.</param>
+            <returns>Item</returns>
+        </member>
+        <member name="M:Forge.ExtensionMethodsISet.FindAll``1(System.Collections.Generic.ISet{``0},System.Predicate{``0})">
+            <summary>
+            Finds all element which are match with the predicate
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="set">The set.</param>
+            <param name="match">The match.</param>
+            <returns>List of items</returns>
+        </member>
+        <member name="M:Forge.ExtensionMethodsISet.ToArray``1(System.Collections.Generic.ISet{``0})">
+            <summary>
+            Create and return an array of T from ISet
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="set">The set.</param>
+            <returns>Array of the items</returns>
+        </member>
+    </members>
+</doc>

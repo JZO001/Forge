@@ -31,6 +31,7 @@ namespace Forge.Net.Services.Locators
         /// <value>
         /// The prefered service provider.
         /// </value>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Prefered")]
         public ServiceProvider PreferedServiceProvider { get; private set; }
 
     }

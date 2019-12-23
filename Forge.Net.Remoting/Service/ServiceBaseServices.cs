@@ -12,13 +12,13 @@ using System.Threading;
 using Forge.Collections;
 using Forge.Configuration.Shared;
 using Forge.EventRaiser;
+using Forge.Logging;
 using Forge.Net.Remoting.Channels;
 using Forge.Net.Remoting.ConfigSection;
 using Forge.Net.Remoting.Messaging;
 using Forge.Net.Remoting.Proxy;
 using Forge.Net.Remoting.Validators;
 using Forge.Reflection;
-using log4net;
 
 namespace Forge.Net.Remoting.Service
 {

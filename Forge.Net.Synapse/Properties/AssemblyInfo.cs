@@ -15,8 +15,8 @@ using System.Security;
 #endif
 [assembly: AssemblyCompany("Synapse Project Contributor(s)")]
 [assembly: AssemblyProduct("Synapse: network handler interfaces and classes")]
-[assembly: AssemblyCopyright("Copyright © Zoltan Juhasz, 2004-2009")]
-//[assembly: AssemblyTrademark("Forge.Net.Synapse")]
+[assembly: AssemblyCopyright("Copyright © Zoltan Juhasz, 2004-2019")]
+[assembly: AssemblyTrademark("Forge")]
 //[assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
@@ -38,9 +38,9 @@ using System.Security;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("4.0.0.6")]
-[assembly: AssemblyFileVersion("4.0.0.6")]
-[assembly: AssemblyInformationalVersion("4.0.0.6")]
+[assembly: AssemblyVersion("4.0.0.7")]
+[assembly: AssemblyFileVersion("4.0.0.7")]
+[assembly: AssemblyInformationalVersion("4.0.0.7")]
 [assembly: AllowPartiallyTrustedCallers]
 
 [assembly: SecurityRules(SecurityRuleSet.Level1, SkipVerificationInFullTrust = true)]

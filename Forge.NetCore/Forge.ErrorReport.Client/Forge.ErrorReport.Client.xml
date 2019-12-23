@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Forge.ErrorReport.Client</name>
+    </assembly>
+    <members>
+        <member name="T:Forge.ErrorReport.Client.ErrorReportAppender">
+            <summary>
+            Error Report Appender
+            </summary>
+        </member>
+        <member name="F:Forge.ErrorReport.Client.ErrorReportAppender.LOGGER">
+            <summary>
+            The logger
+            </summary>
+        </member>
+        <member name="M:Forge.ErrorReport.Client.ErrorReportAppender.#cctor">
+            <summary>
+            Initializes the <see cref="T:Forge.ErrorReport.Client.ErrorReportAppender"/> class.
+            </summary>
+            <remarks>
+            Empty default constructor
+            </remarks>
+        </member>
+        <member name="M:Forge.ErrorReport.Client.ErrorReportAppender.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.ErrorReport.Client.ErrorReportAppender"/> class.
+            </summary>
+            <remarks>
+            Empty default constructor
+            </remarks>
+        </member>
+        <member name="P:Forge.ErrorReport.Client.ErrorReportAppender.PreviousHistoryItemsToAppendBeforeSend">
+            <summary>
+            Gets or sets the append history items before send.
+            </summary>
+            <value>
+            The append history items before send.
+            </value>
+        </member>
+        <member name="P:Forge.ErrorReport.Client.ErrorReportAppender.HandleAppDomainUnhandledException">
+            <summary>
+            Gets or sets a value indicating whether [handle application domain unhandled exception].
+            </summary>
+            <value>
+            <c>true</c> if [handle application domain unhandled exception]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Forge.ErrorReport.Client.ErrorReportAppender.ChannelId">
+            <summary>
+            Gets or sets the channel unique identifier.
+            </summary>
+            <value>
+            The channel unique identifier.
+            </value>
+        </member>
+        <member name="P:Forge.ErrorReport.Client.ErrorReportAppender.IsClosed">
+            <summary>
+            Gets a value indicating whether [is closed].
+            </summary>
+            <value>
+              <c>true</c> if [is closed]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:Forge.ErrorReport.Client.ErrorReportAppender.Append(log4net.Core.LoggingEvent)">
+            <summary>
+            Subclasses of <see cref="T:log4net.Appender.AppenderSkeleton" /> should implement this method
+            to perform actual logging.
+            </summary>
+            <param name="loggingEvent">The event to append.</param>
+            <remarks>
+              <para>
+            A subclass must implement this method to perform
+            logging of the <paramref name="loggingEvent" />.
+              </para>
+              <para>This method will be called by <see cref="M:log4net.Appender.AppenderSkeleton.DoAppend(log4net.Core.LoggingEvent)" />
+            if all the conditions listed for that method are met.
+              </para>
+              <para>
+            To restrict the logging of events in the appender
+            override the <see cref="M:log4net.Appender.AppenderSkeleton.PreAppendCheck" /> method.
+              </para>
+            </remarks>
+        </member>
+        <member name="M:Forge.ErrorReport.Client.ErrorReportAppender.OnClose">
+            <summary>
+            Is called when the appender is closed. Derived classes should override
+            this method if resources need to be released.
+            </summary>
+            <remarks>
+              <para>
+            Releases any resources allocated within the appender such as file handles,
+            network connections, etc.
+              </para>
+              <para>
+            It is a programming error to append to a closed appender.
+              </para>
+            </remarks>
+        </member>
+        <member name="T:Forge.ErrorReport.Client.ErrorReportClientImpl">
+            <summary>
+            Error Report client proxy
+            </summary>
+        </member>
+        <member name="M:Forge.ErrorReport.Client.ErrorReportClientImpl.#ctor(Forge.Net.Remoting.Channels.Channel,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.ErrorReport.Client.ErrorReportClientImpl"/> class.
+            </summary>
+            <param name="channel">The channel.</param>
+            <param name="sessionId">The session id.</param>
+        </member>
+        <member name="M:Forge.ErrorReport.Client.ErrorReportClientImpl.SendErrorReport(Forge.ErrorReport.ReportPackage)">
+            <summary>
+            Sends the error report.
+            </summary>
+            <param name="_p0">The _P0.</param>
+            <exception cref="T:Forge.Net.Remoting.RemoteMethodInvocationException">Unable to call remote method. See inner exception for details.</exception>
+        </member>
+        <member name="T:Forge.ErrorReport.Client.ErrorReportServiceLocator">
+            <summary>
+            Finds the Error Report Services on the TerraGraf network and creates proxies
+            </summary>
+        </member>
+        <member name="M:Forge.ErrorReport.Client.ErrorReportServiceLocator.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.ErrorReport.Client.ErrorReportServiceLocator"/> class.
+            </summary>
+        </member>
+    </members>
+</doc>

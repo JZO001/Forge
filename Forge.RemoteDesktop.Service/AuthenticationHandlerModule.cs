@@ -11,11 +11,11 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using Forge.IO;
+using Forge.Logging;
 using Forge.Persistence.Formatters;
 using Forge.RemoteDesktop.Configuration;
 using Forge.RemoteDesktop.Contracts;
 using Forge.RemoteDesktop.Service.Configuration;
-using log4net;
 
 namespace Forge.RemoteDesktop.Service
 {

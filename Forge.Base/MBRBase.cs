@@ -6,7 +6,10 @@
 
 using System;
 using System.Diagnostics;
+#if NETCOREAPP3_1
+#else
 using System.Runtime.Remoting.Lifetime;
+#endif
 using System.Security;
 
 namespace Forge
@@ -26,9 +29,14 @@ namespace Forge
         protected MBRBase()
             : base()
         {
+#if NETCOREAPP3_1
+#else
             InitialLeaseTime = TimeSpan.Zero;
+#endif
         }
 
+#if NETCOREAPP3_1
+#else
         /// <summary>
         /// Gets or sets the initial lease time.
         /// </summary>
@@ -36,6 +44,7 @@ namespace Forge
         /// The initial lease time.
         /// </value>
         public TimeSpan InitialLeaseTime { get; set; }
+#endif
 
         /// <summary>
         /// Obtains a lifetime service object to control the lifetime policy for this instance.
@@ -48,6 +57,12 @@ namespace Forge
         ///   </PermissionSet>
         /// <exception cref="T:System.Security.SecurityException">The immediate caller does not have infrastructure permission.</exception>
         [SecurityCritical]
+#if NETCOREAPP3_1
+        public override object InitializeLifetimeService()
+        {
+            return null;
+        }
+#else
         public override object InitializeLifetimeService()
         {
             if (InitialLeaseTime.Equals(TimeSpan.Zero))
@@ -62,6 +77,7 @@ namespace Forge
             }
             return lease;
         }
+#endif
 
     }
 }

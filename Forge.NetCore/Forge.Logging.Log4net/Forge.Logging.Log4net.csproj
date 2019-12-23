@@ -1,0 +1,66 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp3.1;net40</TargetFrameworks>
+    <Version>1.0.0.0</Version>
+    <Copyright>Copyright © Zoltan Juhasz, 2019</Copyright>
+    <Description>Forge Patterns and Practices</Description>
+    <Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
+    <Company>Forge Project Contributor(s)</Company>
+    <PackageId>Forge.Logging.Log4net</PackageId>
+    <Authors>Zoltan Juhasz</Authors>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <Title>Forge Logging for Log4net</Title>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <ProjectGuid>{2684A3BD-A1C6-4AB1-BC3C-6BC0AD3F42D4}</ProjectGuid>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp3.1|AnyCPU'">
+    <DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.Logging.Log4net\Forge.Logging.Log4net.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp3.1|AnyCPU'">
+    <DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.Logging.Log4net\Forge.Logging.Log4net.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="log4net" Version="2.0.8" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+    <PackageReference Include="System.Configuration.ConfigurationManager">
+      <Version>4.7.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.IO.FileSystem">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <Reference Include="Forge.Base">
+      <HintPath>..\Forge.Base\bin\netcoreapp3.1\Forge.Base.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <Name>Forge.Base</Name>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net40'">
+    <Reference Include="System.Configuration" />
+    <Reference Include="Forge.Base">
+      <HintPath>..\Forge.Base\bin\net40\Forge.Base.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <Name>Forge.Base</Name>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\Forge.Logging.Log4net\Log4NetLog.cs" Link="Log4NetLog.cs" />
+    <Compile Include="..\..\Forge.Logging.Log4net\Log4NetManager.cs" Link="Log4NetManager.cs" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="echo F|xcopy /r /y &quot;$(TargetPath)&quot; &quot;$(ProjectDir)bin\$(TargetFramework)\$(TargetFileName)&quot;&#xD;&#xA;" />
+  </Target>
+
+</Project>

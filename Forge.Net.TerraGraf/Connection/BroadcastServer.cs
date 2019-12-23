@@ -8,12 +8,12 @@ using System;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using Forge.Logging;
 using Forge.Net.Synapse;
 using Forge.Net.TerraGraf.Contexts;
 using Forge.Net.TerraGraf.Formatters;
 using Forge.Net.TerraGraf.Messaging;
 using Forge.Net.TerraGraf.NetworkPeers;
-using log4net;
 
 namespace Forge.Net.TerraGraf.Connection
 {
@@ -26,7 +26,7 @@ namespace Forge.Net.TerraGraf.Connection
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger("Forge.Net.TerraGraf.Connection.BroadcastServer");
+        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(BroadcastServer));
 
         private static readonly Forge.Threading.ThreadPool mThreadPool = new Forge.Threading.ThreadPool("TerraGraf_Network_BroadcastServer");
 

@@ -22,6 +22,7 @@ namespace Forge.Net.Services.ConfigSection
         /// <summary>
         /// Initializes the <see cref="NetworkServiceConfiguration"/> class.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline")]
         static NetworkServiceConfiguration()
         {
             LOG_PREFIX = "NETWORK_SERVICES_CONFIGURATION";

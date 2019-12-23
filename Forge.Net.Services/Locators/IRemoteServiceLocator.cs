@@ -32,6 +32,7 @@ namespace Forge.Net.Services.Locators
         /// <summary>
         /// Occurs when [event prefered service provider changed].
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Prefered")]
         event EventHandler<PreferedServiceProviderChangedEventArgs> EventPreferedServiceProviderChanged;
 
         /// <summary>
@@ -72,6 +73,7 @@ namespace Forge.Net.Services.Locators
         /// <value>
         /// The prefered service provider.
         /// </value>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Prefered")]
         ServiceProvider PreferedServiceProvider { get; }
 
         /// <summary>

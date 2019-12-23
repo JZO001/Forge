@@ -8,8 +8,8 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using Forge.Configuration.Shared;
+using Forge.Logging;
 using Forge.Net.TerraGraf.ConfigSection;
-using log4net;
 
 namespace Forge.Net.TerraGraf.Configuration
 {
@@ -23,7 +23,7 @@ namespace Forge.Net.TerraGraf.Configuration
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger("Forge.Net.TerraGraf.Configuration.Settings");
+        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(Settings));
 
         private static readonly int DEFAULT_MAX_MESSAGE_PASSAGE_NUMBER = 3;
 

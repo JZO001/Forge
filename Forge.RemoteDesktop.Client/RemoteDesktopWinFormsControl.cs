@@ -13,12 +13,12 @@ using System.Threading;
 using System.Windows.Forms;
 using Forge.Collections;
 using Forge.EventRaiser;
+using Forge.Logging;
 using Forge.Native.Hooks;
 using Forge.Net.Remoting.Proxy;
 using Forge.Net.Services.Locators;
 using Forge.Net.Synapse;
 using Forge.RemoteDesktop.Contracts;
-using log4net;
 
 namespace Forge.RemoteDesktop.Client
 {

@@ -12,6 +12,7 @@ using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Forge.Collections;
+using Forge.Logging;
 using Forge.Net.Synapse;
 using Forge.Net.Synapse.NetworkServices;
 using Forge.Net.TerraGraf.Contexts;
@@ -36,7 +37,7 @@ namespace Forge.Net.TerraGraf
 
         #region Field(s)
 
-        private static readonly log4net.ILog LOGGER = log4net.LogManager.GetLogger("Forge.Net.TerraGraf.Socket");
+        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(Socket));
 
         private static Semaphore mSemaphoreConnection = new Semaphore(NetworkManager.Instance.InternalConfiguration.Settings.DefaultConcurrentSocketConnectionAttempts,
             NetworkManager.Instance.InternalConfiguration.Settings.DefaultConcurrentSocketConnectionAttempts);

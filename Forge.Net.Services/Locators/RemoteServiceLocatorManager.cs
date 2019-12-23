@@ -26,6 +26,7 @@ namespace Forge.Net.Services.Locators
         /// <typeparam name="TIProxyType">The type of the I proxy type.</typeparam>
         /// <typeparam name="TLocatorType">The type of the locator type.</typeparam>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         [MethodImpl(MethodImplOptions.Synchronized)]
         public static IRemoteServiceLocator<TIProxyType> GetServiceLocator<TIProxyType, TLocatorType>()
             where TIProxyType : IRemoteContract

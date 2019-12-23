@@ -11,11 +11,11 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Forge.EventRaiser;
+using Forge.Logging;
 using Forge.Net.Synapse;
 using Forge.Net.TerraGraf.Connection;
 using Forge.Net.TerraGraf.Formatters;
 using Forge.Net.TerraGraf.Messaging;
-using log4net;
 
 namespace Forge.Net.TerraGraf.NetworkPeers
 {
@@ -29,7 +29,7 @@ namespace Forge.Net.TerraGraf.NetworkPeers
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger("Forge.Net.TerraGraf.NetworkPeers.NetworkConnection");
+        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(NetworkConnection));
 
         private static readonly Forge.Threading.ThreadPool THREADPOOL = new Forge.Threading.ThreadPool("TerraGraf_Network_Send");
 

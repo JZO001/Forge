@@ -1,9 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{F3EED65E-C103-4BA8-AF1D-37421D73A708}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -11,7 +12,28 @@
     <AssemblyName>Forge.Base</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,7 +44,10 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\Forge.Base.xml</DocumentationFile>
-    <CodeAnalysisIgnoreGeneratedCode>true</CodeAnalysisIgnoreGeneratedCode>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,12 +57,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\Forge.Base.xml</DocumentationFile>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>BasicCorrectnessRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.8\lib\net40-full\log4net.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Drawing" />
@@ -57,6 +82,7 @@
     <Compile Include="Collections\AbstractSubList.cs" />
     <Compile Include="Collections\Enumerator.cs" />
     <Compile Include="Configuration\IInitializable.cs" />
+    <Compile Include="Consts.cs" />
     <Compile Include="Delegates.cs" />
     <Compile Include="Collections\IEnumerableSpecialized.cs" />
     <Compile Include="Collections\IEnumeratorSpecialized.cs" />
@@ -87,7 +113,12 @@
     <Compile Include="EventRaiser\TypeNameResolver.cs" />
     <Compile Include="HashGeneratorHelper.cs" />
     <Compile Include="InitializationException.cs" />
+    <Compile Include="Logging\ILog.cs" />
+    <Compile Include="Logging\ILoggerWrapper.cs" />
+    <Compile Include="Logging\LogManager.cs" />
     <Compile Include="Logging\LogUtils.cs" />
+    <Compile Include="Logging\NullLog.cs" />
+    <Compile Include="Logging\NullLogger.cs" />
     <Compile Include="Management\IManager.cs" />
     <Compile Include="Management\ManagerBase.cs" />
     <Compile Include="Management\ManagerEventStateEventArgs.cs" />
@@ -95,29 +126,7 @@
     <Compile Include="Management\ManagerEventStateEnum.cs" />
     <Compile Include="Management\ManagerStateEnum.cs" />
     <Compile Include="MBRBase.cs" />
-    <Compile Include="Native\Helpers\KeyboardOperations.cs" />
-    <Compile Include="Native\Helpers\MouseOperations.cs" />
-    <Compile Include="Native\Hooks\ClipboardChangedEventArgs.cs" />
-    <Compile Include="Native\Hooks\ClipboardEventManager.cs" />
-    <Compile Include="Native\Hooks\HookEventEnum.cs" />
-    <Compile Include="Native\Hooks\KeyboardEventHookManager.cs" />
-    <Compile Include="Native\Hooks\KeyboardInputNotificationEnum.cs" />
-    <Compile Include="Native\Hooks\MouseEventExtendedArgs.cs" />
-    <Compile Include="Native\Hooks\MouseEventHookManager.cs" />
-    <Compile Include="Native\Hooks\MouseInputNotificationEnum.cs" />
-    <Compile Include="Native\InputDeviceTypeEnum.cs" />
-    <Compile Include="Native\KeyboardKeyEventEnum.cs" />
-    <Compile Include="Native\MouseEventEnum.cs" />
-    <Compile Include="Native\MouseXButtonEnum.cs" />
-    <Compile Include="Native\NativeMethods.cs" />
-    <Compile Include="Native\Structures\CursorInfo.cs" />
-    <Compile Include="Native\Structures\HardwareInput.cs" />
-    <Compile Include="Native\Structures\MouseKeyboardHardwareUnion.cs" />
-    <Compile Include="Native\Structures\SendInputInfo.cs" />
-    <Compile Include="Native\Structures\KeyboardInput.cs" />
-    <Compile Include="Native\Structures\MouseInput.cs" />
     <Compile Include="IO\PathHelper.cs" />
-    <Compile Include="Native\Structures\SystemTime.cs" />
     <Compile Include="Persistence\Formatters\RijndaelByteArrayFormatter.cs" />
     <Compile Include="Persistence\Formatters\RijndaelFormatter.cs" />
     <Compile Include="Persistence\Formatters\BinaryFormatter.cs" />
@@ -129,8 +138,7 @@
     <Compile Include="Reflection\ExtractObjectData.cs" />
     <Compile Include="Reflection\TypeHelper.cs" />
     <Compile Include="Reflection\TypeLookupModeEnum.cs" />
-    <Compile Include="Security\CertificateConfigurationSource.cs" />
-    <Compile Include="Security\CertificateFactory.cs" />
+    <Compile Include="Reflection\UIReflectionHelper.cs" />
     <Compile Include="Threading\AtomicLong.cs" />
     <Compile Include="Threading\ConfigSection\ThreadPoolConfiguration.cs" />
     <Compile Include="Threading\ConfigSection\ThreadPoolSection.cs" />
@@ -156,7 +164,52 @@
     <Compile Include="Threading\ThreadPool.cs" />
     <None Include="Collections\CollectionsDiagram.cd" />
     <Compile Include="ThrowHelper.cs" />
-    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <PropertyGroup>
+    <PostBuildEvent>echo F|xcopy /r /y "$(TargetPath)" "$(SolutionDir).Output\$(TargetFileName)"
+echo F|xcopy /r /y "$(TargetDir)$(TargetName).pdb" "$(SolutionDir).Output\$(TargetName).pdb"
+echo F|xcopy /r /y "$(TargetDir)$(TargetName).xml" "$(SolutionDir).Output\$(TargetName).xml"
+</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
 </Project>

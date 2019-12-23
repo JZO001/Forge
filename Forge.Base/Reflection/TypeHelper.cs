@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using Forge.Collections;
-using log4net;
+using Forge.Logging;
 
 namespace Forge.Reflection
 {

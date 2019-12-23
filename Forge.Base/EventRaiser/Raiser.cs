@@ -4,13 +4,12 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Logging;
+using Forge.Reflection;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
-using System.Windows;
-using System.Windows.Forms;
-using log4net;
 
 namespace Forge.EventRaiser
 {
@@ -268,14 +267,16 @@ namespace Forge.EventRaiser
                         try
                         {
                             if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("RAISER, before invoke on '{0}' with method '{1}'. Invoke on control: {2}, parallel: {3}", d.Target == null ? d.Method.DeclaringType.FullName : d.Target.GetType().FullName, d.Method.Name, controlInvoke.ToString(), parallelInvocation.ToString()));
-                            if (controlInvoke && d.Target is Control)
+                            if (controlInvoke && UIReflectionHelper.IsObjectWinFormsControl(d.Target) /*d.Target is Control*/)
                             {
-                                result.Add(((Control)d.Target).Invoke(d, parameters));
+                                //result.Add(((Control)d.Target).Invoke(d, parameters));
+                                result.Add(UIReflectionHelper.InvokeOnWinFormsControl(d.Target, d, parameters));
                             }
-                            else if (controlInvoke && d.Target is DependencyObject)
+                            else if (controlInvoke && UIReflectionHelper.IsObjectWPFDependency(d.Target) /*d.Target is DependencyObject*/)
                             {
-                                DependencyObject ctrl = (DependencyObject)d.Target;
-                                result.Add(ctrl.Dispatcher.Invoke(d, parameters));
+                                //DependencyObject ctrl = (DependencyObject)d.Target;
+                                //result.Add(ctrl.Dispatcher.Invoke(d, parameters));
+                                result.Add(UIReflectionHelper.InvokeOnWPFDependency(d.Target, d, parameters));
                             }
                             else
                             {
@@ -590,14 +591,15 @@ namespace Forge.EventRaiser
                 {
                     if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("RAISER, before invoke on '{0}' with method '{1}'. Invoke on control: {2}, parallel: true", dl.Target == null ? dl.Method.DeclaringType.FullName : dl.Target.GetType().FullName, dl.Method.Name, mControlInvoke.ToString()));
 
-                    if (dl.Target is Control && mControlInvoke)
+                    if (mControlInvoke && UIReflectionHelper.IsObjectWinFormsControl(dl.Target))
                     {
-                        mResultObjects[index] = ((Control)dl.Target).Invoke(dl, mParameters);
+                        mResultObjects[index] = UIReflectionHelper.InvokeOnWinFormsControl(dl.Target, dl, mParameters); //((Control)dl.Target).Invoke(dl, mParameters);
                     }
-                    else if (dl.Target is DependencyObject && mControlInvoke)
+                    else if (mControlInvoke && UIReflectionHelper.IsObjectWPFDependency(dl.Target))
                     {
-                        DependencyObject ctrl = (DependencyObject)dl.Target;
-                        mResultObjects[index] = ctrl.Dispatcher.Invoke(dl, mParameters);
+                        //DependencyObject ctrl = (DependencyObject)dl.Target;
+                        //mResultObjects[index] = ctrl.Dispatcher.Invoke(dl, mParameters);
+                        mResultObjects[index] = UIReflectionHelper.InvokeOnWPFDependency(dl.Target, dl, mParameters);
                     }
                     else
                     {

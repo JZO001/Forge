@@ -4,6 +4,9 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+#if NETCOREAPP3_1
+#else
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -270,3 +273,5 @@ namespace Forge.Net.Synapse.NATUPnP
     }
 
 }
+
+#endif

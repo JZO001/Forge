@@ -11,7 +11,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
 using Forge.EventRaiser;
-using log4net;
+using Forge.Logging;
 using NHibernate.Mapping.Attributes;
 
 namespace Forge.ORM.NHibernateExtension.Model

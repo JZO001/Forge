@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using Forge.Configuration.Shared.Interfaces;
-using log4net;
+using Forge.Logging;
 
 namespace Forge.Configuration.Shared
 {
@@ -87,7 +87,11 @@ namespace Forge.Configuration.Shared
 
         private FileSystemWatcher mFSWatcher = null;
 
+#if NETCOREAPP3_1
+        private String mDefaultConfigurationFile = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None).FilePath;
+#else
         private String mDefaultConfigurationFile = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
+#endif
 
         private bool mSectionLoaded = false;
 

@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Forge.UpdateFramework.Service</name>
+    </assembly>
+    <members>
+        <member name="T:Forge.UpdateFramework.Service.UpdateServiceAbstractServiceProxy">
+            <summary>
+            Update service implementation proxy
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.Service.UpdateServiceAbstractServiceProxy.#ctor(Forge.Net.Remoting.Channels.Channel,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.UpdateFramework.Service.UpdateServiceAbstractServiceProxy"/> class.
+            </summary>
+            <param name="channel">The channel.</param>
+            <param name="sessionId">The session id.</param>
+        </member>
+        <member name="M:Forge.UpdateFramework.Service.UpdateServiceAbstractServiceProxy.SendClientContentDescription(Forge.UpdateFramework.Contracts.UpdateRequestArgs)">
+            <summary>
+            Sends the client content description.
+            </summary>
+            <param name="args">The args.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.UpdateFramework.Service.UpdateServiceAbstractServiceProxy.CheckUpdatePush">
+            <summary>
+            Service orders the client to execute the update search process
+            </summary>
+        </member>
+        <member name="T:Forge.UpdateFramework.Service.UpdateServiceManager">
+            <summary>
+            Update service implementation
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.Service.UpdateServiceManager.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.UpdateFramework.Service.UpdateServiceManager"/> class.
+            </summary>
+        </member>
+        <member name="T:Forge.UpdateFramework.Service.UpdateServiceServiceImpl">
+            <summary>
+            Update service implementation proxy
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.Service.UpdateServiceServiceImpl.#ctor(Forge.Net.Remoting.Channels.Channel,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.UpdateFramework.Service.UpdateServiceServiceImpl"/> class.
+            </summary>
+            <param name="channel">The channel.</param>
+            <param name="sessionId">The session id.</param>
+        </member>
+        <member name="M:Forge.UpdateFramework.Service.UpdateServiceServiceImpl.SendClientContentDescription(Forge.UpdateFramework.Contracts.UpdateRequestArgs)">
+            <summary>
+            Sends the client content description.
+            </summary>
+            <param name="args">The args.</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

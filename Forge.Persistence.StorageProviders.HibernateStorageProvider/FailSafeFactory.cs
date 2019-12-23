@@ -1,11 +1,11 @@
 ﻿using System;
 using Forge.Collections;
 using Forge.Configuration.Shared;
+using Forge.Logging;
 using Forge.Persistence.Formatters;
 using Forge.Persistence.Serialization;
 using Forge.Persistence.StorageProviders.ConfigSection;
 using Forge.Reflection;
-using log4net;
 
 namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
 {

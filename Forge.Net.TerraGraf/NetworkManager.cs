@@ -12,12 +12,10 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Security;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using Forge.Collections;
 using Forge.EventRaiser;
+using Forge.Logging;
 using Forge.Management;
 using Forge.Net.Synapse;
 using Forge.Net.Synapse.Firewall;
@@ -28,7 +26,6 @@ using Forge.Net.TerraGraf.Contexts;
 using Forge.Net.TerraGraf.Messaging;
 using Forge.Net.TerraGraf.NetworkInfo;
 using Forge.Net.TerraGraf.NetworkPeers;
-using log4net;
 
 namespace Forge.Net.TerraGraf
 {
@@ -45,7 +42,7 @@ namespace Forge.Net.TerraGraf
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger("Forge.Net.TerraGraf.NetworkManager");
+        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(NetworkManager));
 
         private static Mutex mMutex = null;
 
@@ -1361,6 +1358,9 @@ namespace Forge.Net.TerraGraf
 
                     if (this.mConfiguration.Settings.AddWindowsFirewallException)
                     {
+#if NETCOREAPP3_1
+#else
+
                         try
                         {
                             string appFile = string.Empty;
@@ -1391,6 +1391,7 @@ namespace Forge.Net.TerraGraf
                         {
                             if (LOGGER.IsErrorEnabled) LOGGER.Error("NETWORK, failed to add exception to the Windows Firewall.", ex);
                         }
+#endif
                     }
 
                     this.mKnownNetworkContexts = new List<NetworkContext>();
@@ -1431,7 +1432,10 @@ namespace Forge.Net.TerraGraf
 
                     //ezután szabad indítani a hálózatot
                     this.mConnectionManager.InitializeTCPServers();
+#if NETCOREAPP3_1
+#else
                     this.mConnectionManager.InitializeNATUPnPService();
+#endif
                     this.mConnectionManager.InitializeTCPConnections();
                     this.mConnectionManager.InitializeUDPDetector();
                 }
@@ -2302,9 +2306,9 @@ namespace Forge.Net.TerraGraf
             if (accessiblePeers.Count > 0)
             {
                 Raiser.CallDelegatorByAsync(NetworkPeerDistanceChanged,
-                    new object[] 
-                    { 
-                        this, 
+                    new object[]
+                    {
+                        this,
                         new NetworkPeerDistanceChangedEventArgs(accessiblePeers.Keys.ToArray<NetworkPeerRemote>(), peerBeforeDistance, peerAfterDistance)
                     });
             }

@@ -7,6 +7,7 @@
 using System;
 using System.IO;
 using System.Text;
+using Forge.Logging;
 using Forge.Net.Remoting.Sinks;
 using Forge.Net.Synapse;
 using Forge.Persistence.Formatters;
@@ -22,7 +23,7 @@ namespace Forge.Net.Remoting.Messaging
     public sealed class Protocol
     {
 
-        private static readonly log4net.ILog LOGGER = log4net.LogManager.GetLogger(typeof(Protocol));
+        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(Protocol));
 
         private BinarySerializerFormatter<MessageHeader> mFormatter = new BinarySerializerFormatter<MessageHeader>(BinarySerializerBehaviorEnum.DoNotThrowExceptionOnMissingField, TypeLookupModeEnum.AllowAll, true);
 

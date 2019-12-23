@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Forge.DatabaseManagement</name>
+    </assembly>
+    <members>
+        <member name="T:Forge.DatabaseManagement.DatabaseVerificationErrorException">
+            <summary>
+            Occurs when the database verification failed.
+            </summary>
+        </member>
+        <member name="M:Forge.DatabaseManagement.DatabaseVerificationErrorException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.DatabaseManagement.DatabaseVerificationErrorException"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.DatabaseManagement.DatabaseVerificationErrorException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.DatabaseManagement.DatabaseVerificationErrorException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:Forge.DatabaseManagement.DatabaseVerificationErrorException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.DatabaseManagement.DatabaseVerificationErrorException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="ex">The ex.</param>
+        </member>
+        <member name="M:Forge.DatabaseManagement.DatabaseVerificationErrorException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.DatabaseManagement.DatabaseVerificationErrorException"/> class.
+            </summary>
+            <param name="info">The object that holds the serialized object data.</param>
+            <param name="context">The contextual information about the source or destination.</param>
+        </member>
+        <member name="T:Forge.DatabaseManagement.IDatabaseManager">
+            <summary>
+            Represents a database manager which ensure the underlying database integrity is valid.
+            For example a file based database just like SQL Server Compact or SQLite file is not corrupted.
+            If invalid database file detected, try to repair it or create a new one.
+            </summary>
+        </member>
+        <member name="M:Forge.DatabaseManagement.IDatabaseManager.EnsureDatabaseIntegrity(System.Int64,System.Collections.Generic.Dictionary{System.String,System.String},Forge.DatabaseManagement.SchemaFactoryModeEnum)">
+            <summary>
+            Ensures the database integrity.
+            </summary>
+            <param name="systemId">The system id.</param>
+            <param name="descriptor">The descriptor.</param>
+            <param name="mode">The mode.</param>
+        </member>
+        <member name="T:Forge.DatabaseManagement.SchemaFactoryModeEnum">
+            <summary>
+            Factory mode for a schema
+            </summary>
+        </member>
+        <member name="F:Forge.DatabaseManagement.SchemaFactoryModeEnum.Validate">
+            <summary>
+            Validate schema, but do not modify it
+            </summary>
+        </member>
+        <member name="F:Forge.DatabaseManagement.SchemaFactoryModeEnum.Update">
+            <summary>
+            Validate and update schema if necessary
+            </summary>
+        </member>
+        <member name="F:Forge.DatabaseManagement.SchemaFactoryModeEnum.Create">
+            <summary>
+            Create new schema
+            </summary>
+        </member>
+        <member name="F:Forge.DatabaseManagement.SchemaFactoryModeEnum.Create_And_Drop">
+            <summary>
+            Create new schema and drop it after the Session Factory closed
+            </summary>
+        </member>
+        <member name="T:Forge.DatabaseManagement.UnexpectedNHibernateConfigurationException">
+            <summary>
+            Occurs when a Database Manager unable to handle the provided database type
+            </summary>
+        </member>
+        <member name="M:Forge.DatabaseManagement.UnexpectedNHibernateConfigurationException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.DatabaseManagement.UnexpectedNHibernateConfigurationException"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.DatabaseManagement.UnexpectedNHibernateConfigurationException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.DatabaseManagement.UnexpectedNHibernateConfigurationException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:Forge.DatabaseManagement.UnexpectedNHibernateConfigurationException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.DatabaseManagement.UnexpectedNHibernateConfigurationException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="ex">The ex.</param>
+        </member>
+        <member name="M:Forge.DatabaseManagement.UnexpectedNHibernateConfigurationException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.DatabaseManagement.UnexpectedNHibernateConfigurationException"/> class.
+            </summary>
+            <param name="info">The object that holds the serialized object data.</param>
+            <param name="context">The contextual information about the source or destination.</param>
+        </member>
+    </members>
+</doc>

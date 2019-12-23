@@ -4,9 +4,9 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Logging;
 using System;
 using System.IO;
-using log4net;
 
 namespace Forge.IO
 {
@@ -106,6 +106,39 @@ namespace Forge.IO
             {
                 result = path.Substring(0, path.Length - 1);
             }
+            return result;
+        }
+
+        /// <summary>Cutoffs the last entry from path.</summary>
+        /// <param name="path">The path.</param>
+        /// <returns></returns>
+        public static string CutoffLastEntryFromPath(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                ThrowHelper.ThrowArgumentNullException("path");
+            }
+
+            string result = "";
+            string[] entries = path.Split(new string[] { @"\" }, StringSplitOptions.RemoveEmptyEntries);
+            if (entries.Length == 0)
+            {
+                result = @"\";
+            }
+            else if (entries.Length == 1)
+            {
+                result = path;
+            }
+            else
+            {
+                result = entries[0];
+                for (int i = 1; i < entries.Length - 1; i++)
+                {
+                    result = Path.Combine(result, entries[i]);
+                }
+                if (result.EndsWith(":")) result = string.Format("{0}\\", result);
+            }
+
             return result;
         }
 

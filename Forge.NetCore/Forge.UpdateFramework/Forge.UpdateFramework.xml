@@ -1,0 +1,395 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Forge.UpdateFramework</name>
+    </assembly>
+    <members>
+        <member name="T:Forge.UpdateFramework.AppConfigDescriptor">
+            <summary>
+            Validates an application configuration file
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.AppConfigDescriptor.#ctor(System.IO.FileInfo)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.UpdateFramework.AppConfigDescriptor"/> class.
+            </summary>
+            <param name="fileInfo">The file info.</param>
+        </member>
+        <member name="P:Forge.UpdateFramework.AppConfigDescriptor.IsValid">
+            <summary>
+            Gets a value indicating whether this instance is valid.
+            </summary>
+            <value>
+              <c>true</c> if this instance is valid; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="T:Forge.UpdateFramework.AssemblyDescriptor">
+            <summary>
+            Represents an assembly data descriptor
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.AssemblyDescriptor.#ctor(System.IO.FileInfo)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.UpdateFramework.AssemblyDescriptor"/> class.
+            </summary>
+            <param name="assemblyFileInfo">The assembly file info.</param>
+        </member>
+        <member name="P:Forge.UpdateFramework.AssemblyDescriptor.AssemblyType">
+            <summary>
+            Gets the type of the assembly.
+            </summary>
+            <value>
+            The type of the assembly.
+            </value>
+        </member>
+        <member name="P:Forge.UpdateFramework.AssemblyDescriptor.AssemblyQualifiedName">
+            <summary>
+            Gets or sets the name of the assembly qualified.
+            </summary>
+            <value>
+            The name of the assembly qualified.
+            </value>
+        </member>
+        <member name="P:Forge.UpdateFramework.AssemblyDescriptor.AssemblyGuid">
+            <summary>
+            Gets or sets the assembly GUID.
+            </summary>
+            <value>
+            The assembly GUID.
+            </value>
+        </member>
+        <member name="T:Forge.UpdateFramework.AssemblyTypeEnum">
+            <summary>
+            Represents the type of an assembly
+            </summary>
+        </member>
+        <member name="F:Forge.UpdateFramework.AssemblyTypeEnum.Managed">
+            <summary>
+            .NET Assembly
+            </summary>
+        </member>
+        <member name="F:Forge.UpdateFramework.AssemblyTypeEnum.Native">
+            <summary>
+            Unmanaged assembly
+            </summary>
+        </member>
+        <member name="T:Forge.UpdateFramework.CertificateDescriptor">
+            <summary>
+            Represents the meta data of a certificate
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.CertificateDescriptor.#ctor(System.IO.FileInfo)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.UpdateFramework.CertificateDescriptor"/> class.
+            </summary>
+            <param name="fileInfo">The fi.</param>
+        </member>
+        <member name="P:Forge.UpdateFramework.CertificateDescriptor.X509ContentType">
+            <summary>
+            Gets the type of the X509 content.
+            </summary>
+            <value>
+            The type of the X509 content.
+            </value>
+        </member>
+        <member name="T:Forge.UpdateFramework.ConfigSection.UpdateFrameworkConfiguration">
+            <summary>
+            Configuration access helper class for Update Framework
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.ConfigSection.UpdateFrameworkConfiguration.#cctor">
+            <summary>
+            Initializes the <see cref="T:Forge.UpdateFramework.ConfigSection.UpdateFrameworkConfiguration"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.ConfigSection.UpdateFrameworkConfiguration.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.UpdateFramework.ConfigSection.UpdateFrameworkConfiguration"/> class.
+            </summary>
+        </member>
+        <member name="T:Forge.UpdateFramework.ConfigSection.UpdateFrameworkSection">
+            <summary>
+            Configuration Section for Update Framework
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.ConfigSection.UpdateFrameworkSection.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.UpdateFramework.ConfigSection.UpdateFrameworkSection"/> class.
+            </summary>
+        </member>
+        <member name="T:Forge.UpdateFramework.Consts">
+            <summary>
+            Constants for Update Framework
+            </summary>
+        </member>
+        <member name="F:Forge.UpdateFramework.Consts.UPDATE_SERVICE_ID">
+            <summary>
+            Identifier of the Update Framework Service on the network
+            </summary>
+        </member>
+        <member name="T:Forge.UpdateFramework.Contracts.IUpdateService">
+            <summary>
+            Update service communication interface
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.Contracts.IUpdateService.CheckUpdatePush">
+            <summary>
+            Service orders the client to execute the update search process
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.Contracts.IUpdateService.SendClientContentDescription(Forge.UpdateFramework.Contracts.UpdateRequestArgs)">
+            <summary>
+            Sends the client content description.
+            </summary>
+            <param name="args">The args.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Forge.UpdateFramework.Contracts.UpdateRequestArgs">
+            <summary>
+            Represents a request for Update service
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.Contracts.UpdateRequestArgs.#ctor(System.String,System.Collections.Generic.List{Forge.UpdateFramework.DescriptorBase})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.UpdateFramework.Contracts.UpdateRequestArgs"/> class.
+            </summary>
+            <param name="productId">The product id.</param>
+            <param name="descriptors">The descriptors.</param>
+        </member>
+        <member name="P:Forge.UpdateFramework.Contracts.UpdateRequestArgs.ProductId">
+            <summary>
+            Gets the product id.
+            </summary>
+        </member>
+        <member name="P:Forge.UpdateFramework.Contracts.UpdateRequestArgs.Descriptors">
+            <summary>
+            Gets the descriptors.
+            </summary>
+        </member>
+        <member name="T:Forge.UpdateFramework.DescriptorBase">
+            <summary>
+            Descriptor base
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.DescriptorBase.#ctor(System.String,Forge.UpdateFramework.DescriptorTypeEnum)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.UpdateFramework.DescriptorBase"/> class.
+            </summary>
+            <param name="id">The id.</param>
+            <param name="descriptorType">Type of the descriptor.</param>
+        </member>
+        <member name="P:Forge.UpdateFramework.DescriptorBase.Id">
+            <summary>
+            Gets the id.
+            </summary>
+        </member>
+        <member name="P:Forge.UpdateFramework.DescriptorBase.DescriptorType">
+            <summary>
+            Gets or sets the type of the descriptor.
+            </summary>
+            <value>
+            The type of the descriptor.
+            </value>
+        </member>
+        <member name="T:Forge.UpdateFramework.DescriptorTypeEnum">
+            <summary>
+            Represents the type of a descriptor
+            </summary>
+        </member>
+        <member name="F:Forge.UpdateFramework.DescriptorTypeEnum.Assembly">
+            <summary>
+            Represents an executable or a DLL descriptor
+            </summary>
+        </member>
+        <member name="F:Forge.UpdateFramework.DescriptorTypeEnum.NonManagedAssembly">
+            <summary>
+            Represents a native DLL
+            </summary>
+        </member>
+        <member name="F:Forge.UpdateFramework.DescriptorTypeEnum.Certificate">
+            <summary>
+            Represents a certificate file
+            </summary>
+        </member>
+        <member name="F:Forge.UpdateFramework.DescriptorTypeEnum.Registry">
+            <summary>
+            Represents a registry entry
+            </summary>
+        </member>
+        <member name="F:Forge.UpdateFramework.DescriptorTypeEnum.Configuration">
+            <summary>
+            Represents a configuration
+            </summary>
+        </member>
+        <member name="F:Forge.UpdateFramework.DescriptorTypeEnum.Custom">
+            <summary>
+            Represents a custom definied user descriptor
+            </summary>
+        </member>
+        <member name="T:Forge.UpdateFramework.FileDescriptorBase">
+            <summary>
+            Represents a descriptor which data comes from a file
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.FileDescriptorBase.#ctor(System.String,Forge.UpdateFramework.DescriptorTypeEnum,System.IO.FileInfo)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.UpdateFramework.FileDescriptorBase"/> class.
+            </summary>
+            <param name="id">The id.</param>
+            <param name="descriptorType">Type of the descriptor.</param>
+            <param name="fileInfo">The fi.</param>
+        </member>
+        <member name="P:Forge.UpdateFramework.FileDescriptorBase.Location">
+            <summary>
+            Gets the location.
+            </summary>
+        </member>
+        <member name="P:Forge.UpdateFramework.FileDescriptorBase.FileName">
+            <summary>
+            Gets the name of the file.
+            </summary>
+            <value>
+            The name of the file.
+            </value>
+        </member>
+        <member name="P:Forge.UpdateFramework.FileDescriptorBase.FileLoadResult">
+            <summary>
+            Gets or sets the file load result.
+            </summary>
+            <value>
+            The file load result.
+            </value>
+        </member>
+        <member name="T:Forge.UpdateFramework.FileLoadResultEnum">
+            <summary>
+            File load result
+            </summary>
+        </member>
+        <member name="F:Forge.UpdateFramework.FileLoadResultEnum.Success">
+            <summary>
+            File successfully loaded
+            </summary>
+        </member>
+        <member name="F:Forge.UpdateFramework.FileLoadResultEnum.SecurityError">
+            <summary>
+            Unable to access file for security reasons
+            </summary>
+        </member>
+        <member name="F:Forge.UpdateFramework.FileLoadResultEnum.FileNotFound">
+            <summary>
+            File not found
+            </summary>
+        </member>
+        <member name="F:Forge.UpdateFramework.FileLoadResultEnum.BadFormat">
+            <summary>
+            File format is not corrent
+            </summary>
+        </member>
+        <member name="F:Forge.UpdateFramework.FileLoadResultEnum.UnspecifiedError">
+            <summary>
+            Occurs when an unspecified error occured
+            </summary>
+        </member>
+        <member name="T:Forge.UpdateFramework.FileWithHashCodeDescriptorBase">
+            <summary>
+            Represents a file descriptor which makes hash calculation from the file
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.FileWithHashCodeDescriptorBase.#ctor(System.String,Forge.UpdateFramework.DescriptorTypeEnum,System.IO.FileInfo)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.UpdateFramework.FileWithHashCodeDescriptorBase"/> class.
+            </summary>
+            <param name="id">The id.</param>
+            <param name="descriptorType">Type of the descriptor.</param>
+            <param name="fileInfo">The fi.</param>
+        </member>
+        <member name="P:Forge.UpdateFramework.FileWithHashCodeDescriptorBase.HashCode">
+            <summary>
+            Gets the hash code.
+            </summary>
+        </member>
+        <member name="T:Forge.UpdateFramework.IDataCollector">
+            <summary>
+            Represents a data collector for the client side updater
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.IDataCollector.Collect(System.Collections.Generic.Dictionary{System.String,Forge.UpdateFramework.DescriptorBase})">
+            <summary>
+            Collects the specified update data.
+            </summary>
+            <param name="updateData">The update data.</param>
+        </member>
+        <member name="T:Forge.UpdateFramework.RegistryMiningResultEnum">
+            <summary>
+            Represents the result of a registry key mining
+            </summary>
+        </member>
+        <member name="F:Forge.UpdateFramework.RegistryMiningResultEnum.Success">
+            <summary>
+            Key successfully read
+            </summary>
+        </member>
+        <member name="F:Forge.UpdateFramework.RegistryMiningResultEnum.NotFound">
+            <summary>
+            Key not found
+            </summary>
+        </member>
+        <member name="F:Forge.UpdateFramework.RegistryMiningResultEnum.AccessDenied">
+            <summary>
+            Unable to access the specified registry key
+            </summary>
+        </member>
+        <member name="T:Forge.UpdateFramework.SimpleFileDescriptor">
+            <summary>
+            Simple file descriptor
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.SimpleFileDescriptor.#ctor(System.IO.FileInfo)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.UpdateFramework.SimpleFileDescriptor"/> class.
+            </summary>
+            <param name="fileInfo">The fi.</param>
+        </member>
+        <member name="T:Forge.UpdateFramework.SimpleFileHashDescriptor">
+            <summary>
+            Simple file descriptor which creates hash code from file data
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.SimpleFileHashDescriptor.#ctor(System.IO.FileInfo)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.UpdateFramework.SimpleFileHashDescriptor"/> class.
+            </summary>
+            <param name="fileInfo">The fi.</param>
+        </member>
+        <member name="T:Forge.UpdateFramework.UpdateRestartRequiredException">
+            <summary>
+            Occurs when the updater client requires a restart to complete the update process.
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.UpdateRestartRequiredException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.UpdateFramework.UpdateRestartRequiredException"/> class.
+            </summary>
+        </member>
+        <member name="M:Forge.UpdateFramework.UpdateRestartRequiredException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.UpdateFramework.UpdateRestartRequiredException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:Forge.UpdateFramework.UpdateRestartRequiredException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.UpdateFramework.UpdateRestartRequiredException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="innerException">The inner exception.</param>
+        </member>
+        <member name="M:Forge.UpdateFramework.UpdateRestartRequiredException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Forge.UpdateFramework.UpdateRestartRequiredException"/> class.
+            </summary>
+            <param name="info">The object that holds the serialized object data.</param>
+            <param name="context">The contextual information about the source or destination.</param>
+        </member>
+    </members>
+</doc>

@@ -12,10 +12,10 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using Forge.Configuration.Shared;
+using Forge.Logging;
 using Forge.Net.Synapse;
 using Forge.Net.TerraGraf.ConfigSection;
 using Forge.Net.TerraGraf.NetworkPeers;
-using log4net;
 
 namespace Forge.Net.TerraGraf.Configuration
 {
@@ -29,7 +29,7 @@ namespace Forge.Net.TerraGraf.Configuration
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger("Forge.Net.TerraGraf.Configuration.TCPServerSettings");
+        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(TCPServerSettings));
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private bool mAuto = false;

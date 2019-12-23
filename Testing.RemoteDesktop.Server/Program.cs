@@ -12,7 +12,7 @@ namespace Forge.Testing.RemoteDesktop.Server
         [STAThread]
         static void Main()
         {
-            log4net.Config.XmlConfigurator.Configure();
+            Forge.Logging.Log4net.Log4NetManager.InitializeFromAppConfig();
             LogUtils.LogAll();
 
             Application.EnableVisualStyles();

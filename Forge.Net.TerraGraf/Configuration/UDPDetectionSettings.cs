@@ -10,8 +10,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Forge.Configuration.Shared;
+using Forge.Logging;
 using Forge.Net.TerraGraf.ConfigSection;
-using log4net;
 
 namespace Forge.Net.TerraGraf.Configuration
 {
@@ -25,7 +25,7 @@ namespace Forge.Net.TerraGraf.Configuration
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger("Forge.Net.TerraGraf.Configuration.UDPDetectionSettings");
+        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(UDPDetectionSettings));
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private bool mEnabled = true;

@@ -14,6 +14,7 @@ namespace Forge.Net.Services
     /// <summary>
     /// Occurs when service is not available
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1058:TypesShouldNotExtendCertainBaseTypes")]
     [Serializable]
     public class ServiceNotAvailableException : ApplicationException
     {

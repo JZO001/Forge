@@ -11,9 +11,9 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Forge.Collections;
 using Forge.Configuration.Shared;
+using Forge.Logging;
 using Forge.Persistence.StorageProviders;
 using Forge.Persistence.StorageProviders.ConfigSection;
-using log4net;
 
 namespace Forge.Persistence.Collections
 {

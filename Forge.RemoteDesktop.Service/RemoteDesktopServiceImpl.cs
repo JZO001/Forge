@@ -6,9 +6,9 @@
 
 using System;
 using System.Collections.Generic;
+using Forge.Logging;
 using Forge.RemoteDesktop.Contracts;
 using Forge.RemoteDesktop.Service.Configuration;
-using log4net;
 
 namespace Forge.RemoteDesktop.Service
 {

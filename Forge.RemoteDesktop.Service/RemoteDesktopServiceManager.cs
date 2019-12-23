@@ -15,6 +15,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
+using Forge.Logging;
 using Forge.Management;
 using Forge.Native;
 using Forge.Native.Helpers;
@@ -25,7 +26,6 @@ using Forge.Net.Services;
 using Forge.Net.Services.Services;
 using Forge.RemoteDesktop.Contracts;
 using Forge.RemoteDesktop.Service.Configuration;
-using log4net;
 
 namespace Forge.RemoteDesktop.Service
 {
