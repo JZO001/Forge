@@ -17,17 +17,13 @@
     <ProjectGuid>{CF3D0FC3-46A2-4C86-83F0-5F9EBB417A3F}</ProjectGuid>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp3.1|AnyCPU'">
-    <DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.DatabaseManagement\Forge.DatabaseManagement.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp3.1|AnyCPU'">
+  <PropertyGroup>
     <DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.DatabaseManagement\Forge.DatabaseManagement.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
     <Reference Include="Forge.Base">
-      <HintPath>..\Forge.Base\bin\netcoreapp3.1\Forge.Base.dll</HintPath>
+      <HintPath>..\.Output\netcoreapp3.1\Forge.Base.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
       <Name>Forge.Base</Name>
@@ -36,7 +32,7 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net40'">
     <Reference Include="Forge.Base">
-      <HintPath>..\Forge.Base\bin\net40\Forge.Base.dll</HintPath>
+      <HintPath>..\.Output\net40\Forge.Base.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
       <Name>Forge.Base</Name>
@@ -51,7 +47,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="echo F|xcopy /r /y &quot;$(TargetPath)&quot; &quot;$(ProjectDir)bin\$(TargetFramework)\$(TargetFileName)&quot;&#xD;&#xA;" />
+    <Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(ProjectDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
   </Target>
 
 </Project>

@@ -22,11 +22,7 @@
     <ProjectGuid>{F3EED65E-C103-4BA8-AF1D-37421D73A708}</ProjectGuid>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp3.1|AnyCPU'">
-    <DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.Base\Forge.Base.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp3.1|AnyCPU'">
+  <PropertyGroup>
     <DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.Base\Forge.Base.xml</DocumentationFile>
   </PropertyGroup>
 
@@ -158,7 +154,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="echo F|xcopy /r /y &quot;$(TargetPath)&quot; &quot;$(ProjectDir)bin\$(TargetFramework)\$(TargetFileName)&quot;&#xD;&#xA;" />
+    <Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(ProjectDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
   </Target>
 
 </Project>

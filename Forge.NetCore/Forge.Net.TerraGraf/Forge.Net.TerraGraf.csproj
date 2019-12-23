@@ -17,11 +17,7 @@
     <ProjectGuid>{BDD0BFBB-A9E7-42F1-ADCC-31DBB8A70B70}</ProjectGuid>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp3.1|AnyCPU'">
-    <DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.Net.TerraGraf\Forge.Net.TerraGraf.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp3.1|AnyCPU'">
+  <PropertyGroup>
     <DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.Net.TerraGraf\Forge.Net.TerraGraf.xml</DocumentationFile>
   </PropertyGroup>
 
@@ -111,19 +107,19 @@
       <Version>4.7.0</Version>
     </PackageReference>
     <Reference Include="Forge.Base">
-      <HintPath>..\Forge.Base\bin\netcoreapp3.1\Forge.Base.dll</HintPath>
+      <HintPath>..\.Output\netcoreapp3.1\Forge.Base.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
       <Name>Forge.Base</Name>
     </Reference>
     <Reference Include="Forge.Net.Synapse">
-      <HintPath>..\Forge.Net.Synapse\bin\netcoreapp3.1\Forge.Net.Synapse.dll</HintPath>
+      <HintPath>..\.Output\netcoreapp3.1\Forge.Net.Synapse.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
       <Name>Forge.Net.Synapse</Name>
     </Reference>
     <Reference Include="Forge.Persistence">
-      <HintPath>..\Forge.Persistence\bin\netcoreapp3.1\Forge.Persistence.dll</HintPath>
+      <HintPath>..\.Output\netcoreapp3.1\Forge.Persistence.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
       <Name>Forge.Persistence</Name>
@@ -149,19 +145,19 @@
     </COMReference>
     <Reference Include="System.Configuration" />
     <Reference Include="Forge.Base">
-      <HintPath>..\Forge.Base\bin\net40\Forge.Base.dll</HintPath>
+      <HintPath>..\.Output\net40\Forge.Base.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
       <Name>Forge.Base</Name>
     </Reference>
     <Reference Include="Forge.Net.Synapse">
-      <HintPath>..\Forge.Net.Synapse\bin\net40\Forge.Net.Synapse.dll</HintPath>
+      <HintPath>..\.Output\net40\Forge.Net.Synapse.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
       <Name>Forge.Net.Synapse</Name>
     </Reference>
     <Reference Include="Forge.Persistence">
-      <HintPath>..\Forge.Persistence\bin\net40\Forge.Persistence.dll</HintPath>
+      <HintPath>..\.Output\net40\Forge.Persistence.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
       <Name>Forge.Persistence</Name>
@@ -182,7 +178,7 @@
 
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="echo F|xcopy /r /y &quot;$(TargetPath)&quot; &quot;$(ProjectDir)bin\$(TargetFramework)\$(TargetFileName)&quot;&#xD;&#xA;" />
+    <Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(ProjectDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
   </Target>
 
 </Project>
