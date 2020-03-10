@@ -3,4 +3,4 @@ Forge Patterns and Practices
 
 Forge.Base - Common methods
 
-For documentation, please visit: http://www.jzo.hu/forgedocs
+For documentation, please visit: https://www.jzo.hu/forgedocs
