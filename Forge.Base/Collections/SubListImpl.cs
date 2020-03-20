@@ -49,12 +49,11 @@ namespace Forge.Collections
             }
             if (fromIndex > toIndex)
             {
-                ThrowHelper.ThrowArgumentOutOfRangeException("fromIndex(" + fromIndex +
-                                                   ") > toIndex(" + toIndex + ")");
+                ThrowHelper.ThrowArgumentOutOfRangeException(string.Format("fromIndex({0}) > toIndex({1})", fromIndex.ToString(), toIndex.ToString()));
             }
             this.list = list;
             offset = fromIndex;
-            size = toIndex - fromIndex;
+            size = toIndex - fromIndex + 1;
             expectedModCount = list.Version;
         }
 

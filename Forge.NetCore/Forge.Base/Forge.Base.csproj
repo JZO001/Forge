@@ -7,14 +7,14 @@
     <TargetFrameworks>netcoreapp3.1;net40</TargetFrameworks>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
-    <Version>1.0.8.0</Version>
+    <Version>1.0.8.1</Version>
     <Copyright>Copyright © Zoltan Juhasz, 2004-2019</Copyright>
     <Description>Forge Patterns and Practices</Description>
     <Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
     <Company>Forge Project Contributor(s)</Company>
     <PackageId>Forge.Base</PackageId>
     <Authors>Zoltan Juhasz</Authors>
-    <AssemblyVersion>1.0.8.0</AssemblyVersion>
+    <AssemblyVersion>1.0.8.1</AssemblyVersion>
     <Title>Forge Base</Title>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
