@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Forge.Net.WebSockets</name>
+    </assembly>
+    <members>
+        <member name="M:Forge.Net.WebSockets.WebSocketHandler.ReceiveAsync(System.Net.WebSockets.WebSocket,System.Net.WebSockets.WebSocketReceiveResult,System.Byte[])">
+            <summary>Receives data the asynchronously, You need to implement your own handler to process the data.</summary>
+            <param name="socket">The web socket instance</param>
+            <param name="result">The receive result data</param>
+            <param name="buffer">  Data, what is received in a bzte arraz</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Net.WebSockets.WebSocketHandler.BroadcastMessageToAllAsync(System.String,System.Boolean)">
+            <summary>Broadcasts the message to all connected clients asynchronously.</summary>
+            <param name="message">The message.</param>
+            <param name="isEndOfMessage">  Set to <c>true at the end of the message</c></param>
+        </member>
+        <member name="M:Forge.Net.WebSockets.WebSocketHandler.BroadcastMessageToAllAsync(System.String,System.String,System.Boolean)">
+            <summary>Broadcasts the message to all connected clients asynchronously, except the specified one This is useful, if you would like to skip a sender, which this message originally arrived.</summary>
+            <param name="message">The message.</param>
+            <param name="isEndOfMessage">  Set to <c>true at the end of the message</c></param>
+        </member>
+        <member name="M:Forge.Net.WebSockets.WebSocketHandler.BroadcastMessageToAllAsync(System.Byte[],System.Boolean)">
+            <summary>Broadcasts the message to all connected clients asynchronously.</summary>
+            <param name="message">The message in byte array format.</param>
+            <param name="isEndOfMessage">  Set to <c>true at the end of the message</c></param>
+        </member>
+        <member name="M:Forge.Net.WebSockets.WebSocketHandler.BroadcastMessageToAllAsync(System.Byte[],System.String,System.Boolean)">
+            <summary>Broadcasts the message to all connected clients asynchronously, except the specified one This is useful, if you would like to skip a sender, which this message originally arrived.</summary>
+            <param name="message">The message is byte array.</param>
+            <param name="isEndOfMessage">Set to <c>true at the end of the message</c></param>
+        </member>
+        <member name="M:Forge.Net.WebSockets.WebSocketHandler.SendMessageAsync(System.String,System.String)">
+            <summary>Sends the message to a specified client, identified by a socket id</summary>
+            <param name="socketId">The socket identifier.</param>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:Forge.Net.WebSockets.WebSocketHandler.SendMessageAsync(System.Net.WebSockets.WebSocket,System.String)">
+            <summary>Sends the message to a specified client, identified by a socket instance</summary>
+            <param name="socket">The socket.</param>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:Forge.Net.WebSockets.WebSocketHandler.SendMessageAsync(System.String,System.Byte[])">
+            <summary>Sends the message to a specified client, identified by a socket id</summary>
+            <param name="socketId">The socket identifier.</param>
+            <param name="data">The message in byte array.</param>
+        </member>
+        <member name="M:Forge.Net.WebSockets.WebSocketHandler.SendMessageAsync(System.Net.WebSockets.WebSocket,System.Byte[])">
+            <summary>Sends the message to a specified client, identified by a socket instance</summary>
+            <param name="socket">The socket.</param>
+            <param name="data">The message in byte array.</param>
+        </member>
+        <member name="M:Forge.Net.WebSockets.WebSocketHandler.SendMessageAsync(System.Net.WebSockets.WebSocket,System.String,System.Boolean)">
+            <summary>Sends the message asynchronously</summary>
+            <param name="socket">The socket.</param>
+            <param name="message">The message.</param>
+            <param name="isEndOfMessage">Set to <c>true at the end of the message</c></param>
+        </member>
+        <member name="M:Forge.Net.WebSockets.WebSocketHandler.SendMessageAsync(System.Net.WebSockets.WebSocket,System.Byte[],System.Boolean)">
+            <summary>Sends the message asynchronously</summary>
+            <param name="socket">The socket.</param>
+            <param name="data">The message in byte array.</param>
+            <param name="isEndOfMessage">Set to <c>true at the end of the message</c></param>
+        </member>
+        <member name="M:Forge.Net.WebSockets.WebSocketManager.GetAllSockets">
+            <summary>Gets all registered sockets from the store</summary>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Net.WebSockets.WebSocketManager.GetSocketById(System.String)">
+            <summary>Gets the socket by identifier from the store</summary>
+            <param name="id">The identifier.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Net.WebSockets.WebSocketManager.GetIdBySocket(System.Net.WebSockets.WebSocket)">
+            <summary>Gets the identifier by socket.</summary>
+            <param name="socket">The socket.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Net.WebSockets.WebSocketManager.AddSocket(System.Net.WebSockets.WebSocket)">
+            <summary>Adds a newly connected socket.</summary>
+            <param name="socket">The socket.</param>
+        </member>
+        <member name="M:Forge.Net.WebSockets.WebSocketManager.RemoveSocket(System.String)">
+            <summary>Removes a socket.</summary>
+            <param name="id">The identifier.</param>
+        </member>
+        <member name="T:Forge.Net.WebSockets.WebSocketManagerMiddleware">
+            <summary>MiddleWare class for WebSocket Management</summary>
+        </member>
+        <member name="M:Forge.Net.WebSockets.WebSocketManagerMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate,Forge.Net.WebSockets.WebSocketHandler)">
+            <summary>Initializes a new instance of the <see cref="T:Forge.Net.WebSockets.WebSocketManagerMiddleware"/> class.</summary>
+            <param name="next">The next.</param>
+            <param name="webSocketHandler">The web socket handler.</param>
+        </member>
+        <member name="P:Forge.Net.WebSockets.WebSocketManagerMiddleware.ReceiveBufferSize">
+            <summary>Gets or sets the size of the receive buffer.</summary>
+            <value>The size of the receive buffer.</value>
+        </member>
+        <member name="M:Forge.Net.WebSockets.WebSocketManagerMiddleware.Invoke(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+              <para>
+             Invoke for the web application. Here receives the new connections and start listening for incoming data.</para>
+            </summary>
+            <param name="context">The context.</param>
+        </member>
+    </members>
+</doc>

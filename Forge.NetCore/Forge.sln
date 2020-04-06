@@ -55,9 +55,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Forge.UpdateFramework.Servi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Forge.Logging.Log4net", "Forge.Logging.Log4net\Forge.Logging.Log4net.csproj", "{2684A3BD-A1C6-4AB1-BC3C-6BC0AD3F42D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Testing.WPF", "Forge.Testing.WPF\Forge.Testing.WPF.csproj", "{5E2E07F8-CB9E-4E0F-AD5E-0CFE7289EC91}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Forge.Testing.WPF", "Forge.Testing.WPF\Forge.Testing.WPF.csproj", "{5E2E07F8-CB9E-4E0F-AD5E-0CFE7289EC91}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Testing.WinForms", "Forge.Testing.WinForms\Forge.Testing.WinForms.csproj", "{352BC20C-444D-4FD2-A3A6-4E58B9F373C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Forge.Testing.WinForms", "Forge.Testing.WinForms\Forge.Testing.WinForms.csproj", "{352BC20C-444D-4FD2-A3A6-4E58B9F373C7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Forge.Net.WebSockets", "Forge.Net.WebSockets\Forge.Net.WebSockets.csproj", "{ECBE2E5E-BCC8-4408-9FED-788A3501226D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -177,21 +179,15 @@ Global
 		{352BC20C-444D-4FD2-A3A6-4E58B9F373C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{352BC20C-444D-4FD2-A3A6-4E58B9F373C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{352BC20C-444D-4FD2-A3A6-4E58B9F373C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECBE2E5E-BCC8-4408-9FED-788A3501226D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECBE2E5E-BCC8-4408-9FED-788A3501226D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECBE2E5E-BCC8-4408-9FED-788A3501226D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECBE2E5E-BCC8-4408-9FED-788A3501226D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D2EE82C8-66EE-4046-ADA8-E7DFB99ABB44}
-	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 1
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://jzo.visualstudio.com/
-		SccProjectUniqueName0 = ..\\Forge.Native\\Forge.Native.csproj
-		SccProjectName0 = ../Forge.Native
-		SccAuxPath0 = https://jzo.visualstudio.com
-		SccLocalPath0 = ..\\Forge.Native
-		SccProvider0 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 	EndGlobalSection
 EndGlobal
