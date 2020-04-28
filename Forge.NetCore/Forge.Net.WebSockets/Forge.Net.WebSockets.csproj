@@ -2,14 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>1.0.0.0</Version>
+    <Version>1.0.0.1</Version>
     <Copyright>Copyright © Zoltan Juhasz, 2019-2020</Copyright>
     <Description>WebSocket management implementation</Description>
     <Product>Forge.Net.WebSockets: management implementation</Product>
     <Company>Forge Project Contributor(s)</Company>
     <PackageId>Forge.Net.WebSockets</PackageId>
     <Authors>Zoltan Juhasz</Authors>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <AssemblyVersion>1.0.0.1</AssemblyVersion>
     <Title>Forge WebSockets Management</Title>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>

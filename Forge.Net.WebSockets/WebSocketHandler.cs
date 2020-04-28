@@ -130,10 +130,7 @@ namespace Forge.Net.WebSockets
         {
             if (socket.State != WebSocketState.Open) return;
 
-            await socket.SendAsync(buffer: new ArraySegment<byte>(array: Encoding.UTF8.GetBytes(message), offset: 0, count: message.Length),
-                                    messageType: WebSocketMessageType.Text,
-                                    endOfMessage: isEndOfMessage,
-                                    cancellationToken: CancellationToken.None);
+            await SendMessageAsync(socket, Encoding.UTF8.GetBytes(message), isEndOfMessage);
         }
 
         /// <summary>Sends the message asynchronously</summary>

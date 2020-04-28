@@ -4,6 +4,21 @@
         <name>Forge.Net.WebSockets</name>
     </assembly>
     <members>
+        <member name="T:Forge.Net.WebSockets.ExtensionMethods">
+            <summary>Extension methods for ASP.NET Core web service</summary>
+        </member>
+        <member name="M:Forge.Net.WebSockets.ExtensionMethods.UseWebSocketManager(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Http.PathString,Forge.Net.WebSockets.WebSocketHandler)">
+            <summary>Uses the web socket manager.</summary>
+            <param name="app">The application.</param>
+            <param name="path">The path.</param>
+            <param name="handler">The handler.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Forge.Net.WebSockets.ExtensionMethods.AddWebSocketManager(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>Adds the web socket manager.</summary>
+            <param name="services">The services.</param>
+            <returns></returns>
+        </member>
         <member name="M:Forge.Net.WebSockets.WebSocketHandler.ReceiveAsync(System.Net.WebSockets.WebSocket,System.Net.WebSockets.WebSocketReceiveResult,System.Byte[])">
             <summary>Receives data the asynchronously, You need to implement your own handler to process the data.</summary>
             <param name="socket">The web socket instance</param>
