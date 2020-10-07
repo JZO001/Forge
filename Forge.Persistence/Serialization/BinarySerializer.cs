@@ -492,19 +492,27 @@ namespace Forge.Persistence.Serialization
                             {
                                 result.ArrayKeys = new List<STypeInstanceProxy>();
                                 result.ArrayItems = new List<STypeInstanceProxy>();
-                                string[] memberNames = (string[])info.GetType().GetProperty("MemberNames", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public).GetGetMethod(true).Invoke(info, null);
-                                object[] memberValues = (object[])info.GetType().GetProperty("MemberValues", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public).GetGetMethod(true).Invoke(info, null);
-
-                                for (int i = 0; i < memberNames.Length; i++)
+                                foreach (SerializationEntry entry in info)
                                 {
-                                    string memberName = memberNames[i];
-                                    if (memberName != null)
+                                    if (entry.Name != null)
                                     {
-                                        object memberValue = memberValues[i];
-                                        result.ArrayKeys.Add(GetTypeInstanceProxy(memberName, null));
-                                        result.ArrayItems.Add(GetTypeInstanceProxy(memberValue, null));
+                                        object memberValue = entry.Value;
+                                        result.ArrayKeys.Add(GetTypeInstanceProxy(entry.Name, null));
+                                        result.ArrayItems.Add(GetTypeInstanceProxy(entry.Value, null));
                                     }
                                 }
+                                //string[] memberNames = (string[])info.GetType().GetProperty("MemberNames", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public).GetGetMethod(true).Invoke(info, null);
+                                //object[] memberValues = (object[])info.GetType().GetProperty("MemberValues", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public).GetGetMethod(true).Invoke(info, null);
+                                //for (int i = 0; i < memberNames.Length; i++)
+                                //{
+                                //    string memberName = memberNames[i];
+                                //    if (memberName != null)
+                                //    {
+                                //        object memberValue = memberValues[i];
+                                //        result.ArrayKeys.Add(GetTypeInstanceProxy(memberName, null));
+                                //        result.ArrayItems.Add(GetTypeInstanceProxy(memberValue, null));
+                                //    }
+                                //}
                             }
                         }
                         else if (objectType.IsGenericType && objectType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
@@ -1903,22 +1911,25 @@ namespace Forge.Persistence.Serialization
                     }
                     else
                     {
-                        bytes = Encoding.UTF8.GetBytes(ArrayItems.Count.ToString());
+                        bytes = Encoding.UTF8.GetBytes(ArrayItems == null ? "0" : ArrayItems.Count.ToString());
                         serializationStream.Write(bytes, 0, bytes.Length);
                         serializationStream.WriteByte(0);
 
                         // the array items
-                        foreach (STypeInstanceProxy proxy in ArrayItems)
+                        if (ArrayItems != null)
                         {
-                            if (proxy == null)
+                            foreach (STypeInstanceProxy proxy in ArrayItems)
                             {
-                                serializationStream.WriteByte(0); // null
-                            }
-                            else
-                            {
-                                bytes = Encoding.UTF8.GetBytes(proxy.InstanceId.ToString()); // proxy id
-                                serializationStream.Write(bytes, 0, bytes.Length);
-                                serializationStream.WriteByte(0);
+                                if (proxy == null)
+                                {
+                                    serializationStream.WriteByte(0); // null
+                                }
+                                else
+                                {
+                                    bytes = Encoding.UTF8.GetBytes(proxy.InstanceId.ToString()); // proxy id
+                                    serializationStream.Write(bytes, 0, bytes.Length);
+                                    serializationStream.WriteByte(0);
+                                }
                             }
                         }
                     }
@@ -2546,11 +2557,14 @@ namespace Forge.Persistence.Serialization
                         ISurrogateSelector selector = null;
                         ISerializationSurrogate surrogate = (context.Selector == null ? null : context.Selector.GetSurrogate(this.Type, context.Context, out selector));
                         SerializationInfo info = new SerializationInfo(this.Type, new FormatterConverter());
-                        for (int i = 0; i < this.ArrayKeysRefIds.Count; i++)
+                        if (this.ArrayKeysRefIds != null)
                         {
-                            DTypeInstanceProxy proxyKey = context.InstanceIdVsInstanceProxy[this.ArrayKeysRefIds[i]];
-                            DTypeInstanceProxy proxyItem = context.InstanceIdVsInstanceProxy[this.ArrayItemsRefIds[i]];
-                            info.AddValue((string)proxyKey.Construct(context), proxyItem.Construct(context));
+                            for (int i = 0; i < this.ArrayKeysRefIds.Count; i++)
+                            {
+                                DTypeInstanceProxy proxyKey = context.InstanceIdVsInstanceProxy[this.ArrayKeysRefIds[i]];
+                                DTypeInstanceProxy proxyItem = context.InstanceIdVsInstanceProxy[this.ArrayItemsRefIds[i]];
+                                info.AddValue((string)proxyKey.Construct(context), proxyItem.Construct(context));
+                            }
                         }
 
                         if (surrogate == null)
