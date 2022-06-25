@@ -1,50 +1,69 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project>
+	<Sdk Name="Microsoft.NET.Sdk" />
 
-  <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;net40</TargetFrameworks>
-    <Version>1.0.0.8</Version>
-    <Copyright>Copyright © Zoltan Juhasz, 2004-2019</Copyright>
-    <Description>Extension method(s)</Description>
-    <Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
-    <Company>Forge Project Contributor(s)</Company>
-    <PackageId>Forge.Extensions</PackageId>
-    <Authors>Zoltan Juhasz</Authors>
-    <AssemblyVersion>1.0.0.8</AssemblyVersion>
-    <Title>Forge Extensions</Title>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <ProjectGuid>{B565E903-9B5B-4248-BCF2-EFBA29851646}</ProjectGuid>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net40;netstandard2.0;net5.0;net6.0</TargetFrameworks>
+		<Version>1.1.0.0</Version>
+		<Copyright>Copyright © Zoltan Juhasz, 2004-2022</Copyright>
+		<Description>Extension method(s)</Description>
+		<Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
+		<Company>Forge Project Contributor(s)</Company>
+		<PackageId>Forge.Extensions</PackageId>
+		<Authors>Zoltan Juhasz</Authors>
+		<AssemblyVersion>1.1.0.0</AssemblyVersion>
+		<Title>Forge Extensions</Title>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<ProjectGuid>{B565E903-9B5B-4248-BCF2-EFBA29851646}</ProjectGuid>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.Extensions\Forge.Extensions.xml</DocumentationFile>
-  </PropertyGroup>
+	<PropertyGroup>
+		<DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.Extensions\Forge.Extensions.xml</DocumentationFile>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Include="..\..\Forge.Extensions\ExtensionMethodsISet.cs" Link="ExtensionMethodsISet.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Include="..\..\Forge.Extensions\ExtensionMethodsISet.cs" Link="ExtensionMethodsISet.cs" />
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-    <Reference Include="Forge.Base">
-      <HintPath>..\.Output\netcoreapp3.1\Forge.Base.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Base</Name>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\net6.0\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net40'">
-    <Reference Include="Forge.Base">
-      <HintPath>..\.Output\net40\Forge.Base.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Base</Name>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\net5.0\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+	</ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(ProjectDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
-  </Target>
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\netstandard2.0\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net40'">
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\net40\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(ProjectDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
+	</Target>
 
 </Project>

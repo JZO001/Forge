@@ -8,7 +8,7 @@ namespace Forge.Logging
     public interface ILoggerWrapper
     {
 
-#if NETCOREAPP3_1
+#if NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
 #else
         ILog GetLogger(string name);
 #endif

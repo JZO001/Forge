@@ -19,7 +19,7 @@ using Forge.Net.TerraGraf.Configuration;
 using Forge.Net.TerraGraf.Formatters;
 using Forge.Net.TerraGraf.Messaging;
 using Forge.Net.TerraGraf.NetworkPeers;
-#if NETCOREAPP3_1
+#if NETCOREAPP3_1_OR_GREATER
 #else
 using NATUPNPLib;
 #endif
@@ -170,7 +170,7 @@ namespace Forge.Net.TerraGraf.Connection
             }
         }
 
-#if NETCOREAPP3_1
+#if NETCOREAPP3_1_OR_GREATER
 #else
 
         /// <summary>

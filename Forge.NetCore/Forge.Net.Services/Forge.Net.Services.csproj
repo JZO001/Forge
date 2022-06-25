@@ -1,110 +1,224 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;net40</TargetFrameworks>
-    <Version>1.0.0.3</Version>
-    <Copyright>Copyright © Zoltan Juhasz, 2012-2019</Copyright>
-    <Description>Base implementations for services and locators</Description>
-    <Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
-    <Company>Forge Project Contributor(s)</Company>
-    <PackageId>Forge.Net.Services</PackageId>
-    <Authors>Zoltan Juhasz</Authors>
-    <AssemblyVersion>1.0.0.3</AssemblyVersion>
-    <Title>Forge.Net.Services</Title>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <ProjectGuid>{5BF0BB3E-82BD-4F55-988F-64F39912A794}</ProjectGuid>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net40;netcoreapp3.1;net5.0;net5.0-windows;net6.0;net6.0-windows</TargetFrameworks>
+		<Version>1.1.0.0</Version>
+		<Copyright>Copyright © Zoltan Juhasz, 2012-2022</Copyright>
+		<Description>Base implementations for services and locators</Description>
+		<Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
+		<Company>Forge Project Contributor(s)</Company>
+		<PackageId>Forge.Net.Services</PackageId>
+		<Authors>Zoltan Juhasz</Authors>
+		<AssemblyVersion>1.1.0.0</AssemblyVersion>
+		<Title>Forge.Net.Services</Title>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<ProjectGuid>{5BF0BB3E-82BD-4F55-988F-64F39912A794}</ProjectGuid>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.Net.Services\Forge.Net.Services.xml</DocumentationFile>
-  </PropertyGroup>
+	<PropertyGroup>
+		<DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.Net.Services\Forge.Net.Services.xml</DocumentationFile>
+		<RepositoryUrl>https://github.com/JZO001/Forge</RepositoryUrl>
+		<DefineConstants Condition="'$(TargetFramework)' == 'net6.0-windows'">IS_WINDOWS</DefineConstants>
+		<DefineConstants Condition="'$(TargetFramework)' == 'net5.0-windows'">IS_WINDOWS</DefineConstants>
+		<DefineConstants Condition="'$(TargetFramework)' == 'netcoreapp3.1'">IS_WINDOWS</DefineConstants>
+		<DefineConstants Condition="'$(TargetFramework)' == 'net40'">IS_WINDOWS</DefineConstants>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Include="..\..\Forge.Net.Services\ConfigSection\NetworkServiceConfiguration.cs" Link="ConfigSection\NetworkServiceConfiguration.cs" />
-    <Compile Include="..\..\Forge.Net.Services\ConfigSection\NetworkServiceSection.cs" Link="ConfigSection\NetworkServiceSection.cs" />
-    <Compile Include="..\..\Forge.Net.Services\IServiceDescriptor.cs" Link="IServiceDescriptor.cs" />
-    <Compile Include="..\..\Forge.Net.Services\Locators\IRemoteServiceLocator.cs" Link="Locators\IRemoteServiceLocator.cs" />
-    <Compile Include="..\..\Forge.Net.Services\Locators\PreferedServiceProviderChangedEventArgs.cs" Link="Locators\PreferedServiceProviderChangedEventArgs.cs" />
-    <Compile Include="..\..\Forge.Net.Services\Locators\RemoteServiceLocator.cs" Link="Locators\RemoteServiceLocator.cs" />
-    <Compile Include="..\..\Forge.Net.Services\Locators\RemoteServiceLocatorManager.cs" Link="Locators\RemoteServiceLocatorManager.cs" />
-    <Compile Include="..\..\Forge.Net.Services\Locators\ServiceProvider.cs" Link="Locators\ServiceProvider.cs" />
-    <Compile Include="..\..\Forge.Net.Services\Locators\ServiceProvidersChangedEventArgs.cs" Link="Locators\ServiceProvidersChangedEventArgs.cs" />
-    <Compile Include="..\..\Forge.Net.Services\Locators\ServiceStateChangedEventArgs.cs" Link="Locators\ServiceStateChangedEventArgs.cs" />
-    <Compile Include="..\..\Forge.Net.Services\ServiceNotAvailableException.cs" Link="ServiceNotAvailableException.cs" />
-    <Compile Include="..\..\Forge.Net.Services\ServiceStateEnum.cs" Link="ServiceStateEnum.cs" />
-    <Compile Include="..\..\Forge.Net.Services\Services\IRemoteService.cs" Link="Services\IRemoteService.cs" />
-    <Compile Include="..\..\Forge.Net.Services\Services\RemoteServiceBase.cs" Link="Services\RemoteServiceBase.cs" />
-    <Compile Include="..\..\Forge.Net.Services\UnableToStartServiceException.cs" Link="UnableToStartServiceException.cs" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\net6.0\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+		<Reference Include="Forge.Remoting">
+			<HintPath>..\.Output\net6.0\Forge.Net.Remoting.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Net.Remoting</Name>
+		</Reference>
+		<Reference Include="Forge.Net.Synapse">
+			<HintPath>..\.Output\net6.0\Forge.Net.Synapse.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Net.Synapse</Name>
+		</Reference>
+		<Reference Include="Forge.Net.TerraGraf">
+			<HintPath>..\.Output\net6.0\Forge.Net.TerraGraf.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Net.TerraGraf</Name>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-    <PackageReference Include="System.Configuration.ConfigurationManager">
-      <Version>4.7.0</Version>
-    </PackageReference>
-    <Reference Include="Forge.Base">
-      <HintPath>..\.Output\netcoreapp3.1\Forge.Base.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Base</Name>
-    </Reference>
-    <Reference Include="Forge.Net.Remoting">
-      <HintPath>..\.Output\netcoreapp3.1\Forge.Net.Remoting.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Net.Remoting</Name>
-    </Reference>
-    <Reference Include="Forge.Net.Synapse">
-      <HintPath>..\.Output\netcoreapp3.1\Forge.Net.Synapse.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Net.Synapse</Name>
-    </Reference>
-    <Reference Include="Forge.Net.TerraGraf">
-      <HintPath>..\.Output\netcoreapp3.1\Forge.Net.TerraGraf.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Net.TerraGraf</Name>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-windows'">
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\net6.0\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+		<Reference Include="Forge.Remoting">
+			<HintPath>..\.Output\net6.0-windows\Forge.Net.Remoting.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Net.Remoting</Name>
+		</Reference>
+		<Reference Include="Forge.Net.Synapse">
+			<HintPath>..\.Output\net6.0-windows\Forge.Net.Synapse.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Net.Synapse</Name>
+		</Reference>
+		<Reference Include="Forge.Net.TerraGraf">
+			<HintPath>..\.Output\net6.0-windows\Forge.Net.TerraGraf.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Net.TerraGraf</Name>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net40'">
-    <Reference Include="System.Configuration" />
-    <Reference Include="Forge.Base">
-      <HintPath>..\.Output\net40\Forge.Base.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Base</Name>
-    </Reference>
-    <Reference Include="Forge.Net.Remoting">
-      <HintPath>..\.Output\net40\Forge.Net.Remoting.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Net.Remoting</Name>
-    </Reference>
-    <Reference Include="Forge.Net.Synapse">
-      <HintPath>..\.Output\net40\Forge.Net.Synapse.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Net.Synapse</Name>
-    </Reference>
-    <Reference Include="Forge.Net.TerraGraf">
-      <HintPath>..\.Output\net40\Forge.Net.TerraGraf.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Net.TerraGraf</Name>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\net5.0\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+		<Reference Include="Forge.Remoting">
+			<HintPath>..\.Output\net5.0\Forge.Net.Remoting.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Net.Remoting</Name>
+		</Reference>
+		<Reference Include="Forge.Net.Synapse">
+			<HintPath>..\.Output\net5.0\Forge.Net.Synapse.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Net.Synapse</Name>
+		</Reference>
+		<Reference Include="Forge.Net.TerraGraf">
+			<HintPath>..\.Output\net5.0\Forge.Net.TerraGraf.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Net.TerraGraf</Name>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ConfigSection\" />
-    <Folder Include="Locators\" />
-    <Folder Include="Services\" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net5.0-windows'">
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\net5.0\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+		<Reference Include="Forge.Remoting">
+			<HintPath>..\.Output\net5.0-windows\Forge.Net.Remoting.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Net.Remoting</Name>
+		</Reference>
+		<Reference Include="Forge.Net.Synapse">
+			<HintPath>..\.Output\net5.0-windows\Forge.Net.Synapse.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Net.Synapse</Name>
+		</Reference>
+		<Reference Include="Forge.Net.TerraGraf">
+			<HintPath>..\.Output\net5.0-windows\Forge.Net.TerraGraf.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Net.TerraGraf</Name>
+		</Reference>
+	</ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(ProjectDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
-  </Target>
+	<ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\netstandard2.0\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+		<Reference Include="Forge.Remoting">
+			<HintPath>..\.Output\netcoreapp3.1\Forge.Net.Remoting.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Net.Remoting</Name>
+		</Reference>
+		<Reference Include="Forge.Net.Synapse">
+			<HintPath>..\.Output\netcoreapp3.1\Forge.Net.Synapse.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Net.Synapse</Name>
+		</Reference>
+		<Reference Include="Forge.Net.TerraGraf">
+			<HintPath>..\.Output\netcoreapp3.1\Forge.Net.TerraGraf.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Net.TerraGraf</Name>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net40'">
+		<Reference Include="System.Configuration" />
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\net40\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+		<Reference Include="Forge.Remoting">
+			<HintPath>..\.Output\net40\Forge.Net.Remoting.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Net.Remoting</Name>
+		</Reference>
+		<Reference Include="Forge.Net.Synapse">
+			<HintPath>..\.Output\net40\Forge.Net.Synapse.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Net.Synapse</Name>
+		</Reference>
+		<Reference Include="Forge.Net.TerraGraf">
+			<HintPath>..\.Output\net40\Forge.Net.TerraGraf.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Net.TerraGraf</Name>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\Forge.Net.Services\ConfigSection\NetworkServiceConfiguration.cs" Link="ConfigSection\NetworkServiceConfiguration.cs" />
+		<Compile Include="..\..\Forge.Net.Services\ConfigSection\NetworkServiceSection.cs" Link="ConfigSection\NetworkServiceSection.cs" />
+		<Compile Include="..\..\Forge.Net.Services\IServiceDescriptor.cs" Link="IServiceDescriptor.cs" />
+		<Compile Include="..\..\Forge.Net.Services\Locators\IRemoteServiceLocator.cs" Link="Locators\IRemoteServiceLocator.cs" />
+		<Compile Include="..\..\Forge.Net.Services\Locators\PreferedServiceProviderChangedEventArgs.cs" Link="Locators\PreferedServiceProviderChangedEventArgs.cs" />
+		<Compile Include="..\..\Forge.Net.Services\Locators\RemoteServiceLocator.cs" Link="Locators\RemoteServiceLocator.cs" />
+		<Compile Include="..\..\Forge.Net.Services\Locators\RemoteServiceLocatorManager.cs" Link="Locators\RemoteServiceLocatorManager.cs" />
+		<Compile Include="..\..\Forge.Net.Services\Locators\ServiceProvider.cs" Link="Locators\ServiceProvider.cs" />
+		<Compile Include="..\..\Forge.Net.Services\Locators\ServiceProvidersChangedEventArgs.cs" Link="Locators\ServiceProvidersChangedEventArgs.cs" />
+		<Compile Include="..\..\Forge.Net.Services\Locators\ServiceStateChangedEventArgs.cs" Link="Locators\ServiceStateChangedEventArgs.cs" />
+		<Compile Include="..\..\Forge.Net.Services\ServiceNotAvailableException.cs" Link="ServiceNotAvailableException.cs" />
+		<Compile Include="..\..\Forge.Net.Services\ServiceStateEnum.cs" Link="ServiceStateEnum.cs" />
+		<Compile Include="..\..\Forge.Net.Services\Services\IRemoteService.cs" Link="Services\IRemoteService.cs" />
+		<Compile Include="..\..\Forge.Net.Services\Services\RemoteServiceBase.cs" Link="Services\RemoteServiceBase.cs" />
+		<Compile Include="..\..\Forge.Net.Services\UnableToStartServiceException.cs" Link="UnableToStartServiceException.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="ConfigSection\" />
+		<Folder Include="Locators\" />
+		<Folder Include="Services\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" Condition="'$(TargetFramework)' != 'net40'" />
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(ProjectDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
+	</Target>
 
 </Project>

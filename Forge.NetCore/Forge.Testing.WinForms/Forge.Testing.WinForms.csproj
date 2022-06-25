@@ -1,66 +1,125 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project>
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFrameworks>netcoreapp3.1;net472</TargetFrameworks>
-    <UseWindowsForms>true</UseWindowsForms>
-  </PropertyGroup>
+	<Sdk Name="Microsoft.NET.Sdk" />
+	<Sdk Name="Microsoft.NET.Sdk.WindowsDesktop" />
 
-  <ItemGroup>
-    <PackageReference Include="log4net" Version="2.0.8" />
-  </ItemGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFrameworks>net472;netcoreapp3.1;net5.0-windows;net6.0-windows</TargetFrameworks>
+		<UseWindowsForms>true</UseWindowsForms>
+	</PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-    <PackageReference Include="System.Configuration.ConfigurationManager">
-      <Version>4.7.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Diagnostics.Debug">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.IO.FileSystem">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Net.NameResolution">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Net.Primitives">
-      <Version>4.3.1</Version>
-    </PackageReference>
-    <Reference Include="Forge.Base">
-      <HintPath>..\Forge.Base\bin\netcoreapp3.1\Forge.Base.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Base</Name>
-    </Reference>
-    <Reference Include="Forge.Logging.Log4net">
-      <HintPath>..\Forge.Logging.Log4net\bin\netcoreapp3.1\Forge.Logging.Log4net.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Logging.Log4net</Name>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-windows'">
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\net6.0\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+		<Reference Include="Forge.Logging.Log4net">
+			<HintPath>..\.Output\net6.0\Forge.Logging.Log4net.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Logging.Log4net</Name>
+		</Reference>
+		<Reference Include="Forge.Windows.UI">
+			<HintPath>..\.Output\net6.0-windows\Forge.Windows.UI.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Windows.UI</Name>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Web" />
-    <Reference Include="Forge.Base">
-      <HintPath>..\Forge.Base\bin\net40\Forge.Base.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Base</Name>
-    </Reference>
-    <Reference Include="Forge.Logging.Log4net">
-      <HintPath>..\Forge.Logging.Log4net\bin\net40\Forge.Logging.Log4net.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Logging.Log4net</Name>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net5.0-windows'">
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\net5.0\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+		<Reference Include="Forge.Logging.Log4net">
+			<HintPath>..\.Output\net5.0\Forge.Logging.Log4net.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Logging.Log4net</Name>
+		</Reference>
+		<Reference Include="Forge.Windows.UI">
+			<HintPath>..\.Output\net5.0-windows\Forge.Windows.UI.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Windows.UI</Name>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Update="log4net.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+		<PackageReference Include="System.Diagnostics.Debug">
+			<Version>4.3.0</Version>
+		</PackageReference>
+		<PackageReference Include="System.IO.FileSystem">
+			<Version>4.3.0</Version>
+		</PackageReference>
+		<PackageReference Include="System.Net.NameResolution">
+			<Version>4.3.0</Version>
+		</PackageReference>
+		<PackageReference Include="System.Net.Primitives">
+			<Version>4.3.1</Version>
+		</PackageReference>
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\netstandard2.0\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+		<Reference Include="Forge.Logging.Log4net">
+			<HintPath>..\.Output\netstandard2.0\Forge.Logging.Log4net.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Logging.Log4net</Name>
+		</Reference>
+		<Reference Include="Forge.Windows.UI">
+			<HintPath>..\.Output\netcoreapp3.1\Forge.Windows.UI.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Windows.UI</Name>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net472'">
+		<Reference Include="System.Configuration" />
+		<Reference Include="System.Web" />
+		<Reference Include="WindowsBase">
+		  <SpecificVersion>True</SpecificVersion>
+		</Reference>
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\net40\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+		<Reference Include="Forge.Logging.Log4net">
+			<HintPath>..\.Output\net40\Forge.Logging.Log4net.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Logging.Log4net</Name>
+		</Reference>
+		<Reference Include="Forge.Windows.UI">
+			<HintPath>..\.Output\net40\Forge.Windows.UI.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Windows.UI</Name>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" Condition="'$(TargetFramework)' != 'net472'" />
+		<PackageReference Include="System.Diagnostics.EventLog" Version="6.0.0" Condition="'$(TargetFramework)' != 'net472'" />
+		<PackageReference Include="log4net" Version="2.0.14" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="log4net.config">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 
 </Project>

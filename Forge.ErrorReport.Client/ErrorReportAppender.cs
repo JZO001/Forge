@@ -139,11 +139,11 @@ namespace Forge.ErrorReport.Client
         /// </value>
         public bool HandleAppDomainUnhandledException
         {
-            get { return Forge.Logging.LogUtils.IsSubscribedForAppDomainUnhandledException; }
+            get { return Forge.Logging.Utils.LogUtils.IsSubscribedForAppDomainUnhandledException; }
             set
             {
-                Forge.Logging.LogUtils.IsSubscribedForAppDomainUnhandledException = value;
-                if (Forge.Logging.LogUtils.IsSubscribedForAppDomainUnhandledException)
+                Forge.Logging.Utils.LogUtils.IsSubscribedForAppDomainUnhandledException = value;
+                if (Forge.Logging.Utils.LogUtils.IsSubscribedForAppDomainUnhandledException)
                 {
                     AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
                 }

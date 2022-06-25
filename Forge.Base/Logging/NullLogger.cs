@@ -17,7 +17,7 @@ namespace Forge.Logging
         /// <value>The instance.</value>
         public static NullLogger Instance { get; private set; } = new NullLogger();
 
-#if NETCOREAPP3_1
+#if NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
 #else
         public ILog GetLogger(string name)
         {

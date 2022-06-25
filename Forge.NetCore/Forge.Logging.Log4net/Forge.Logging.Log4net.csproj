@@ -1,62 +1,79 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;net40</TargetFrameworks>
-    <Version>1.0.0.0</Version>
-    <Copyright>Copyright © Zoltan Juhasz, 2019</Copyright>
-    <Description>Forge Patterns and Practices</Description>
-    <Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
-    <Company>Forge Project Contributor(s)</Company>
-    <PackageId>Forge.Logging.Log4net</PackageId>
-    <Authors>Zoltan Juhasz</Authors>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <Title>Forge Logging for Log4net</Title>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <ProjectGuid>{2684A3BD-A1C6-4AB1-BC3C-6BC0AD3F42D4}</ProjectGuid>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net40;netstandard2.0;net5.0;net6.0</TargetFrameworks>
+		<Version>1.1.0.0</Version>
+		<Copyright>Copyright © Zoltan Juhasz, 2019-2022</Copyright>
+		<Description>Forge Patterns and Practices</Description>
+		<Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
+		<Company>Forge Project Contributor(s)</Company>
+		<PackageId>Forge.Logging.Log4net</PackageId>
+		<Authors>Zoltan Juhasz</Authors>
+		<AssemblyVersion>1.1.0.0</AssemblyVersion>
+		<Title>Forge Logging for Log4net</Title>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<ProjectGuid>{2684A3BD-A1C6-4AB1-BC3C-6BC0AD3F42D4}</ProjectGuid>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.Logging.Log4net\Forge.Logging.Log4net.xml</DocumentationFile>
-  </PropertyGroup>
+	<PropertyGroup>
+		<DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.Logging.Log4net\Forge.Logging.Log4net.xml</DocumentationFile>
+		<RepositoryUrl>https://github.com/JZO001/Forge</RepositoryUrl>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="log4net" Version="2.0.12" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\net6.0\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-    <PackageReference Include="System.Configuration.ConfigurationManager">
-      <Version>4.7.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.IO.FileSystem">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <Reference Include="Forge.Base">
-      <HintPath>..\.Output\netcoreapp3.1\Forge.Base.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Base</Name>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\net5.0\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+	</ItemGroup>
+	
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+		<PackageReference Include="System.IO.FileSystem">
+			<Version>4.3.0</Version>
+		</PackageReference>
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\netstandard2.0\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net40'">
-    <Reference Include="System.Configuration" />
-    <Reference Include="Forge.Base">
-      <HintPath>..\.Output\net40\Forge.Base.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Base</Name>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net40'">
+		<Reference Include="System.Configuration" />
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\net40\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Include="..\..\Forge.Logging.Log4net\Log4NetLog.cs" Link="Log4NetLog.cs" />
-    <Compile Include="..\..\Forge.Logging.Log4net\Log4NetManager.cs" Link="Log4NetManager.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" Condition="'$(TargetFramework)' != 'net40'" />
+		<PackageReference Include="log4net" Version="2.0.14" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<Compile Include="..\..\Forge.Logging.Log4net\Log4NetLog.cs" Link="Log4NetLog.cs" />
+		<Compile Include="..\..\Forge.Logging.Log4net\Log4NetManager.cs" Link="Log4NetManager.cs" />
+	</ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(ProjectDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
-  </Target>
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(ProjectDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
+	</Target>
 
 </Project>

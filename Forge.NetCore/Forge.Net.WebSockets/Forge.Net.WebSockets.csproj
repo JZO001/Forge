@@ -1,58 +1,77 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>1.0.0.1</Version>
-    <Copyright>Copyright © Zoltan Juhasz, 2019-2020</Copyright>
-    <Description>WebSocket management implementation</Description>
-    <Product>Forge.Net.WebSockets: management implementation</Product>
-    <Company>Forge Project Contributor(s)</Company>
-    <PackageId>Forge.Net.WebSockets</PackageId>
-    <Authors>Zoltan Juhasz</Authors>
-    <AssemblyVersion>1.0.0.1</AssemblyVersion>
-    <Title>Forge WebSockets Management</Title>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <ProjectGuid>{ECBE2E5E-BCC8-4408-9FED-788A3501226D}</ProjectGuid>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net45;netstandard2.0;net5.0;net6.0</TargetFrameworks>
+		<Version>1.1.0.0</Version>
+		<Copyright>Copyright © Zoltan Juhasz, 2019-2022</Copyright>
+		<Description>WebSocket management implementation</Description>
+		<Product>Forge.Net.WebSockets: management implementation</Product>
+		<Company>Forge Project Contributor(s)</Company>
+		<PackageId>Forge.Net.WebSockets</PackageId>
+		<Authors>Zoltan Juhasz</Authors>
+		<AssemblyVersion>1.1.0.0</AssemblyVersion>
+		<Title>Forge WebSockets Management</Title>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<ProjectGuid>{ECBE2E5E-BCC8-4408-9FED-788A3501226D}</ProjectGuid>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Include="..\..\Forge.Net.WebSockets\ExtensionMethods.cs" Link="ExtensionMethods.cs" />
-    <Compile Include="..\..\Forge.Net.WebSockets\WebSocketHandler.cs" Link="WebSocketHandler.cs" />
-    <Compile Include="..\..\Forge.Net.WebSockets\WebSocketManager.cs" Link="WebSocketManager.cs" />
-    <Compile Include="..\..\Forge.Net.WebSockets\WebSocketManagerMiddleware.cs" Link="WebSocketManagerMiddleware.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Include="..\..\Forge.Net.WebSockets\ExtensionMethods.cs" Link="ExtensionMethods.cs" />
+		<Compile Include="..\..\Forge.Net.WebSockets\WebSocketHandler.cs" Link="WebSocketHandler.cs" />
+		<Compile Include="..\..\Forge.Net.WebSockets\WebSocketManager.cs" Link="WebSocketManager.cs" />
+		<Compile Include="..\..\Forge.Net.WebSockets\WebSocketManagerMiddleware.cs" Link="WebSocketManagerMiddleware.cs" />
+	</ItemGroup>
 
-  <PropertyGroup>
-    <DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.Net.WebSockets\Forge.Net.WebSockets.xml</DocumentationFile>
-  </PropertyGroup>
+	<PropertyGroup>
+		<DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.Net.WebSockets\Forge.Net.WebSockets.xml</DocumentationFile>
+		<RepositoryUrl>https://github.com/JZO001/Forge</RepositoryUrl>
+	</PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-    <Reference Include="Forge.Base">
-      <HintPath>..\.Output\netcoreapp3.1\Forge.Base.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Base</Name>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\net6.0\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net40'">
-    <Reference Include="Forge.Base">
-      <HintPath>..\.Output\net40\Forge.Base.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Base</Name>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\net5.0\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.3" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\netstandard2.0\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+	</ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(ProjectDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
-  </Target>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net45'">
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\net40\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" Condition="'$(TargetFramework)' != 'net45'" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" Condition="'$(TargetFramework)' != 'net45'" />
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(ProjectDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
+	</Target>
 
 </Project>

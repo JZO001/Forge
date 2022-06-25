@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29609.76
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Base", "Forge.Base\Forge.Base.csproj", "{F3EED65E-C103-4BA8-AF1D-37421D73A708}"
 EndProject
@@ -161,6 +161,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Logging.Log4net", "Forge.Logging.Log4net\Forge.Logging.Log4net.csproj", "{2684A3BD-A1C6-4AB1-BC3C-6BC0AD3F42D4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Net.WebSockets", "Forge.Net.WebSockets\Forge.Net.WebSockets.csproj", "{ECBE2E5E-BCC8-4408-9FED-788A3501226D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Logging.Utils", "Forge.Logging.Utils\Forge.Logging.Utils.csproj", "{4DD103B3-D3CE-4C18-B11E-25AFEAC3C6CA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Windows.UI", "Forge.Windows.UI\Forge.Windows.UI.csproj", "{036563AF-A18A-4821-B915-5AA1E8B80445}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -426,6 +430,22 @@ Global
 		{ECBE2E5E-BCC8-4408-9FED-788A3501226D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{ECBE2E5E-BCC8-4408-9FED-788A3501226D}.Release|x86.ActiveCfg = Release|Any CPU
 		{ECBE2E5E-BCC8-4408-9FED-788A3501226D}.Release|x86.Build.0 = Release|Any CPU
+		{4DD103B3-D3CE-4C18-B11E-25AFEAC3C6CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DD103B3-D3CE-4C18-B11E-25AFEAC3C6CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DD103B3-D3CE-4C18-B11E-25AFEAC3C6CA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4DD103B3-D3CE-4C18-B11E-25AFEAC3C6CA}.Debug|x86.Build.0 = Debug|Any CPU
+		{4DD103B3-D3CE-4C18-B11E-25AFEAC3C6CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DD103B3-D3CE-4C18-B11E-25AFEAC3C6CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DD103B3-D3CE-4C18-B11E-25AFEAC3C6CA}.Release|x86.ActiveCfg = Release|Any CPU
+		{4DD103B3-D3CE-4C18-B11E-25AFEAC3C6CA}.Release|x86.Build.0 = Release|Any CPU
+		{036563AF-A18A-4821-B915-5AA1E8B80445}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{036563AF-A18A-4821-B915-5AA1E8B80445}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{036563AF-A18A-4821-B915-5AA1E8B80445}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{036563AF-A18A-4821-B915-5AA1E8B80445}.Debug|x86.Build.0 = Debug|Any CPU
+		{036563AF-A18A-4821-B915-5AA1E8B80445}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{036563AF-A18A-4821-B915-5AA1E8B80445}.Release|Any CPU.Build.0 = Release|Any CPU
+		{036563AF-A18A-4821-B915-5AA1E8B80445}.Release|x86.ActiveCfg = Release|Any CPU
+		{036563AF-A18A-4821-B915-5AA1E8B80445}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

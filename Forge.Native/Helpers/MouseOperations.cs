@@ -4,6 +4,9 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+#if NETSTANDARD2_0_OR_GREATER
+#else
+
 using System.Windows.Forms;
 using Forge.Native.Structures;
 
@@ -180,3 +183,5 @@ namespace Forge.Native.Helpers
     }
 
 }
+
+#endif

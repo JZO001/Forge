@@ -4,7 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
-#if NETCOREAPP3_1
+#if NETCOREAPP3_1_OR_GREATER
 #else
 
 using System;
@@ -26,7 +26,7 @@ namespace Forge.ErrorReport.Sink
     public class SmtpSink : SinkBase
     {
 
-        #region Field(s)
+#region Field(s)
 
         private readonly ILog LOGGER = null;
 
@@ -115,9 +115,9 @@ namespace Forge.ErrorReport.Sink
         /// </summary>
         protected const string CONFIG_USERNAME = "Username";
 
-        #endregion
+#endregion
 
-        #region Constructor(s)
+#region Constructor(s)
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SmtpSink"/> class.
@@ -132,9 +132,9 @@ namespace Forge.ErrorReport.Sink
             this.SubjectEncoding = Encoding.Default;
         }
 
-        #endregion
+#endregion
 
-        #region Public properties
+#region Public properties
 
         /// <summary>
         /// Gets or sets the authentication.
@@ -324,9 +324,9 @@ namespace Forge.ErrorReport.Sink
         /// </value>
         public string ConversionPattern { get; set; }
 
-        #endregion
+#endregion
 
-        #region Public method(s)
+#region Public method(s)
 
         /// <summary>
         /// Initializes the specified item.
@@ -353,7 +353,7 @@ namespace Forge.ErrorReport.Sink
                 this.Bcc = bcc;
             }
 
-            #region Body Encoding
+#region Body Encoding
 
             string bodyEncoding = "Default";
             if (ConfigurationAccessHelper.ParseStringValue(item.PropertyItems, CONFIG_BODYENCODING, ref bodyEncoding))
@@ -414,7 +414,7 @@ namespace Forge.ErrorReport.Sink
                 }
             }
 
-            #endregion
+#endregion
 
             string cc = string.Empty;
             if (ConfigurationAccessHelper.ParseStringValue(item.PropertyItems, CONFIG_CC, ref cc))
@@ -480,7 +480,7 @@ namespace Forge.ErrorReport.Sink
                 this.Subject = subject;
             }
 
-            #region Subject Encoding
+#region Subject Encoding
 
             string subjectEncoding = "Default";
             if (ConfigurationAccessHelper.ParseStringValue(item.PropertyItems, CONFIG_SUBJECTENCODING, ref subjectEncoding))
@@ -541,7 +541,7 @@ namespace Forge.ErrorReport.Sink
                 }
             }
 
-            #endregion
+#endregion
 
             string to = string.Empty;
             if (ConfigurationAccessHelper.ParseStringValue(item.PropertyItems, CONFIG_TO, ref to))
@@ -628,7 +628,7 @@ namespace Forge.ErrorReport.Sink
             }
         }
 
-        #endregion
+#endregion
 
     }
 

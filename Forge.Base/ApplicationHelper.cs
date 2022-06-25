@@ -6,8 +6,6 @@
 
 using System;
 using System.Configuration;
-using System.Threading;
-using System.Web;
 
 namespace Forge
 {
@@ -75,29 +73,6 @@ namespace Forge
                 ConfigurationManager.AppSettings[APP_CONFIG_ID] = value;
             }
         }
-
-        /// <summary>
-        /// Gets a value indicating whether the thread is the UI thread.
-        /// </summary>
-        /// <value>
-        /// <c>true</c> if [is unique identifier thread]; otherwise, <c>false</c>.
-        /// </value>
-#if NETCOREAPP3_1
-        public static bool IsUIThread()
-        {
-            return System.Windows.Forms.Application.MessageLoop ||
-                System.Windows.Threading.Dispatcher.FromThread(Thread.CurrentThread) != null;
-        }
-#else
-        public static bool IsUIThread()
-        {
-            return System.Windows.Forms.Application.MessageLoop ||
-                (HttpRuntime.AppDomainAppId == null ?
-                    System.Windows.Threading.Dispatcher.FromThread(Thread.CurrentThread) != null
-                    :
-                    false);
-        }
-#endif
 
     }
 

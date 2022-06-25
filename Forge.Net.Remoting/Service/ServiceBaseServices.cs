@@ -192,10 +192,10 @@ namespace Forge.Net.Remoting.Service
                         }
                         ChannelServices.StartListeningChannels();
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         ContractDescriptors.Clear();
-                        throw ex;
+                        throw;
                     }
                 }
 

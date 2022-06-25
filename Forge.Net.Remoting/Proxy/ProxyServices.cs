@@ -220,10 +220,10 @@ namespace Forge.Net.Remoting.Proxy
                         //    mSingletonInstance = new ProxyServices();
                         //}
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         mContractDescriptors.Clear();
-                        throw ex;
+                        throw;
                     }
                 }
                 //ChannelServices.startListeningChannels();

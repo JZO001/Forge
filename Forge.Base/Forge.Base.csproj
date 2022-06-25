@@ -116,7 +116,6 @@
     <Compile Include="Logging\ILog.cs" />
     <Compile Include="Logging\ILoggerWrapper.cs" />
     <Compile Include="Logging\LogManager.cs" />
-    <Compile Include="Logging\LogUtils.cs" />
     <Compile Include="Logging\NullLog.cs" />
     <Compile Include="Logging\NullLogger.cs" />
     <Compile Include="Management\IManager.cs" />

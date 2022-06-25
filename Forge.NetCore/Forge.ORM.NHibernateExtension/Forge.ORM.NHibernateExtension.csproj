@@ -1,102 +1,119 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;net461</TargetFrameworks>
-    <Version>1.0.2.9</Version>
-    <Copyright>Copyright © Zoltan Juhasz, 2004-2019</Copyright>
-    <Description>Forge NHibernate ORM Extensions</Description>
-    <Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
-    <Company>Forge Project Contributor(s)</Company>
-    <PackageId>Forge.ORM.NHibernateExtension</PackageId>
-    <Authors>Zoltan Juhasz</Authors>
-    <AssemblyVersion>1.0.2.9</AssemblyVersion>
-    <Title>Forge ORM Extensions for NHibernate</Title>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <ProjectGuid>{D1427FB9-2787-46E6-A5AC-D98E8476F4F7}</ProjectGuid>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net461;netstandard2.0;net5.0;net6.0</TargetFrameworks>
+		<Version>1.1.0.0</Version>
+		<Copyright>Copyright © Zoltan Juhasz, 2004-2022</Copyright>
+		<Description>Forge NHibernate ORM Extensions</Description>
+		<Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
+		<Company>Forge Project Contributor(s)</Company>
+		<PackageId>Forge.ORM.NHibernateExtension</PackageId>
+		<Authors>Zoltan Juhasz</Authors>
+		<AssemblyVersion>1.1.0.0</AssemblyVersion>
+		<Title>Forge ORM Extensions for NHibernate</Title>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<ProjectGuid>{D1427FB9-2787-46E6-A5AC-D98E8476F4F7}</ProjectGuid>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.ORM.NHibernateExtension\Forge.ORM.NHibernateExtension.xml</DocumentationFile>
-  </PropertyGroup>
+	<PropertyGroup>
+		<DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.ORM.NHibernateExtension\Forge.ORM.NHibernateExtension.xml</DocumentationFile>
+		<RepositoryUrl>https://github.com/JZO001/Forge</RepositoryUrl>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\Criterias\AllCriteria.cs" Link="Criterias\AllCriteria.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\Criterias\ArithmeticCriteria.cs" Link="Criterias\ArithmeticCriteria.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\Criterias\ArithmeticOperandEnum.cs" Link="Criterias\ArithmeticOperandEnum.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\Criterias\AssociationEntry.cs" Link="Criterias\AssociationEntry.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\Criterias\BetweenCriteria.cs" Link="Criterias\BetweenCriteria.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\Criterias\Criteria.cs" Link="Criterias\Criteria.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\Criterias\GroupCriteria.cs" Link="Criterias\GroupCriteria.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\Criterias\GroupCriteriaLogicEnum.cs" Link="Criterias\GroupCriteriaLogicEnum.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\Criterias\InCriteria.cs" Link="Criterias\InCriteria.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\Criterias\IReflectionCriteria.cs" Link="Criterias\IReflectionCriteria.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\Criterias\LikeCriteria.cs" Link="Criterias\LikeCriteria.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\Criterias\LikeMatchModeEnum.cs" Link="Criterias\LikeMatchModeEnum.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\Criterias\NullCriteria.cs" Link="Criterias\NullCriteria.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\Criterias\OrderBy.cs" Link="Criterias\OrderBy.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\Criterias\OrderModeEnum.cs" Link="Criterias\OrderModeEnum.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\EntityCloneException.cs" Link="EntityCloneException.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\EntityDeleteException.cs" Link="EntityDeleteException.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\EntityRefreshException.cs" Link="EntityRefreshException.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\EntityRestoreException.cs" Link="EntityRestoreException.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\EntitySaveException.cs" Link="EntitySaveException.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\Model\Distributed\EntityBase.cs" Link="Model\Distributed\EntityBase.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\Model\Distributed\EntityId.cs" Link="Model\Distributed\EntityId.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\Model\Distributed\EntityVersion.cs" Link="Model\Distributed\EntityVersion.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\Model\Distributed\Serialization\EntityClone.cs" Link="Model\Distributed\Serialization\EntityClone.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\Model\Distributed\Serialization\EntityProxy.cs" Link="Model\Distributed\Serialization\EntityProxy.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\Model\EntityBaseGenericId.cs" Link="Model\EntityBaseGenericId.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\Model\EntityBaseInt32NativeId.cs" Link="Model\EntityBaseInt32NativeId.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\Model\EntityBaseInt64NativeId.cs" Link="Model\EntityBaseInt64NativeId.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\Model\EntityBaseWithoutId.cs" Link="Model\EntityBaseWithoutId.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\Model\EntityFieldDescriptionAttribute.cs" Link="Model\EntityFieldDescriptionAttribute.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\ORMException.cs" Link="ORMException.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\ORMUtils.cs" Link="ORMUtils.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\QueryDetachedParams.cs" Link="QueryDetachedParams.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\QueryException.cs" Link="QueryException.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\QueryHelper.cs" Link="QueryHelper.cs" />
-    <Compile Include="..\..\Forge.ORM.NHibernateExtension\QueryParams.cs" Link="QueryParams.cs" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\net6.0\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Iesi.Collections" Version="4.0.4" />
-    <PackageReference Include="NHibernate" Version="5.3.5" />
-    <PackageReference Include="NHibernate.Mapping.Attributes" Version="5.1.0" />
-    <PackageReference Include="Remotion.Linq" Version="2.2.0" />
-    <PackageReference Include="Remotion.Linq.EagerFetching" Version="2.2.0" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\net5.0\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-    <PackageReference Include="System.Configuration.ConfigurationManager">
-      <Version>4.7.0</Version>
-    </PackageReference>
-    <Reference Include="Forge.Base">
-      <HintPath>..\.Output\netcoreapp3.1\Forge.Base.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Base</Name>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\netstandard2.0\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net461'">
-    <Reference Include="System.Configuration" />
-    <Reference Include="Forge.Base">
-      <HintPath>..\.Output\net40\Forge.Base.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Base</Name>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net461'">
+		<Reference Include="System.Configuration" />
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\net40\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Criterias\" />
-    <Folder Include="Model\Distributed\Serialization\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\Criterias\AllCriteria.cs" Link="Criterias\AllCriteria.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\Criterias\ArithmeticCriteria.cs" Link="Criterias\ArithmeticCriteria.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\Criterias\ArithmeticOperandEnum.cs" Link="Criterias\ArithmeticOperandEnum.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\Criterias\AssociationEntry.cs" Link="Criterias\AssociationEntry.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\Criterias\BetweenCriteria.cs" Link="Criterias\BetweenCriteria.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\Criterias\Criteria.cs" Link="Criterias\Criteria.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\Criterias\GroupCriteria.cs" Link="Criterias\GroupCriteria.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\Criterias\GroupCriteriaLogicEnum.cs" Link="Criterias\GroupCriteriaLogicEnum.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\Criterias\InCriteria.cs" Link="Criterias\InCriteria.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\Criterias\IReflectionCriteria.cs" Link="Criterias\IReflectionCriteria.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\Criterias\LikeCriteria.cs" Link="Criterias\LikeCriteria.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\Criterias\LikeMatchModeEnum.cs" Link="Criterias\LikeMatchModeEnum.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\Criterias\NullCriteria.cs" Link="Criterias\NullCriteria.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\Criterias\OrderBy.cs" Link="Criterias\OrderBy.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\Criterias\OrderModeEnum.cs" Link="Criterias\OrderModeEnum.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\EntityCloneException.cs" Link="EntityCloneException.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\EntityDeleteException.cs" Link="EntityDeleteException.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\EntityRefreshException.cs" Link="EntityRefreshException.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\EntityRestoreException.cs" Link="EntityRestoreException.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\EntitySaveException.cs" Link="EntitySaveException.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\Model\Distributed\EntityBase.cs" Link="Model\Distributed\EntityBase.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\Model\Distributed\EntityId.cs" Link="Model\Distributed\EntityId.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\Model\Distributed\EntityVersion.cs" Link="Model\Distributed\EntityVersion.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\Model\Distributed\Serialization\EntityClone.cs" Link="Model\Distributed\Serialization\EntityClone.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\Model\Distributed\Serialization\EntityProxy.cs" Link="Model\Distributed\Serialization\EntityProxy.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\Model\EntityBaseGenericId.cs" Link="Model\EntityBaseGenericId.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\Model\EntityBaseInt32NativeId.cs" Link="Model\EntityBaseInt32NativeId.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\Model\EntityBaseInt64NativeId.cs" Link="Model\EntityBaseInt64NativeId.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\Model\EntityBaseWithoutId.cs" Link="Model\EntityBaseWithoutId.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\Model\EntityFieldDescriptionAttribute.cs" Link="Model\EntityFieldDescriptionAttribute.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\ORMException.cs" Link="ORMException.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\ORMUtils.cs" Link="ORMUtils.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\QueryDetachedParams.cs" Link="QueryDetachedParams.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\QueryException.cs" Link="QueryException.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\QueryHelper.cs" Link="QueryHelper.cs" />
+		<Compile Include="..\..\Forge.ORM.NHibernateExtension\QueryParams.cs" Link="QueryParams.cs" />
+	</ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(ProjectDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
-  </Target>
+	<ItemGroup>
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" Condition="'$(TargetFramework)' != 'net461'" />
+		<PackageReference Include="Iesi.Collections" Version="4.0.4" />
+		<PackageReference Include="NHibernate" Version="5.3.12" />
+		<PackageReference Include="NHibernate.Mapping.Attributes" Version="5.1.0" />
+		<PackageReference Include="Remotion.Linq" Version="2.2.0" />
+		<PackageReference Include="Remotion.Linq.EagerFetching" Version="2.2.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Criterias\" />
+		<Folder Include="Model\Distributed\Serialization\" />
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(ProjectDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
+	</Target>
 
 </Project>

@@ -1,88 +1,117 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;net40</TargetFrameworks>
-    <Version>1.0.0.8</Version>
-    <Copyright>Copyright © Zoltan Juhasz, 2005-2019</Copyright>
-    <Description>Contains the persistence library</Description>
-    <Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
-    <Company>Forge Project Contributor(s)</Company>
-    <PackageId>Forge.Persistence</PackageId>
-    <Authors>Zoltan Juhasz</Authors>
-    <AssemblyVersion>1.0.0.8</AssemblyVersion>
-    <Title>Forge Persistence Library</Title>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <ProjectGuid>{689C2101-257F-404B-9B50-9B550DFA196F}</ProjectGuid>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net40;netstandard2.0;net5.0;net6.0</TargetFrameworks>
+		<Version>1.1.0.0</Version>
+		<Copyright>Copyright © Zoltan Juhasz, 2005-2022</Copyright>
+		<Description>Contains the persistence library</Description>
+		<Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
+		<Company>Forge Project Contributor(s)</Company>
+		<PackageId>Forge.Persistence</PackageId>
+		<Authors>Zoltan Juhasz</Authors>
+		<AssemblyVersion>1.1.0.0</AssemblyVersion>
+		<Title>Forge Persistence Library</Title>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<ProjectGuid>{689C2101-257F-404B-9B50-9B550DFA196F}</ProjectGuid>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.Persistence\Forge.Persistence.xml</DocumentationFile>
-  </PropertyGroup>
+	<PropertyGroup>
+		<DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.Persistence\Forge.Persistence.xml</DocumentationFile>
+		<RepositoryUrl>https://github.com/JZO001/Forge</RepositoryUrl>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Include="..\..\Forge.Persistence\Collections\CacheStrategyEnum.cs" Link="Collections\CacheStrategyEnum.cs" />
-    <Compile Include="..\..\Forge.Persistence\Collections\DuplicatedCacheIdentifierException.cs" Link="Collections\DuplicatedCacheIdentifierException.cs" />
-    <Compile Include="..\..\Forge.Persistence\Collections\IPersistentCache.cs" Link="Collections\IPersistentCache.cs" />
-    <Compile Include="..\..\Forge.Persistence\Collections\IPersistentCollection.cs" Link="Collections\IPersistentCollection.cs" />
-    <Compile Include="..\..\Forge.Persistence\Collections\IPersistentDictionary.cs" Link="Collections\IPersistentDictionary.cs" />
-    <Compile Include="..\..\Forge.Persistence\Collections\IPersistentList.cs" Link="Collections\IPersistentList.cs" />
-    <Compile Include="..\..\Forge.Persistence\Collections\IPersistentQueue.cs" Link="Collections\IPersistentQueue.cs" />
-    <Compile Include="..\..\Forge.Persistence\Collections\IPersistentStack.cs" Link="Collections\IPersistentStack.cs" />
-    <Compile Include="..\..\Forge.Persistence\Collections\PersistentCache.cs" Link="Collections\PersistentCache.cs" />
-    <Compile Include="..\..\Forge.Persistence\Collections\PersistentDictionary.cs" Link="Collections\PersistentDictionary.cs" />
-    <Compile Include="..\..\Forge.Persistence\Collections\PersistentList.cs" Link="Collections\PersistentList.cs" />
-    <Compile Include="..\..\Forge.Persistence\Collections\PersistentQueue.cs" Link="Collections\PersistentQueue.cs" />
-    <Compile Include="..\..\Forge.Persistence\Collections\PersistentStack.cs" Link="Collections\PersistentStack.cs" />
-    <Compile Include="..\..\Forge.Persistence\Formatters\BinarySerializerFormatter.cs" Link="Formatters\BinarySerializerFormatter.cs" />
-    <Compile Include="..\..\Forge.Persistence\Formatters\DataContractJsonFormatter.cs" Link="Formatters\DataContractJsonFormatter.cs" />
-    <Compile Include="..\..\Forge.Persistence\Serialization\BinarySerializer.cs" Link="Serialization\BinarySerializer.cs" />
-    <Compile Include="..\..\Forge.Persistence\Serialization\BinarySerializerBehaviorEnum.cs" Link="Serialization\BinarySerializerBehaviorEnum.cs" />
-    <Compile Include="..\..\Forge.Persistence\Serialization\SerializationHelper.cs" Link="Serialization\SerializationHelper.cs" />
-    <Compile Include="..\..\Forge.Persistence\StorageProviders\ConfigSection\StorageConfiguration.cs" Link="StorageProviders\ConfigSection\StorageConfiguration.cs" />
-    <Compile Include="..\..\Forge.Persistence\StorageProviders\ConfigSection\StorageSection.cs" Link="StorageProviders\ConfigSection\StorageSection.cs" />
-    <Compile Include="..\..\Forge.Persistence\StorageProviders\FileStorageProvider.cs" Link="StorageProviders\FileStorageProvider.cs" />
-    <Compile Include="..\..\Forge.Persistence\StorageProviders\IStorageProvider.cs" Link="StorageProviders\IStorageProvider.cs" />
-    <Compile Include="..\..\Forge.Persistence\StorageProviders\ItemAllocationTable.cs" Link="StorageProviders\ItemAllocationTable.cs" />
-    <Compile Include="..\..\Forge.Persistence\StorageProviders\MemoryStorageProvider.cs" Link="StorageProviders\MemoryStorageProvider.cs" />
-    <Compile Include="..\..\Forge.Persistence\StorageProviders\PersistenceException.cs" Link="StorageProviders\PersistenceException.cs" />
-    <Compile Include="..\..\Forge.Persistence\StorageProviders\StorageIdentifierAlreadyExistException.cs" Link="StorageProviders\StorageIdentifierAlreadyExistException.cs" />
-    <Compile Include="..\..\Forge.Persistence\StorageProviders\StorageProviderBase.cs" Link="StorageProviders\StorageProviderBase.cs" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<PackageReference Include="Microsoft.CSharp">
+		  <Version>4.7.0</Version>
+		</PackageReference>
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\net6.0\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-    <PackageReference Include="System.Configuration.ConfigurationManager">
-      <Version>4.7.0</Version>
-    </PackageReference>
-    <Reference Include="Forge.Base">
-      <HintPath>..\.Output\netcoreapp3.1\Forge.Base.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Base</Name>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+		<PackageReference Include="Microsoft.CSharp">
+		  <Version>4.7.0</Version>
+		</PackageReference>
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\net5.0\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net40'">
-    <Reference Include="System.Configuration" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Forge.Base">
-      <HintPath>..\.Output\net40\Forge.Base.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Base</Name>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+		<PackageReference Include="Microsoft.CSharp">
+		  <Version>4.7.0</Version>
+		</PackageReference>
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\netstandard2.0\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Collections\" />
-    <Folder Include="Formatters\" />
-    <Folder Include="Serialization\" />
-    <Folder Include="StorageProviders\ConfigSection\" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net40'">
+		<Reference Include="System.Configuration" />
+		<Reference Include="Microsoft.CSharp" />
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\net40\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+	</ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(ProjectDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
-  </Target>
+	<ItemGroup>
+		<Compile Include="..\..\Forge.Persistence\Collections\CacheStrategyEnum.cs" Link="Collections\CacheStrategyEnum.cs" />
+		<Compile Include="..\..\Forge.Persistence\Collections\DuplicatedCacheIdentifierException.cs" Link="Collections\DuplicatedCacheIdentifierException.cs" />
+		<Compile Include="..\..\Forge.Persistence\Collections\IPersistentCache.cs" Link="Collections\IPersistentCache.cs" />
+		<Compile Include="..\..\Forge.Persistence\Collections\IPersistentCollection.cs" Link="Collections\IPersistentCollection.cs" />
+		<Compile Include="..\..\Forge.Persistence\Collections\IPersistentDictionary.cs" Link="Collections\IPersistentDictionary.cs" />
+		<Compile Include="..\..\Forge.Persistence\Collections\IPersistentList.cs" Link="Collections\IPersistentList.cs" />
+		<Compile Include="..\..\Forge.Persistence\Collections\IPersistentQueue.cs" Link="Collections\IPersistentQueue.cs" />
+		<Compile Include="..\..\Forge.Persistence\Collections\IPersistentStack.cs" Link="Collections\IPersistentStack.cs" />
+		<Compile Include="..\..\Forge.Persistence\Collections\PersistentCache.cs" Link="Collections\PersistentCache.cs" />
+		<Compile Include="..\..\Forge.Persistence\Collections\PersistentDictionary.cs" Link="Collections\PersistentDictionary.cs" />
+		<Compile Include="..\..\Forge.Persistence\Collections\PersistentList.cs" Link="Collections\PersistentList.cs" />
+		<Compile Include="..\..\Forge.Persistence\Collections\PersistentQueue.cs" Link="Collections\PersistentQueue.cs" />
+		<Compile Include="..\..\Forge.Persistence\Collections\PersistentStack.cs" Link="Collections\PersistentStack.cs" />
+		<Compile Include="..\..\Forge.Persistence\Formatters\BinarySerializerFormatter.cs" Link="Formatters\BinarySerializerFormatter.cs" />
+		<Compile Include="..\..\Forge.Persistence\Formatters\DataContractJsonFormatter.cs" Link="Formatters\DataContractJsonFormatter.cs" />
+		<Compile Include="..\..\Forge.Persistence\Serialization\BinarySerializer.cs" Link="Serialization\BinarySerializer.cs" />
+		<Compile Include="..\..\Forge.Persistence\Serialization\BinarySerializerBehaviorEnum.cs" Link="Serialization\BinarySerializerBehaviorEnum.cs" />
+		<Compile Include="..\..\Forge.Persistence\Serialization\SerializationHelper.cs" Link="Serialization\SerializationHelper.cs" />
+		<Compile Include="..\..\Forge.Persistence\StorageProviders\ConfigSection\StorageConfiguration.cs" Link="StorageProviders\ConfigSection\StorageConfiguration.cs" />
+		<Compile Include="..\..\Forge.Persistence\StorageProviders\ConfigSection\StorageSection.cs" Link="StorageProviders\ConfigSection\StorageSection.cs" />
+		<Compile Include="..\..\Forge.Persistence\StorageProviders\FileStorageProvider.cs" Link="StorageProviders\FileStorageProvider.cs" />
+		<Compile Include="..\..\Forge.Persistence\StorageProviders\IStorageProvider.cs" Link="StorageProviders\IStorageProvider.cs" />
+		<Compile Include="..\..\Forge.Persistence\StorageProviders\ItemAllocationTable.cs" Link="StorageProviders\ItemAllocationTable.cs" />
+		<Compile Include="..\..\Forge.Persistence\StorageProviders\MemoryStorageProvider.cs" Link="StorageProviders\MemoryStorageProvider.cs" />
+		<Compile Include="..\..\Forge.Persistence\StorageProviders\PersistenceException.cs" Link="StorageProviders\PersistenceException.cs" />
+		<Compile Include="..\..\Forge.Persistence\StorageProviders\StorageIdentifierAlreadyExistException.cs" Link="StorageProviders\StorageIdentifierAlreadyExistException.cs" />
+		<Compile Include="..\..\Forge.Persistence\StorageProviders\StorageProviderBase.cs" Link="StorageProviders\StorageProviderBase.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" Condition="'$(TargetFramework)' != 'net40'" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Collections\" />
+		<Folder Include="Formatters\" />
+		<Folder Include="Serialization\" />
+		<Folder Include="StorageProviders\ConfigSection\" />
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(ProjectDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
+	</Target>
 
 </Project>

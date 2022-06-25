@@ -13,11 +13,13 @@ namespace Forge.Net.Services.ConfigSection
     /// Configuration access helper class for Network Services
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2143:TransparentMethodsShouldNotDemandFxCopRule")]
+#if NETFRAMEWORK
     [SecurityPermission(SecurityAction.Demand, Unrestricted = true)]
+#endif
     public class NetworkServiceConfiguration : Forge.Configuration.Shared.SharedConfigSettings<NetworkServiceSection, NetworkServiceConfiguration>
     {
 
-        #region Constructor(s)
+#region Constructor(s)
 
         /// <summary>
         /// Initializes the <see cref="NetworkServiceConfiguration"/> class.
@@ -36,7 +38,7 @@ namespace Forge.Net.Services.ConfigSection
         {
         }
 
-        #endregion
+#endregion
 
     }
 

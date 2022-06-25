@@ -1,110 +1,163 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;net461</TargetFrameworks>
-    <Version>1.1.0.1</Version>
-    <Copyright>Copyright © Zoltan Juhasz, 2004-2019</Copyright>
-    <Description>Contains the persistence library</Description>
-    <Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
-    <Company>Forge Project Contributor(s)</Company>
-    <PackageId>Forge.Persistence.StorageProvider.HibernateStorageProvider</PackageId>
-    <Authors>Zoltan Juhasz</Authors>
-    <AssemblyVersion>1.1.0.1</AssemblyVersion>
-    <Title>Forge.Persistence.StorageProvider.HibernateStorageProvider</Title>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <ProjectGuid>{DA14FB35-D571-4163-A913-3D8C934954BD}</ProjectGuid>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net461;netstandard2.0;net5.0;net6.0</TargetFrameworks>
+		<Version>1.2.0.0</Version>
+		<Copyright>Copyright © Zoltan Juhasz, 2004-2022</Copyright>
+		<Description>Contains the persistence library</Description>
+		<Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
+		<Company>Forge Project Contributor(s)</Company>
+		<PackageId>Forge.Persistence.StorageProvider.HibernateStorageProvider</PackageId>
+		<Authors>Zoltan Juhasz</Authors>
+		<AssemblyVersion>1.2.0.0</AssemblyVersion>
+		<Title>Forge.Persistence.StorageProvider.HibernateStorageProvider</Title>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<ProjectGuid>{DA14FB35-D571-4163-A913-3D8C934954BD}</ProjectGuid>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.Persistence.StorageProviders.HibernateStorageProvider\Forge.Persistence.StorageProviders.HibernateStorageProvider.xml</DocumentationFile>
-  </PropertyGroup>
+	<PropertyGroup>
+		<DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.Persistence.StorageProviders.HibernateStorageProvider\Forge.Persistence.StorageProviders.HibernateStorageProvider.xml</DocumentationFile>
+		<RepositoryUrl>https://github.com/JZO001/Forge</RepositoryUrl>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Include="..\..\Forge.Persistence.StorageProviders.HibernateStorageProvider\EntityModel\PersistentStorageAllocationTable.cs" Link="EntityModel\PersistentStorageAllocationTable.cs" />
-    <Compile Include="..\..\Forge.Persistence.StorageProviders.HibernateStorageProvider\EntityModel\PersistentStorageItem.cs" Link="EntityModel\PersistentStorageItem.cs" />
-    <Compile Include="..\..\Forge.Persistence.StorageProviders.HibernateStorageProvider\FailSafeFactory.cs" Link="FailSafeFactory.cs" />
-    <Compile Include="..\..\Forge.Persistence.StorageProviders.HibernateStorageProvider\HibernateStorageProvider.cs" Link="HibernateStorageProvider.cs" />
-    <Compile Include="..\..\Forge.Persistence.StorageProviders.HibernateStorageProvider\ItemTable.cs" Link="ItemTable.cs" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\net6.0\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+		<Reference Include="Forge.Persistence">
+			<HintPath>..\.Output\net6.0\Forge.Persistence.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Persistence</Name>
+		</Reference>
+		<Reference Include="Forge.ORM.NHibernateExtension">
+			<HintPath>..\.Output\net6.0\Forge.ORM.NHibernateExtension.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.ORM.NHibernateExtension</Name>
+		</Reference>
+		<Reference Include="Forge.DatabaseManagement">
+			<HintPath>..\.Output\net6.0\Forge.DatabaseManagement.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.DatabaseManagement</Name>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Iesi.Collections" Version="4.0.4" />
-    <PackageReference Include="NHibernate" Version="5.3.5" />
-    <PackageReference Include="NHibernate.Mapping.Attributes" Version="5.1.0" />
-    <PackageReference Include="Remotion.Linq" Version="2.2.0" />
-    <PackageReference Include="Remotion.Linq.EagerFetching" Version="2.2.0" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\net5.0\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+		<Reference Include="Forge.Persistence">
+			<HintPath>..\.Output\net5.0\Forge.Persistence.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Persistence</Name>
+		</Reference>
+		<Reference Include="Forge.ORM.NHibernateExtension">
+			<HintPath>..\.Output\net5.0\Forge.ORM.NHibernateExtension.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.ORM.NHibernateExtension</Name>
+		</Reference>
+		<Reference Include="Forge.DatabaseManagement">
+			<HintPath>..\.Output\net5.0\Forge.DatabaseManagement.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.DatabaseManagement</Name>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-    <PackageReference Include="System.Configuration.ConfigurationManager">
-      <Version>4.7.0</Version>
-    </PackageReference>
-    <Reference Include="Forge.Base">
-      <HintPath>..\.Output\netcoreapp3.1\Forge.Base.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Base</Name>
-    </Reference>
-    <Reference Include="Forge.Persistence">
-      <HintPath>..\.Output\netcoreapp3.1\Forge.Persistence.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Persistence</Name>
-    </Reference>
-    <Reference Include="Forge.ORM.NHibernateExtension">
-      <HintPath>..\.Output\netcoreapp3.1\Forge.ORM.NHibernateExtension.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.ORM.NHibernateExtension</Name>
-    </Reference>
-    <Reference Include="Forge.DatabaseManagement">
-      <HintPath>..\.Output\netcoreapp3.1\Forge.DatabaseManagement.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.DatabaseManagement</Name>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\netstandard2.0\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+		<Reference Include="Forge.Persistence">
+			<HintPath>..\.Output\netstandard2.0\Forge.Persistence.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Persistence</Name>
+		</Reference>
+		<Reference Include="Forge.ORM.NHibernateExtension">
+			<HintPath>..\.Output\netstandard2.0\Forge.ORM.NHibernateExtension.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.ORM.NHibernateExtension</Name>
+		</Reference>
+		<Reference Include="Forge.DatabaseManagement">
+			<HintPath>..\.Output\netstandard2.0\Forge.DatabaseManagement.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.DatabaseManagement</Name>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net461'">
-    <Reference Include="System.Configuration" />
-    <Reference Include="Forge.Base">
-      <HintPath>..\.Output\net40\Forge.Base.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Base</Name>
-    </Reference>
-    <Reference Include="Forge.Persistence">
-      <HintPath>..\.Output\net40\Forge.Persistence.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Persistence</Name>
-    </Reference>
-    <Reference Include="Forge.ORM.NHibernateExtension">
-      <HintPath>..\.Output\net461\Forge.ORM.NHibernateExtension.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.ORM.NHibernateExtension</Name>
-    </Reference>
-    <Reference Include="Forge.DatabaseManagement">
-      <HintPath>..\.Output\net40\Forge.DatabaseManagement.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.DatabaseManagement</Name>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net461'">
+		<Reference Include="System.Configuration" />
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\net40\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+		<Reference Include="Forge.Persistence">
+			<HintPath>..\.Output\net40\Forge.Persistence.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Persistence</Name>
+		</Reference>
+		<Reference Include="Forge.ORM.NHibernateExtension">
+			<HintPath>..\.Output\net461\Forge.ORM.NHibernateExtension.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.ORM.NHibernateExtension</Name>
+		</Reference>
+		<Reference Include="Forge.DatabaseManagement">
+			<HintPath>..\.Output\net40\Forge.DatabaseManagement.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.DatabaseManagement</Name>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="EntityModel\" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" Condition="'$(TargetFramework)' != 'net461'" />
+		<PackageReference Include="Iesi.Collections" Version="4.0.4" />
+		<PackageReference Include="NHibernate" Version="5.3.12" />
+		<PackageReference Include="NHibernate.Mapping.Attributes" Version="5.1.0" />
+		<PackageReference Include="Remotion.Linq" Version="2.2.0" />
+		<PackageReference Include="Remotion.Linq.EagerFetching" Version="2.2.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\..\Forge.Persistence.StorageProviders.HibernateStorageProvider\hspsection.xsd" Link="hspsection.xsd" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Include="..\..\Forge.Persistence.StorageProviders.HibernateStorageProvider\EntityModel\PersistentStorageAllocationTable.cs" Link="EntityModel\PersistentStorageAllocationTable.cs" />
+		<Compile Include="..\..\Forge.Persistence.StorageProviders.HibernateStorageProvider\EntityModel\PersistentStorageItem.cs" Link="EntityModel\PersistentStorageItem.cs" />
+		<Compile Include="..\..\Forge.Persistence.StorageProviders.HibernateStorageProvider\FailSafeFactory.cs" Link="FailSafeFactory.cs" />
+		<Compile Include="..\..\Forge.Persistence.StorageProviders.HibernateStorageProvider\HibernateStorageProvider.cs" Link="HibernateStorageProvider.cs" />
+		<Compile Include="..\..\Forge.Persistence.StorageProviders.HibernateStorageProvider\ItemTable.cs" Link="ItemTable.cs" />
+	</ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(ProjectDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
-  </Target>
+	<ItemGroup>
+		<Folder Include="EntityModel\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\Forge.Persistence.StorageProviders.HibernateStorageProvider\hspsection.xsd" Link="hspsection.xsd" />
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(ProjectDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
+	</Target>
 
 </Project>

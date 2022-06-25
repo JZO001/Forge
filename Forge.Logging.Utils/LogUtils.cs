@@ -10,7 +10,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using Forge.Reflection;
 
-namespace Forge.Logging
+namespace Forge.Logging.Utils
 {
 
     /// <summary>
@@ -181,7 +181,7 @@ namespace Forge.Logging
                     catch (Exception) { }
 
                     LOGGER.Info(string.Format("LOGUTILS, Domain, Setup Information, ApplicationBase: {0}", domain.SetupInformation.ApplicationBase));
-#if NETCOREAPP3_1
+#if NETCOREAPP3_1_OR_GREATER
 #else
                     LOGGER.Info(string.Format("LOGUTILS, Domain, Setup Information, ApplicationName: {0}", domain.SetupInformation.ApplicationName));
                     LOGGER.Info(string.Format("LOGUTILS, Domain, Setup Information, CachePath: {0}", domain.SetupInformation.CachePath));
@@ -199,6 +199,7 @@ namespace Forge.Logging
                     LOGGER.Info(string.Format("LOGUTILS, Domain, Setup Information, ShadowCopyDirectories: {0}", domain.SetupInformation.ShadowCopyDirectories));
                     LOGGER.Info(string.Format("LOGUTILS, Domain, Setup Information, ShadowCopyFiles: {0}", domain.SetupInformation.ShadowCopyFiles));
 #endif
+
                 }
 
                 LOGGER.Info("--------------------------------------------------------");
@@ -225,12 +226,23 @@ namespace Forge.Logging
                         logMark = true;
                     }
                     LOGGER.Info(string.Format("LOGUTILS, Assembly, full name: {0}", a.FullName));
+#if NET5_0_OR_GREATER
+                    try
+                    {
+                        LOGGER.Info(string.Format("LOGUTILS, Assembly, code base: {0}", a.Location));
+                    }
+                    catch (Exception) { }
+#else
                     try
                     {
                         LOGGER.Info(string.Format("LOGUTILS, Assembly, code base: {0}", a.CodeBase));
                     }
                     catch (Exception) { }
+#endif
+#if NET5_0_OR_GREATER
+#else
                     LOGGER.Info(string.Format("LOGUTILS, Assembly, global assembly cache: {0}", a.GlobalAssemblyCache.ToString()));
+#endif
                     LOGGER.Info(string.Format("LOGUTILS, Assembly, host context: {0}", a.HostContext.ToString()));
                     LOGGER.Info(string.Format("LOGUTILS, Assembly, ImageRuntimeVersion: {0}", a.ImageRuntimeVersion));
                     LogAssemblyNewProperties(a);
@@ -270,10 +282,17 @@ namespace Forge.Logging
                 LOGGER.Info(string.Format("LOGUTILS, Assembly, full name: {0}", a.FullName));
                 try
                 {
+#if NET5_0_OR_GREATER
+                    LOGGER.Info(string.Format("LOGUTILS, Assembly, code base: {0}", a.Location));
+#else
                     LOGGER.Info(string.Format("LOGUTILS, Assembly, code base: {0}", a.CodeBase));
+#endif
                 }
                 catch (Exception) { }
+#if NET5_0_OR_GREATER
+#else
                 LOGGER.Info(string.Format("LOGUTILS, Assembly, global assembly cache: {0}", a.GlobalAssemblyCache.ToString()));
+#endif
                 LOGGER.Info(string.Format("LOGUTILS, Assembly, host context: {0}", a.HostContext.ToString()));
                 LOGGER.Info(string.Format("LOGUTILS, Assembly, ImageRuntimeVersion: {0}", a.ImageRuntimeVersion));
                 LogAssemblyNewProperties(a);

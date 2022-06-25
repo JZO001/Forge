@@ -1358,7 +1358,7 @@ namespace Forge.Net.TerraGraf
 
                     if (this.mConfiguration.Settings.AddWindowsFirewallException)
                     {
-#if NETCOREAPP3_1
+#if NETCOREAPP3_1_OR_GREATER
 #else
 
                         try
@@ -1432,7 +1432,7 @@ namespace Forge.Net.TerraGraf
 
                     //ezután szabad indítani a hálózatot
                     this.mConnectionManager.InitializeTCPServers();
-#if NETCOREAPP3_1
+#if NETCOREAPP3_1_OR_GREATER
 #else
                     this.mConnectionManager.InitializeNATUPnPService();
 #endif

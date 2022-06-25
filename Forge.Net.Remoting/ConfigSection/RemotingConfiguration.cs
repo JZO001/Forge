@@ -12,11 +12,13 @@ namespace Forge.Net.Remoting.ConfigSection
     /// <summary>
     /// Configuration access helper class for remoting
     /// </summary>
+#if NETFRAMEWORK
     [SecurityPermission(SecurityAction.Demand, Unrestricted = true)]
+#endif
     public class RemotingConfiguration : Forge.Configuration.Shared.SharedConfigSettings<RemotingSection, RemotingConfiguration>
     {
 
-        #region Constructor(s)
+#region Constructor(s)
 
         /// <summary>
         /// Initializes the <see cref="RemotingConfiguration"/> class.
@@ -34,7 +36,7 @@ namespace Forge.Net.Remoting.ConfigSection
         {
         }
 
-        #endregion
+#endregion
 
     }
 

@@ -4,6 +4,8 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+#if IS_WINDOWS
+
 using System;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
@@ -59,7 +61,7 @@ namespace Forge.Native.Hooks
                 OnStart(ManagerEventStateEnum.Before);
                 try
                 {
-                    if (ApplicationHelper.IsUIThread())
+                    if (Forge.Windows.UI.ApplicationHelper.IsUIThread())
                     {
                         mViewer = new ClipboardViewer(this);
                         this.ManagerState = ManagerStateEnum.Started;
@@ -257,3 +259,5 @@ namespace Forge.Native.Hooks
     }
 
 }
+
+#endif

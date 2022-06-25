@@ -1,0 +1,42 @@
+﻿<Project>
+
+	<Sdk Name="Microsoft.NET.Sdk" />
+	<Sdk Name="Microsoft.NET.Sdk.WindowsDesktop" />
+
+	<PropertyGroup>
+		<TargetFrameworks>net40;netcoreapp3.1;net5.0-windows;net6.0-windows</TargetFrameworks>
+		<Version>1.0.0.0</Version>
+		<Copyright>Copyright © Zoltan Juhasz, 2004-2022</Copyright>
+		<Description>Extension method(s)</Description>
+		<Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
+		<Company>Forge Project Contributor(s)</Company>
+		<PackageId>Forge.Windows.UI</PackageId>
+		<Authors>Zoltan Juhasz</Authors>
+		<AssemblyVersion>1.0.0.0</AssemblyVersion>
+		<Title>Forge Windows UI helpers</Title>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<UseWPF>true</UseWPF>
+		<UseWindowsForms>true</UseWindowsForms>
+		<ProjectGuid>{DB1C2AB1-17E9-4D85-85F0-20F4C070693A}</ProjectGuid>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.Windows.UI\Forge.Windows.UI.xml</DocumentationFile>
+		<RepositoryUrl>https://github.com/JZO001/Forge</RepositoryUrl>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net40'">
+		<Reference Include="System.Web" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\Forge.Windows.UI\ApplicationHelper.cs" Link="ApplicationHelper.cs" />
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(ProjectDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
+	</Target>
+
+</Project>

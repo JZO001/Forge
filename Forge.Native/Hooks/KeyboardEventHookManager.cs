@@ -4,6 +4,9 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+#if NETSTANDARD2_0_OR_GREATER
+#else
+
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -287,3 +290,5 @@ namespace Forge.Native.Hooks
     }
 
 }
+
+#endif

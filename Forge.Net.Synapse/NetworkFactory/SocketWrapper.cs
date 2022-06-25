@@ -565,6 +565,7 @@ namespace Forge.Net.Synapse.NetworkFactory
         /// <returns></returns>
         public int SetKeepAliveValues(bool state, int keepAliveTime, int keepAliveInterval)
         {
+#if IS_WINDOWS
             if (keepAliveTime < 1000)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException("keepAliveTime");
@@ -580,6 +581,9 @@ namespace Forge.Net.Synapse.NetworkFactory
             keepAlive.KeepAliveInterval = Convert.ToUInt32(keepAliveInterval);
 
             return mSocket.IOControl(IOControlCode.KeepAliveValues, keepAlive.ToArray(), null);
+#else
+            return 0;
+#endif
         }
 
         /// <summary>
@@ -591,9 +595,9 @@ namespace Forge.Net.Synapse.NetworkFactory
             GC.SuppressFinalize(this);
         }
 
-        #endregion
+#endregion
 
-        #region Private method(s)
+#region Private method(s)
 
         private void Dispose(bool disposing)
         {
@@ -603,7 +607,7 @@ namespace Forge.Net.Synapse.NetworkFactory
             }
         }
 
-        #endregion
+#endregion
 
     }
 

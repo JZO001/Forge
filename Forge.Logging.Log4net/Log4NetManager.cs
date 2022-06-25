@@ -1,4 +1,4 @@
-﻿#if NETCOREAPP3_1
+﻿#if NETCOREAPP3_1_OR_GREATER
 using Forge.IO;
 #endif
 using System;
@@ -24,7 +24,7 @@ namespace Forge.Logging.Log4net
         /// <summary>Initializes from application configuration.</summary>
         public static void InitializeFromAppConfig()
         {
-#if NETCOREAPP3_1
+#if NETCOREAPP3_1_OR_GREATER
             System.Xml.XmlDocument log4netConfig = new System.Xml.XmlDocument();
             log4netConfig.Load(System.IO.File.OpenRead(System.Configuration.ConfigurationManager.OpenExeConfiguration(System.Configuration.ConfigurationUserLevel.None).FilePath));
             var repo = log4net. LogManager.CreateRepository(Assembly.GetEntryAssembly(),
@@ -36,7 +36,8 @@ namespace Forge.Logging.Log4net
             SetLogger();
         }
 
-#if NETCOREAPP3_1
+#if NETCOREAPP3_1_OR_GREATER
+        /// <summary>Initializes from configuration file.</summary>
         public static void InitializeFromConfigFile()
         {
             InitializeFromConfigFile(new FileInfo(Path.Combine(
@@ -72,7 +73,7 @@ namespace Forge.Logging.Log4net
             }
         }
 
-#if NETCOREAPP3_1
+#if NETCOREAPP3_1_OR_GREATER
 #else
         /// <summary>Gets the logger.</summary>
         /// <param name="name">The name.</param>

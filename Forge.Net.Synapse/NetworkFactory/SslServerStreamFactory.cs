@@ -37,7 +37,7 @@ namespace Forge.Net.Synapse.NetworkFactory
         /// </summary>
         public SslServerStreamFactory()
         {
-#if NETCOREAPP3_1
+#if NETCOREAPP3_1_OR_GREATER
             this.Protocol = SslProtocols.Tls13;
 #else
             this.Protocol = SslProtocols.Default;

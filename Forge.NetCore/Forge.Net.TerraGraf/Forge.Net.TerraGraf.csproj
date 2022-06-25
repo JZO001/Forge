@@ -1,184 +1,320 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;net40</TargetFrameworks>
-    <Version>4.0.0.6</Version>
-    <Copyright>Copyright © Zoltan Juhasz, 2004-2019</Copyright>
-    <Description>Contains the persistence library</Description>
-    <Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
-    <Company>Forge Project Contributor(s)</Company>
-    <PackageId>Forge.Net.TerraGraf</PackageId>
-    <Authors>Zoltan Juhasz</Authors>
-    <AssemblyVersion>4.0.0.6</AssemblyVersion>
-    <Title>TerraGraf Network</Title>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <ProjectGuid>{BDD0BFBB-A9E7-42F1-ADCC-31DBB8A70B70}</ProjectGuid>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net40;netcoreapp3.1;net5.0;net5.0-windows;net6.0;net6.0-windows</TargetFrameworks>
+		<Version>4.2.0.0</Version>
+		<Copyright>Copyright © Zoltan Juhasz, 2004-2022</Copyright>
+		<Description>Contains the persistence library</Description>
+		<Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
+		<Company>Forge Project Contributor(s)</Company>
+		<PackageId>Forge.Net.TerraGraf</PackageId>
+		<Authors>Zoltan Juhasz</Authors>
+		<AssemblyVersion>4.2.0.0</AssemblyVersion>
+		<Title>TerraGraf Network</Title>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<ProjectGuid>{BDD0BFBB-A9E7-42F1-ADCC-31DBB8A70B70}</ProjectGuid>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.Net.TerraGraf\Forge.Net.TerraGraf.xml</DocumentationFile>
-  </PropertyGroup>
+	<PropertyGroup>
+		<DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.Net.TerraGraf\Forge.Net.TerraGraf.xml</DocumentationFile>
+		<RepositoryUrl>https://github.com/JZO001/Forge</RepositoryUrl>
+		<DefineConstants Condition="'$(TargetFramework)' == 'net6.0-windows'">IS_WINDOWS</DefineConstants>
+		<DefineConstants Condition="'$(TargetFramework)' == 'net5.0-windows'">IS_WINDOWS</DefineConstants>
+		<DefineConstants Condition="'$(TargetFramework)' == 'netcoreapp3.1'">IS_WINDOWS</DefineConstants>
+		<DefineConstants Condition="'$(TargetFramework)' == 'net40'">IS_WINDOWS</DefineConstants>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Include="..\..\Forge.Net.TerraGraf\ConfigSection\TerraGrafConfiguration.cs" Link="ConfigSection\TerraGrafConfiguration.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\ConfigSection\TerraGrafSection.cs" Link="ConfigSection\TerraGrafSection.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Configuration\ConfigContainer.cs" Link="Configuration\ConfigContainer.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Configuration\ConnectionEntry.cs" Link="Configuration\ConnectionEntry.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Configuration\ContextRule.cs" Link="Configuration\ContextRule.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Configuration\NATGatewaySettings.cs" Link="Configuration\NATGatewaySettings.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Configuration\NATUPnPSettings.cs" Link="Configuration\NATUPnPSettings.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Configuration\NetworkContextSettings.cs" Link="Configuration\NetworkContextSettings.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Configuration\NetworkPeerSettings.cs" Link="Configuration\NetworkPeerSettings.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Configuration\Settings.cs" Link="Configuration\Settings.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Configuration\TCPConnectionSettings.cs" Link="Configuration\TCPConnectionSettings.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Configuration\TCPServerSettings.cs" Link="Configuration\TCPServerSettings.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Configuration\UDPDetectionModeEnum.cs" Link="Configuration\UDPDetectionModeEnum.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Configuration\UDPDetectionSettings.cs" Link="Configuration\UDPDetectionSettings.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Connection\BroadcastServer.cs" Link="Connection\BroadcastServer.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Connection\ConnectionManager.cs" Link="Connection\ConnectionManager.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Connection\NetworkConnectionTask.cs" Link="Connection\NetworkConnectionTask.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Connection\NetworkPeerSession.cs" Link="Connection\NetworkPeerSession.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Contexts\NetworkContext.cs" Link="Contexts\NetworkContext.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Contexts\NetworkContextRuleManager.cs" Link="Contexts\NetworkContextRuleManager.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Contexts\NetworkPeerContext.cs" Link="Contexts\NetworkPeerContext.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Contexts\NetworkPeerDataContext.cs" Link="Contexts\NetworkPeerDataContext.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Formatters\MessageFormatter.cs" Link="Formatters\MessageFormatter.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\ISocketSafeHandle.cs" Link="ISocketSafeHandle.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Messaging\MessageAcknowledge.cs" Link="Messaging\MessageAcknowledge.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Messaging\MessageArrivedEventArgs.cs" Link="Messaging\MessageArrivedEventArgs.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Messaging\MessageBase.cs" Link="Messaging\MessageBase.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Messaging\MessageCodeEnum.cs" Link="Messaging\MessageCodeEnum.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Messaging\MessageLowLevelAcknowledge.cs" Link="Messaging\MessageLowLevelAcknowledge.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Messaging\MessagePriorityEnum.cs" Link="Messaging\MessagePriorityEnum.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Messaging\MessageSendEventArgs.cs" Link="Messaging\MessageSendEventArgs.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Messaging\MessageTask.cs" Link="Messaging\MessageTask.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Messaging\MessageTypeEnum.cs" Link="Messaging\MessageTypeEnum.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Messaging\NegotiationMessage.cs" Link="Messaging\NegotiationMessage.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Messaging\SocketCloseMessage.cs" Link="Messaging\SocketCloseMessage.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Messaging\SocketMessage.cs" Link="Messaging\SocketMessage.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Messaging\SocketOpenRequestMessage.cs" Link="Messaging\SocketOpenRequestMessage.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Messaging\SocketOpenResponseMessage.cs" Link="Messaging\SocketOpenResponseMessage.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Messaging\SocketRawDataMessage.cs" Link="Messaging\SocketRawDataMessage.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Messaging\TerraGrafInformationMessage.cs" Link="Messaging\TerraGrafInformationMessage.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Messaging\TerraGrafMessageBase.cs" Link="Messaging\TerraGrafMessageBase.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Messaging\TerraGrafPeerUpdateMessage.cs" Link="Messaging\TerraGrafPeerUpdateMessage.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Messaging\UdpBroadcastMessage.cs" Link="Messaging\UdpBroadcastMessage.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\NetworkInfo\BlackHoleContainer.cs" Link="NetworkInfo\BlackHoleContainer.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\NetworkInfo\NATGatewayContainer.cs" Link="NetworkInfo\NATGatewayContainer.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\NetworkInfo\NetworkPeer.cs" Link="NetworkInfo\NetworkPeer.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\NetworkInfo\PeerContextContainer.cs" Link="NetworkInfo\PeerContextContainer.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\NetworkInfo\PeerRelation.cs" Link="NetworkInfo\PeerRelation.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\NetworkInfo\PeerRelationContainer.cs" Link="NetworkInfo\PeerRelationContainer.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\NetworkInfo\ServerContainer.cs" Link="NetworkInfo\ServerContainer.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\NetworkInfo\TerraGrafNetworkInformation.cs" Link="NetworkInfo\TerraGrafNetworkInformation.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\NetworkManager.cs" Link="NetworkManager.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeerChangedEventArgs.cs" Link="NetworkPeerChangedEventArgs.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeerContextEventArgs.cs" Link="NetworkPeerContextEventArgs.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeerDistanceChangedEventArgs.cs" Link="NetworkPeerDistanceChangedEventArgs.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\BlackHoleContainer.cs" Link="NetworkPeers\BlackHoleContainer.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\INetworkConnection.cs" Link="NetworkPeers\INetworkConnection.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\INetworkPeer.cs" Link="NetworkPeers\INetworkPeer.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\INetworkPeerLocal.cs" Link="NetworkPeers\INetworkPeerLocal.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\INetworkPeerRemote.cs" Link="NetworkPeers\INetworkPeerRemote.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\NATGateway.cs" Link="NetworkPeers\NATGateway.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\NATGatewayCollection.cs" Link="NetworkPeers\NATGatewayCollection.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\NetworkConnection.cs" Link="NetworkPeers\NetworkConnection.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\NetworkPeerDataContextContainer.cs" Link="NetworkPeers\NetworkPeerDataContextContainer.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\NetworkPeerLocal.cs" Link="NetworkPeers\NetworkPeerLocal.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\NetworkPeerRemote.cs" Link="NetworkPeers\NetworkPeerRemote.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\PeerRelationPair.cs" Link="NetworkPeers\PeerRelationPair.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\PeerRelationPairCollection.cs" Link="NetworkPeers\PeerRelationPairCollection.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\PeerTypeEnum.cs" Link="NetworkPeers\PeerTypeEnum.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\TCPServer.cs" Link="NetworkPeers\TCPServer.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\TCPServerCollection.cs" Link="NetworkPeers\TCPServerCollection.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\PeerContextLock.cs" Link="PeerContextLock.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\Socket.cs" Link="Socket.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\SocketSafeHandle.cs" Link="SocketSafeHandle.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\TcpClient.cs" Link="TcpClient.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\TcpListener.cs" Link="TcpListener.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\TerraGrafNetworkFactory.cs" Link="TerraGrafNetworkFactory.cs" />
-    <Compile Include="..\..\Forge.Net.TerraGraf\UdpClient.cs" Link="UdpClient.cs" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\net6.0\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+		<Reference Include="Forge.Net.Synapse">
+			<HintPath>..\.Output\net6.0\Forge.Net.Synapse.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Net.Synapse</Name>
+		</Reference>
+		<Reference Include="Forge.Persistence">
+			<HintPath>..\.Output\net6.0\Forge.Persistence.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Persistence</Name>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-    <PackageReference Include="System.Configuration.ConfigurationManager">
-      <Version>4.7.0</Version>
-    </PackageReference>
-    <Reference Include="Forge.Base">
-      <HintPath>..\.Output\netcoreapp3.1\Forge.Base.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Base</Name>
-    </Reference>
-    <Reference Include="Forge.Net.Synapse">
-      <HintPath>..\.Output\netcoreapp3.1\Forge.Net.Synapse.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Net.Synapse</Name>
-    </Reference>
-    <Reference Include="Forge.Persistence">
-      <HintPath>..\.Output\netcoreapp3.1\Forge.Persistence.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Persistence</Name>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-windows'">
+		<COMReference Include="NetFwTypeLib.dll">
+			<Guid>58fbcf7c-e7a9-467c-80b3-fc65e8fcca08</Guid>
+			<VersionMajor>1</VersionMajor>
+			<VersionMinor>0</VersionMinor>
+			<WrapperTool>tlbimp</WrapperTool>
+			<Lcid>0</Lcid>
+			<Isolated>false</Isolated>
+		</COMReference>
+		<COMReference Include="NATUPNPLib.dll">
+			<Guid>1c565858-f302-471e-b409-f180aa4abec6</Guid>
+			<VersionMajor>1</VersionMajor>
+			<VersionMinor>0</VersionMinor>
+			<WrapperTool>tlbimp</WrapperTool>
+			<Lcid>0</Lcid>
+			<Isolated>false</Isolated>
+		</COMReference>
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\net6.0\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+		<Reference Include="Forge.Net.Synapse">
+			<HintPath>..\.Output\net6.0-windows\Forge.Net.Synapse.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Net.Synapse</Name>
+		</Reference>
+		<Reference Include="Forge.Persistence">
+			<HintPath>..\.Output\net6.0\Forge.Persistence.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Persistence</Name>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net40'">
-    <COMReference Include="NetFwTypeLib.dll">
-      <Guid>58fbcf7c-e7a9-467c-80b3-fc65e8fcca08</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Lcid>0</Lcid>
-      <Isolated>false</Isolated>
-    </COMReference>
-    <COMReference Include="NATUPNPLib.dll">
-      <Guid>1c565858-f302-471e-b409-f180aa4abec6</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Lcid>0</Lcid>
-      <Isolated>false</Isolated>
-    </COMReference>
-    <Reference Include="System.Configuration" />
-    <Reference Include="Forge.Base">
-      <HintPath>..\.Output\net40\Forge.Base.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Base</Name>
-    </Reference>
-    <Reference Include="Forge.Net.Synapse">
-      <HintPath>..\.Output\net40\Forge.Net.Synapse.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Net.Synapse</Name>
-    </Reference>
-    <Reference Include="Forge.Persistence">
-      <HintPath>..\.Output\net40\Forge.Persistence.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <Name>Forge.Persistence</Name>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\net5.0\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+		<Reference Include="Forge.Net.Synapse">
+			<HintPath>..\.Output\net5.0\Forge.Net.Synapse.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Net.Synapse</Name>
+		</Reference>
+		<Reference Include="Forge.Persistence">
+			<HintPath>..\.Output\net5.0\Forge.Persistence.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Persistence</Name>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ConfigSection\" />
-    <Folder Include="Configuration\" />
-    <Folder Include="Connection\" />
-    <Folder Include="Contexts\" />
-    <Folder Include="Formatters\" />
-    <Folder Include="Messaging\" />
-    <Folder Include="NetworkInfo\" />
-    <Folder Include="NetworkPeers\" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net5.0-windows'">
+		<COMReference Include="NetFwTypeLib.dll">
+			<Guid>58fbcf7c-e7a9-467c-80b3-fc65e8fcca08</Guid>
+			<VersionMajor>1</VersionMajor>
+			<VersionMinor>0</VersionMinor>
+			<WrapperTool>tlbimp</WrapperTool>
+			<Lcid>0</Lcid>
+			<Isolated>false</Isolated>
+		</COMReference>
+		<COMReference Include="NATUPNPLib.dll">
+			<Guid>1c565858-f302-471e-b409-f180aa4abec6</Guid>
+			<VersionMajor>1</VersionMajor>
+			<VersionMinor>0</VersionMinor>
+			<WrapperTool>tlbimp</WrapperTool>
+			<Lcid>0</Lcid>
+			<Isolated>false</Isolated>
+		</COMReference>
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\net5.0\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+		<Reference Include="Forge.Net.Synapse">
+			<HintPath>..\.Output\net5.0-windows\Forge.Net.Synapse.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Net.Synapse</Name>
+		</Reference>
+		<Reference Include="Forge.Persistence">
+			<HintPath>..\.Output\net5.0\Forge.Persistence.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Persistence</Name>
+		</Reference>
+	</ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+		<COMReference Include="NetFwTypeLib.dll">
+			<Guid>58fbcf7c-e7a9-467c-80b3-fc65e8fcca08</Guid>
+			<VersionMajor>1</VersionMajor>
+			<VersionMinor>0</VersionMinor>
+			<WrapperTool>tlbimp</WrapperTool>
+			<Lcid>0</Lcid>
+			<Isolated>false</Isolated>
+		</COMReference>
+		<COMReference Include="NATUPNPLib.dll">
+			<Guid>1c565858-f302-471e-b409-f180aa4abec6</Guid>
+			<VersionMajor>1</VersionMajor>
+			<VersionMinor>0</VersionMinor>
+			<WrapperTool>tlbimp</WrapperTool>
+			<Lcid>0</Lcid>
+			<Isolated>false</Isolated>
+		</COMReference>
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\netstandard2.0\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+		<Reference Include="Forge.Net.Synapse">
+			<HintPath>..\.Output\netcoreapp3.1\Forge.Net.Synapse.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Net.Synapse</Name>
+		</Reference>
+		<Reference Include="Forge.Persistence">
+			<HintPath>..\.Output\netstandard2.0\Forge.Persistence.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Persistence</Name>
+		</Reference>
+	</ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFramework)' == 'net40'">
+		<COMReference Include="NetFwTypeLib.dll">
+			<Guid>58fbcf7c-e7a9-467c-80b3-fc65e8fcca08</Guid>
+			<VersionMajor>1</VersionMajor>
+			<VersionMinor>0</VersionMinor>
+			<WrapperTool>tlbimp</WrapperTool>
+			<Lcid>0</Lcid>
+			<Isolated>false</Isolated>
+		</COMReference>
+		<COMReference Include="NATUPNPLib.dll">
+			<Guid>1c565858-f302-471e-b409-f180aa4abec6</Guid>
+			<VersionMajor>1</VersionMajor>
+			<VersionMinor>0</VersionMinor>
+			<WrapperTool>tlbimp</WrapperTool>
+			<Lcid>0</Lcid>
+			<Isolated>false</Isolated>
+		</COMReference>
+		<Reference Include="System.Configuration" />
+		<Reference Include="Forge.Base">
+			<HintPath>..\.Output\net40\Forge.Base.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Base</Name>
+		</Reference>
+		<Reference Include="Forge.Net.Synapse">
+			<HintPath>..\.Output\net40\Forge.Net.Synapse.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Net.Synapse</Name>
+		</Reference>
+		<Reference Include="Forge.Persistence">
+			<HintPath>..\.Output\net40\Forge.Persistence.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Persistence</Name>
+		</Reference>
+	</ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(ProjectDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
-  </Target>
+	<ItemGroup>
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" Condition="'$(TargetFramework)' != 'net40'" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\Forge.Net.TerraGraf\ConfigSection\TerraGrafConfiguration.cs" Link="ConfigSection\TerraGrafConfiguration.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\ConfigSection\TerraGrafSection.cs" Link="ConfigSection\TerraGrafSection.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Configuration\ConfigContainer.cs" Link="Configuration\ConfigContainer.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Configuration\ConnectionEntry.cs" Link="Configuration\ConnectionEntry.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Configuration\ContextRule.cs" Link="Configuration\ContextRule.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Configuration\NATGatewaySettings.cs" Link="Configuration\NATGatewaySettings.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Configuration\NATUPnPSettings.cs" Link="Configuration\NATUPnPSettings.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Configuration\NetworkContextSettings.cs" Link="Configuration\NetworkContextSettings.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Configuration\NetworkPeerSettings.cs" Link="Configuration\NetworkPeerSettings.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Configuration\Settings.cs" Link="Configuration\Settings.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Configuration\TCPConnectionSettings.cs" Link="Configuration\TCPConnectionSettings.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Configuration\TCPServerSettings.cs" Link="Configuration\TCPServerSettings.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Configuration\UDPDetectionModeEnum.cs" Link="Configuration\UDPDetectionModeEnum.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Configuration\UDPDetectionSettings.cs" Link="Configuration\UDPDetectionSettings.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Connection\BroadcastServer.cs" Link="Connection\BroadcastServer.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Connection\ConnectionManager.cs" Link="Connection\ConnectionManager.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Connection\NetworkConnectionTask.cs" Link="Connection\NetworkConnectionTask.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Connection\NetworkPeerSession.cs" Link="Connection\NetworkPeerSession.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Contexts\NetworkContext.cs" Link="Contexts\NetworkContext.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Contexts\NetworkContextRuleManager.cs" Link="Contexts\NetworkContextRuleManager.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Contexts\NetworkPeerContext.cs" Link="Contexts\NetworkPeerContext.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Contexts\NetworkPeerDataContext.cs" Link="Contexts\NetworkPeerDataContext.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Formatters\MessageFormatter.cs" Link="Formatters\MessageFormatter.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\ISocketSafeHandle.cs" Link="ISocketSafeHandle.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Messaging\MessageAcknowledge.cs" Link="Messaging\MessageAcknowledge.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Messaging\MessageArrivedEventArgs.cs" Link="Messaging\MessageArrivedEventArgs.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Messaging\MessageBase.cs" Link="Messaging\MessageBase.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Messaging\MessageCodeEnum.cs" Link="Messaging\MessageCodeEnum.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Messaging\MessageLowLevelAcknowledge.cs" Link="Messaging\MessageLowLevelAcknowledge.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Messaging\MessagePriorityEnum.cs" Link="Messaging\MessagePriorityEnum.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Messaging\MessageSendEventArgs.cs" Link="Messaging\MessageSendEventArgs.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Messaging\MessageTask.cs" Link="Messaging\MessageTask.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Messaging\MessageTypeEnum.cs" Link="Messaging\MessageTypeEnum.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Messaging\NegotiationMessage.cs" Link="Messaging\NegotiationMessage.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Messaging\SocketCloseMessage.cs" Link="Messaging\SocketCloseMessage.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Messaging\SocketMessage.cs" Link="Messaging\SocketMessage.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Messaging\SocketOpenRequestMessage.cs" Link="Messaging\SocketOpenRequestMessage.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Messaging\SocketOpenResponseMessage.cs" Link="Messaging\SocketOpenResponseMessage.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Messaging\SocketRawDataMessage.cs" Link="Messaging\SocketRawDataMessage.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Messaging\TerraGrafInformationMessage.cs" Link="Messaging\TerraGrafInformationMessage.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Messaging\TerraGrafMessageBase.cs" Link="Messaging\TerraGrafMessageBase.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Messaging\TerraGrafPeerUpdateMessage.cs" Link="Messaging\TerraGrafPeerUpdateMessage.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Messaging\UdpBroadcastMessage.cs" Link="Messaging\UdpBroadcastMessage.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\NetworkInfo\BlackHoleContainer.cs" Link="NetworkInfo\BlackHoleContainer.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\NetworkInfo\NATGatewayContainer.cs" Link="NetworkInfo\NATGatewayContainer.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\NetworkInfo\NetworkPeer.cs" Link="NetworkInfo\NetworkPeer.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\NetworkInfo\PeerContextContainer.cs" Link="NetworkInfo\PeerContextContainer.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\NetworkInfo\PeerRelation.cs" Link="NetworkInfo\PeerRelation.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\NetworkInfo\PeerRelationContainer.cs" Link="NetworkInfo\PeerRelationContainer.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\NetworkInfo\ServerContainer.cs" Link="NetworkInfo\ServerContainer.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\NetworkInfo\TerraGrafNetworkInformation.cs" Link="NetworkInfo\TerraGrafNetworkInformation.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\NetworkManager.cs" Link="NetworkManager.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeerChangedEventArgs.cs" Link="NetworkPeerChangedEventArgs.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeerContextEventArgs.cs" Link="NetworkPeerContextEventArgs.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeerDistanceChangedEventArgs.cs" Link="NetworkPeerDistanceChangedEventArgs.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\BlackHoleContainer.cs" Link="NetworkPeers\BlackHoleContainer.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\INetworkConnection.cs" Link="NetworkPeers\INetworkConnection.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\INetworkPeer.cs" Link="NetworkPeers\INetworkPeer.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\INetworkPeerLocal.cs" Link="NetworkPeers\INetworkPeerLocal.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\INetworkPeerRemote.cs" Link="NetworkPeers\INetworkPeerRemote.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\NATGateway.cs" Link="NetworkPeers\NATGateway.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\NATGatewayCollection.cs" Link="NetworkPeers\NATGatewayCollection.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\NetworkConnection.cs" Link="NetworkPeers\NetworkConnection.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\NetworkPeerDataContextContainer.cs" Link="NetworkPeers\NetworkPeerDataContextContainer.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\NetworkPeerLocal.cs" Link="NetworkPeers\NetworkPeerLocal.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\NetworkPeerRemote.cs" Link="NetworkPeers\NetworkPeerRemote.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\PeerRelationPair.cs" Link="NetworkPeers\PeerRelationPair.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\PeerRelationPairCollection.cs" Link="NetworkPeers\PeerRelationPairCollection.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\PeerTypeEnum.cs" Link="NetworkPeers\PeerTypeEnum.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\TCPServer.cs" Link="NetworkPeers\TCPServer.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\NetworkPeers\TCPServerCollection.cs" Link="NetworkPeers\TCPServerCollection.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\PeerContextLock.cs" Link="PeerContextLock.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\Socket.cs" Link="Socket.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\SocketSafeHandle.cs" Link="SocketSafeHandle.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\TcpClient.cs" Link="TcpClient.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\TcpListener.cs" Link="TcpListener.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\TerraGrafNetworkFactory.cs" Link="TerraGrafNetworkFactory.cs" />
+		<Compile Include="..\..\Forge.Net.TerraGraf\UdpClient.cs" Link="UdpClient.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="ConfigSection\" />
+		<Folder Include="Configuration\" />
+		<Folder Include="Connection\" />
+		<Folder Include="Contexts\" />
+		<Folder Include="Formatters\" />
+		<Folder Include="Messaging\" />
+		<Folder Include="NetworkInfo\" />
+		<Folder Include="NetworkPeers\" />
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(ProjectDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
+	</Target>
 
 </Project>

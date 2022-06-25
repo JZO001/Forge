@@ -25,7 +25,7 @@ namespace Forge.Logging
             }
         }
 
-#if NETCOREAPP3_1
+#if NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
 #else
         public static ILog GetLogger(string name)
         {
