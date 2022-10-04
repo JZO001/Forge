@@ -1,0 +1,124 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Forge.Security.Jwt.Core</name>
+    </assembly>
+    <members>
+        <member name="T:Forge.Security.Jwt.Core.JwtManagementService">
+            <summary>Jwt Management Service implementation</summary>
+        </member>
+        <member name="M:Forge.Security.Jwt.Core.JwtManagementService.#ctor(Forge.Security.Jwt.Core.JwtTokenConfiguration)">
+            <summary>Initializes a new instance of the <see cref="T:Forge.Security.Jwt.Core.JwtManagementService" /> class.</summary>
+            <param name="jwtTokenConfig">The JWT token configuration.</param>
+        </member>
+        <member name="M:Forge.Security.Jwt.Core.JwtManagementService.RemoveExpiredRefreshTokens(System.DateTime)">
+            <summary>Removes the expired refresh tokens.</summary>
+            <param name="now">The time before the tokens are expired</param>
+        </member>
+        <member name="M:Forge.Security.Jwt.Core.JwtManagementService.RemoveRefreshTokenByUserNameAndKeys(System.String,System.Collections.Generic.IEnumerable{Forge.Security.Jwt.Shared.JwtKeyValuePair})">
+            <summary>Removes the refresh token by user name and keys.</summary>
+            <param name="userName">Name of the user.</param>
+            <param name="secondaryKey">The secondary key.</param>
+        </member>
+        <member name="M:Forge.Security.Jwt.Core.JwtManagementService.GenerateTokens(System.String,System.Security.Claims.Claim[],System.DateTime,System.Collections.Generic.IEnumerable{Forge.Security.Jwt.Shared.JwtKeyValuePair})">
+            <summary>Generates a new token.</summary>
+            <param name="username">The username.
+            Mandatory.</param>
+            <param name="claims">The claims.</param>
+            <param name="now">Indicates, when the token will be activated.</param>
+            <param name="secondaryKeys">The secondary keys to identify a token.</param>
+            <returns>Jwt access and refresh token</returns>
+        </member>
+        <member name="M:Forge.Security.Jwt.Core.JwtManagementService.Refresh(System.String,System.String,System.DateTime,System.Collections.Generic.IEnumerable{Forge.Security.Jwt.Shared.JwtKeyValuePair})">
+            <summary>Generates new access and refresh tokens</summary>
+            <param name="refreshToken">The refresh token.</param>
+            <param name="accessToken">The access token.</param>
+            <param name="now">The time when the refresh token will be active</param>
+            <param name="secondaryKeys">The secondary keys to identify the refresh token</param>
+            <returns>Jwt access and refresh token</returns>
+        </member>
+        <member name="M:Forge.Security.Jwt.Core.JwtManagementService.DecodeJwtToken(System.String)">
+            <summary>Decodes the JWT token and get back the stored information</summary>
+            <param name="token">The token.</param>
+            <returns>ClaimsPrincipal and JwtSecurityToken</returns>
+        </member>
+        <member name="T:Forge.Security.Jwt.Core.JwtTokenConfiguration">
+            <summary>Configuration for token provider</summary>
+        </member>
+        <member name="P:Forge.Security.Jwt.Core.JwtTokenConfiguration.Secret">
+            <summary>Gets or sets the unique secret information to generate access tokens.</summary>
+            <value>The secret value. A GUID is a goog choice.</value>
+        </member>
+        <member name="P:Forge.Security.Jwt.Core.JwtTokenConfiguration.Issuer">
+            <summary>Gets or sets the issuer.</summary>
+            <value>The issuer, for example: <a href="https://jzo.hu">https://jzo.hu</a></value>
+        </member>
+        <member name="P:Forge.Security.Jwt.Core.JwtTokenConfiguration.Audience">
+            <summary>Gets or sets the audience.</summary>
+            <value>The audience, for example: <a href="https://jzo.hu">https://jzo.hu</a></value>
+        </member>
+        <member name="P:Forge.Security.Jwt.Core.JwtTokenConfiguration.AccessTokenExpirationInMinutes">
+            <summary>Gets or sets the access token expiration in minutes.</summary>
+            <value>The access token expiration in minutes.
+            Default is 10 minutes.</value>
+        </member>
+        <member name="P:Forge.Security.Jwt.Core.JwtTokenConfiguration.RefreshTokenExpirationInMinutes">
+            <summary>Gets or sets the refresh token expiration in minutes.</summary>
+            <value>The refresh token expiration in minutes.
+            Default is 10 minutes.</value>
+        </member>
+        <member name="P:Forge.Security.Jwt.Core.JwtTokenConfiguration.ValidateIssuer">
+            <summary>Gets or sets a value indicating whether issuer will be validated.
+            Do not turn it off, if False, it decreases the secuity level.</summary>
+            <value>
+              <c>true</c> if [validate issuer]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:Forge.Security.Jwt.Core.JwtTokenConfiguration.ValidateIssuerSigningKey">
+            <summary>Gets or sets a value indicating whether [validate issuer signing key].
+            Do not turn it off, if False, it decreases the secuity level.</summary>
+            <value>
+              <c>true</c> if [validate issuer signing key]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:Forge.Security.Jwt.Core.JwtTokenConfiguration.ValidateAudience">
+            <summary>Gets or sets a value indicating whether [validate audience].
+            Do not turn it off, if False, it decreases the secuity level.</summary>
+            <value>
+              <c>true</c> if [validate audience]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:Forge.Security.Jwt.Core.JwtTokenConfiguration.ValidateLifetime">
+            <summary>Gets or sets a value indicating whether [validate lifetime].
+            Do not turn it off, if False, it decreases the secuity level.</summary>
+            <value>
+              <c>true</c> if [validate lifetime]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:Forge.Security.Jwt.Core.JwtTokenConfiguration.ClockSkewInMinutes">
+            <summary>Gets or sets the clock skew in minutes.
+            Do not turn it off, if False, it decreases the secuity level.</summary>
+            <value>The clock skew in minutes.</value>
+        </member>
+        <member name="T:Forge.Security.Jwt.Core.JwtTokenMaintenanceHostedService">
+            <summary>Maintain the token service and remove the expired a tokens.</summary>
+        </member>
+        <member name="M:Forge.Security.Jwt.Core.JwtTokenMaintenanceHostedService.#ctor(Forge.Security.Jwt.Shared.IJwtManagementService)">
+            <summary>Initializes a new instance of the <see cref="T:Forge.Security.Jwt.Core.JwtTokenMaintenanceHostedService" /> class.</summary>
+            <param name="jwtAuthManager">The JWT authentication manager.</param>
+        </member>
+        <member name="M:Forge.Security.Jwt.Core.JwtTokenMaintenanceHostedService.StartAsync(System.Threading.CancellationToken)">
+            <summary>Starts the service</summary>
+            <param name="stoppingToken">The stopping token.</param>
+            <returns>
+              <br />
+            </returns>
+        </member>
+        <member name="M:Forge.Security.Jwt.Core.JwtTokenMaintenanceHostedService.StopAsync(System.Threading.CancellationToken)">
+            <summary>Stops the service</summary>
+            <param name="stoppingToken">The stopping token.</param>
+            <returns>
+              <br />
+            </returns>
+        </member>
+        <member name="M:Forge.Security.Jwt.Core.JwtTokenMaintenanceHostedService.Dispose">
+            <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
+        </member>
+    </members>
+</doc>

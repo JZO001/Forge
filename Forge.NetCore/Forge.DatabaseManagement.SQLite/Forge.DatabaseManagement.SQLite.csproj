@@ -18,7 +18,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.DatabaseManagement.SQLite\Forge.DatabaseManagement.SQLite.xml</DocumentationFile>
+		<DocumentationFile>Forge.DatabaseManagement.SQLite.xml</DocumentationFile>
 		<RepositoryUrl>https://github.com/JZO001/Forge</RepositoryUrl>
 	</PropertyGroup>
 
@@ -98,7 +98,7 @@
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(ProjectDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(ProjectDir)bin\$(ConfigurationName)\net461\x64\SQLite.Interop.dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\x64\SQLite.Interop.dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(ProjectDir)bin\$(ConfigurationName)\net461\x86\SQLite.Interop.dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\x86\SQLite.Interop.dll&quot;&#xD;&#xA;" />
+		<Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
 	</Target>
 
 </Project>

@@ -22,7 +22,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.Native\Forge.Native.xml</DocumentationFile>
+		<DocumentationFile>Forge.Native.xml</DocumentationFile>
 		<RepositoryUrl>https://github.com/JZO001/Forge</RepositoryUrl>
 		<DefineConstants Condition="'$(TargetFramework)' == 'net6.0-windows'">IS_WINDOWS</DefineConstants>
 		<DefineConstants Condition="'$(TargetFramework)' == 'net5.0-windows'">IS_WINDOWS</DefineConstants>
@@ -137,7 +137,7 @@
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(ProjectDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
+		<Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
 	</Target>
 
 </Project>

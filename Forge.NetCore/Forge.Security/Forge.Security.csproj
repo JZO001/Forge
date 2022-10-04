@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net40;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
+		<TargetFrameworks>net40;netstandard2.1;net5.0-windows;net6.0-windows</TargetFrameworks>
 		<Version>1.1.0.0</Version>
 		<Copyright>Copyright © Zoltan Juhasz, 2004-2022</Copyright>
 		<Description>Forge Security related implementations</Description>
@@ -18,7 +18,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.Security\Forge.Security.xml</DocumentationFile>
+		<DocumentationFile>Forge.Security.xml</DocumentationFile>
 		<RepositoryUrl>https://github.com/JZO001/Forge</RepositoryUrl>
 	</PropertyGroup>
 
@@ -27,37 +27,37 @@
 		<Compile Include="..\..\Forge.Security\CertificateFactory.cs" Link="CertificateFactory.cs" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-windows'">
 		<Reference Include="Forge.Base">
-			<HintPath>..\.Output\net6.0\Forge.Base.dll</HintPath>
+			<HintPath>..\.Output\net6.0-windows\Forge.Base.dll</HintPath>
 			<SpecificVersion>False</SpecificVersion>
 			<Private>True</Private>
 			<Name>Forge.Base</Name>
 		</Reference>
 		<Reference Include="Forge.Native">
-			<HintPath>..\.Output\netstandard2.0\Forge.Native.dll</HintPath>
+			<HintPath>..\.Output\net6.0-windows\Forge.Native.dll</HintPath>
 			<SpecificVersion>False</SpecificVersion>
 			<Private>True</Private>
 			<Name>Forge.Native</Name>
 		</Reference>
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net5.0-windows'">
 		<Reference Include="Forge.Base">
-			<HintPath>..\.Output\net5.0\Forge.Base.dll</HintPath>
+			<HintPath>..\.Output\net5.0-windows\Forge.Base.dll</HintPath>
 			<SpecificVersion>False</SpecificVersion>
 			<Private>True</Private>
 			<Name>Forge.Base</Name>
 		</Reference>
 		<Reference Include="Forge.Native">
-			<HintPath>..\.Output\netstandard2.0\Forge.Native.dll</HintPath>
+			<HintPath>..\.Output\net5.0-windows\Forge.Native.dll</HintPath>
 			<SpecificVersion>False</SpecificVersion>
 			<Private>True</Private>
 			<Name>Forge.Native</Name>
 		</Reference>
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
 		<Reference Include="Forge.Base">
 			<HintPath>..\.Output\netstandard2.0\Forge.Base.dll</HintPath>
 			<SpecificVersion>False</SpecificVersion>
@@ -93,7 +93,7 @@
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(ProjectDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
+		<Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
 	</Target>
 
 </Project>

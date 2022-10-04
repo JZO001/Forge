@@ -3,7 +3,7 @@
 	<Sdk Name="Microsoft.NET.Sdk" />
 
 	<PropertyGroup>
-		<TargetFrameworks>net40;netstandard2.0;net5.0;net6.0</TargetFrameworks>
+		<TargetFrameworks>net40;netstandard2.0;net5.0;net5.0-windows;net6.0;net6.0-windows</TargetFrameworks>
 		<Version>1.1.0.0</Version>
 		<Copyright>Copyright © Zoltan Juhasz, 2004-2022</Copyright>
 		<Description>Forge Patterns and Practices</Description>
@@ -20,9 +20,20 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.Base\Forge.Base.xml</DocumentationFile>
+		<DocumentationFile>Forge.Base.xml</DocumentationFile>
 		<RepositoryUrl>https://github.com/JZO001/Forge</RepositoryUrl>
+		<DefineConstants Condition="'$(TargetFramework)' == 'net6.0-windows'">IS_WINDOWS</DefineConstants>
+		<DefineConstants Condition="'$(TargetFramework)' == 'net5.0-windows'">IS_WINDOWS</DefineConstants>
+		<DefineConstants Condition="'$(TargetFramework)' == 'net40'">IS_WINDOWS</DefineConstants>
 	</PropertyGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-windows'">
+		<PackageReference Include="System.Diagnostics.EventLog" Version="6.0.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net5.0-windows'">
+		<PackageReference Include="System.Diagnostics.EventLog" Version="6.0.0" />
+	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
 		<PackageReference Include="System.Diagnostics.Debug">
@@ -101,6 +112,8 @@
 		<Compile Include="..\..\Forge.Base\EventRaiser\TypeNameResolver.cs" Link="EventRaiser\TypeNameResolver.cs" />
 		<Compile Include="..\..\Forge.Base\HashGeneratorHelper.cs" Link="HashGeneratorHelper.cs" />
 		<Compile Include="..\..\Forge.Base\InitializationException.cs" Link="InitializationException.cs" />
+		<Compile Include="..\..\Forge.Base\Persistence\Formatters\AesByteArrayFormatter.cs" Link="Persistence\Formatters\AesByteArrayFormatter.cs" />
+		<Compile Include="..\..\Forge.Base\Persistence\Formatters\AesFormatter.cs" Link="Persistence\Formatters\AesFormatter.cs" />
 		<Compile Include="..\..\Forge.Base\Persistence\Formatters\BinaryFormatter.cs" Link="Persistence\Formatters\BinaryFormatter.cs" />
 		<Compile Include="..\..\Forge.Base\Persistence\Formatters\GZipFormatter.cs" Link="Persistence\Formatters\GZipFormatter.cs" />
 		<Compile Include="..\..\Forge.Base\Persistence\Formatters\IDataFormatter.cs" Link="Persistence\Formatters\IDataFormatter.cs" />
@@ -147,11 +160,10 @@
 	<ItemGroup>
 		<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" Condition="'$(TargetFramework)' != 'net40'" />
 		<PackageReference Include="SoapFormatter" Version="1.1.9" Condition="'$(TargetFramework)' != 'net40'" />
-		<PackageReference Include="System.Diagnostics.EventLog" Version="6.0.0" Condition="'$(TargetFramework)' != 'net40'" />
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(ProjectDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
+		<Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
 	</Target>
 
 </Project>

@@ -18,7 +18,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<DocumentationFile>C:\Development\NET\Forge\Forge.NetCore\Forge.Net.TerraGraf\Forge.Net.TerraGraf.xml</DocumentationFile>
+		<DocumentationFile>Forge.Net.TerraGraf.xml</DocumentationFile>
 		<RepositoryUrl>https://github.com/JZO001/Forge</RepositoryUrl>
 		<DefineConstants Condition="'$(TargetFramework)' == 'net6.0-windows'">IS_WINDOWS</DefineConstants>
 		<DefineConstants Condition="'$(TargetFramework)' == 'net5.0-windows'">IS_WINDOWS</DefineConstants>
@@ -65,7 +65,7 @@
 			<Isolated>false</Isolated>
 		</COMReference>
 		<Reference Include="Forge.Base">
-			<HintPath>..\.Output\net6.0\Forge.Base.dll</HintPath>
+			<HintPath>..\.Output\net6.0-windows\Forge.Base.dll</HintPath>
 			<SpecificVersion>False</SpecificVersion>
 			<Private>True</Private>
 			<Name>Forge.Base</Name>
@@ -123,7 +123,7 @@
 			<Isolated>false</Isolated>
 		</COMReference>
 		<Reference Include="Forge.Base">
-			<HintPath>..\.Output\net5.0\Forge.Base.dll</HintPath>
+			<HintPath>..\.Output\net5.0-windows\Forge.Base.dll</HintPath>
 			<SpecificVersion>False</SpecificVersion>
 			<Private>True</Private>
 			<Name>Forge.Base</Name>
@@ -314,7 +314,7 @@
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(ProjectDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
+		<Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
 	</Target>
 
 </Project>
