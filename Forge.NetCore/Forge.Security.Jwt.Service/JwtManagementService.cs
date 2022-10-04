@@ -18,14 +18,21 @@ namespace Forge.Security.Jwt.Core
 
         private readonly ConcurrentDictionary<string, JwtRefreshToken> _usersRefreshTokens;  // can store in a database or a distributed cache
         private readonly JwtTokenConfiguration _jwtTokenConfig;
+        private readonly IJwtTokenStorage _tokenStorage;
         private readonly byte[] _secret;
 
         /// <summary>Initializes a new instance of the <see cref="JwtManagementService" /> class.</summary>
         /// <param name="jwtTokenConfig">The JWT token configuration.</param>
-        public JwtManagementService(JwtTokenConfiguration jwtTokenConfig)
+        /// <param name="jwtTokenStorage">The JWT token persistence storage.</param>
+        public JwtManagementService(JwtTokenConfiguration jwtTokenConfig, IJwtTokenStorage jwtTokenStorage)
         {
+            if (jwtTokenConfig == null) throw new ArgumentNullException(nameof(jwtTokenConfig));
+            if (jwtTokenStorage == null) throw new ArgumentNullException(nameof(jwtTokenStorage));
+
             _jwtTokenConfig = jwtTokenConfig;
+            _tokenStorage = jwtTokenStorage;
             _usersRefreshTokens = new ConcurrentDictionary<string, JwtRefreshToken>();
+            jwtTokenStorage.Get().ToList().ForEach(token => _usersRefreshTokens.AddOrUpdate(token.TokenString, token, (k, v) => token));
             _secret = Encoding.ASCII.GetBytes(jwtTokenConfig.Secret);
         }
 
@@ -37,6 +44,7 @@ namespace Forge.Security.Jwt.Core
             foreach (var expiredToken in expiredTokens)
             {
                 _usersRefreshTokens.TryRemove(expiredToken.Key, out _);
+                _tokenStorage.Remove(expiredToken.Key);
             }
         }
 
@@ -45,11 +53,11 @@ namespace Forge.Security.Jwt.Core
         /// <param name="secondaryKey">The secondary key.</param>
         public void RemoveRefreshTokenByUserNameAndKeys(string userName, IEnumerable<JwtKeyValuePair> secondaryKey)
         {
-            var refreshTokens = _usersRefreshTokens.Where(x => x.Value.Username == userName &&
-            x.Value.CompareSecondaryKeys(secondaryKey)).ToList();
+            var refreshTokens = _usersRefreshTokens.Where(x => x.Value.Username == userName && x.Value.CompareSecondaryKeys(secondaryKey)).ToList();
             foreach (var refreshToken in refreshTokens)
             {
                 _usersRefreshTokens.TryRemove(refreshToken.Key, out _);
+                _tokenStorage.Remove(refreshToken.Key);
             }
         }
 
@@ -79,12 +87,43 @@ namespace Forge.Security.Jwt.Core
             };
             if (secondaryKeys != null) refreshToken.SecondaryKeys.AddRange(secondaryKeys);
             _usersRefreshTokens.AddOrUpdate(refreshToken.TokenString, refreshToken, (s, t) => refreshToken);
+            _tokenStorage.AddOrUpdate(refreshToken);
 
             return new JwtTokenResult
             {
                 AccessToken = accessToken,
                 RefreshToken = refreshToken
             };
+        }
+
+        /// <summary>Validate the specified access and refresh tokens.</summary>
+        /// <param name="refreshToken">The refresh token.</param>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="now">The time when the refresh token will be active</param>
+        /// <param name="secondaryKeys">The secondary keys.</param>
+        /// <returns>True, if the tokens are valid, otherwise False.</returns>
+        public bool Validate(string refreshToken, string accessToken, DateTime now, IEnumerable<JwtKeyValuePair> secondaryKeys)
+        {
+            var (principal, jwtToken) = DecodeJwtToken(accessToken);
+            if (jwtToken == null || !jwtToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256Signature))
+            {
+                return false;
+            }
+
+            string userName = principal.Identity.Name;
+            if (!_usersRefreshTokens.TryGetValue(refreshToken, out var existingRefreshToken))
+            {
+                return false;
+            }
+            if (existingRefreshToken.Username != userName || existingRefreshToken.ExpireAt < now)
+            {
+                return false;
+            }
+            if (!existingRefreshToken.CompareSecondaryKeys(secondaryKeys))
+            {
+                return false;
+            }
+            return true;
         }
 
         /// <summary>Generates new access and refresh tokens</summary>
@@ -95,25 +134,13 @@ namespace Forge.Security.Jwt.Core
         /// <returns>Jwt access and refresh token</returns>
         public JwtTokenResult Refresh(string refreshToken, string accessToken, DateTime now, IEnumerable<JwtKeyValuePair> secondaryKeys)
         {
-            var (principal, jwtToken) = DecodeJwtToken(accessToken);
-            if (jwtToken == null || !jwtToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256Signature))
+            if (!Validate(refreshToken, accessToken, now, secondaryKeys))
             {
                 throw new SecurityTokenException("Invalid token");
             }
 
-            var userName = principal.Identity.Name;
-            if (!_usersRefreshTokens.TryGetValue(refreshToken, out var existingRefreshToken))
-            {
-                throw new SecurityTokenException("Invalid token");
-            }
-            if (existingRefreshToken.Username != userName || existingRefreshToken.ExpireAt < now)
-            {
-                throw new SecurityTokenException("Invalid token");
-            }
-            if (!existingRefreshToken.CompareSecondaryKeys(secondaryKeys))
-            {
-                throw new SecurityTokenException("Invalid token");
-            }
+            var (principal, jwtToken) = DecodeJwtToken(accessToken);
+            string userName = principal.Identity.Name;
 
             return GenerateTokens(userName, principal.Claims.ToArray(), now, secondaryKeys); // need to recover the original claims
         }

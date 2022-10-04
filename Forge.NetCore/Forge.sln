@@ -296,7 +296,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Forge.RemoteDesktop.Service
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Security.Jwt.Shared", "Forge.Security.Jwt.Shared\Forge.Security.Jwt.Shared.csproj", "{DDC856C5-A70B-43DB-A7AB-A8C6DE814C9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Security.Jwt.Core", "Forge.Security.Jwt.Core\Forge.Security.Jwt.Core.csproj", "{65397DA7-8B0B-4457-AE89-1222B6FDA14F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Security.Jwt.Service", "Forge.Security.Jwt.Service\Forge.Security.Jwt.Service.csproj", "{65397DA7-8B0B-4457-AE89-1222B6FDA14F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Testing.Security.Jwt", "Forge.Testing.Security.Jwt\Forge.Testing.Security.Jwt.csproj", "{02768573-8C33-4AD5-A233-096AFB600D8F}"
 EndProject

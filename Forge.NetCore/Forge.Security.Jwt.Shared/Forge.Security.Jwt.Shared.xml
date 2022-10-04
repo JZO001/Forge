@@ -16,6 +16,14 @@
             <param name="secondaryKeys">The secondary keys to identify a token.</param>
             <returns>Jwt access and refresh token</returns>
         </member>
+        <member name="M:Forge.Security.Jwt.Shared.IJwtManagementService.Validate(System.String,System.String,System.DateTime,System.Collections.Generic.IEnumerable{Forge.Security.Jwt.Shared.JwtKeyValuePair})">
+            <summary>Validate the specified access and refresh tokens.</summary>
+            <param name="refreshToken">The refresh token.</param>
+            <param name="accessToken">The access token.</param>
+            <param name="now">The time when the refresh token will be active</param>
+            <param name="secondaryKeys">The secondary keys.</param>
+            <returns>True, if the tokens are valid, otherwise False.</returns>
+        </member>
         <member name="M:Forge.Security.Jwt.Shared.IJwtManagementService.Refresh(System.String,System.String,System.DateTime,System.Collections.Generic.IEnumerable{Forge.Security.Jwt.Shared.JwtKeyValuePair})">
             <summary>Generates new access and refresh tokens</summary>
             <param name="refreshToken">The refresh token.</param>
@@ -37,6 +45,22 @@
             <summary>Decodes the JWT token and get back the stored information</summary>
             <param name="token">The token.</param>
             <returns>ClaimsPrincipal and JwtSecurityToken</returns>
+        </member>
+        <member name="T:Forge.Security.Jwt.Shared.IJwtTokenStorage">
+            <summary>Token persistent storage interface</summary>
+        </member>
+        <member name="M:Forge.Security.Jwt.Shared.IJwtTokenStorage.Get">
+            <summary>Gets stored token</summary>
+            <returns>List of tokens</returns>
+        </member>
+        <member name="M:Forge.Security.Jwt.Shared.IJwtTokenStorage.AddOrUpdate(Forge.Security.Jwt.Shared.JwtRefreshToken)">
+            <summary>Add a token.</summary>
+            <param name="token">The token.</param>
+        </member>
+        <member name="M:Forge.Security.Jwt.Shared.IJwtTokenStorage.Remove(System.String)">
+            <summary>Removes a token.</summary>
+            <param name="key">The token key.</param>
+            <returns>True, if the token successfully removed, otherwise False.</returns>
         </member>
         <member name="T:Forge.Security.Jwt.Shared.JwtKeyValuePair">
             <summary>Key and value pair for secondary key of a refresh token</summary>
@@ -91,6 +115,28 @@
             <summary>Compares the secondary keys to an othet set.</summary>
             <param name="keys">The keys.</param>
             <returns>True if the sets are the same, otherwise False.</returns>
+        </member>
+        <member name="T:Forge.Security.Jwt.Shared.JwtTokenMemoryStorage">
+            <summary>
+            Default memory token storage
+            </summary>
+            <seealso cref="T:Forge.Security.Jwt.Shared.IJwtTokenStorage" />
+        </member>
+        <member name="M:Forge.Security.Jwt.Shared.JwtTokenMemoryStorage.#ctor">
+            <summary>Initializes a new instance of the <see cref="T:Forge.Security.Jwt.Shared.JwtTokenMemoryStorage" /> class.</summary>
+        </member>
+        <member name="M:Forge.Security.Jwt.Shared.JwtTokenMemoryStorage.AddOrUpdate(Forge.Security.Jwt.Shared.JwtRefreshToken)">
+            <summary>Add a token.</summary>
+            <param name="token">The token.</param>
+        </member>
+        <member name="M:Forge.Security.Jwt.Shared.JwtTokenMemoryStorage.Get">
+            <summary>Gets stored token</summary>
+            <returns>List of tokens</returns>
+        </member>
+        <member name="M:Forge.Security.Jwt.Shared.JwtTokenMemoryStorage.Remove(System.String)">
+            <summary>Removes a token.</summary>
+            <param name="key">The token key.</param>
+            <returns>True, if the token successfully removed, otherwise False.</returns>
         </member>
         <member name="T:Forge.Security.Jwt.Shared.JwtTokenResult">
             <summary>The result of the token generator</summary>

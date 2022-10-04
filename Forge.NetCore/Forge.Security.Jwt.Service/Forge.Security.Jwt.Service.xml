@@ -1,15 +1,16 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>Forge.Security.Jwt.Core</name>
+        <name>Forge.Security.Jwt.Service</name>
     </assembly>
     <members>
         <member name="T:Forge.Security.Jwt.Core.JwtManagementService">
             <summary>Jwt Management Service implementation</summary>
         </member>
-        <member name="M:Forge.Security.Jwt.Core.JwtManagementService.#ctor(Forge.Security.Jwt.Core.JwtTokenConfiguration)">
+        <member name="M:Forge.Security.Jwt.Core.JwtManagementService.#ctor(Forge.Security.Jwt.Core.JwtTokenConfiguration,Forge.Security.Jwt.Shared.IJwtTokenStorage)">
             <summary>Initializes a new instance of the <see cref="T:Forge.Security.Jwt.Core.JwtManagementService" /> class.</summary>
             <param name="jwtTokenConfig">The JWT token configuration.</param>
+            <param name="jwtTokenStorage">The JWT token persistence storage.</param>
         </member>
         <member name="M:Forge.Security.Jwt.Core.JwtManagementService.RemoveExpiredRefreshTokens(System.DateTime)">
             <summary>Removes the expired refresh tokens.</summary>
@@ -28,6 +29,14 @@
             <param name="now">Indicates, when the token will be activated.</param>
             <param name="secondaryKeys">The secondary keys to identify a token.</param>
             <returns>Jwt access and refresh token</returns>
+        </member>
+        <member name="M:Forge.Security.Jwt.Core.JwtManagementService.Validate(System.String,System.String,System.DateTime,System.Collections.Generic.IEnumerable{Forge.Security.Jwt.Shared.JwtKeyValuePair})">
+            <summary>Validate the specified access and refresh tokens.</summary>
+            <param name="refreshToken">The refresh token.</param>
+            <param name="accessToken">The access token.</param>
+            <param name="now">The time when the refresh token will be active</param>
+            <param name="secondaryKeys">The secondary keys.</param>
+            <returns>True, if the tokens are valid, otherwise False.</returns>
         </member>
         <member name="M:Forge.Security.Jwt.Core.JwtManagementService.Refresh(System.String,System.String,System.DateTime,System.Collections.Generic.IEnumerable{Forge.Security.Jwt.Shared.JwtKeyValuePair})">
             <summary>Generates new access and refresh tokens</summary>
