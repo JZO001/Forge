@@ -187,11 +187,8 @@ Dotfuscated
 Forge_Release.*
 *.testsettings
 *.xml
-Forge.Security.Jwt.Client
-Forge.Security.Jwt.Client.Storage.Browser
-Forge.Security.Jwt.Service
-Forge.Security.Jwt.Service.Storage.SqlServer
+Forge.Security.Jwt.Client*
+Forge.Security.Jwt.Service*
 Forge.Security.Jwt.Shared
-Forge.Wasm.BrowserStorages
-Forge.Wasm.BrowserStorages.NewtonSoft.Json
+Forge.Wasm.BrowserStorages*
 Forge.Invoker
