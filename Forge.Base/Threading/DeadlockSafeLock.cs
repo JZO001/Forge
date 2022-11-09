@@ -182,10 +182,12 @@ namespace Forge.Threading
         /// <returns>True, if the lock acquired successfuly, otherwise False.</returns>
         public bool TryLock(TimeSpan timeout)
         {
+#if NET40
             if (timeout == null)
             {
                 ThrowHelper.ThrowArgumentNullException("timeout");
             }
+#endif
             return TryLock(Convert.ToInt32(timeout.TotalMilliseconds));
         }
 

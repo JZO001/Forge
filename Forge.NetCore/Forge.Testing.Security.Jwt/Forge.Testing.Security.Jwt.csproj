@@ -1,4 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup Label="Globals">
+	  <SccProjectName>SAK</SccProjectName>
+	  <SccProvider>SAK</SccProvider>
+	  <SccAuxPath>SAK</SccAuxPath>
+	  <SccLocalPath>SAK</SccLocalPath>
+	</PropertyGroup>
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
@@ -8,15 +15,30 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Forge.Security.Jwt.Core\Forge.Security.Jwt.Core.csproj" />
+	  <None Remove="log4net.config" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="log4net.config">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Forge.Invoker\Forge.Invoker.csproj" />
+		<ProjectReference Include="..\Forge.Security.Jwt.Client\Forge.Security.Jwt.Client.csproj" />
+		<ProjectReference Include="..\Forge.Security.Jwt.Service\Forge.Security.Jwt.Service.csproj" />
 		<ProjectReference Include="..\Forge.Security.Jwt.Shared\Forge.Security.Jwt.Shared.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="log4net" Version="2.0.15" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="6.1.0" />
+		<PackageReference Include="Microsoft.JSInterop" Version="6.0.10" />
 	</ItemGroup>
 
 	<ItemGroup>

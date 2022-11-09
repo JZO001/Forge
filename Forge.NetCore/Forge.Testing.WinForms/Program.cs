@@ -13,7 +13,7 @@ namespace Forge.Testing.WinForms
         static void Main()
         {
             Log4NetManager.InitializeFromAppConfig();
-#if NETCOREAPP3_1
+#if NETCOREAPP3_1_OR_GREATER
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
 #endif
             Application.EnableVisualStyles();

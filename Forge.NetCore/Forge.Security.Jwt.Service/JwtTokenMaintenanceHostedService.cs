@@ -1,10 +1,10 @@
-﻿using Forge.Security.Jwt.Shared;
+﻿using Forge.Security.Jwt.Shared.Service;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Forge.Security.Jwt.Core
+namespace Forge.Security.Jwt.Service
 {
 
     /// <summary>Maintain the token service and remove the expired a tokens.</summary>
@@ -18,15 +18,16 @@ namespace Forge.Security.Jwt.Core
         /// <param name="jwtAuthManager">The JWT authentication manager.</param>
         public JwtTokenMaintenanceHostedService(IJwtManagementService jwtAuthManager)
         {
+            if (jwtAuthManager == null) throw new ArgumentNullException(nameof(jwtAuthManager));
             _jwtAuthManager = jwtAuthManager;
         }
 
         /// <summary>Starts the service</summary>
-        /// <param name="stoppingToken">The stopping token.</param>
+        /// <param name="cancellationToken">CancellationToken</param>
         /// <returns>
-        ///   <br />
+        ///   Task
         /// </returns>
-        public Task StartAsync(CancellationToken stoppingToken)
+        public Task StartAsync(CancellationToken cancellationToken)
         {
             // remove expired refresh tokens from cache every minute
             _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
@@ -34,13 +35,15 @@ namespace Forge.Security.Jwt.Core
         }
 
         /// <summary>Stops the service</summary>
-        /// <param name="stoppingToken">The stopping token.</param>
+        /// <param name="cancellationToken">CancellationToken</param>
         /// <returns>
-        ///   <br />
+        ///   Task
         /// </returns>
-        public Task StopAsync(CancellationToken stoppingToken)
+        public Task StopAsync(CancellationToken cancellationToken)
         {
             _timer?.Change(Timeout.Infinite, 0);
+            _timer?.Dispose();
+            _timer = null;
             return Task.CompletedTask;
         }
 
@@ -48,11 +51,12 @@ namespace Forge.Security.Jwt.Core
         public void Dispose()
         {
             _timer?.Dispose();
+            _timer = null;
         }
 
         private void DoWork(object state)
         {
-            _jwtAuthManager.RemoveExpiredRefreshTokens(DateTime.Now);
+            _jwtAuthManager.RemoveExpiredRefreshTokens(DateTime.UtcNow);
         }
 
     }

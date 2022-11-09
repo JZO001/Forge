@@ -14,9 +14,13 @@ namespace Forge.Persistence.Formatters
 {
 
     /// <summary>
-    /// X509 Binary serializer formatter
+    /// Rijndael encryption formatter
     /// </summary>
     /// <typeparam name="T">Generic type</typeparam>
+#if NET40
+#else
+[Obsolete]
+#endif
     public sealed class RijndaelFormatter<T> : IDataFormatter<T>
     {
 

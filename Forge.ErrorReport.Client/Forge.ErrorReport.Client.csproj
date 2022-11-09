@@ -39,14 +39,21 @@
     <DocumentationFile>bin\Release\Forge.ErrorReport.Client.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Forge.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=2.0.12.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.12\lib\net45\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ErrorReportAppender.cs" />
@@ -55,6 +62,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Forge.pfx" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -65,6 +73,10 @@
     <ProjectReference Include="..\Forge.ErrorReport\Forge.ErrorReport.csproj">
       <Project>{c7a8f803-2af4-4211-8ef4-bb62a9ec0b34}</Project>
       <Name>Forge.ErrorReport</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Forge.Logging.Utils\Forge.Logging.Utils.csproj">
+      <Project>{4dd103b3-d3ce-4c18-b11e-25afeac3c6ca}</Project>
+      <Name>Forge.Logging.Utils</Name>
     </ProjectReference>
     <ProjectReference Include="..\Forge.Net.Remoting\Forge.Net.Remoting.csproj">
       <Project>{0f590995-e709-4bd6-85fb-4059d2d7507e}</Project>

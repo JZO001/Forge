@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using Forge.Logging;
+using Forge.Logging.Utils;
 
 namespace Forge.Testing.RemoteDesktop.Server
 {

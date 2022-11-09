@@ -91,9 +91,8 @@
     <StartupObject>Forge.Testing.RemoteDesktop.Server.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=2.0.12.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.12\lib\net45\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -101,6 +100,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -148,6 +148,10 @@
     <ProjectReference Include="..\Forge.Logging.Log4net\Forge.Logging.Log4net.csproj">
       <Project>{2684a3bd-a1c6-4ab1-bc3c-6bc0ad3f42d4}</Project>
       <Name>Forge.Logging.Log4net</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Forge.Logging.Utils\Forge.Logging.Utils.csproj">
+      <Project>{4dd103b3-d3ce-4c18-b11e-25afeac3c6ca}</Project>
+      <Name>Forge.Logging.Utils</Name>
     </ProjectReference>
     <ProjectReference Include="..\Forge.Net.Remoting\Forge.Net.Remoting.csproj">
       <Project>{0f590995-e709-4bd6-85fb-4059d2d7507e}</Project>

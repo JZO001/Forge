@@ -87,7 +87,7 @@ namespace Forge.Configuration.Shared
 
         private FileSystemWatcher mFSWatcher = null;
 
-#if NETCOREAPP3_1
+#if NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
         private String mDefaultConfigurationFile = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None).FilePath;
 #else
         private String mDefaultConfigurationFile = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;

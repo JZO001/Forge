@@ -1,5 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+	<PropertyGroup Label="Globals">
+	  <SccProjectName>SAK</SccProjectName>
+	  <SccProvider>SAK</SccProvider>
+	  <SccAuxPath>SAK</SccAuxPath>
+	  <SccLocalPath>SAK</SccLocalPath>
+	</PropertyGroup>
+
 	<PropertyGroup>
 		<TargetFrameworks>net5.0;net6.0</TargetFrameworks>
 		<Version>1.0.0.0</Version>
@@ -19,7 +26,7 @@
 
 	<PropertyGroup>
 		<DocumentationFile>Forge.Security.Jwt.Service.xml</DocumentationFile>
-		<RepositoryUrl>https://github.com/JZO001/Forge</RepositoryUrl>
+		<RepositoryUrl>https://github.com/JZO001/Forge.Security.Jwt.Service</RepositoryUrl>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -31,7 +38,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.9" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.10" />
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">

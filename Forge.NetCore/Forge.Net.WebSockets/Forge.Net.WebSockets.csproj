@@ -14,7 +14,7 @@
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-		<ProjectGuid>{ECBE2E5E-BCC8-4408-9FED-788A3501226D}</ProjectGuid>
+		<ProjectGuid>{D2E42B0C-819C-4AF8-84DC-128F006D791D}</ProjectGuid>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -23,6 +23,13 @@
 		<Compile Include="..\..\Forge.Net.WebSockets\WebSocketManager.cs" Link="WebSocketManager.cs" />
 		<Compile Include="..\..\Forge.Net.WebSockets\WebSocketManagerMiddleware.cs" Link="WebSocketManagerMiddleware.cs" />
 	</ItemGroup>
+
+	<PropertyGroup Label="Globals">
+	  <SccProjectName>SAK</SccProjectName>
+	  <SccProvider>SAK</SccProvider>
+	  <SccAuxPath>SAK</SccAuxPath>
+	  <SccLocalPath>SAK</SccLocalPath>
+	</PropertyGroup>
 
 	<PropertyGroup>
 		<DocumentationFile>Forge.Net.WebSockets.xml</DocumentationFile>

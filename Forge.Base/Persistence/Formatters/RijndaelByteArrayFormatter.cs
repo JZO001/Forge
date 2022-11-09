@@ -16,6 +16,10 @@ namespace Forge.Persistence.Formatters
     /// <summary>
     /// Rijndael formatter
     /// </summary>
+#if NET40
+#else
+[Obsolete]
+#endif
     public sealed class RijndaelByteArrayFormatter : IDataFormatter<Stream>
     {
 

@@ -958,25 +958,33 @@ namespace Forge.Reflection
                 {
                     int localHash = this.GetHashCode();
                     int otherHash = other.GetHashCode();
-                    if (localHash == otherHash && other.AsmName == null && this.AsmName == null)
+                    if (localHash == otherHash)
                     {
-                        result = true;
-                    }
-                    else if (localHash == otherHash &&
-                        other.AsmName != null && this.AsmName != null &&
-                        other.AsmName.KeyPair != null && this.AsmName.KeyPair != null)
-                    {
-                        result = Arrays.DeepEquals(other.AsmName.KeyPair.PublicKey, this.AsmName.KeyPair.PublicKey);
-                    }
-                    else if (localHash == otherHash &&
-                        other.AsmName != null && this.AsmName != null &&
-                        other.AsmName.KeyPair == null && this.AsmName.KeyPair == null)
-                    {
-                        result = true;
-                    }
-                    else
-                    {
-                        result = false;
+                        if (other.AsmName == null && this.AsmName == null)
+                        {
+                            result = true;
+                        }
+                        else if (other.AsmName != null && this.AsmName != null)
+                        {
+#if NET40 || NETSTANDARD2_0
+                            if (other.AsmName.KeyPair != null && this.AsmName.KeyPair != null)
+                            {
+                                result = Arrays.DeepEquals(other.AsmName.KeyPair.PublicKey, this.AsmName.KeyPair.PublicKey);
+                            }
+                            else if (other.AsmName.KeyPair == null && this.AsmName.KeyPair == null)
+                            {
+                                result = true;
+                            }
+#else
+                            string pkt = other.AsmName.FullName.Substring(other.AsmName.FullName.IndexOf("PublicKeyToken="));
+                            string pktValueOther = pkt.Split(new string[] { "=" }, StringSplitOptions.RemoveEmptyEntries)[1];
+
+                            pkt = this.AsmName.FullName.Substring(other.AsmName.FullName.IndexOf("PublicKeyToken="));
+                            string pktValueThis = pkt.Split(new string[] { "=" }, StringSplitOptions.RemoveEmptyEntries)[1];
+
+                            result = pktValueOther == pktValueThis;
+#endif
+                        }
                     }
                 }
 
@@ -1031,7 +1039,7 @@ namespace Forge.Reflection
 
         }
 
-        #endregion
+#endregion
 
     }
 

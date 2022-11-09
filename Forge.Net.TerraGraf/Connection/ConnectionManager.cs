@@ -447,7 +447,9 @@ namespace Forge.Net.TerraGraf.Connection
                                             {
                                                 udpClient.MulticastLoopback = true;
                                                 udpClient.EnableBroadcast = true;
+#if IS_WINDOWS
                                                 udpClient.AllowNatTraversal(true);
+#endif
                                                 try
                                                 {
                                                     IPAddress multicastaddress = IPAddress.Parse(ip);
@@ -476,7 +478,9 @@ namespace Forge.Net.TerraGraf.Connection
                                     {
                                         udpClient.MulticastLoopback = false;
                                         udpClient.EnableBroadcast = true;
+#if IS_WINDOWS
                                         udpClient.AllowNatTraversal(true);
+#endif
                                         udpClient.DontFragment = true;
                                         foreach (int port in targetPorts)
                                         {

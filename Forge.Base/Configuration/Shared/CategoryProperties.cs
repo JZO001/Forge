@@ -444,7 +444,7 @@ namespace Forge.Configuration.Shared
             return GetEnumerator();
         }
 
-        #region Security
+#region Security
 
         private static readonly byte[] KEY = new byte[] { 45, 65, 210, 98, 23, 155, 233, 254, 0, 201,
                                                     178, 199, 12, 101, 202, 67, 86, 56, 95, 23,
@@ -487,14 +487,18 @@ namespace Forge.Configuration.Shared
             byte[] data = Encoding.UTF8.GetBytes(text);
 
             ICryptoTransform encryptor = null;
-            Rijndael rijndael = Rijndael.Create();
+#if NET6_0_OR_GREATER
+            Aes crypto = Aes.Create();
+#else
+            Rijndael crypto = Rijndael.Create();
+#endif
             byte[] result = null;
 
             try
             {
-                using (rijndael)
+                using (crypto)
                 {
-                    using (encryptor = rijndael.CreateEncryptor(KEY, IV))
+                    using (encryptor = crypto.CreateEncryptor(KEY, IV))
                     {
                         result = encryptor.TransformFinalBlock(data, 0, data.Length);
                     }
@@ -506,7 +510,7 @@ namespace Forge.Configuration.Shared
             }
             finally
             {
-                rijndael.Clear();
+                crypto.Clear();
             }
 
             return Convert.ToBase64String(result);
@@ -522,14 +526,18 @@ namespace Forge.Configuration.Shared
             byte[] data = Convert.FromBase64String(text);
 
             ICryptoTransform decryptor = null;
-            Rijndael rijndael = Rijndael.Create();
+#if NET6_0_OR_GREATER
+            Aes crypto = Aes.Create();
+#else
+            Rijndael crypto = Rijndael.Create();
+#endif
             byte[] result = null;
 
             try
             {
-                using (rijndael)
+                using (crypto)
                 {
-                    using (decryptor = rijndael.CreateDecryptor(KEY, IV))
+                    using (decryptor = crypto.CreateDecryptor(KEY, IV))
                     {
                         result = decryptor.TransformFinalBlock(data, 0, data.Length);
                     }
@@ -541,13 +549,13 @@ namespace Forge.Configuration.Shared
             }
             finally
             {
-                rijndael.Clear();
+                crypto.Clear();
             }
 
             return Encoding.UTF8.GetString(result);
         }
 
-        #endregion
+#endregion
 
         /// <summary>
         /// Creates a property item.

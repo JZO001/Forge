@@ -39,6 +39,12 @@
     <DocumentationFile>bin\Release\Forge.RemoteDesktop.Service.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Forge.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -85,6 +91,9 @@
     <Compile Include="RemoteDesktopAbstractServiceProxy.cs" />
     <Compile Include="RemoteDesktopServiceImpl.cs" />
     <Compile Include="RemoteDesktopServiceManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Forge.pfx" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AuthenticationAdminForm.resx">

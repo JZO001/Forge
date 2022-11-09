@@ -336,6 +336,8 @@ namespace Forge.Net.Synapse
             set { this.mSocket.NoDelay = value; }
         }
 
+#if IS_WINDOWS
+
         /// <summary>
         /// Sets the keep alive values.
         /// </summary>
@@ -347,6 +349,8 @@ namespace Forge.Net.Synapse
         {
             return this.mSocket.SetKeepAliveValues(state, keepAliveInterval, keepAliveInterval);
         }
+
+#endif
 
         /// <summary>
         /// Gets a value indicating whether this <see cref="NetworkStream"/> is connected.

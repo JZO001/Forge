@@ -11,12 +11,8 @@
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-		<Reference Include="Forge.Base">
-			<HintPath>..\.Output\net6.0\Forge.Base.dll</HintPath>
-			<SpecificVersion>False</SpecificVersion>
-			<Private>True</Private>
-			<Name>Forge.Base</Name>
-		</Reference>
+		<ProjectReference Include="..\Forge.Base\Forge.Base.csproj" />
+		<ProjectReference Include="..\Forge.Persistence\Forge.Persistence.csproj" />
 		<Reference Include="Forge.Security">
 			<HintPath>..\.Output\net6.0\Forge.Security.dll</HintPath>
 			<SpecificVersion>False</SpecificVersion>
@@ -28,12 +24,6 @@
 			<SpecificVersion>False</SpecificVersion>
 			<Private>True</Private>
 			<Name>Forge.Extensions</Name>
-		</Reference>
-		<Reference Include="Forge.Persistence">
-			<HintPath>..\.Output\net6.0\Forge.Persistence.dll</HintPath>
-			<SpecificVersion>False</SpecificVersion>
-			<Private>True</Private>
-			<Name>Forge.Persistence</Name>
 		</Reference>
 		<Reference Include="Forge.Persistence.Formatters.JsonNet">
 			<HintPath>..\.Output\net6.0\Forge.Persistence.Formatters.JsonNet.dll</HintPath>
@@ -158,12 +148,8 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-windows'">
-		<Reference Include="Forge.Base">
-			<HintPath>..\.Output\net6.0\Forge.Base.dll</HintPath>
-			<SpecificVersion>False</SpecificVersion>
-			<Private>True</Private>
-			<Name>Forge.Base</Name>
-		</Reference>
+		<ProjectReference Include="..\Forge.Base\Forge.Base.csproj" />
+		<ProjectReference Include="..\Forge.Persistence\Forge.Persistence.csproj" />
 		<Reference Include="Forge.Security">
 			<HintPath>..\.Output\net6.0\Forge.Security.dll</HintPath>
 			<SpecificVersion>False</SpecificVersion>
@@ -175,12 +161,6 @@
 			<SpecificVersion>False</SpecificVersion>
 			<Private>True</Private>
 			<Name>Forge.Extensions</Name>
-		</Reference>
-		<Reference Include="Forge.Persistence">
-			<HintPath>..\.Output\net6.0\Forge.Persistence.dll</HintPath>
-			<SpecificVersion>False</SpecificVersion>
-			<Private>True</Private>
-			<Name>Forge.Persistence</Name>
 		</Reference>
 		<Reference Include="Forge.Persistence.Formatters.JsonNet">
 			<HintPath>..\.Output\net6.0\Forge.Persistence.Formatters.JsonNet.dll</HintPath>
@@ -306,12 +286,8 @@
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
 		<PackageReference Include="System.Data.SQLite.EF6" Version="1.0.116" />
-		<Reference Include="Forge.Base">
-			<HintPath>..\.Output\net5.0\Forge.Base.dll</HintPath>
-			<SpecificVersion>False</SpecificVersion>
-			<Private>True</Private>
-			<Name>Forge.Base</Name>
-		</Reference>
+		<ProjectReference Include="..\Forge.Base\Forge.Base.csproj" />
+		<ProjectReference Include="..\Forge.Persistence\Forge.Persistence.csproj" />
 		<Reference Include="Forge.Security">
 			<HintPath>..\.Output\net5.0\Forge.Security.dll</HintPath>
 			<SpecificVersion>False</SpecificVersion>
@@ -323,12 +299,6 @@
 			<SpecificVersion>False</SpecificVersion>
 			<Private>True</Private>
 			<Name>Forge.Extensions</Name>
-		</Reference>
-		<Reference Include="Forge.Persistence">
-			<HintPath>..\.Output\net5.0\Forge.Persistence.dll</HintPath>
-			<SpecificVersion>False</SpecificVersion>
-			<Private>True</Private>
-			<Name>Forge.Persistence</Name>
 		</Reference>
 		<Reference Include="Forge.Persistence.Formatters.JsonNet">
 			<HintPath>..\.Output\net5.0\Forge.Persistence.Formatters.JsonNet.dll</HintPath>
@@ -454,12 +424,8 @@
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net5.0-windows'">
 		<PackageReference Include="System.Data.SQLite.EF6" Version="1.0.116" />
-		<Reference Include="Forge.Base">
-			<HintPath>..\.Output\net5.0\Forge.Base.dll</HintPath>
-			<SpecificVersion>False</SpecificVersion>
-			<Private>True</Private>
-			<Name>Forge.Base</Name>
-		</Reference>
+		<ProjectReference Include="..\Forge.Base\Forge.Base.csproj" />
+		<ProjectReference Include="..\Forge.Persistence\Forge.Persistence.csproj" />
 		<Reference Include="Forge.Security">
 			<HintPath>..\.Output\net5.0\Forge.Security.dll</HintPath>
 			<SpecificVersion>False</SpecificVersion>
@@ -471,12 +437,6 @@
 			<SpecificVersion>False</SpecificVersion>
 			<Private>True</Private>
 			<Name>Forge.Extensions</Name>
-		</Reference>
-		<Reference Include="Forge.Persistence">
-			<HintPath>..\.Output\net5.0\Forge.Persistence.dll</HintPath>
-			<SpecificVersion>False</SpecificVersion>
-			<Private>True</Private>
-			<Name>Forge.Persistence</Name>
 		</Reference>
 		<Reference Include="Forge.Persistence.Formatters.JsonNet">
 			<HintPath>..\.Output\net5.0\Forge.Persistence.Formatters.JsonNet.dll</HintPath>
@@ -616,12 +576,8 @@
 		<PackageReference Include="System.Net.Primitives">
 			<Version>4.3.1</Version>
 		</PackageReference>
-		<Reference Include="Forge.Base">
-			<HintPath>..\.Output\netstandard2.0\Forge.Base.dll</HintPath>
-			<SpecificVersion>False</SpecificVersion>
-			<Private>True</Private>
-			<Name>Forge.Base</Name>
-		</Reference>
+		<ProjectReference Include="..\Forge.Base\Forge.Base.csproj" />
+		<ProjectReference Include="..\Forge.Persistence\Forge.Persistence.csproj" />
 		<Reference Include="Forge.Security">
 			<HintPath>..\.Output\netcoreapp3.1\Forge.Security.dll</HintPath>
 			<SpecificVersion>False</SpecificVersion>
@@ -633,12 +589,6 @@
 			<SpecificVersion>False</SpecificVersion>
 			<Private>True</Private>
 			<Name>Forge.Extensions</Name>
-		</Reference>
-		<Reference Include="Forge.Persistence">
-			<HintPath>..\.Output\netstandard2.0\Forge.Persistence.dll</HintPath>
-			<SpecificVersion>False</SpecificVersion>
-			<Private>True</Private>
-			<Name>Forge.Persistence</Name>
 		</Reference>
 		<Reference Include="Forge.Persistence.Formatters.JsonNet">
 			<HintPath>..\.Output\netstandard2.0\Forge.Persistence.Formatters.JsonNet.dll</HintPath>
@@ -767,12 +717,8 @@
 		<Reference Include="System.Web" />
 		<PackageReference Include="System.Data.SQLite.EF6" Version="1.0.116" />
 		<PackageReference Include="System.Data.SQLite.Linq" Version="1.0.116" />
-		<Reference Include="Forge.Base">
-			<HintPath>..\.Output\net40\Forge.Base.dll</HintPath>
-			<SpecificVersion>False</SpecificVersion>
-			<Private>True</Private>
-			<Name>Forge.Base</Name>
-		</Reference>
+		<ProjectReference Include="..\Forge.Base\Forge.Base.csproj" />
+		<ProjectReference Include="..\Forge.Persistence\Forge.Persistence.csproj" />
 		<Reference Include="Forge.Native">
 			<HintPath>..\..\.Output\Forge.Native.dll</HintPath>
 			<SpecificVersion>False</SpecificVersion>
@@ -790,12 +736,6 @@
 			<SpecificVersion>False</SpecificVersion>
 			<Private>True</Private>
 			<Name>Forge.Extensions</Name>
-		</Reference>
-		<Reference Include="Forge.Persistence">
-			<HintPath>..\.Output\net40\Forge.Persistence.dll</HintPath>
-			<SpecificVersion>False</SpecificVersion>
-			<Private>True</Private>
-			<Name>Forge.Persistence</Name>
 		</Reference>
 		<Reference Include="Forge.Persistence.Formatters.JsonNet">
 			<HintPath>..\.Output\net40\Forge.Persistence.Formatters.JsonNet.dll</HintPath>

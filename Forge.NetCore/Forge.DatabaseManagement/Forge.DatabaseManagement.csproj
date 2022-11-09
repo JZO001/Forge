@@ -1,5 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+	<PropertyGroup Label="Globals">
+	  <SccProjectName>SAK</SccProjectName>
+	  <SccProvider>SAK</SccProvider>
+	  <SccAuxPath>SAK</SccAuxPath>
+	  <SccLocalPath>SAK</SccLocalPath>
+	</PropertyGroup>
+
 	<PropertyGroup>
 		<TargetFrameworks>net40;netstandard2.0;net5.0;net6.0</TargetFrameworks>
 		<Version>1.1.0.0</Version>
@@ -14,7 +21,7 @@
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-		<ProjectGuid>{CF3D0FC3-46A2-4C86-83F0-5F9EBB417A3F}</ProjectGuid>
+		<ProjectGuid>{82DAE41E-8391-4563-BE56-2AA529451078}</ProjectGuid>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -24,7 +31,7 @@
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
 		<Reference Include="Forge.Base">
-			<HintPath>..\.Output\net6.0\Forge.Base.dll</HintPath>
+			<HintPath>..\..\.Output\net6.0\Forge.Base.dll</HintPath>
 			<SpecificVersion>False</SpecificVersion>
 			<Private>True</Private>
 			<Name>Forge.Base</Name>
@@ -33,7 +40,7 @@
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
 		<Reference Include="Forge.Base">
-			<HintPath>..\.Output\net5.0\Forge.Base.dll</HintPath>
+			<HintPath>..\..\.Output\net5.0\Forge.Base.dll</HintPath>
 			<SpecificVersion>False</SpecificVersion>
 			<Private>True</Private>
 			<Name>Forge.Base</Name>
@@ -42,7 +49,7 @@
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
 		<Reference Include="Forge.Base">
-			<HintPath>..\.Output\netstandard2.0\Forge.Base.dll</HintPath>
+			<HintPath>..\..\.Output\netstandard2.0\Forge.Base.dll</HintPath>
 			<SpecificVersion>False</SpecificVersion>
 			<Private>True</Private>
 			<Name>Forge.Base</Name>
@@ -51,7 +58,7 @@
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net40'">
 		<Reference Include="Forge.Base">
-			<HintPath>..\.Output\net40\Forge.Base.dll</HintPath>
+			<HintPath>..\..\.Output\net40\Forge.Base.dll</HintPath>
 			<SpecificVersion>False</SpecificVersion>
 			<Private>True</Private>
 			<Name>Forge.Base</Name>

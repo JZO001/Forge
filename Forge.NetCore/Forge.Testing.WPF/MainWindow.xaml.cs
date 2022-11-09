@@ -45,7 +45,7 @@ namespace Forge.Testing.WPF
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine(string.Format("IsUI thread: {0}", ApplicationHelper.IsUIThread().ToString()));
+            Console.WriteLine(string.Format("IsUI thread: {0}", Forge.Windows.UI.ApplicationHelper.IsUIThread().ToString()));
         }
     }
 

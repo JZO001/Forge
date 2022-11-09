@@ -31,7 +31,7 @@ namespace Forge.Testing.WinForms
 
         private void Form1_Shown(object sender, EventArgs e)
         {
-            Console.WriteLine(string.Format("IsUI thread: {0}", ApplicationHelper.IsUIThread().ToString()));
+            Console.WriteLine(string.Format("IsUI thread: {0}", Forge.Windows.UI.ApplicationHelper.IsUIThread().ToString()));
         }
 
         private void Btn_Click(object sender, EventArgs e)

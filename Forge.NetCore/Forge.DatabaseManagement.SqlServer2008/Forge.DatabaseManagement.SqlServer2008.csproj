@@ -1,5 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+	<PropertyGroup Label="Globals">
+	  <SccProjectName>SAK</SccProjectName>
+	  <SccProvider>SAK</SccProvider>
+	  <SccAuxPath>SAK</SccAuxPath>
+	  <SccLocalPath>SAK</SccLocalPath>
+	</PropertyGroup>
+
 	<PropertyGroup>
 		<TargetFrameworks>net461;netstandard2.0;net5.0;net6.0</TargetFrameworks>
 		<Version>1.1.0.0</Version>
@@ -14,7 +21,7 @@
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-		<ProjectGuid>{36E20203-B4D9-4363-BF52-EFD07E702BD3}</ProjectGuid>
+		<ProjectGuid>{F162FE7F-C296-4C25-A53E-C546ED0075D7}</ProjectGuid>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -34,13 +41,13 @@
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
 		<Reference Include="Forge.Base">
-			<HintPath>..\.Output\net6.0\Forge.Base.dll</HintPath>
+			<HintPath>..\..\.Output\net6.0\Forge.Base.dll</HintPath>
 			<SpecificVersion>False</SpecificVersion>
 			<Private>True</Private>
 			<Name>Forge.Base</Name>
 		</Reference>
 		<Reference Include="Forge.DatabaseManagement">
-			<HintPath>..\.Output\net6.0\Forge.DatabaseManagement.dll</HintPath>
+			<HintPath>..\..\.Output\net6.0\Forge.DatabaseManagement.dll</HintPath>
 			<SpecificVersion>False</SpecificVersion>
 			<Private>True</Private>
 			<Name>Forge.DatabaseManagement</Name>
@@ -49,13 +56,13 @@
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
 		<Reference Include="Forge.Base">
-			<HintPath>..\.Output\net5.0\Forge.Base.dll</HintPath>
+			<HintPath>..\..\.Output\net5.0\Forge.Base.dll</HintPath>
 			<SpecificVersion>False</SpecificVersion>
 			<Private>True</Private>
 			<Name>Forge.Base</Name>
 		</Reference>
 		<Reference Include="Forge.DatabaseManagement">
-			<HintPath>..\.Output\net5.0\Forge.DatabaseManagement.dll</HintPath>
+			<HintPath>..\..\.Output\net5.0\Forge.DatabaseManagement.dll</HintPath>
 			<SpecificVersion>False</SpecificVersion>
 			<Private>True</Private>
 			<Name>Forge.DatabaseManagement</Name>
@@ -64,13 +71,13 @@
 	
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
 		<Reference Include="Forge.Base">
-			<HintPath>..\.Output\netstandard2.0\Forge.Base.dll</HintPath>
+			<HintPath>..\..\.Output\netstandard2.0\Forge.Base.dll</HintPath>
 			<SpecificVersion>False</SpecificVersion>
 			<Private>True</Private>
 			<Name>Forge.Base</Name>
 		</Reference>
 		<Reference Include="Forge.DatabaseManagement">
-			<HintPath>..\.Output\netstandard2.0\Forge.DatabaseManagement.dll</HintPath>
+			<HintPath>..\..\.Output\netstandard2.0\Forge.DatabaseManagement.dll</HintPath>
 			<SpecificVersion>False</SpecificVersion>
 			<Private>True</Private>
 			<Name>Forge.DatabaseManagement</Name>
@@ -80,27 +87,30 @@
 	<ItemGroup Condition="'$(TargetFramework)' == 'net461'">
 		<Reference Include="System.Configuration" />
 		<Reference Include="Forge.Base">
-			<HintPath>..\.Output\net40\Forge.Base.dll</HintPath>
+			<HintPath>..\..\.Output\net40\Forge.Base.dll</HintPath>
 			<SpecificVersion>False</SpecificVersion>
 			<Private>True</Private>
 			<Name>Forge.Base</Name>
 		</Reference>
 		<Reference Include="Forge.DatabaseManagement">
-			<HintPath>..\.Output\net40\Forge.DatabaseManagement.dll</HintPath>
+			<HintPath>..\..\.Output\net40\Forge.DatabaseManagement.dll</HintPath>
 			<SpecificVersion>False</SpecificVersion>
 			<Private>True</Private>
 			<Name>Forge.DatabaseManagement</Name>
 		</Reference>
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFramework)' != 'net461'">
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.1" />
+	</ItemGroup>
+	
 	<ItemGroup>
-		<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" Condition="'$(TargetFramework)' != 'net461'" />
-		<PackageReference Include="Iesi.Collections" Version="4.0.4" />
-		<PackageReference Include="NHibernate" Version="5.3.12" />
+		<PackageReference Include="Iesi.Collections" Version="4.0.5" />
+		<PackageReference Include="NHibernate" Version="5.3.14" />
 		<PackageReference Include="NHibernate.Mapping.Attributes" Version="5.1.0" />
 		<PackageReference Include="Remotion.Linq" Version="2.2.0" />
 		<PackageReference Include="Remotion.Linq.EagerFetching" Version="2.2.0" />
-		<PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+		<PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">

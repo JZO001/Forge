@@ -365,6 +365,8 @@ namespace Forge.Net.Synapse
 
         #region Public method(s)
 
+#if IS_WINDOWS
+
         /// <summary>
         /// Sets the keep alive values.
         /// </summary>
@@ -395,6 +397,8 @@ namespace Forge.Net.Synapse
 
             return socket.IOControl(IOControlCode.KeepAliveValues, keepAlive.ToArray(), null);
         }
+
+#endif
 
         /// <summary>
         /// Starts the server.
@@ -669,7 +673,9 @@ namespace Forge.Net.Synapse
             client.Client.ReceiveBufferSize = bufferSize;
             client.Client.SendTimeout = Timeout.Infinite;
             client.Client.ReceiveTimeout = Timeout.Infinite;
+#if IS_WINDOWS
             client.Client.SetKeepAliveValues(true, DefaultSocketKeepAliveTime, DefaultSocketKeepAliveTimeInterval);
+#endif
             client.Client.NoDelay = this.NoDelay;
 
             if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("SYNAPSE_NETWORK_MANAGER, create client network stream for connection. Factory type: '{0}'. Connection remote endpoint: '{1}'", clientStreamFactory.GetType().FullName, endPoint.ToString()));
@@ -880,10 +886,16 @@ namespace Forge.Net.Synapse
                 try
                 {
                     tcpClient = listener.EndAcceptTcpClient(ar);
+
+#if IS_WINDOWS
+
                     if (mManager.UseSocketKeepAlive)
                     {
                         tcpClient.Client.SetKeepAliveValues(true, mManager.SocketKeepAliveTime, mManager.SocketKeepAliveTimeInterval);
                     }
+
+#endif
+
                     tcpClient.Client.SendBufferSize = mManager.SocketSendBufferSize;
                     tcpClient.Client.ReceiveBufferSize = mManager.SocketReceiveBufferSize;
                     if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("New TcpClient connection accepted. Local endpoint: {0}, remote endpoint: {1}", tcpClient.Client.LocalEndPoint.ToString(), tcpClient.Client.RemoteEndPoint.ToString()));

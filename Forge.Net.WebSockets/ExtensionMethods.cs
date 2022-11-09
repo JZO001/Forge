@@ -4,7 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
-#if NETSTANDARD2_0
+#if NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;

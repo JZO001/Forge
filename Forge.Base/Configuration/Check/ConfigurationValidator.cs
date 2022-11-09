@@ -4,6 +4,8 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+#if IS_WINDOWS
+
 using Forge.Logging;
 using System;
 using System.Configuration;
@@ -179,3 +181,5 @@ namespace Forge.Configuration.Check
     }
 
 }
+
+#endif

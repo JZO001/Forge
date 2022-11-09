@@ -88,7 +88,11 @@ namespace Forge.RemoteDesktop.Service
 
         private Point mMouseMovePosition = Point.Empty;
 
+#if NET40
         private static System.Security.Cryptography.SHA1Managed mCrcCalculator = new System.Security.Cryptography.SHA1Managed();
+#else
+        private static System.Security.Cryptography.SHA1 mCrcCalculator = System.Security.Cryptography.SHA1.Create();
+#endif
 
         private static UIAccessorControl mUIAccessor = null;
 
@@ -102,9 +106,9 @@ namespace Forge.RemoteDesktop.Service
         /// </summary>
         public event EventHandler<AcceptClientEventArgs> EventAcceptClient;
 
-        #endregion
+#endregion
 
-        #region Constructor(s)
+#region Constructor(s)
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RemoteDesktopServiceManager"/> class.
@@ -120,9 +124,9 @@ namespace Forge.RemoteDesktop.Service
             mTimeoutWatchThread.Start();
         }
 
-        #endregion
+#endregion
 
-        #region Public properties
+#region Public properties
 
         /// <summary>
         /// Gets the connected clients.
@@ -158,9 +162,9 @@ namespace Forge.RemoteDesktop.Service
             }
         }
 
-        #endregion
+#endregion
 
-        #region Public method(s)
+#region Public method(s)
 
         /// <summary>
         /// Starts the service.
@@ -239,9 +243,9 @@ namespace Forge.RemoteDesktop.Service
             ServiceContract_Disconnected(client, new DisconnectEventArgs(client.SessionId));
         }
 
-        #endregion
+#endregion
 
-        #region Internal method(s)
+#region Internal method(s)
 
         internal void RegisterNewContract(IRemoteDesktopInternalClient serviceContract)
         {
@@ -661,9 +665,9 @@ namespace Forge.RemoteDesktop.Service
             }
         }
 
-        #endregion
+#endregion
 
-        #region Protected method(s)
+#region Protected method(s)
 
         /// <summary>
         /// Registers to peer context.
@@ -679,9 +683,9 @@ namespace Forge.RemoteDesktop.Service
             }
         }
 
-        #endregion
+#endregion
 
-        #region Private method(s)
+#region Private method(s)
 
         private void SetCursorPosOnService(IRemoteDesktopInternalClient client, Point mousePos)
         {
@@ -1311,9 +1315,9 @@ namespace Forge.RemoteDesktop.Service
             return container;
         }
 
-        #endregion
+#endregion
 
-        #region Nested type(s)
+#region Nested type(s)
 
         private class TimeoutWatch
         {
@@ -1541,7 +1545,7 @@ namespace Forge.RemoteDesktop.Service
 
         }
 
-        #endregion
+#endregion
 
     }
 

@@ -1,8 +1,5 @@
 ﻿using System;
 
-/// <summary>
-/// 
-/// </summary>
 namespace Forge.Logging
 {
 

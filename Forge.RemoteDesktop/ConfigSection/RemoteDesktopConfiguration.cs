@@ -12,7 +12,9 @@ namespace Forge.RemoteDesktop.ConfigSection
     /// <summary>
     /// Configuration access helper class for remote desktop
     /// </summary>
+#if NETFRAMEWORK
     [SecurityPermission(SecurityAction.Demand, Unrestricted = true)]
+#endif
     public class RemoteDesktopConfiguration : Forge.Configuration.Shared.SharedConfigSettings<RemoteDesktopSection, RemoteDesktopConfiguration>
     {
 

@@ -42,7 +42,11 @@ namespace Forge
             }
 
             long result = 0;
+#if NET6_0_OR_GREATER
+            using (SHA256 sha256 = SHA256.Create())
+#else
             using (SHA256Managed sha256 = new SHA256Managed())
+#endif
             {
                 byte[] hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
                 int hashCode = input.GetHashCode();

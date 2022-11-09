@@ -1,14 +1,14 @@
 ﻿using System;
 using SecureString = System.Security.SecureString;
-#if NETCOREAPP3_1
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
-using System.Net;
-#else
+#if NET40
 using Forge.Native;
 using System.Runtime.InteropServices;
 using RuntimeHelpers = System.Runtime.CompilerServices.RuntimeHelpers;
 using static Forge.Native.NativeMethods;
+#else
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
+using System.Net;
 #endif
 
 // https://blogs.msdn.microsoft.com/dcook/2008/11/25/creating-a-self-signed-certificate-in-c/
@@ -113,36 +113,7 @@ namespace Forge.Security
                 x500 = "";
             }
 
-#if NETCOREAPP3_1
-            SubjectAlternativeNameBuilder sanBuilder = new SubjectAlternativeNameBuilder();
-            sanBuilder.AddIpAddress(IPAddress.Loopback);
-            sanBuilder.AddIpAddress(IPAddress.IPv6Loopback);
-            sanBuilder.AddDnsName("localhost");
-            sanBuilder.AddDnsName(Environment.MachineName);
-
-            X500DistinguishedName distinguishedName = new X500DistinguishedName(x500);
-
-            using (RSA rsa = RSA.Create(2048))
-            {
-                var request = new CertificateRequest(distinguishedName, rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
-
-                request.CertificateExtensions.Add(
-                    new X509KeyUsageExtension(X509KeyUsageFlags.DataEncipherment | X509KeyUsageFlags.KeyEncipherment | X509KeyUsageFlags.DigitalSignature, false));
-
-
-                request.CertificateExtensions.Add(
-                   new X509EnhancedKeyUsageExtension(
-                       new OidCollection { new Oid("1.3.6.1.5.5.7.3.1") }, false));
-
-                request.CertificateExtensions.Add(sanBuilder.Build());
-
-                var certificate = request.CreateSelfSigned(new DateTimeOffset(startTime), new DateTimeOffset(endTime));
-                certificate.FriendlyName = "Generated Certificate";
-
-                pfxData = certificate.Export(X509ContentType.Pfx, password);
-            }
-
-#else
+#if NET40
 
             SystemTime startSystemTime = ToSystemTime(startTime);
             SystemTime endSystemTime = ToSystemTime(endTime);
@@ -320,12 +291,41 @@ namespace Forge.Security
                 }
             }
 
+#else
+
+            SubjectAlternativeNameBuilder sanBuilder = new SubjectAlternativeNameBuilder();
+            sanBuilder.AddIpAddress(IPAddress.Loopback);
+            sanBuilder.AddIpAddress(IPAddress.IPv6Loopback);
+            sanBuilder.AddDnsName("localhost");
+            sanBuilder.AddDnsName(Environment.MachineName);
+
+            X500DistinguishedName distinguishedName = new X500DistinguishedName(x500);
+
+            using (RSA rsa = RSA.Create(2048))
+            {
+                var request = new CertificateRequest(distinguishedName, rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+
+                request.CertificateExtensions.Add(
+                    new X509KeyUsageExtension(X509KeyUsageFlags.DataEncipherment | X509KeyUsageFlags.KeyEncipherment | X509KeyUsageFlags.DigitalSignature, false));
+
+
+                request.CertificateExtensions.Add(
+                   new X509EnhancedKeyUsageExtension(
+                       new OidCollection { new Oid("1.3.6.1.5.5.7.3.1") }, false));
+
+                request.CertificateExtensions.Add(sanBuilder.Build());
+
+                var certificate = request.CreateSelfSigned(new DateTimeOffset(startTime), new DateTimeOffset(endTime));
+                certificate.FriendlyName = "Generated Certificate";
+
+                pfxData = certificate.Export(X509ContentType.Pfx, password);
+            }
+
 #endif
             return pfxData;
         }
 
-#if NETCOREAPP3_1
-#else
+#if NET40
         private static SystemTime ToSystemTime(DateTime dateTime)
         {
             long fileTime = dateTime.ToFileTime();

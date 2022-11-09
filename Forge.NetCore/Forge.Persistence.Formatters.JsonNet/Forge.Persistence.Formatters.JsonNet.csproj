@@ -1,5 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+	<PropertyGroup Label="Globals">
+	  <SccProjectName>SAK</SccProjectName>
+	  <SccProvider>SAK</SccProvider>
+	  <SccAuxPath>SAK</SccAuxPath>
+	  <SccLocalPath>SAK</SccLocalPath>
+	</PropertyGroup>
+
 	<PropertyGroup>
 		<TargetFrameworks>net40;netstandard2.0;net5.0;net6.0</TargetFrameworks>
 		<Version>1.1.0.0</Version>
@@ -14,7 +21,7 @@
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-		<ProjectGuid>{64BB1EFC-27BB-4A5F-B631-234A552C4288}</ProjectGuid>
+		<ProjectGuid>{874EF5E1-570E-4056-BCC7-594B163B82FB}</ProjectGuid>
 	</PropertyGroup>
 
 	<PropertyGroup>

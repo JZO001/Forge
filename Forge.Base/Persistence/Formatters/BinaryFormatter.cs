@@ -17,16 +17,20 @@ namespace Forge.Persistence.Formatters
     /// Serialize data into binary format
     /// </summary>
     /// <typeparam name="T">Generic type</typeparam>
+#if NET40
+#else
+    [System.Obsolete("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.")]
+#endif
     public sealed class BinaryFormatter<T> : IDataFormatter<T>
     {
 
-        #region Field(s)
+#region Field(s)
 
         private BinaryFormatter mFormatter = new BinaryFormatter();
 
-        #endregion
+#endregion
 
-        #region Constructors
+#region Constructors
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BinaryFormatter&lt;T&gt;"/> class.
@@ -46,9 +50,9 @@ namespace Forge.Persistence.Formatters
             this.mFormatter.TypeFormat = typeFormat;
         }
 
-        #endregion
+#endregion
 
-        #region Public properties
+#region Public properties
 
         /// <summary>
         /// Gets or sets the top object format.
@@ -76,9 +80,9 @@ namespace Forge.Persistence.Formatters
             set { this.mFormatter.TypeFormat = value; }
         }
 
-        #endregion
+#endregion
 
-        #region Public methods
+#region Public methods
 
         /// <summary>
         /// Determines whether this instance can read the specified stream.
@@ -212,9 +216,9 @@ namespace Forge.Persistence.Formatters
             }
         }
 
-        #endregion
+#endregion
 
-        #region ICloneable Members
+#region ICloneable Members
 
         /// <summary>
         /// Creates a new object that is a copy of the current instance.
@@ -227,7 +231,7 @@ namespace Forge.Persistence.Formatters
             return new BinaryFormatter<T>(this.TopObjectFormat, this.TypeFormat);
         }
 
-        #endregion
+#endregion
 
     }
 

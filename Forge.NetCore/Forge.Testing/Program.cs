@@ -25,10 +25,16 @@ namespace Forge.Testing
             //var repo = log4net.LogManager.CreateRepository(Assembly.GetEntryAssembly(),
             //   typeof(log4net.Repository.Hierarchy.Hierarchy));
             //log4net.Config.XmlConfigurator.Configure(repo, (XmlElement)log4netConfig.GetElementsByTagName("log4net")[0]);
-            FireEvent fe = new FireEvent();
-            fe.OnTest += Fe_OnTest;
-            fe.Fire();
+
+            //FireEvent fe = new FireEvent();
+            //fe.OnTest += Fe_OnTest;
+            //fe.Fire();
+
+            BinarySerializerTest.Test();
+
+
             Console.ReadLine();
+
         }
 
         private static void Fe_OnTest(object sender, EventArgs e)

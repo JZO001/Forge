@@ -39,6 +39,12 @@
     <DocumentationFile>bin\Release\Forge.RemoteDesktop.Client.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Forge.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -145,6 +151,9 @@
     <EmbeddedResource Include="RemoteDesktopWinFormsControl.resx">
       <DependentUpon>RemoteDesktopWinFormsControl.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Forge.pfx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Forge.Base\Forge.Base.csproj">

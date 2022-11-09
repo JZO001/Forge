@@ -16,7 +16,7 @@ namespace Forge.Security.Jwt.Shared
         /// <returns>List of extracted Claim(s)</returns>
         public static List<Claim> ParseClaimsFromJwt(string jwtAccessToken)
         {
-            List<Claim> claims = new();
+            List<Claim> claims = new List<Claim>();
             if (!string.IsNullOrEmpty(jwtAccessToken) && jwtAccessToken.Length > 0)
             {
                 var payload = jwtAccessToken.Split('.')[1];

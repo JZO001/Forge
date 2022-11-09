@@ -241,8 +241,7 @@ namespace Forge.Security
                     {
                         byte[] data = CertificateFactory.CreateSelfSignCertificatePfx(subject, dtCertStart, dtCertExpired, passwordString);
                         mCertificate = new X509Certificate2(data, passwordString);
-#if NETCOREAPP3_1
-#else
+#if NET40 || NETSTANDARD2_1
                         mCertificate.FriendlyName = "Generated Certificate";
 #endif
                     }

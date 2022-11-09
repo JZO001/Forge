@@ -20,8 +20,8 @@ namespace Forge.Threading.ConfigSection
 
         #region Field(s)
 
-		// The ThreadPools
-		private ConfigurationProperty mThreadPools;
+        // The ThreadPools
+        private ConfigurationProperty mThreadPools;
 
         #endregion
 
@@ -30,11 +30,11 @@ namespace Forge.Threading.ConfigSection
         /// <summary>
         /// Initializes a new instance of the <see cref="ThreadPoolSection"/> class.
         /// </summary>
-        public ThreadPoolSection( ) : base( )
+        public ThreadPoolSection() : base()
         {
-			// Property initialization
-            mThreadPools = new ConfigurationProperty( "ThreadPools", typeof( ThreadPools ) );
-			Properties.Add( mThreadPools );
+            // Property initialization
+            mThreadPools = new ConfigurationProperty("ThreadPools", typeof(ThreadPools));
+            Properties.Add(mThreadPools);
         }
 
         #endregion
@@ -48,17 +48,17 @@ namespace Forge.Threading.ConfigSection
         /// The thread pools.
         /// </value>
 		[ConfigurationProperty("ThreadPools", IsRequired = true)]
-		public ThreadPools ThreadPools
-		{
-			get
-			{
+        public ThreadPools ThreadPools
+        {
+            get
+            {
                 return (ThreadPools)this["ThreadPools"];
-			}
-			set
-			{
-				this["ThreadPools"] = value;
-			}
-		}
+            }
+            set
+            {
+                this["ThreadPools"] = value;
+            }
+        }
 
         #endregion
 
@@ -87,7 +87,7 @@ namespace Forge.Threading.ConfigSection
         /// </returns>
         protected override ConfigurationElement CreateNewElement()
         {
-            return new ThreadPoolItem( );
+            return new ThreadPoolItem();
         }
 
         /// <summary>
@@ -155,7 +155,7 @@ namespace Forge.Threading.ConfigSection
         /// <summary>
         /// Initializes a new instance of the <see cref="ThreadPoolItem"/> class.
         /// </summary>
-        public ThreadPoolItem( ) : base( )
+        public ThreadPoolItem() : base()
         {
         }
 
@@ -166,12 +166,12 @@ namespace Forge.Threading.ConfigSection
         /// The name.
         /// </value>
         [DebuggerHidden]
-        [ConfigurationProperty( "name", IsRequired = false, IsKey = true, DefaultValue = "" )]
-		public string Name
-		{
-			get { return (string)this["name"]; }
-			set { this["name"] = value; }
-		}
+        [ConfigurationProperty("name", IsRequired = false, IsKey = true, DefaultValue = "")]
+        public string Name
+        {
+            get { return (string)this["name"]; }
+            set { this["name"] = value; }
+        }
 
         /// <summary>
         /// Gets or sets the min thread number.
@@ -180,12 +180,12 @@ namespace Forge.Threading.ConfigSection
         /// The min thread number.
         /// </value>
         [DebuggerHidden]
-        [ConfigurationProperty( "minThreadNumber", IsRequired = false, IsKey = false, DefaultValue = 1 )]
-		public Int32 MinThreadNumber
-		{
-			get { return (Int32)this[ "minThreadNumber" ]; }
-			set { this[ "minThreadNumber" ] = value; }
-		}
+        [ConfigurationProperty("minThreadNumber", IsRequired = false, IsKey = false, DefaultValue = 1)]
+        public int MinThreadNumber
+        {
+            get { return (int)this["minThreadNumber"]; }
+            set { this["minThreadNumber"] = value; }
+        }
 
         /// <summary>
         /// Gets or sets the max thread number.
@@ -194,12 +194,12 @@ namespace Forge.Threading.ConfigSection
         /// The max thread number.
         /// </value>
         [DebuggerHidden]
-        [ConfigurationProperty( "maxThreadNumber", IsRequired = false, IsKey = false, DefaultValue = 20 )]
-		public Int32 MaxThreadNumber
-		{
-			get { return (Int32)this[ "maxThreadNumber" ]; }
-			set { this[ "maxThreadNumber" ] = value; }
-		}
+        [ConfigurationProperty("maxThreadNumber", IsRequired = false, IsKey = false, DefaultValue = 20)]
+        public int MaxThreadNumber
+        {
+            get { return (int)this["maxThreadNumber"]; }
+            set { this["maxThreadNumber"] = value; }
+        }
 
         /// <summary>
         /// Gets or sets the max concurrent execution.
@@ -208,12 +208,12 @@ namespace Forge.Threading.ConfigSection
         /// The max concurrent execution.
         /// </value>
         [DebuggerHidden]
-        [ConfigurationProperty( "maxConcurrentExecution", IsRequired = false, IsKey = false, DefaultValue = 20 )]
-		public Int32 MaxConcurrentExecution
-		{
-			get { return (Int32)this[ "maxConcurrentExecution" ]; }
-			set { this[ "maxConcurrentExecution" ] = value; }
-		}
+        [ConfigurationProperty("maxConcurrentExecution", IsRequired = false, IsKey = false, DefaultValue = 20)]
+        public int MaxConcurrentExecution
+        {
+            get { return (int)this["maxConcurrentExecution"]; }
+            set { this["maxConcurrentExecution"] = value; }
+        }
 
         /// <summary>
         /// Gets or sets the shut down idle thread time.
@@ -222,12 +222,12 @@ namespace Forge.Threading.ConfigSection
         /// The shut down idle thread time.
         /// </value>
         [DebuggerHidden]
-        [ConfigurationProperty( "shutDownIdleThreadTime", IsRequired = false, IsKey = false, DefaultValue = 120000 )]
-		public Int32 ShutDownIdleThreadTime
-		{
-			get { return (Int32)this[ "shutDownIdleThreadTime" ]; }
-			set { this[ "shutDownIdleThreadTime" ] = value; }
-		}
+        [ConfigurationProperty("shutDownIdleThreadTime", IsRequired = false, IsKey = false, DefaultValue = 120000)]
+        public int ShutDownIdleThreadTime
+        {
+            get { return (int)this["shutDownIdleThreadTime"]; }
+            set { this["shutDownIdleThreadTime"] = value; }
+        }
 
         /// <summary>
         /// Gets or sets the size of the max stack.
@@ -236,12 +236,12 @@ namespace Forge.Threading.ConfigSection
         /// The size of the max stack.
         /// </value>
         [DebuggerHidden]
-        [ConfigurationProperty( "maxStackSize", IsRequired = false, IsKey = false, DefaultValue = 0 )]
-		public Int32 MaxStackSize
-		{
-			get { return (Int32)this[ "maxStackSize" ]; }
-			set { this[ "maxStackSize" ] = value; }
-		}
+        [ConfigurationProperty("maxStackSize", IsRequired = false, IsKey = false, DefaultValue = 0)]
+        public int MaxStackSize
+        {
+            get { return (int)this["maxStackSize"]; }
+            set { this["maxStackSize"] = value; }
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether [set read only flag].
@@ -250,11 +250,11 @@ namespace Forge.Threading.ConfigSection
         ///   <c>true</c> if [set read only flag]; otherwise, <c>false</c>.
         /// </value>
         [DebuggerHidden]
-        [ConfigurationProperty( "setReadOnly", IsRequired = false, IsKey = false, DefaultValue = false )]
-        public Boolean SetReadOnlyFlag
+        [ConfigurationProperty("setReadOnly", IsRequired = false, IsKey = false, DefaultValue = false)]
+        public bool SetReadOnlyFlag
         {
-            get { return (Boolean)this[ "setReadOnly" ]; }
-            set { this[ "setReadOnly" ] = value; }
+            get { return (bool)this["setReadOnly"]; }
+            set { this["setReadOnly"] = value; }
         }
 
     }

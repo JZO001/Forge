@@ -1,4 +1,4 @@
-﻿namespace Forge.Security.Jwt.Core
+﻿namespace Forge.Security.Jwt.Service
 {
 
     /// <summary>Configuration for token provider</summary>

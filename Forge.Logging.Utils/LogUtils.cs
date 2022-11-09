@@ -114,9 +114,11 @@ namespace Forge.Logging.Utils
                     {
                         LOGGER.Info(string.Format("LOGUTILS, StartInfo, arguments: {0}", p.StartInfo.Arguments));
                         LOGGER.Info(string.Format("LOGUTILS, StartInfo, create no window: {0}", p.StartInfo.CreateNoWindow.ToString()));
-                        LOGGER.Info(string.Format("LOGUTILS, StartInfo, domain: {0}", p.StartInfo.Domain));
                         LOGGER.Info(string.Format("LOGUTILS, StartInfo, file name: {0}", p.StartInfo.FileName));
+#if IS_WINDOWS
+                        LOGGER.Info(string.Format("LOGUTILS, StartInfo, domain: {0}", p.StartInfo.Domain));
                         LOGGER.Info(string.Format("LOGUTILS, StartInfo, load user profile: {0}", p.StartInfo.LoadUserProfile.ToString()));
+#endif
                         LOGGER.Info(string.Format("LOGUTILS, StartInfo, redirect standard error: {0}", p.StartInfo.RedirectStandardError.ToString()));
                         LOGGER.Info(string.Format("LOGUTILS, StartInfo, redirect standard input: {0}", p.StartInfo.RedirectStandardInput.ToString()));
                         LOGGER.Info(string.Format("LOGUTILS, StartInfo, user name: {0}", p.StartInfo.UserName));
@@ -226,7 +228,7 @@ namespace Forge.Logging.Utils
                         logMark = true;
                     }
                     LOGGER.Info(string.Format("LOGUTILS, Assembly, full name: {0}", a.FullName));
-#if NET5_0_OR_GREATER
+#if NET5_0_OR_GREATER || NETCOREAPP3_1
                     try
                     {
                         LOGGER.Info(string.Format("LOGUTILS, Assembly, code base: {0}", a.Location));
@@ -239,7 +241,7 @@ namespace Forge.Logging.Utils
                     }
                     catch (Exception) { }
 #endif
-#if NET5_0_OR_GREATER
+#if NET5_0_OR_GREATER || NETCOREAPP3_1
 #else
                     LOGGER.Info(string.Format("LOGUTILS, Assembly, global assembly cache: {0}", a.GlobalAssemblyCache.ToString()));
 #endif
@@ -282,14 +284,14 @@ namespace Forge.Logging.Utils
                 LOGGER.Info(string.Format("LOGUTILS, Assembly, full name: {0}", a.FullName));
                 try
                 {
-#if NET5_0_OR_GREATER
+#if NET5_0_OR_GREATER || NETCOREAPP3_1
                     LOGGER.Info(string.Format("LOGUTILS, Assembly, code base: {0}", a.Location));
 #else
                     LOGGER.Info(string.Format("LOGUTILS, Assembly, code base: {0}", a.CodeBase));
 #endif
                 }
                 catch (Exception) { }
-#if NET5_0_OR_GREATER
+#if NET5_0_OR_GREATER || NETCOREAPP3_1
 #else
                 LOGGER.Info(string.Format("LOGUTILS, Assembly, global assembly cache: {0}", a.GlobalAssemblyCache.ToString()));
 #endif

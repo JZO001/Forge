@@ -157,6 +157,7 @@ certificate.bat
 Forge.Net.TerraGraf.dll.*
 
 # Unnecessary files and folders
+Forge.sln
 BuildProcessTemplates
 NHibernate*
 Microsoft.SqlServer.*
@@ -173,3 +174,23 @@ packages/Microsoft*
 packages/System*
 
 # For Future
+Forge.Net.*
+Forge.ORM
+$tf
+.Dotfuscated
+Dotfuscated
+.Output
+.nuget
+*.suo
+*.vsmdi
+*.vssscc
+Forge_Release.*
+*.testsettings
+*.xml
+Forge.Security.Jwt.Client
+Forge.Security.Jwt.Client.Storage.Browser
+Forge.Security.Jwt.Service
+Forge.Security.Jwt.Service.Storage.SqlServer
+Forge.Security.Jwt.Shared
+Forge.Wasm.BrowserStorages
+Forge.Wasm.BrowserStorages.NewtonSoft.Json

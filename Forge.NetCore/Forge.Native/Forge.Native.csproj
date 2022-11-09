@@ -2,6 +2,12 @@
 
 	<Sdk Name="Microsoft.NET.Sdk" />
 	<Sdk Name="Microsoft.NET.Sdk.WindowsDesktop" />
+	<PropertyGroup Label="Globals">
+	  <SccProjectName>SAK</SccProjectName>
+	  <SccProvider>SAK</SccProvider>
+	  <SccAuxPath>SAK</SccAuxPath>
+	  <SccLocalPath>SAK</SccLocalPath>
+	</PropertyGroup>
 
 	<PropertyGroup>
 		<TargetFrameworks>net40;netstandard2.0;netcoreapp3.1;net5.0-windows;net6.0-windows</TargetFrameworks>

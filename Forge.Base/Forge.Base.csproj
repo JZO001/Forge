@@ -62,6 +62,12 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Forge.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -126,6 +132,8 @@
     <Compile Include="Management\ManagerStateEnum.cs" />
     <Compile Include="MBRBase.cs" />
     <Compile Include="IO\PathHelper.cs" />
+    <Compile Include="Persistence\Formatters\AesByteArrayFormatter.cs" />
+    <Compile Include="Persistence\Formatters\AesFormatter.cs" />
     <Compile Include="Persistence\Formatters\RijndaelByteArrayFormatter.cs" />
     <Compile Include="Persistence\Formatters\RijndaelFormatter.cs" />
     <Compile Include="Persistence\Formatters\BinaryFormatter.cs" />
@@ -161,6 +169,7 @@
     <Compile Include="Threading\Tasking\TaskManager.cs" />
     <Compile Include="Threading\Tasking\TaskResult.cs" />
     <Compile Include="Threading\ThreadPool.cs" />
+    <None Include="Forge.pfx" />
     <None Include="Collections\CollectionsDiagram.cd" />
     <Compile Include="ThrowHelper.cs" />
   </ItemGroup>

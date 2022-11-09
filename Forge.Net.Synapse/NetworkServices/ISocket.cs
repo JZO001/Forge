@@ -84,6 +84,8 @@ namespace Forge.Net.Synapse.NetworkServices
         /// <param name="asyncResult">The async result.</param>
         void EndConnect(IAsyncResult asyncResult);
 
+#if IS_WINDOWS
+
         /// <summary>
         /// Sets the keep alive values.
         /// </summary>
@@ -92,6 +94,8 @@ namespace Forge.Net.Synapse.NetworkServices
         /// <param name="keepAliveInterval">The keep alive interval.</param>
         /// <returns>value</returns>
         int SetKeepAliveValues(bool state, int keepAliveTime, int keepAliveInterval);
+
+#endif
 
         /// <summary>
         /// Begins the receive.

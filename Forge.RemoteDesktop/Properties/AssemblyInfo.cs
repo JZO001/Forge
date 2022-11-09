@@ -6,7 +6,7 @@ using System.Security;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Forge.RemoteDesktop")]
-[assembly: AssemblyDescription("Remote Desktop interface")]
+[assembly: AssemblyDescription("Remote Desktop Interface")]
 #if DEBUG
 [assembly: AssemblyConfiguration( "Debug" )]
 #else
