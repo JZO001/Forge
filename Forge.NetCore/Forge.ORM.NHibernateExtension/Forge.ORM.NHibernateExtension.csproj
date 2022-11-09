@@ -107,8 +107,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" Condition="'$(TargetFramework)' != 'net461'" />
-		<PackageReference Include="Iesi.Collections" Version="4.0.4" />
-		<PackageReference Include="NHibernate" Version="5.3.12" />
+		<PackageReference Include="Iesi.Collections" Version="4.0.5" />
+		<PackageReference Include="NHibernate" Version="5.3.14" />
 		<PackageReference Include="NHibernate.Mapping.Attributes" Version="5.1.0" />
 		<PackageReference Include="Remotion.Linq" Version="2.2.0" />
 		<PackageReference Include="Remotion.Linq.EagerFetching" Version="2.2.0" />

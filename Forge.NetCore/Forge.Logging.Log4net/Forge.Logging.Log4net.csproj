@@ -71,7 +71,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" Condition="'$(TargetFramework)' != 'net40'" />
-		<PackageReference Include="log4net" Version="2.0.14" />
+		<PackageReference Include="log4net" Version="2.0.15" />
 	</ItemGroup>
 	
 	<ItemGroup>
