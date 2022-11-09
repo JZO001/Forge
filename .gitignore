@@ -194,3 +194,4 @@ Forge.Security.Jwt.Service.Storage.SqlServer
 Forge.Security.Jwt.Shared
 Forge.Wasm.BrowserStorages
 Forge.Wasm.BrowserStorages.NewtonSoft.Json
+Forge.Invoker
