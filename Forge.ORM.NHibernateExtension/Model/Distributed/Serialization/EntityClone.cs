@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Shared;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,10 +25,10 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed.Serialization
         #region Field(s)
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private Dictionary<string, object> mFields = null;
+        private readonly Dictionary<string, object> mFields = null;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private Version mEntityTypeVersion = null;
+        private readonly Version mEntityTypeVersion = null;
 
         #endregion
 
@@ -52,8 +53,8 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed.Serialization
                 ThrowHelper.ThrowArgumentNullException("entityTypeVersion");
             }
 
-            this.mFields = fields;
-            this.mEntityTypeVersion = entityTypeVersion;
+            mFields = fields;
+            mEntityTypeVersion = entityTypeVersion;
         }
 
         #endregion
@@ -102,11 +103,11 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed.Serialization
             if (result)
             {
                 EntityClone other = (EntityClone)obj;
-                if (this.mFields != other.mFields && (this.mFields == null || !this.mFields.Equals(other.mFields)))
+                if (mFields != other.mFields && (mFields == null || !mFields.Equals(other.mFields)))
                 {
                     result = false;
                 }
-                else if (this.mEntityTypeVersion != other.mEntityTypeVersion && (this.mEntityTypeVersion == null || !this.mEntityTypeVersion.Equals(other.mEntityTypeVersion)))
+                else if (mEntityTypeVersion != other.mEntityTypeVersion && (mEntityTypeVersion == null || !mEntityTypeVersion.Equals(other.mEntityTypeVersion)))
                 {
                     result = false;
                 }
@@ -123,8 +124,8 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed.Serialization
         public override int GetHashCode()
         {
             int hash = base.GetHashCode();
-            hash = 29 * hash + (this.mFields != null ? this.mFields.GetHashCode() : 0);
-            hash = 3 * hash + (this.mEntityTypeVersion != null ? this.mEntityTypeVersion.GetHashCode() : 0);
+            hash = 29 * hash + (mFields != null ? mFields.GetHashCode() : 0);
+            hash = 3 * hash + (mEntityTypeVersion != null ? mEntityTypeVersion.GetHashCode() : 0);
             return hash;
         }
 
@@ -136,7 +137,7 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed.Serialization
         /// </returns>
         public override string ToString()
         {
-            return String.Format("{0}, Field size: {1}. Type version: {2}", base.ToString(), mFields.Count, mEntityTypeVersion == null ? "<null>" : mEntityTypeVersion.ToString());
+            return string.Format("{0}, Field size: {1}. Type version: {2}", base.ToString(), mFields.Count, mEntityTypeVersion == null ? "<null>" : mEntityTypeVersion.ToString());
         }
 
         #endregion

@@ -10,7 +10,8 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
-using Forge.EventRaiser;
+using Forge.Invoker;
+using Forge.Shared;
 using NHibernate.Mapping.Attributes;
 
 namespace Forge.ORM.NHibernateExtension.Model.Distributed
@@ -93,11 +94,11 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed
         /// <param name="deviceId">The device id.</param>
         public EntityVersion(string deviceId)
         {
-            if (String.IsNullOrEmpty(deviceId))
+            if (string.IsNullOrEmpty(deviceId))
             {
                 ThrowHelper.ThrowArgumentNullException("deviceId");
             }
-            this.versionDeviceId = HashGeneratorHelper.GetSHA256BasedValue(deviceId);
+            versionDeviceId = HashGeneratorHelper.GetSHA256BasedValue(deviceId);
         }
 
         /// <summary>
@@ -106,7 +107,7 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed
         /// <param name="deviceId">The device id.</param>
         public EntityVersion(long deviceId)
         {
-            this.versionDeviceId = deviceId;
+            versionDeviceId = deviceId;
         }
 
         #endregion
@@ -159,11 +160,11 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed
         public void IncSeqNumber()
         {
             OnPropertyChanging("SeqNumber");
-            if (this.versionSeqNumber == Int64.MaxValue)
+            if (versionSeqNumber == Int64.MaxValue)
             {
-                this.versionSeqNumber = 0;
+                versionSeqNumber = 0;
             }
-            this.versionSeqNumber++;
+            versionSeqNumber++;
             OnPropertyChanged("SeqNumber");
         }
 
@@ -173,11 +174,11 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed
         public void DecSeqNumber()
         {
             OnPropertyChanging("SeqNumber");
-            if (this.versionSeqNumber == 0)
+            if (versionSeqNumber == 0)
             {
-                this.versionSeqNumber = long.MaxValue;
+                versionSeqNumber = long.MaxValue;
             }
-            this.versionSeqNumber--;
+            versionSeqNumber--;
             OnPropertyChanged("SeqNumber");
         }
 
@@ -193,10 +194,10 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed
                 ThrowHelper.ThrowArgumentNullException("other");
             }
 
-            int ret = this.versionDeviceId.CompareTo(other.versionDeviceId);
+            int ret = versionDeviceId.CompareTo(other.versionDeviceId);
             if (ret == 0)
             {
-                ret = this.versionSeqNumber.CompareTo(other.versionSeqNumber);
+                ret = versionSeqNumber.CompareTo(other.versionSeqNumber);
             }
             return ret;
         }
@@ -231,9 +232,9 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed
         /// </returns>
         public virtual object Clone()
         {
-            EntityVersion cloned = (EntityVersion)this.GetType().GetConstructor(BindingFlags.NonPublic | BindingFlags.CreateInstance | BindingFlags.Instance, null, new Type[] { }, null).Invoke(new object[] { });
-            cloned.versionDeviceId = this.versionDeviceId;
-            cloned.versionSeqNumber = this.versionSeqNumber;
+            EntityVersion cloned = (EntityVersion)GetType().GetConstructor(BindingFlags.NonPublic | BindingFlags.CreateInstance | BindingFlags.Instance, null, new Type[] { }, null).Invoke(new object[] { });
+            cloned.versionDeviceId = versionDeviceId;
+            cloned.versionSeqNumber = versionSeqNumber;
             return cloned;
         }
 
@@ -262,7 +263,7 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed
             if (!obj.GetType().Equals(GetType())) return false;
 
             EntityVersion other = (EntityVersion)obj;
-            return other.versionDeviceId == this.versionDeviceId && other.versionSeqNumber == this.versionSeqNumber;
+            return other.versionDeviceId == versionDeviceId && other.versionSeqNumber == versionSeqNumber;
         }
 
         /// <summary>
@@ -283,7 +284,7 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed
         /// </returns>
         public override string ToString()
         {
-            return String.Format("{0}:{1}", this.versionDeviceId, this.versionSeqNumber);
+            return string.Format("{0}:{1}", versionDeviceId, versionSeqNumber);
         }
 
         #endregion
@@ -296,7 +297,7 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed
         /// <param name="propertyName">Name of the property.</param>
         protected void OnPropertyChanging(string propertyName)
         {
-            Raiser.CallDelegatorBySync(propertyChangingDelegate, new object[] { this, new PropertyChangingEventArgs(propertyName) }, false, false);
+            Executor.Invoke(propertyChangingDelegate, this, new PropertyChangingEventArgs(propertyName));
         }
 
         /// <summary>
@@ -305,7 +306,7 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed
         /// <param name="propertyName">Name of the property.</param>
         protected void OnPropertyChanged(string propertyName)
         {
-            Raiser.CallDelegatorBySync(propertyChangedDelegate, new object[] { this, new PropertyChangedEventArgs(propertyName) }, false, false);
+            Executor.Invoke(propertyChangedDelegate, this, new PropertyChangedEventArgs(propertyName));
         }
 
         #endregion

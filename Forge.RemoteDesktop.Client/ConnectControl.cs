@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using Forge.Collections;
-using Forge.EventRaiser;
+using Forge.Invoker;
 using Forge.Net.Remoting.Proxy;
 using Forge.Net.Services.Locators;
 using Forge.Net.TerraGraf;
@@ -192,7 +192,7 @@ namespace Forge.RemoteDesktop.Client
         protected virtual void btConnect_Click(object sender, EventArgs e)
         {
             this.SelectedProvider = lvServices.SelectedItems[0].Tag as ServiceProvider;
-            Raiser.CallDelegatorBySync(EventConnect, new object[] { this, EventArgs.Empty });
+            Executor.Invoke(EventConnect, this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -202,7 +202,7 @@ namespace Forge.RemoteDesktop.Client
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         protected virtual void btCancel_Click(object sender, EventArgs e)
         {
-            Raiser.CallDelegatorBySync(EventCancel, new object[] { this, EventArgs.Empty });
+            Executor.Invoke(EventCancel, this, EventArgs.Empty);
         }
 
         /// <summary>

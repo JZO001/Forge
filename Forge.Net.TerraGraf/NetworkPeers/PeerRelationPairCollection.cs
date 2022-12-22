@@ -7,7 +7,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Forge.Logging;
+using Forge.Legacy;
+using Forge.Logging.Abstraction;
 using Forge.Net.TerraGraf.NetworkInfo;
 
 namespace Forge.Net.TerraGraf.NetworkPeers
@@ -23,7 +24,7 @@ namespace Forge.Net.TerraGraf.NetworkPeers
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(PeerRelationPairCollection));
+        private static readonly ILog LOGGER = LogManager.GetLogger<PeerRelationPairCollection>();
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private List<PeerRelationPair> mPeerRelationPairs = new List<PeerRelationPair>();
@@ -150,8 +151,8 @@ namespace Forge.Net.TerraGraf.NetworkPeers
                 changed = true;
                 if (NetworkManager.Instance.InternalLocalhost.Id.Equals(ownerPeer.Id))
                 {
-                    // csak a saját azonosítómat szabad változtatni, másét nem!
-                    this.mStateId++;
+                    // modify only my identifier, not others!
+                    mStateId++;
                     result.StateId = result.StateId + 1;
                 }
             }
@@ -218,7 +219,7 @@ namespace Forge.Net.TerraGraf.NetworkPeers
         {
             if (owner)
             {
-                // saját magamnál növelem a stateId-t
+                // increase the stateId at myself
                 foreach (PeerRelationPair pair in mPeerRelationPairs)
                 {
                     pair.Connected = false;
@@ -230,7 +231,7 @@ namespace Forge.Net.TerraGraf.NetworkPeers
             }
             else
             {
-                // idegeneknél törlök minden kapcsolatleírót, majd később újból beállítják, ha lesz kapcsolat
+                // foreginers, I clear every connection descriptors, later they can re-set them, if the connection restored.
                 mPeerRelationPairs.Clear();
             }
         }

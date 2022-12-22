@@ -4,12 +4,17 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using System.ComponentModel;
+using System;
 using System.Diagnostics;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using Forge.Configuration.Shared;
-using Forge.Logging;
 using Forge.Net.Synapse.NetworkServices;
+using Forge.Net.Synapse.Options;
+using Forge.Shared;
+using Forge.Configuration;
+using Forge.Logging.Abstraction;
 
 namespace Forge.Net.Synapse.NetworkFactory
 {
@@ -17,12 +22,12 @@ namespace Forge.Net.Synapse.NetworkFactory
     /// <summary>
     /// SSL Client Stream Factory
     /// </summary>
-    public class SslClientStreamFactory : StreamFactoryBase, IClientStreamFactory
+    public class SslClientStreamFactory : StreamFactoryBase, ISslClientStreamFactory
     {
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(SslClientStreamFactory));
+        private static readonly ILog LOGGER = LogManager.GetLogger<SslClientStreamFactory>();
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string mServerNameOnCertificate = string.Empty;
@@ -51,7 +56,7 @@ namespace Forge.Net.Synapse.NetworkFactory
             {
                 ThrowHelper.ThrowArgumentNullException("serverNameOnCertificate");
             }
-            this.mServerNameOnCertificate = serverNameOnCertificate;
+            mServerNameOnCertificate = serverNameOnCertificate;
             IsInitialized = true;
         }
 
@@ -67,7 +72,8 @@ namespace Forge.Net.Synapse.NetworkFactory
         {
             ReceiveBufferSize = receiveBufferSize;
             SendBufferSize = sendBufferSize;
-            this.mSkipSslPolicyErrors = skipSslPolicyErrors;
+            mSkipSslPolicyErrors = skipSslPolicyErrors;
+            IsInitialized = true;
         }
 
         /// <summary>
@@ -78,7 +84,8 @@ namespace Forge.Net.Synapse.NetworkFactory
         public SslClientStreamFactory(string serverNameOnCertificate, bool skipSslPolicyErrors)
             : this(serverNameOnCertificate)
         {
-            this.mSkipSslPolicyErrors = skipSslPolicyErrors;
+            mSkipSslPolicyErrors = skipSslPolicyErrors;
+            IsInitialized = true;
         }
 
         #endregion
@@ -95,7 +102,7 @@ namespace Forge.Net.Synapse.NetworkFactory
         public string ServerNameOnCertificate
         {
             get { return mServerNameOnCertificate; }
-            protected set { mServerNameOnCertificate = value; }
+            set { mServerNameOnCertificate = value; }
         }
 
         /// <summary>
@@ -108,7 +115,7 @@ namespace Forge.Net.Synapse.NetworkFactory
         public bool SkipSslPolicyErrors
         {
             get { return mSkipSslPolicyErrors; }
-            protected set { mSkipSslPolicyErrors = value; }
+            set { mSkipSslPolicyErrors = value; }
         }
 
         #endregion
@@ -120,7 +127,7 @@ namespace Forge.Net.Synapse.NetworkFactory
         /// </summary>
         /// <param name="configItem">The config item.</param>
         /// <exception cref="Forge.Configuration.Shared.InvalidConfigurationValueException">ServerNameOnCertificate value is invalid.</exception>
-        public override void Initialize(CategoryPropertyItem configItem)
+        public override void Initialize(IPropertyItem configItem)
         {
             if (configItem == null)
             {
@@ -128,13 +135,13 @@ namespace Forge.Net.Synapse.NetworkFactory
             }
             if (!IsInitialized)
             {
-                mServerNameOnCertificate = ConfigurationAccessHelper.GetValueByPath(configItem.PropertyItems, "ServerNameOnCertificate");
+                mServerNameOnCertificate = ConfigurationAccessHelper.GetValueByPath(configItem, "ServerNameOnCertificate");
                 if (string.IsNullOrEmpty(mServerNameOnCertificate))
                 {
                     throw new InvalidConfigurationValueException("ServerNameOnCertificate value is invalid.");
                 }
 
-                string skipSslPolicy = ConfigurationAccessHelper.GetValueByPath(configItem.PropertyItems, "SkipSslPolicyErrors");
+                string skipSslPolicy = ConfigurationAccessHelper.GetValueByPath(configItem, "SkipSslPolicyErrors");
                 if (!string.IsNullOrEmpty(skipSslPolicy))
                 {
                     bool value = false;
@@ -150,12 +157,40 @@ namespace Forge.Net.Synapse.NetworkFactory
             }
         }
 
+        /// <summary>No not use this method</summary>
+        /// <param name="options">The options.</param>
+        [Browsable(false)]
+        [Obsolete]
+#pragma warning disable CS0809 // Obsolete member overrides non-obsolete member
+        public override void Initialize(StreamFactoryOptions options)
+#pragma warning restore CS0809 // Obsolete member overrides non-obsolete member
+        {
+            if (options is SslClientStreamFactoryOptions)
+            {
+                Initialize((SslClientStreamFactoryOptions)options);
+            }
+
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
+        /// Initializes the specified config item.
+        /// </summary>
+        /// <param name="options">The options.</param>
+        public void Initialize(SslClientStreamFactoryOptions options)
+        {
+            base.Initialize(options);
+            ServerNameOnCertificate = options.ServerNameOnCertificate;
+            SkipSslPolicyErrors = options.SkipSslPolicyErrors;
+            IsInitialized = true;
+        }
+
         /// <summary>
         /// Creates the network stream.
         /// </summary>
         /// <param name="tcpClient"></param>
         /// <returns>Network Stream instance</returns>
-        public virtual NetworkStream CreateNetworkStream(ITcpClient tcpClient)
+        public override NetworkStream CreateNetworkStream(ITcpClient tcpClient)
         {
             DoInitializeCheck();
             if (tcpClient == null)

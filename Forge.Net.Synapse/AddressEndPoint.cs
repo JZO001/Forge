@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Shared;
 using System;
 using System.Diagnostics;
 using System.Net;
@@ -76,9 +77,9 @@ namespace Forge.Net.Synapse
                 ThrowHelper.ThrowArgumentOutOfRangeException("port");
             }
 
-            this.mHost = host;
-            this.mPort = port;
-            this.mFamily = family;
+            mHost = host;
+            mPort = port;
+            mFamily = family;
         }
 
         #endregion
@@ -106,7 +107,7 @@ namespace Forge.Net.Synapse
                 {
                     throw new FormatException();
                 }
-                result = new AddressEndPoint(data[0], Int32.Parse(data[1]));
+                result = new AddressEndPoint(data[0], int.Parse(data[1]));
             }
             else
             {

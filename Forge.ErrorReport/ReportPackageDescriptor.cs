@@ -6,6 +6,7 @@
 
 using System;
 using Forge.ORM.NHibernateExtension.Model.Distributed;
+using Forge.Shared;
 
 namespace Forge.ErrorReport
 {
@@ -37,10 +38,10 @@ namespace Forge.ErrorReport
                 ThrowHelper.ThrowArgumentNullException("applicationId");
             }
 
-            this.Id = id;
-            this.ApplicationId = applicationId;
-            this.ErrorLevelType = errorLevelType;
-            this.ReportCreated = reportCreated;
+            Id = id;
+            ApplicationId = applicationId;
+            ErrorLevelType = errorLevelType;
+            ReportCreated = reportCreated;
         }
 
         #endregion

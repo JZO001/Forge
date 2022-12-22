@@ -8,9 +8,10 @@ using System;
 using System.Configuration;
 using System.Runtime.CompilerServices;
 using Forge.Configuration.Shared;
-using Forge.EventRaiser;
+using Forge.Invoker;
 using Forge.RemoteDesktop.ConfigSection;
 using Forge.RemoteDesktop.Contracts;
+using Forge.Shared;
 
 namespace Forge.RemoteDesktop.Service.Configuration
 {
@@ -208,7 +209,7 @@ namespace Forge.RemoteDesktop.Service.Configuration
         /// </value>
         public static int ClientsPerServiceThreads
         {
-            get { return Settings.mClientsPerServiceThreads; }
+            get { return mClientsPerServiceThreads; }
             set
             {
                 if (value < Consts.MINIMAL_CLIENTS_PER_SERVICE_THREADS)
@@ -216,7 +217,7 @@ namespace Forge.RemoteDesktop.Service.Configuration
                     ThrowHelper.ThrowArgumentOutOfRangeException("value");
                 }
 
-                Settings.mClientsPerServiceThreads = value;
+                mClientsPerServiceThreads = value;
             }
         }
 
@@ -268,7 +269,7 @@ namespace Forge.RemoteDesktop.Service.Configuration
         /// </value>
         public static int DefaultImageClipQuality
         {
-            get { return Settings.mDefaultImageClipQuality; }
+            get { return mDefaultImageClipQuality; }
             set
             {
                 if (value < 10 || value > 100)
@@ -287,7 +288,7 @@ namespace Forge.RemoteDesktop.Service.Configuration
         /// </value>
         public static int MouseMoveSendInterval
         {
-            get { return Settings.mMouseMoveSendInterval; }
+            get { return mMouseMoveSendInterval; }
             set
             {
                 if (value < 0)
@@ -513,7 +514,7 @@ namespace Forge.RemoteDesktop.Service.Configuration
 
             }
 
-            Raiser.CallDelegatorBySync(EventConfigurationChanged, new object[] { null, EventArgs.Empty });
+            Executor.Invoke(EventConfigurationChanged, null, EventArgs.Empty);
         }
 
         #endregion

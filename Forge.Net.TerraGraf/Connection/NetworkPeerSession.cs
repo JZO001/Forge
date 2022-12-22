@@ -8,7 +8,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Forge.Legacy;
 using Forge.Net.TerraGraf.NetworkPeers;
+using Forge.Shared;
 
 namespace Forge.Net.TerraGraf.Connection
 {
@@ -48,7 +50,7 @@ namespace Forge.Net.TerraGraf.Connection
         /// <summary>
         /// Tárolja azokat az üzenetkódokat, amiket ez a peer már ide küldött és hogy hányszor
         /// </summary>
-        private readonly Dictionary<long, Int32> mMessageIDs = new Dictionary<long, Int32>();
+        private readonly Dictionary<long, int> mMessageIDs = new Dictionary<long, int>();
 
         #endregion
 
@@ -64,7 +66,7 @@ namespace Forge.Net.TerraGraf.Connection
             {
                 ThrowHelper.ThrowArgumentNullException("remotePeer");
             }
-            this.mRemotePeer = remotePeer;
+            mRemotePeer = remotePeer;
         }
 
         #endregion
@@ -204,16 +206,16 @@ namespace Forge.Net.TerraGraf.Connection
         /// <summary>
         /// Merges the message ID counters.
         /// </summary>
-        /// <param name="d">The d.</param>
-        internal void MergeMessageIDCounters(Dictionary<long, int> d)
+        /// <param name="dictionary">The d.</param>
+        internal void MergeMessageIDCounters(Dictionary<long, int> dictionary)
         {
             lock (mMessageIDs)
             {
-                foreach (KeyValuePair<long, int> kv in d)
+                foreach (KeyValuePair<long, int> kv in dictionary)
                 {
                     mMessageIDs[kv.Key] = kv.Value;
                 }
-                d.Clear();
+                dictionary.Clear();
             }
         }
 

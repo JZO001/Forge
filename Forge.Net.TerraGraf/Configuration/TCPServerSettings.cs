@@ -12,10 +12,11 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using Forge.Configuration.Shared;
-using Forge.Logging;
+using Forge.Logging.Abstraction;
 using Forge.Net.Synapse;
 using Forge.Net.TerraGraf.ConfigSection;
 using Forge.Net.TerraGraf.NetworkPeers;
+using Forge.Shared;
 
 namespace Forge.Net.TerraGraf.Configuration
 {
@@ -29,7 +30,7 @@ namespace Forge.Net.TerraGraf.Configuration
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(TCPServerSettings));
+        private static readonly ILog LOGGER = LogManager.GetLogger<TCPServerSettings>();
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private bool mAuto = false;
@@ -46,7 +47,7 @@ namespace Forge.Net.TerraGraf.Configuration
         /// <summary>
         /// Initializes a new instance of the <see cref="TCPServerSettings"/> class.
         /// </summary>
-        internal TCPServerSettings()
+        public TCPServerSettings()
         {
         }
 
@@ -63,6 +64,10 @@ namespace Forge.Net.TerraGraf.Configuration
         public bool Auto
         {
             get { return mAuto; }
+            set
+            {
+                if (!mInitialized) mAuto = value;
+            }
         }
 
         /// <summary>
@@ -73,7 +78,7 @@ namespace Forge.Net.TerraGraf.Configuration
         /// </value>
         public List<AddressEndPoint> EndPoints
         {
-            get { return new List<AddressEndPoint>(mEndPoints); }
+            get { return mInitialized ? new List<AddressEndPoint>(mEndPoints) : mEndPoints; }
             set
             {
                 if (value == null)
@@ -81,7 +86,7 @@ namespace Forge.Net.TerraGraf.Configuration
                     ThrowHelper.ThrowArgumentNullException("value");
                 }
 
-                // különböznek?
+                // are they different?
                 bool dif = value.Count != mEndPoints.Count;
                 if (!dif)
                 {
@@ -101,7 +106,7 @@ namespace Forge.Net.TerraGraf.Configuration
                     mEndPoints.AddRange(value);
                     if (mInitialized)
                     {
-                        // változtatások propagálása
+                        // propagate changes
                         if (NetworkManager.Instance.ManagerState == Management.ManagerStateEnum.Started)
                         {
                             List<TCPServer> serverEps = new List<TCPServer>();
@@ -111,7 +116,7 @@ namespace Forge.Net.TerraGraf.Configuration
                                 {
                                     if (aep.Host.Equals(IPAddress.Any.ToString()) || aep.Host.Equals(IPAddress.IPv6Any.ToString()))
                                     {
-                                        // detektálom az interface-eket és mindre ráülök
+                                        // detect network interfacs and listen on them
                                         foreach (IPAddress a in Dns.GetHostAddresses(Dns.GetHostName()))
                                         {
                                             if (a.AddressFamily == AddressFamily.InterNetwork || (a.AddressFamily == AddressFamily.InterNetworkV6 &&
@@ -122,7 +127,7 @@ namespace Forge.Net.TerraGraf.Configuration
                                                     AddressEndPoint ep = new AddressEndPoint(a.ToString(), aep.Port);
                                                     if (NetworkManager.Instance.InternalNetworkManager.IsServerEndPointExist(ep))
                                                     {
-                                                        // már létezik, megtartom az eredetit
+                                                        // it is already exist, keep the original one
                                                         foreach (TCPServer s in NetworkManager.Instance.InternalLocalhost.TCPServerCollection.TCPServers)
                                                         {
                                                             if (s.EndPoint.Equals(ep))
@@ -170,7 +175,7 @@ namespace Forge.Net.TerraGraf.Configuration
                                 }
                                 catch (Exception ex)
                                 {
-                                    // sikertelen a szerver indítása
+                                    // failed to launch server
                                     if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format("TCPServerSettings, failed to start TCP server, {0}. Reason: {1}", aep.ToString(), ex.Message));
                                 }
                             }
@@ -190,7 +195,7 @@ namespace Forge.Net.TerraGraf.Configuration
                                         }
                                         else if (!server.IsManuallyStarted && !serverEps.Contains(server))
                                         {
-                                            // ami már nem kell, leállítom
+                                            // stop which does not necessary anymore
                                             NetworkManager.Instance.InternalNetworkManager.StopServer(server.ServerId);
                                         }
                                     }
@@ -223,7 +228,7 @@ namespace Forge.Net.TerraGraf.Configuration
         {
             if (LOGGER.IsInfoEnabled)
             {
-                LOGGER.Info(string.Format("TERRAGRAF, Auto define and start TCP servers: {0}", this.mAuto));
+                LOGGER.Info(string.Format("TERRAGRAF, Auto define and start TCP servers: {0}", mAuto));
                 StringBuilder sb = new StringBuilder();
                 foreach (AddressEndPoint ep in mEndPoints)
                 {
@@ -238,9 +243,22 @@ namespace Forge.Net.TerraGraf.Configuration
         /// </summary>
         internal void Initialize()
         {
-            TerraGrafConfiguration.SectionHandler.OnConfigurationChanged += new EventHandler<EventArgs>(SectionHandler_OnConfigurationChanged);
-            SectionHandler_OnConfigurationChanged(null, null);
-            this.mInitialized = true;
+            if (NetworkManager.ConfigurationSource == ConfigurationSourceEnum.ConfigurationManager)
+            {
+                TerraGrafConfiguration.SectionHandler.OnConfigurationChanged += new EventHandler<EventArgs>(SectionHandler_OnConfigurationChanged);
+                SectionHandler_OnConfigurationChanged(null, null);
+            }
+            mInitialized = true;
+        }
+
+        /// <summary>Cleans up.</summary>
+        internal void CleanUp()
+        {
+            if (mInitialized && NetworkManager.ConfigurationSource == ConfigurationSourceEnum.ConfigurationManager)
+            {
+                TerraGrafConfiguration.SectionHandler.OnConfigurationChanged -= new EventHandler<EventArgs>(SectionHandler_OnConfigurationChanged);
+            }
+            mInitialized = false;
         }
 
         #endregion

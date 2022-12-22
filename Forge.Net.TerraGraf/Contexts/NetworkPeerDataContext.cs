@@ -16,7 +16,7 @@ namespace Forge.Net.TerraGraf.Contexts
     /// Representation the context of a peer
     /// </summary>
     [Serializable]
-    public sealed class NetworkPeerDataContext : IPropertyItem, ICloneable
+    public sealed class NetworkPeerDataContext : ICloneable
     {
 
         #region Field(s)
@@ -53,54 +53,6 @@ namespace Forge.Net.TerraGraf.Contexts
         #region Public method(s)
 
         /// <summary>
-        /// Gets the value by path.
-        /// </summary>
-        /// <param name="pi">The pi.</param>
-        /// <param name="configPath">The config path.</param>
-        /// <returns>The value</returns>
-        public static String GetValueByPath(IPropertyItem pi, String configPath)
-        {
-            if (pi == null)
-            {
-                throw new ArgumentNullException("pi");
-            }
-            if (string.IsNullOrEmpty("configPath"))
-            {
-                throw new ArgumentNullException("configPath");
-            }
-
-            List<String> keys = new List<String>();
-            keys.AddRange(configPath.Split(new string[] { "/" }, StringSplitOptions.None));
-            String result = FindValueByKey(pi, keys);
-            keys.Clear();
-            return result;
-        }
-
-        /// <summary>
-        /// Gets the property item by path.
-        /// </summary>
-        /// <param name="pi">The pi.</param>
-        /// <param name="configPath">The config path.</param>
-        /// <returns>The property item</returns>
-        public static PropertyItem GetPropertyItemByPath(IPropertyItem pi, String configPath)
-        {
-            if (pi == null)
-            {
-                throw new ArgumentNullException("pi");
-            }
-            if (string.IsNullOrEmpty(configPath))
-            {
-                throw new ArgumentNullException("configPath");
-            }
-
-            List<String> keys = new List<String>();
-            keys.AddRange(configPath.Split(new string[] { "/" }, StringSplitOptions.None));
-            PropertyItem result = FindPropertyItemByKey(pi, keys);
-            keys.Clear();
-            return result;
-        }
-
-        /// <summary>
         /// Creates a new object that is a copy of the current instance.
         /// </summary>
         /// <returns>
@@ -119,48 +71,6 @@ namespace Forge.Net.TerraGraf.Contexts
             }
 
             return cloned;
-        }
-
-        #endregion
-
-        #region Private method(s)
-
-        private static String FindValueByKey(IPropertyItem pi, List<String> keys)
-        {
-            String result = null;
-            if (pi.PropertyItems.ContainsKey(keys[0]))
-            {
-                PropertyItem item = pi.PropertyItems[keys[0]];
-                if (keys.Count == 1)
-                {
-                    result = item.Value;
-                }
-                else
-                {
-                    keys.RemoveAt(0);
-                    result = FindValueByKey(item, keys);
-                }
-            }
-            return result;
-        }
-
-        private static PropertyItem FindPropertyItemByKey(IPropertyItem pi, List<String> keys)
-        {
-            PropertyItem result = null;
-            if (pi.PropertyItems.ContainsKey(keys[0]))
-            {
-                PropertyItem item = pi.PropertyItems[keys[0]];
-                if (keys.Count == 1)
-                {
-                    result = item;
-                }
-                else
-                {
-                    keys.RemoveAt(0);
-                    result = FindPropertyItemByKey(item, keys);
-                }
-            }
-            return result;
         }
 
         #endregion

@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Shared;
 using System;
 using System.Diagnostics;
 using System.Text;
@@ -19,27 +20,27 @@ namespace Forge.Net.Remoting.ProxyGenerator
 
         #region Field(s)
 
-        private static readonly String PackageServiceBaseName = "RemotingService";
+        private static readonly string PackageServiceBaseName = "RemotingService";
 
-        private static readonly String PackageClientBaseName = "RemotingClient";
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private String mTypeNameServiceImpl = string.Empty;
+        private static readonly string PackageClientBaseName = "RemotingClient";
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private String mTypeNameClientImpl = string.Empty;
+        private string mTypeNameServiceImpl = string.Empty;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private String mTypeNameServiceAbstract = string.Empty;
+        private string mTypeNameClientImpl = string.Empty;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private String mTypeNameClientAbstract = string.Empty;
+        private string mTypeNameServiceAbstract = string.Empty;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private String mServicePackage = string.Empty;
+        private string mTypeNameClientAbstract = string.Empty;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private String mClientPackage = string.Empty;
+        private string mServicePackage = string.Empty;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private string mClientPackage = string.Empty;
 
         #endregion
 
@@ -56,17 +57,17 @@ namespace Forge.Net.Remoting.ProxyGenerator
                 ThrowHelper.ThrowArgumentNullException("contractType");
             }
 
-            String typeName = contractType.FullName;
-            String[] slices = typeName.Split(new string[] { "." }, StringSplitOptions.RemoveEmptyEntries);
+            string typeName = contractType.FullName;
+            string[] slices = typeName.Split(new string[] { "." }, StringSplitOptions.RemoveEmptyEntries);
             typeName = slices[slices.Length - 1];
             if (typeName.StartsWith("I") && typeName.Length > 1)
             {
                 typeName = typeName.Substring(1);
             }
-            mTypeNameServiceImpl = String.Format("{0}ServiceImpl", typeName);
-            mTypeNameClientImpl = String.Format("{0}ClientImpl", typeName);
-            mTypeNameServiceAbstract = String.Format("{0}AbstractServiceProxy", typeName);
-            mTypeNameClientAbstract = String.Format("{0}AbstractClientProxy", typeName);
+            mTypeNameServiceImpl = string.Format("{0}ServiceImpl", typeName);
+            mTypeNameClientImpl = string.Format("{0}ClientImpl", typeName);
+            mTypeNameServiceAbstract = string.Format("{0}AbstractServiceProxy", typeName);
+            mTypeNameClientAbstract = string.Format("{0}AbstractClientProxy", typeName);
 
             StringBuilder sbForServicePackage = new StringBuilder();
             StringBuilder sbForClientPackage = new StringBuilder();
@@ -109,63 +110,63 @@ namespace Forge.Net.Remoting.ProxyGenerator
         #region Internal properties
 
         [DebuggerHidden]
-        internal String TypeNameServiceImpl
+        internal string TypeNameServiceImpl
         {
             get { return mTypeNameServiceImpl; }
         }
 
         [DebuggerHidden]
-        internal String TypeNameClientImpl
+        internal string TypeNameClientImpl
         {
             get { return mTypeNameClientImpl; }
         }
 
         [DebuggerHidden]
-        internal String TypeNameServiceAbstract
+        internal string TypeNameServiceAbstract
         {
             get { return mTypeNameServiceAbstract; }
         }
 
         [DebuggerHidden]
-        internal String TypeNameClientAbstract
+        internal string TypeNameClientAbstract
         {
             get { return mTypeNameClientAbstract; }
         }
 
         [DebuggerHidden]
-        internal String ServicePackage
+        internal string ServicePackage
         {
             get { return mServicePackage; }
         }
 
         [DebuggerHidden]
-        internal String ClientPackage
+        internal string ClientPackage
         {
             get { return mClientPackage; }
         }
 
         [DebuggerHidden]
-        internal String TypeFullNameServiceAbstract
+        internal string TypeFullNameServiceAbstract
         {
-            get { return String.Format("{0}.{1}", mServicePackage, mTypeNameServiceAbstract); }
+            get { return string.Format("{0}.{1}", mServicePackage, mTypeNameServiceAbstract); }
         }
 
         [DebuggerHidden]
-        internal String TypeFullNameClientAbstract
+        internal string TypeFullNameClientAbstract
         {
-            get { return String.Format("{0}.{1}", mClientPackage, mTypeNameClientAbstract); }
+            get { return string.Format("{0}.{1}", mClientPackage, mTypeNameClientAbstract); }
         }
 
         [DebuggerHidden]
-        internal String TypeFullNameServiceImpl
+        internal string TypeFullNameServiceImpl
         {
-            get { return String.Format("{0}.{1}", mServicePackage, mTypeNameServiceImpl); }
+            get { return string.Format("{0}.{1}", mServicePackage, mTypeNameServiceImpl); }
         }
 
         [DebuggerHidden]
-        internal String TypeFullNameClientImpl
+        internal string TypeFullNameClientImpl
         {
-            get { return String.Format("{0}.{1}", mClientPackage, mTypeNameClientImpl); }
+            get { return string.Format("{0}.{1}", mClientPackage, mTypeNameClientImpl); }
         }
 
         #endregion

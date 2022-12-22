@@ -1,95 +1,53 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{64BB1EFC-27BB-4A5F-B631-234A552C4288}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Forge.Persistence.Formatters.JsonNet</RootNamespace>
-    <AssemblyName>Forge.Persistence.Formatters.JsonNet</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
-    <TargetFrameworkProfile />
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\Forge.Persistence.Formatters.JsonNet.xml</DocumentationFile>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <RunCodeAnalysis>false</RunCodeAnalysis>
-    <DocumentationFile>bin\Release\Forge.Persistence.Formatters.JsonNet.XML</DocumentationFile>
-    <Prefer32Bit>false</Prefer32Bit>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>Forge.pfx</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="JsonFormatter.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Forge.pfx" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Forge.Base\Forge.Base.csproj">
-      <Project>{f3eed65e-c103-4ba8-af1d-37421d73a708}</Project>
-      <Name>Forge.Base</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
-  </Target>
-  <PropertyGroup>
-    <PostBuildEvent>echo F|xcopy /r /y "$(TargetPath)" "$(SolutionDir).Output\$(TargetFileName)"
-echo F|xcopy /r /y "$(TargetDir)$(TargetName).pdb" "$(SolutionDir).Output\$(TargetName).pdb"
-echo F|xcopy /r /y "$(TargetDir)$(TargetName).xml" "$(SolutionDir).Output\$(TargetName).xml"
-</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup Label="Globals">
+	  <SccProjectName>SAK</SccProjectName>
+	  <SccProvider>SAK</SccProvider>
+	  <SccAuxPath>SAK</SccAuxPath>
+	  <SccLocalPath>SAK</SccLocalPath>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<TargetFrameworks>net40;netstandard2.0;netcoreapp3.1;net6.0</TargetFrameworks>
+		<Version>2.0.0.0</Version>
+		<AssemblyVersion>2.0.0.0</AssemblyVersion>
+		<Copyright>Copyright © Zoltan Juhasz, 2013-2022</Copyright>
+		<Description>Contains an implementation of IDateFormatter for Json.NET</Description>
+		<Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
+		<Company>Forge Project Contributor(s)</Company>
+		<PackageId>Forge.Persistence.Formatters.JsonNet</PackageId>
+		<Authors>Zoltan Juhasz</Authors>
+		<Title>Json.Net Formatter</Title>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<ProjectGuid>{64BB1EFC-27BB-4A5F-B631-234A552C4288}</ProjectGuid>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<DocumentationFile>Forge.Persistence.Formatters.JsonNet.xml</DocumentationFile>
+		<RepositoryUrl>https://github.com/JZO001/Forge.Persistence.Formatters.JsonNet</RepositoryUrl>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Remove="Forge.Persistence.Formatters.JsonNet.xml" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<SupportedPlatform Include="browser" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Forge.Formatters\Forge.Formatters.csproj" />
+	  <ProjectReference Include="..\Forge.Shared\Forge.Shared.csproj" />
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
+	</Target>
+
 </Project>

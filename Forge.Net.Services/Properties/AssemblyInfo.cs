@@ -6,16 +6,6 @@ using System.Security;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Forge.Net.Services")]
-[assembly: AssemblyDescription("Base implementations for services and locators")]
-#if DEBUG
-[assembly: AssemblyConfiguration("Debug")]
-#else
-[assembly: AssemblyConfiguration("Release")]
-#endif
-[assembly: AssemblyCompany("Forge Project Contributor(s)")]
-[assembly: AssemblyProduct("Forge.Net.Services")]
-[assembly: AssemblyCopyright("Copyright © Zoltan Juhasz, 2012-2019")]
 [assembly: AssemblyTrademark("Forge")]
 //[assembly: AssemblyCulture("")]
 
@@ -38,9 +28,6 @@ using System.Security;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.3")]
-[assembly: AssemblyFileVersion("1.0.0.3")]
-[assembly: AssemblyInformationalVersion("1.0.0.3")]
 [assembly: AllowPartiallyTrustedCallers]
 
 [assembly: SecurityRules(SecurityRuleSet.Level1, SkipVerificationInFullTrust = true)]

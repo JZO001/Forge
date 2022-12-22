@@ -26,8 +26,8 @@ namespace Forge.RemoteDesktop.Contracts
         /// <param name="key">The key.</param>
         public KeyboardEventArgs(KeyboardEventTypeEnum keyEventType, Keys key)
         {
-            this.KeyEventType = keyEventType;
-            this.Key = key;
+            KeyEventType = keyEventType;
+            Key = key;
         }
 
         #endregion

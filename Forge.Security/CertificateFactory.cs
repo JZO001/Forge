@@ -315,7 +315,7 @@ namespace Forge.Security
 
                 request.CertificateExtensions.Add(sanBuilder.Build());
 
-                var certificate = request.CreateSelfSigned(new DateTimeOffset(startTime), new DateTimeOffset(endTime));
+                X509Certificate2 certificate = request.CreateSelfSigned(new DateTimeOffset(startTime), new DateTimeOffset(endTime));
                 certificate.FriendlyName = "Generated Certificate";
 
                 pfxData = certificate.Export(X509ContentType.Pfx, password);
@@ -342,7 +342,6 @@ namespace Forge.Security
                 Marshal.ThrowExceptionForHR(error);
             }
         }
-
 #endif
     }
 

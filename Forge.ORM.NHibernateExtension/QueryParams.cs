@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using Forge.ORM.NHibernateExtension.Criterias;
 using Forge.ORM.NHibernateExtension.Model;
+using Forge.Shared;
 using NHibernate;
 using NHibernate.Criterion;
 
@@ -75,9 +76,9 @@ namespace Forge.ORM.NHibernateExtension
                 ThrowHelper.ThrowArgumentException("Provided type is not assignable from EntityBaseWithoutId.");
             }
 
-            this.mEntityType = entityType;
-            this.mMaxResults = maxResults;
-            this.Timeout = System.Threading.Timeout.Infinite;
+            mEntityType = entityType;
+            mMaxResults = maxResults;
+            Timeout = System.Threading.Timeout.Infinite;
         }
 
         #endregion
@@ -106,7 +107,7 @@ namespace Forge.ORM.NHibernateExtension
                 {
                     ThrowHelper.ThrowArgumentOutOfRangeException("value");
                 }
-                this.mMaxResults = value;
+                mMaxResults = value;
             }
         }
 
@@ -138,7 +139,7 @@ namespace Forge.ORM.NHibernateExtension
                 {
                     ThrowHelper.ThrowArgumentOutOfRangeException("value");
                 }
-                this.mTimeout = value;
+                mTimeout = value;
             }
         }
 
@@ -179,8 +180,8 @@ namespace Forge.ORM.NHibernateExtension
         /// </returns>
         public virtual object Clone()
         {
-            QueryParamsBase cloned = (QueryParamsBase)this.GetType().GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.CreateInstance | BindingFlags.Instance, null, new Type[] { typeof(Type) }, null).Invoke(new object[] { this.mEntityType });
-            cloned.mMaxResults = this.mMaxResults;
+            QueryParamsBase cloned = (QueryParamsBase)GetType().GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.CreateInstance | BindingFlags.Instance, null, new Type[] { typeof(Type) }, null).Invoke(new object[] { mEntityType });
+            cloned.mMaxResults = mMaxResults;
             return cloned;
         }
 
@@ -208,7 +209,7 @@ namespace Forge.ORM.NHibernateExtension
             if (!obj.GetType().Equals(GetType())) return false;
 
             QueryParamsBase other = (QueryParamsBase)obj;
-            return other.mMaxResults == this.mMaxResults;
+            return other.mMaxResults == mMaxResults;
         }
 
         /// <summary>
@@ -324,10 +325,10 @@ namespace Forge.ORM.NHibernateExtension
                 ThrowHelper.ThrowArgumentNullException("criteria");
             }
 
-            this.mCriteria = criteria;
+            mCriteria = criteria;
             if (orderBy != null)
             {
-                this.mOrderBys.Add(orderBy);
+                mOrderBys.Add(orderBy);
             }
         }
 
@@ -357,10 +358,10 @@ namespace Forge.ORM.NHibernateExtension
                 ThrowHelper.ThrowArgumentNullException("criteria");
             }
 
-            this.mCriteria = criteria;
+            mCriteria = criteria;
             if (orderBys != null)
             {
-                this.mOrderBys.AddRange(orderBys);
+                mOrderBys.AddRange(orderBys);
             }
         }
 
@@ -384,7 +385,7 @@ namespace Forge.ORM.NHibernateExtension
                 {
                     ThrowHelper.ThrowArgumentNullException("value");
                 }
-                this.mCriteria = value;
+                mCriteria = value;
             }
         }
 
@@ -409,8 +410,8 @@ namespace Forge.ORM.NHibernateExtension
         {
             if (mDetachedCriteria == null)
             {
-                mDetachedCriteria = DetachedCriteria.For(this.EntityType, "this");
-                ((Criteria)this.mCriteria.Clone()).BuildCriteria(mDetachedCriteria);
+                mDetachedCriteria = DetachedCriteria.For(EntityType, "this");
+                ((Criteria)mCriteria.Clone()).BuildCriteria(mDetachedCriteria);
             }
             return mDetachedCriteria;
         }
@@ -441,8 +442,8 @@ namespace Forge.ORM.NHibernateExtension
         public override object Clone()
         {
             QueryParams clone = (QueryParams)base.Clone();
-            clone.Criteria = this.Criteria;
-            clone.mOrderBys = new List<OrderBy>(this.mOrderBys);
+            clone.Criteria = Criteria;
+            clone.mOrderBys = new List<OrderBy>(mOrderBys);
             return clone;
         }
 
@@ -470,14 +471,14 @@ namespace Forge.ORM.NHibernateExtension
             if (!obj.GetType().Equals(GetType())) return false;
 
             QueryParams other = (QueryParams)obj;
-            bool result = base.Equals(obj) && other.mCriteria.Equals(this.mCriteria);
+            bool result = base.Equals(obj) && other.mCriteria.Equals(mCriteria);
             if (result)
             {
-                if (other.mOrderBys.Count == this.mOrderBys.Count)
+                if (other.mOrderBys.Count == mOrderBys.Count)
                 {
-                    for (int i = 0; i < this.mOrderBys.Count; i++)
+                    for (int i = 0; i < mOrderBys.Count; i++)
                     {
-                        if (!other.mOrderBys[i].Equals(this.mOrderBys[i]))
+                        if (!other.mOrderBys[i].Equals(mOrderBys[i]))
                         {
                             result = false;
                             break;

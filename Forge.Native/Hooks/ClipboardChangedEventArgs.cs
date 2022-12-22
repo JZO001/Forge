@@ -13,6 +13,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using Forge.Shared;
 
 namespace Forge.Native.Hooks
 {

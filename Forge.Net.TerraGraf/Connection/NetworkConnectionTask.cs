@@ -7,9 +7,11 @@
 using System;
 using System.Diagnostics;
 using System.Threading;
+using Forge.Legacy;
 using Forge.Net.Synapse;
 using Forge.Net.TerraGraf.Messaging;
 using Forge.Net.TerraGraf.NetworkPeers;
+using Forge.Shared;
 
 namespace Forge.Net.TerraGraf.Connection
 {
@@ -66,9 +68,9 @@ namespace Forge.Net.TerraGraf.Connection
             {
                 ThrowHelper.ThrowArgumentNullException("networkStream");
             }
-            this.mNetworkConnection = new NetworkConnection(this, networkStream);
-            this.mLocalRequest = localRequest;
-            this.mDisconnectOnConnectionDuplication = disconnectOnConnectionDuplication;
+            mNetworkConnection = new NetworkConnection(this, networkStream);
+            mLocalRequest = localRequest;
+            mDisconnectOnConnectionDuplication = disconnectOnConnectionDuplication;
         }
 
         #endregion
@@ -267,7 +269,7 @@ namespace Forge.Net.TerraGraf.Connection
                     mConnectionEvent = null;
                 }
             }
-            this.mNetworkConnection = null;
+            mNetworkConnection = null;
             GC.SuppressFinalize(this);
         }
 

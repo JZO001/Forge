@@ -5,8 +5,9 @@
 ***********************************************************************/
 
 using System;
-using Forge.Logging;
+using Forge.Logging.Abstraction;
 using Forge.ORM.NHibernateExtension.Model;
+using Forge.Shared;
 using NHibernate;
 using NHibernate.Proxy;
 
@@ -209,7 +210,7 @@ namespace Forge.ORM.NHibernateExtension
                 return (EntityBaseWithoutId)session.GetSessionImplementation().PersistenceContext.UnproxyAndReassociate(entity);
             }
 
-            return (EntityBaseWithoutId)entity;
+            return entity;
         }
 
         #endregion

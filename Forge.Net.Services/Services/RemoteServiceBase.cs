@@ -10,7 +10,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Forge.Configuration;
 using Forge.Configuration.Shared;
-using Forge.Logging;
+using Forge.Logging.Abstraction;
 using Forge.Management;
 using Forge.Net.Remoting;
 using Forge.Net.Remoting.Channels;
@@ -21,6 +21,7 @@ using Forge.Net.Synapse;
 using Forge.Net.Synapse.NetworkFactory;
 using Forge.Net.TerraGraf;
 using Forge.Net.TerraGraf.Contexts;
+using Forge.Shared;
 
 namespace Forge.Net.Services.Services
 {
@@ -47,7 +48,7 @@ namespace Forge.Net.Services.Services
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes")]
-        protected readonly ILog LOGGER = LogManager.GetLogger(typeof(TServiceType));
+        protected readonly ILog LOGGER = LogManager.GetLogger<TServiceType>();
 
         /// <summary>
         /// Log prefix for log messages
@@ -82,8 +83,8 @@ namespace Forge.Net.Services.Services
                 ThrowHelper.ThrowArgumentNullException("serviceId");
             }
 
-            this.Id = serviceId;
-            this.ChannelId = string.Empty;
+            Id = serviceId;
+            ChannelId = string.Empty;
         }
 
         #endregion
@@ -140,7 +141,7 @@ namespace Forge.Net.Services.Services
             [MethodImpl(MethodImplOptions.Synchronized)]
             set
             {
-                if (this.ManagerState != ManagerStateEnum.Started)
+                if (ManagerState != ManagerStateEnum.Started)
                 {
                     throw new ServiceNotAvailableException();
                 }
@@ -149,7 +150,7 @@ namespace Forge.Net.Services.Services
                     ThrowHelper.ThrowArgumentOutOfRangeException("value");
                 }
                 RegisterToPeerContext(LookUpChannel(), value, mServiceDescriptor);
-                this.mPriority = value;
+                mPriority = value;
             }
         }
 
@@ -165,11 +166,11 @@ namespace Forge.Net.Services.Services
             get { return mServiceDescriptor; }
             set
             {
-                if (this.ManagerState != ManagerStateEnum.Started)
+                if (ManagerState != ManagerStateEnum.Started)
                 {
                     throw new ServiceNotAvailableException();
                 }
-                this.mServiceDescriptor = value;
+                mServiceDescriptor = value;
                 RegisterToPeerContext(LookUpChannel(), mPriority, mServiceDescriptor);
             }
         }
@@ -227,7 +228,7 @@ namespace Forge.Net.Services.Services
         [MethodImpl(MethodImplOptions.Synchronized)]
         public virtual ManagerStateEnum Start(long priority, IServiceDescriptor serviceDescriptor)
         {
-            if (this.ManagerState != ManagerStateEnum.Started)
+            if (ManagerState != ManagerStateEnum.Started)
             {
                 if (priority < 0)
                 {
@@ -242,10 +243,10 @@ namespace Forge.Net.Services.Services
                 {
                     ChannelServices.Initialize();
 
-                    this.ChannelId = ConfigurationAccessHelper.GetValueByPath(NetworkServiceConfiguration.Settings.CategoryPropertyItems, string.Format("Services/{0}", Id));
-                    if (string.IsNullOrEmpty(this.ChannelId))
+                    ChannelId = ConfigurationAccessHelper.GetValueByPath(NetworkServiceConfiguration.Settings.CategoryPropertyItems, string.Format("Services/{0}", Id));
+                    if (string.IsNullOrEmpty(ChannelId))
                     {
-                        this.ChannelId = Id;
+                        ChannelId = Id;
                     }
 
                     Channel channel = LookUpChannel();
@@ -261,24 +262,24 @@ namespace Forge.Net.Services.Services
                         ServiceBaseServices.RegisterContract(typeof(TIServiceProxyType), typeof(TServiceProxyImplementationType));
                     }
 
-                    this.mPriority = priority;
-                    this.mServiceDescriptor = serviceDescriptor;
+                    mPriority = priority;
+                    mServiceDescriptor = serviceDescriptor;
 
                     RegisterToPeerContext(channel, priority, serviceDescriptor);
 
-                    this.ManagerState = ManagerStateEnum.Started;
+                    ManagerState = ManagerStateEnum.Started;
 
                     if (LOGGER.IsInfoEnabled) LOGGER.Info(string.Format("{0}, service successfully initialized.", LOG_PREFIX));
                 }
                 catch (Exception)
                 {
-                    this.ManagerState = ManagerStateEnum.Fault;
+                    ManagerState = ManagerStateEnum.Fault;
                     throw;
                 }
 
                 OnStart(ManagerEventStateEnum.After);
             }
-            return this.ManagerState;
+            return ManagerState;
         }
 
         /// <summary>
@@ -291,7 +292,7 @@ namespace Forge.Net.Services.Services
         [MethodImpl(MethodImplOptions.Synchronized)]
         public override ManagerStateEnum Stop()
         {
-            if (this.ManagerState == ManagerStateEnum.Started)
+            if (ManagerState == ManagerStateEnum.Started)
             {
                 if (LOGGER.IsInfoEnabled) LOGGER.Info(string.Format("{0}, service stopping...", LOG_PREFIX));
 
@@ -317,13 +318,13 @@ namespace Forge.Net.Services.Services
                     ServiceBaseServices.UnregisterContract(typeof(TIServiceProxyType));
                 }
 
-                this.ManagerState = ManagerStateEnum.Stopped;
+                ManagerState = ManagerStateEnum.Stopped;
 
                 if (LOGGER.IsInfoEnabled) LOGGER.Info(string.Format("{0}, service successfully stopped.", LOG_PREFIX));
 
                 OnStop(ManagerEventStateEnum.After);
             }
-            return this.ManagerState;
+            return ManagerState;
         }
 
         #endregion
@@ -338,7 +339,7 @@ namespace Forge.Net.Services.Services
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         protected virtual Channel LookUpChannel()
         {
-            Channel channel = ChannelServices.GetChannelById(this.ChannelId);
+            Channel channel = ChannelServices.GetChannelById(ChannelId);
             if (channel == null)
             {
                 // regisztrálás
@@ -355,7 +356,7 @@ namespace Forge.Net.Services.Services
                 DefaultServerStreamFactory serverStreamFactory = new DefaultServerStreamFactory();
                 DefaultClientStreamFactory clientStreamFactory = new DefaultClientStreamFactory();
 
-                channel = new TCPChannel(this.ChannelId, sinks, sinks, serverData, networkFactory, serverStreamFactory, clientStreamFactory);
+                channel = new TCPChannel(ChannelId, sinks, sinks, serverData, networkFactory, serverStreamFactory, clientStreamFactory);
                 channel.StartListening();
 
                 ChannelServices.RegisterChannel(channel);
@@ -395,7 +396,7 @@ namespace Forge.Net.Services.Services
                     {
                         foreach (KeyValuePair<string, PropertyItem> kv in items)
                         {
-                            root.PropertyItems.Add(kv.Key, kv.Value);
+                            root.Items.Add(kv.Key, kv.Value);
                         }
                     }
                 }

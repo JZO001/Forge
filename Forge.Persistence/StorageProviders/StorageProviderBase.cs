@@ -7,11 +7,16 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.Serialization;
 using Forge.Collections;
-using Forge.Configuration.Shared;
+using Forge.Configuration;
+using Forge.Formatters;
 using Forge.Persistence.Formatters;
 using Forge.Persistence.Serialization;
+using Forge.Persistence.StorageProviders.Options;
 using Forge.Reflection;
+using Forge.Shared;
 
 namespace Forge.Persistence.StorageProviders
 {
@@ -27,7 +32,7 @@ namespace Forge.Persistence.StorageProviders
 
         #region Field(s)
 
-        private static readonly HashSet<String> GLOBAL_STORAGE_ID = new HashSet<String>();
+        private static readonly HashSet<string> GLOBAL_STORAGE_ID = new HashSet<string>();
 
         private string mStorageId = null;
 
@@ -44,43 +49,66 @@ namespace Forge.Persistence.StorageProviders
 
         #region Constructor(s)
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="StorageProviderBase&lt;T&gt;"/> class.
-        /// </summary>
-        /// <param name="storageId">The storage id.</param>
-        protected StorageProviderBase(String storageId)
+        /// <summary>Initializes a new instance of the <see cref="StorageProviderBase{T}" /> class.</summary>
+        /// <param name="option">The option.</param>
+        /// <exception cref="System.Exception"></exception>
+        protected StorageProviderBase(StorageProviderBaseOption option)
         {
-            if (String.IsNullOrEmpty(storageId))
+            if (option == null) ThrowHelper.ThrowArgumentNullException("option");
+
+            SetId(option.Id);
+
+            Type type = option.DataFormatterType;
+            if (type == null && !string.IsNullOrWhiteSpace(option.DataFormatter))
             {
-                throw new ArgumentNullException("storageId");
+                try
+                {
+                    type = TypeHelper.GetTypeFromString(option.DataFormatter);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(string.Format("Unable to resolve data formatter type: {0}", option.DataFormatter), ex);
+                }
             }
 
-            lock (GLOBAL_STORAGE_ID)
+            if (type == null)
             {
-                if (GLOBAL_STORAGE_ID.Contains(storageId))
-                {
-                    throw new StorageIdentifierAlreadyExistException(String.Format("Storage identifier already exist: {0}", storageId));
-                }
-                GLOBAL_STORAGE_ID.Add(storageId);
+                mDataFormatter = new BinarySerializerFormatter<T>(BinarySerializerBehaviorEnum.DoNotThrowExceptionOnMissingField, TypeLookupModeEnum.AllowAll, true);
             }
-            this.mStorageId = storageId;
+            else
+            {
+                try
+                {
+                    mDataFormatter = (IDataFormatter<T>)type.Assembly.CreateInstance(type.AssemblyQualifiedName);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(string.Format("Unable to instantiate formatter: {0}", type.AssemblyQualifiedName), ex);
+                }
+            }
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="StorageProviderBase&lt;T&gt;"/> class.
-        /// </summary>
-        /// <param name="storageId">The storage id.</param>
-        /// <param name="configItem">The config item.</param>
-        protected StorageProviderBase(String storageId, CategoryPropertyItem configItem)
-            : this(storageId)
+        /// <summary>Initializes a new instance of the <see cref="StorageProviderBase{T}" /> class.</summary>
+        /// <param name="propertyItem">The property item.</param>
+        /// <exception cref="Forge.Persistence.StorageProviders.StorageIdentifierAlreadyExistException"></exception>
+        /// <exception cref="System.Exception"></exception>
+        protected StorageProviderBase(IPropertyItem propertyItem)
         {
-            String formatter = String.Empty;
-            CategoryPropertyItem item = configItem.PropertyItems == null ? null : configItem.PropertyItems["DataFormatter"];
+            if (propertyItem == null) ThrowHelper.ThrowArgumentNullException("propertyItem");
+            if (string.IsNullOrWhiteSpace(propertyItem.Id))
+            {
+                ThrowHelper.ThrowArgumentException("PropertyItem does not contain an Id value.", "propertyItem");
+            }
+
+            SetId(propertyItem.Id);
+
+            string formatter = string.Empty;
+            IPropertyItem item = propertyItem.Items == null ? null : propertyItem.Items["DataFormatter"];
             if (item != null)
             {
-                formatter = item.EntryValue;
+                formatter = item.Value;
             }
-            if (!String.IsNullOrEmpty(formatter))
+            if (!string.IsNullOrEmpty(formatter))
             {
                 Type type = null;
                 try
@@ -89,7 +117,7 @@ namespace Forge.Persistence.StorageProviders
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception(String.Format("Unable to resolve data formatter type: {0}", formatter), ex);
+                    throw new Exception(string.Format("Unable to resolve data formatter type: {0}", formatter), ex);
                 }
                 try
                 {
@@ -97,7 +125,69 @@ namespace Forge.Persistence.StorageProviders
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception(String.Format("Unable to instantiate formatter: {0}", formatter), ex);
+                    throw new Exception(string.Format("Unable to instantiate formatter: {0}", formatter), ex);
+                }
+            }
+            else
+            {
+                mDataFormatter = new BinarySerializerFormatter<T>(BinarySerializerBehaviorEnum.DoNotThrowExceptionOnMissingField, TypeLookupModeEnum.AllowAll, true);
+            }
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StorageProviderBase&lt;T&gt;"/> class.
+        /// </summary>
+        /// <param name="storageId">The storage id.</param>
+        protected StorageProviderBase(string storageId)
+        {
+            if (string.IsNullOrEmpty(storageId))
+            {
+                throw new ArgumentNullException("storageId");
+            }
+
+            lock (GLOBAL_STORAGE_ID)
+            {
+                if (GLOBAL_STORAGE_ID.Contains(storageId))
+                {
+                    throw new StorageIdentifierAlreadyExistException(string.Format("Storage identifier already exist: {0}", storageId));
+                }
+                GLOBAL_STORAGE_ID.Add(storageId);
+            }
+            mStorageId = storageId;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StorageProviderBase&lt;T&gt;"/> class.
+        /// </summary>
+        /// <param name="storageId">The storage id.</param>
+        /// <param name="configItem">The config item.</param>
+        protected StorageProviderBase(string storageId, IPropertyItem configItem)
+            : this(storageId)
+        {
+            string formatter = string.Empty;
+            IPropertyItem item = configItem.Items == null ? null : configItem.Items["DataFormatter"];
+            if (item != null)
+            {
+                formatter = item.Value;
+            }
+            if (!string.IsNullOrEmpty(formatter))
+            {
+                Type type = null;
+                try
+                {
+                    type = TypeHelper.GetTypeFromString(formatter);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(string.Format("Unable to resolve data formatter type: {0}", formatter), ex);
+                }
+                try
+                {
+                    mDataFormatter = (IDataFormatter<T>)type.Assembly.CreateInstance(type.AssemblyQualifiedName);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(string.Format("Unable to instantiate formatter: {0}", formatter), ex);
                 }
             }
             else
@@ -276,11 +366,11 @@ namespace Forge.Persistence.StorageProviders
         protected void IncVersion()
         {
             DoDisposeCheck();
-            if (Int32.MaxValue == this.mVersion)
+            if (Int32.MaxValue == mVersion)
             {
-                this.mVersion = 0;
+                mVersion = 0;
             }
-            this.mVersion++;
+            mVersion++;
         }
 
         /// <summary>
@@ -290,7 +380,7 @@ namespace Forge.Persistence.StorageProviders
         {
             if (mDisposed)
             {
-                throw new ObjectDisposedException(this.GetType().FullName);
+                throw new ObjectDisposedException(GetType().FullName);
             }
         }
 
@@ -300,7 +390,7 @@ namespace Forge.Persistence.StorageProviders
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
-            this.mDisposed = true;
+            mDisposed = true;
             if (mStorageId != null)
             {
                 lock (GLOBAL_STORAGE_ID)
@@ -309,6 +399,24 @@ namespace Forge.Persistence.StorageProviders
                 }
             }
             mDataFormatter = null;
+        }
+
+        #endregion
+
+        #region Private method(s)
+
+        private void SetId(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id)) ThrowHelper.ThrowArgumentNullException("id");
+            lock (GLOBAL_STORAGE_ID)
+            {
+                if (GLOBAL_STORAGE_ID.Contains(id))
+                {
+                    throw new StorageIdentifierAlreadyExistException(string.Format("Storage identifier already exist: {0}", id));
+                }
+                GLOBAL_STORAGE_ID.Add(id);
+            }
+            mStorageId = id;
         }
 
         #endregion
@@ -352,13 +460,13 @@ namespace Forge.Persistence.StorageProviders
             /// <param name="count">The count.</param>
             public StorageProviderIterator(StorageProviderBase<TData> provider, int index, int count)
             {
-                this.list = provider;
-                this.startIndex = index;
-                this.index = index - 1;
-                this.endIndex = this.index + count;
-                this.version = list.Version;
-                this.originalIndex = index;
-                this.originalCount = count;
+                list = provider;
+                startIndex = index;
+                index = index - 1;
+                endIndex = index + count;
+                version = list.Version;
+                originalIndex = index;
+                originalCount = count;
             }
 
             /// <summary>
@@ -379,19 +487,19 @@ namespace Forge.Persistence.StorageProviders
             /// </summary>
             protected void Next()
             {
-                if (this.version != this.list.Version)
+                if (version != list.Version)
                 {
                     throw new InvalidOperationException("Collection modified while iterating on it.");
                 }
 
-                if (this.index < this.endIndex)
+                if (index < endIndex)
                 {
-                    this.index++;
-                    this.currentElement = this.list[this.index];
+                    index++;
+                    currentElement = list[index];
                 }
                 else
                 {
-                    this.index = this.endIndex + 1;
+                    index = endIndex + 1;
                 }
             }
 
@@ -414,16 +522,16 @@ namespace Forge.Persistence.StorageProviders
             /// </summary>
             public void Remove()
             {
-                if (this.index < this.startIndex)
+                if (index < startIndex)
                 {
                     throw new InvalidOperationException("No item selected.");
                 }
-                else if (this.index <= this.endIndex)
+                else if (index <= endIndex)
                 {
-                    this.list.RemoveAt(index);
-                    this.index--;
-                    this.endIndex--;
-                    this.version = list.Version;
+                    list.RemoveAt(index);
+                    index--;
+                    endIndex--;
+                    version = list.Version;
                 }
                 else
                 {
@@ -474,7 +582,7 @@ namespace Forge.Persistence.StorageProviders
             /// </returns>
             public bool HasNext()
             {
-                return this.index < this.endIndex;
+                return index < endIndex;
             }
 
             /// <summary>
@@ -483,14 +591,14 @@ namespace Forge.Persistence.StorageProviders
             /// <exception cref="T:System.InvalidOperationException">The collection was modified after the enumerator was created. </exception>
             public void Reset()
             {
-                this.startIndex = originalIndex;
-                this.index = originalIndex - 1;
-                this.endIndex = this.index + originalCount;
-                if (this.endIndex > this.list.Count - 1)
+                startIndex = originalIndex;
+                index = originalIndex - 1;
+                endIndex = index + originalCount;
+                if (endIndex > list.Count - 1)
                 {
-                    this.endIndex = this.list.Count - 1;
+                    endIndex = list.Count - 1;
                 }
-                this.currentElement = default(TData);
+                currentElement = default(TData);
             }
 
             /// <summary>

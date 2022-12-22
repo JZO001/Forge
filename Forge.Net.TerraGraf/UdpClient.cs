@@ -9,14 +9,21 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
+using Forge.Legacy;
 using Forge.Net.Synapse;
 using Forge.Net.Synapse.NetworkServices;
+using Forge.Shared;
+using Forge.Threading.Tasking;
+using Forge.Threading;
 
 namespace Forge.Net.TerraGraf
 {
 
+#if NET40
     internal delegate int UdpClientSendDelegate(byte[] buffer, int offset, int size);
     internal delegate int UdpClientSendToDelegate(byte[] buffer, int offset, int size, AddressEndPoint remoteEp);
+#endif
 
     /// <summary>
     /// Represents an UDP client
@@ -33,16 +40,19 @@ namespace Forge.Net.TerraGraf
 
         private byte[] mBuffer = new byte[MAX_UDP_SIZE];
 
-        private UdpClientSendDelegate mUdpClientSendDelegate = null;
+#if NET40
+        private UdpClientSendDelegate mSendDelegateOld = null;
+        private UdpClientSendToDelegate mSendToDelegateOld = null;
+#endif
+
+        private System.Func<byte[], int, int, int> mSendDelegate = null;
         private int mAsyncActiveUdpClientSendCount = 0;
         private AutoResetEvent mAsyncActiveUdpClientSendEvent = null;
-
-        private UdpClientSendToDelegate mUdpClientSendToDelegate = null;
-        private int mAsyncActiveUdpClientSendToCount = 0;
-        private AutoResetEvent mAsyncActiveUdpClientSendToEvent = null;
-
         private readonly object LOCK_SEND = new object();
 
+        private System.Func<byte[], int, int, AddressEndPoint, int> mSendToDelegate = null;
+        private int mAsyncActiveUdpClientSendToCount = 0;
+        private AutoResetEvent mAsyncActiveUdpClientSendToEvent = null;
         private readonly object LOCK_SENDTO = new object();
 
         private bool mDisposed = false;
@@ -56,7 +66,7 @@ namespace Forge.Net.TerraGraf
         /// </summary>
         public UdpClient()
         {
-            this.CreateClientSocket();
+            CreateClientSocket();
         }
 
         /// <summary>
@@ -70,8 +80,8 @@ namespace Forge.Net.TerraGraf
                 ThrowHelper.ThrowArgumentOutOfRangeException("port");
             }
 
-            this.CreateClientSocket();
-            this.Connect(new AddressEndPoint(AddressEndPoint.Any, port));
+            CreateClientSocket();
+            Connect(new AddressEndPoint(AddressEndPoint.Any, port));
         }
 
         #endregion
@@ -129,6 +139,8 @@ namespace Forge.Net.TerraGraf
 
         #region Public method(s)
 
+#if NET40
+
         /// <summary>
         /// Begins the receive.
         /// </summary>
@@ -141,33 +153,7 @@ namespace Forge.Net.TerraGraf
         {
             DoDisposeCheck();
             EndPoint any = new AddressEndPoint(AddressEndPoint.Any, 0);
-            return this.mClient.BeginReceiveFrom(mBuffer, 0, MAX_UDP_SIZE, ref any, callback, state);
-        }
-
-        /// <summary>
-        /// Receives the specified remote ep.
-        /// </summary>
-        /// <param name="remoteEp">The remote ep.</param>
-        /// <returns>
-        /// Number of received bytes
-        /// </returns>
-        public byte[] Receive(ref AddressEndPoint remoteEp)
-        {
-            DoDisposeCheck();
-            if (remoteEp == null)
-            {
-                ThrowHelper.ThrowArgumentNullException("remoteEp");
-            }
-            EndPoint refEp = new AddressEndPoint(AddressEndPoint.Any, 0);
-            int count = mClient.ReceiveFrom(mBuffer, ref refEp);
-            remoteEp = (AddressEndPoint)refEp;
-            if (count < MAX_UDP_SIZE)
-            {
-                byte[] dst = new byte[count];
-                Buffer.BlockCopy(this.mBuffer, 0, dst, 0, count);
-                return dst;
-            }
-            return this.mBuffer;
+            return mClient.BeginReceiveFrom(mBuffer, 0, MAX_UDP_SIZE, ref any, callback, state);
         }
 
         /// <summary>
@@ -192,7 +178,7 @@ namespace Forge.Net.TerraGraf
             if (count < MAX_UDP_SIZE)
             {
                 byte[] dst = new byte[count];
-                Buffer.BlockCopy(this.mBuffer, 0, dst, 0, count);
+                Buffer.BlockCopy(mBuffer, 0, dst, 0, count);
                 return dst;
             }
             return mBuffer;
@@ -263,19 +249,19 @@ namespace Forge.Net.TerraGraf
             }
 
             Interlocked.Increment(ref mAsyncActiveUdpClientSendCount);
-            UdpClientSendDelegate d = new UdpClientSendDelegate(this.Send);
-            if (this.mAsyncActiveUdpClientSendEvent == null)
+            UdpClientSendDelegate d = new UdpClientSendDelegate(Send);
+            if (mAsyncActiveUdpClientSendEvent == null)
             {
                 lock (LOCK_SEND)
                 {
-                    if (this.mAsyncActiveUdpClientSendEvent == null)
+                    if (mAsyncActiveUdpClientSendEvent == null)
                     {
-                        this.mAsyncActiveUdpClientSendEvent = new AutoResetEvent(true);
+                        mAsyncActiveUdpClientSendEvent = new AutoResetEvent(true);
                     }
                 }
             }
-            this.mAsyncActiveUdpClientSendEvent.WaitOne();
-            this.mUdpClientSendDelegate = d;
+            mAsyncActiveUdpClientSendEvent.WaitOne();
+            mSendDelegateOld = d;
             return d.BeginInvoke(buffer, offset, size, callback, state);
         }
 
@@ -347,19 +333,19 @@ namespace Forge.Net.TerraGraf
             }
 
             Interlocked.Increment(ref mAsyncActiveUdpClientSendToCount);
-            UdpClientSendToDelegate d = new UdpClientSendToDelegate(this.Send);
-            if (this.mAsyncActiveUdpClientSendToEvent == null)
+            UdpClientSendToDelegate d = new UdpClientSendToDelegate(Send);
+            if (mAsyncActiveUdpClientSendToEvent == null)
             {
                 lock (LOCK_SENDTO)
                 {
-                    if (this.mAsyncActiveUdpClientSendToEvent == null)
+                    if (mAsyncActiveUdpClientSendToEvent == null)
                     {
-                        this.mAsyncActiveUdpClientSendToEvent = new AutoResetEvent(true);
+                        mAsyncActiveUdpClientSendToEvent = new AutoResetEvent(true);
                     }
                 }
             }
-            this.mAsyncActiveUdpClientSendToEvent.WaitOne();
-            this.mUdpClientSendToDelegate = d;
+            mAsyncActiveUdpClientSendToEvent.WaitOne();
+            mSendToDelegateOld = d;
             return d.BeginInvoke(buffer, offset, size, remoteEp, callback, state);
         }
 
@@ -440,54 +426,429 @@ namespace Forge.Net.TerraGraf
             {
                 ThrowHelper.ThrowArgumentNullException("asyncResult");
             }
-            if (this.mUdpClientSendDelegate == null)
+            if (mSendDelegateOld == null)
             {
                 ThrowHelper.ThrowArgumentException("Wrong async result or EndSend called multiple times.", "asyncResult");
             }
 
             try
             {
-                return this.mUdpClientSendDelegate.EndInvoke(asyncResult);
+                return mSendDelegateOld.EndInvoke(asyncResult);
             }
             finally
             {
-                this.mUdpClientSendDelegate = null;
-                this.mAsyncActiveUdpClientSendEvent.Set();
+                mSendDelegateOld = null;
+                mAsyncActiveUdpClientSendEvent.Set();
                 CloseAsyncActiveUdpClientSendEvent(Interlocked.Decrement(ref mAsyncActiveUdpClientSendCount));
             }
         }
 
-        /// <summary>
-        /// Ends the send.
-        /// </summary>
+#endif
+
+        /// <summary>Begins the receive.</summary>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        public ITaskResult BeginReceive(ReturnCallback callback, object state)
+        {
+            DoDisposeCheck();
+            EndPoint any = new AddressEndPoint(AddressEndPoint.Any, 0);
+            return mClient.BeginReceiveFrom(mBuffer, 0, MAX_UDP_SIZE, ref any, callback, state);
+        }
+
+        /// <summary>Ends the receive.</summary>
         /// <param name="asyncResult">The async result.</param>
         /// <param name="remoteEp">The remote ep.</param>
-        /// <returns>
-        /// Number of sent bytes
-        /// </returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Forge.ThrowHelper.ThrowArgumentException(System.String,System.String)")]
-        public int EndSend(IAsyncResult asyncResult, AddressEndPoint remoteEp)
+        /// <returns>Number of received bytes</returns>
+        public byte[] EndReceive(ITaskResult asyncResult, ref AddressEndPoint remoteEp)
+        {
+            DoDisposeCheck();
+            if (asyncResult == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("asyncResult");
+            }
+
+            EndPoint refEp = null;
+            int count = mClient.EndReceiveFrom(asyncResult, ref refEp);
+            remoteEp = (AddressEndPoint)refEp;
+            if (count < MAX_UDP_SIZE)
+            {
+                byte[] dst = new byte[count];
+                Buffer.BlockCopy(mBuffer, 0, dst, 0, count);
+                return dst;
+            }
+            return mBuffer;
+        }
+
+        /// <summary>Begins the send.</summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        public ITaskResult BeginSend(byte[] buffer, ReturnCallback callback, object state)
+        {
+            if (buffer == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("buffer");
+            }
+            return BeginSend(buffer, 0, buffer.Length, callback, state);
+        }
+
+        /// <summary>Begins the send.</summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        public ITaskResult BeginSend(byte[] buffer, int offset, int size, ReturnCallback callback, object state)
+        {
+            DoDisposeCheck();
+            if (buffer == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("buffer");
+            }
+            if ((offset < 0) || (offset > buffer.Length))
+            {
+                ThrowHelper.ThrowArgumentOutOfRangeException("offset");
+            }
+            if ((size < 0) || (size > (buffer.Length - offset)))
+            {
+                ThrowHelper.ThrowArgumentOutOfRangeException("size");
+            }
+
+            Interlocked.Increment(ref mAsyncActiveUdpClientSendCount);
+            System.Func<byte[], int, int, int> d = new System.Func<byte[], int, int, int>(Send);
+            if (mAsyncActiveUdpClientSendEvent == null)
+            {
+                lock (LOCK_SEND)
+                {
+                    if (mAsyncActiveUdpClientSendEvent == null)
+                    {
+                        mAsyncActiveUdpClientSendEvent = new AutoResetEvent(true);
+                    }
+                }
+            }
+            mAsyncActiveUdpClientSendEvent.WaitOne();
+            mSendDelegate = d;
+            return d.BeginInvoke(buffer, offset, size, callback, state);
+        }
+
+        /// <summary>Begins the send.</summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        public ITaskResult BeginSend(byte[] buffer, int size, ReturnCallback callback, object state)
+        {
+            if (buffer == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("buffer");
+            }
+            return BeginSend(buffer, 0, size, callback, state);
+        }
+
+        /// <summary>Begins the send.</summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="remoteEp">The remote ep.</param>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        public ITaskResult BeginSend(byte[] buffer, AddressEndPoint remoteEp, ReturnCallback callback, object state)
+        {
+            if (buffer == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("buffer");
+            }
+            return BeginSend(buffer, 0, buffer.Length, remoteEp, callback, state);
+        }
+
+        /// <summary>Begins the send.</summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="remoteEp">The remote ep.</param>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        public ITaskResult BeginSend(byte[] buffer, int size, AddressEndPoint remoteEp, ReturnCallback callback, object state)
+        {
+            if (buffer == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("buffer");
+            }
+            return BeginSend(buffer, 0, size, remoteEp, callback, state);
+        }
+
+        /// <summary>Begins the send.</summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="remoteEp">The remote ep.</param>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        public ITaskResult BeginSend(byte[] buffer, int offset, int size, AddressEndPoint remoteEp, ReturnCallback callback, object state)
+        {
+            DoDisposeCheck();
+            if (buffer == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("buffer");
+            }
+            if ((offset < 0) || (offset > buffer.Length))
+            {
+                ThrowHelper.ThrowArgumentOutOfRangeException("offset");
+            }
+            if ((size < 0) || (size > (buffer.Length - offset)))
+            {
+                ThrowHelper.ThrowArgumentOutOfRangeException("size");
+            }
+
+            Interlocked.Increment(ref mAsyncActiveUdpClientSendToCount);
+            System.Func<byte[], int, int, AddressEndPoint, int> d = new System.Func<byte[], int, int, AddressEndPoint, int>(Send);
+            if (mAsyncActiveUdpClientSendToEvent == null)
+            {
+                lock (LOCK_SENDTO)
+                {
+                    if (mAsyncActiveUdpClientSendToEvent == null)
+                    {
+                        mAsyncActiveUdpClientSendToEvent = new AutoResetEvent(true);
+                    }
+                }
+            }
+            mAsyncActiveUdpClientSendToEvent.WaitOne();
+            mSendToDelegate = d;
+            return d.BeginInvoke(buffer, offset, size, remoteEp, callback, state);
+        }
+
+        /// <summary>Begins the send.</summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="hostName">Name of the host.</param>
+        /// <param name="port">The port.</param>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        public ITaskResult BeginSend(byte[] buffer, string hostName, int port, ReturnCallback callback, object state)
+        {
+            if (buffer == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("buffer");
+            }
+            return BeginSend(buffer, 0, buffer.Length, new AddressEndPoint(hostName, port), callback, state);
+        }
+
+        /// <summary>Begins the send.</summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="hostName">Name of the host.</param>
+        /// <param name="port">The port.</param>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        public ITaskResult BeginSend(byte[] buffer, int size, string hostName, int port, ReturnCallback callback, object state)
+        {
+            if (buffer == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("buffer");
+            }
+            return BeginSend(buffer, 0, size, new AddressEndPoint(hostName, port), callback, state);
+        }
+
+        /// <summary>Begins the send.</summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="hostName">Name of the host.</param>
+        /// <param name="port">The port.</param>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        public ITaskResult BeginSend(byte[] buffer, int offset, int size, string hostName, int port, ReturnCallback callback, object state)
+        {
+            if (buffer == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("buffer");
+            }
+            return BeginSend(buffer, offset, size, new AddressEndPoint(hostName, port), callback, state);
+        }
+
+        /// <summary>Ends the receive.</summary>
+        /// <param name="asyncResult">The async result.</param>
+        /// <returns>Number of sent bytes</returns>
+        public int EndSend(ITaskResult asyncResult)
         {
             if (asyncResult == null)
             {
                 ThrowHelper.ThrowArgumentNullException("asyncResult");
             }
-            if (this.mUdpClientSendToDelegate == null)
+            if (mSendDelegate == null)
             {
                 ThrowHelper.ThrowArgumentException("Wrong async result or EndSend called multiple times.", "asyncResult");
             }
 
             try
             {
-                return this.mUdpClientSendToDelegate.EndInvoke(asyncResult);
+                return mSendDelegate.EndInvoke(asyncResult);
             }
             finally
             {
-                this.mUdpClientSendToDelegate = null;
-                this.mAsyncActiveUdpClientSendToEvent.Set();
-                CloseAsyncActiveUdpClientSendToEvent(Interlocked.Decrement(ref mAsyncActiveUdpClientSendToCount));
+                mSendDelegate = null;
+                mAsyncActiveUdpClientSendEvent.Set();
+                CloseAsyncActiveUdpClientSendEvent(Interlocked.Decrement(ref mAsyncActiveUdpClientSendCount));
             }
         }
+
+#if NETCOREAPP3_1_OR_GREATER
+
+        /// <summary>
+        /// Receives the specified remote ep.
+        /// </summary>
+        /// <param name="remoteEp">The remote ep.</param>
+        /// <returns>Number of received bytes</returns>
+        public async Task<(byte[], AddressEndPoint)> ReceiveAsync(AddressEndPoint remoteEp)
+        {
+            return (await Task.Run(() => Receive(ref remoteEp)), remoteEp);
+        }
+
+#endif
+
+        /// <summary>
+        /// Receives the specified remote ep.
+        /// </summary>
+        /// <param name="remoteEp">The remote ep.</param>
+        /// <returns>
+        /// Number of received bytes
+        /// </returns>
+        public byte[] Receive(ref AddressEndPoint remoteEp)
+        {
+            DoDisposeCheck();
+            if (remoteEp == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("remoteEp");
+            }
+            EndPoint refEp = new AddressEndPoint(AddressEndPoint.Any, 0);
+            int count = mClient.ReceiveFrom(mBuffer, ref refEp);
+            remoteEp = (AddressEndPoint)refEp;
+            if (count < MAX_UDP_SIZE)
+            {
+                byte[] dst = new byte[count];
+                Buffer.BlockCopy(mBuffer, 0, dst, 0, count);
+                return dst;
+            }
+            return mBuffer;
+        }
+
+#if NETCOREAPP3_1_OR_GREATER
+
+        /// <summary>
+        /// Sends the specified buffer.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <returns>Number of sent bytes</returns>
+        public async Task<int> SendAsync(byte[] buffer)
+        {
+            return await Task.Run(() => Send(buffer));
+        }
+
+        /// <summary>
+        /// Sends the specified buffer.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="size">The size.</param>
+        /// <returns>Number of sent bytes</returns>
+        public async Task<int> SendAsync(byte[] buffer, int offset, int size)
+        {
+            return await Task.Run(() => Send(buffer, offset, size));
+        }
+
+        /// <summary>
+        /// Sends the specified buffer.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="size">The size.</param>
+        /// <returns>Number of sent bytes</returns>
+        public async Task<int> SendAsync(byte[] buffer, int size)
+        {
+            return await Task.Run(() => Send(buffer, size));
+        }
+
+        /// <summary>
+        /// Sends the specified buffer.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="remoteEp">The remote ep.</param>
+        /// <returns>Number of sent bytes</returns>
+        public async Task<int> SendAsync(byte[] buffer, AddressEndPoint remoteEp)
+        {
+            return await Task.Run(() => Send(buffer, remoteEp));
+        }
+
+        /// <summary>
+        /// Sends the specified buffer.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="remoteEp">The remote ep.</param>
+        /// <returns>Number of sent bytes</returns>
+        public async Task<int> SendAsync(byte[] buffer, int size, AddressEndPoint remoteEp)
+        {
+            return await Task.Run(() => Send(buffer, size, remoteEp));
+        }
+
+        /// <summary>
+        /// Sends the specified buffer.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="remoteEp">The remote ep.</param>
+        /// <returns>Number of sent bytes</returns>
+        public async Task<int> SendAsync(byte[] buffer, int offset, int size, AddressEndPoint remoteEp)
+        {
+            return await Task.Run(() => Send(buffer, offset, size, remoteEp));
+        }
+
+        /// <summary>
+        /// Sends the specified buffer.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="hostName">Name of the host.</param>
+        /// <param name="port">The port.</param>
+        /// <returns>Number of sent bytes</returns>
+        public async Task<int> SendAsync(byte[] buffer, string hostName, int port)
+        {
+            return await Task.Run(() => Send(buffer, hostName, port));
+        }
+
+        /// <summary>
+        /// Sends the specified buffer.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="hostName">Name of the host.</param>
+        /// <param name="port">The port.</param>
+        /// <returns>Number of sent bytes</returns>
+        public async Task<int> SendAsync(byte[] buffer, int size, string hostName, int port)
+        {
+            return await Task.Run(() => Send(buffer, size, hostName, port));
+        }
+
+        /// <summary>
+        /// Sends the specified buffer.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="hostName">Name of the host.</param>
+        /// <param name="port">The port.</param>
+        /// <returns>Number of sent bytes</returns>
+        public async Task<int> SendAsync(byte[] buffer, int offset, int size, string hostName, int port)
+        {
+            return await Task.Run(() => Send(buffer, offset, size, hostName, port));
+        }
+
+#endif
 
         /// <summary>
         /// Sends the specified buffer.
@@ -563,6 +924,16 @@ namespace Forge.Net.TerraGraf
             {
                 ThrowHelper.ThrowArgumentNullException("buffer");
             }
+            if (remoteEp == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("remoteEp");
+            }
+
+            if (!mClient.IsBound)
+            {
+                Connect(new AddressEndPoint(AddressEndPoint.Any, 0));
+            }
+
             return mClient.SendTo(buffer, remoteEp);
         }
 
@@ -604,7 +975,7 @@ namespace Forge.Net.TerraGraf
 
             if (!mClient.IsBound)
             {
-                this.Connect(new AddressEndPoint(AddressEndPoint.Any, 0));
+                Connect(new AddressEndPoint(AddressEndPoint.Any, 0));
             }
 
             return mClient.SendTo(buffer, offset, size, remoteEp);
@@ -671,7 +1042,7 @@ namespace Forge.Net.TerraGraf
         public void Connect(AddressEndPoint localEp)
         {
             DoDisposeCheck();
-            this.mClient.Bind(localEp);
+            mClient.Bind(localEp);
         }
 
         /// <summary>
@@ -702,32 +1073,32 @@ namespace Forge.Net.TerraGraf
 
         private void CreateClientSocket()
         {
-            this.mClient = new TerraGraf.Socket(SocketType.Dgram, ProtocolType.Udp);
+            mClient = new TerraGraf.Socket(SocketType.Dgram, ProtocolType.Udp);
         }
 
         private void CloseAsyncActiveUdpClientSendEvent(int asyncActiveCount)
         {
-            if ((this.mAsyncActiveUdpClientSendEvent != null) && (asyncActiveCount == 0))
+            if ((mAsyncActiveUdpClientSendEvent != null) && (asyncActiveCount == 0))
             {
-                this.mAsyncActiveUdpClientSendEvent.Dispose();
-                this.mAsyncActiveUdpClientSendEvent = null;
+                mAsyncActiveUdpClientSendEvent.Dispose();
+                mAsyncActiveUdpClientSendEvent = null;
             }
         }
 
         private void CloseAsyncActiveUdpClientSendToEvent(int asyncActiveCount)
         {
-            if ((this.mAsyncActiveUdpClientSendToEvent != null) && (asyncActiveCount == 0))
+            if ((mAsyncActiveUdpClientSendToEvent != null) && (asyncActiveCount == 0))
             {
-                this.mAsyncActiveUdpClientSendToEvent.Dispose();
-                this.mAsyncActiveUdpClientSendToEvent = null;
+                mAsyncActiveUdpClientSendToEvent.Dispose();
+                mAsyncActiveUdpClientSendToEvent = null;
             }
         }
 
         private void DoDisposeCheck()
         {
-            if (this.mDisposed)
+            if (mDisposed)
             {
-                throw new ObjectDisposedException(this.GetType().FullName);
+                throw new ObjectDisposedException(GetType().FullName);
             }
         }
 

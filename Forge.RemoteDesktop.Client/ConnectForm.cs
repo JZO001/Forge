@@ -39,7 +39,7 @@ namespace Forge.RemoteDesktop.Client
         /// <value>
         /// The selected provider.
         /// </value>
-        public ServiceProvider SelectedProvider { get { return connectControl.SelectedProvider; } }
+        public ServiceProvider SelectedProvider { get { return SelectedProvider; } }
 
         /// <summary>
         /// Gets the locator.
@@ -49,7 +49,7 @@ namespace Forge.RemoteDesktop.Client
         /// </value>
         public IRemoteServiceLocator<IRemoteDesktop> Locator
         {
-            get { return connectControl.Locator; }
+            get { return Locator; }
         } 
 
         #endregion
@@ -63,7 +63,7 @@ namespace Forge.RemoteDesktop.Client
 
         private void ConnectEventHandler(object sender, EventArgs e)
         {
-            this.DialogResult = System.Windows.Forms.DialogResult.OK;
+            DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
         #endregion

@@ -10,12 +10,13 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
-using Forge.IO;
-using Forge.Logging;
+using Forge.Formatters;
+using Forge.Logging.Abstraction;
 using Forge.Persistence.Formatters;
 using Forge.RemoteDesktop.Configuration;
 using Forge.RemoteDesktop.Contracts;
 using Forge.RemoteDesktop.Service.Configuration;
+using Forge.Shared;
 
 namespace Forge.RemoteDesktop.Service
 {
@@ -267,8 +268,8 @@ namespace Forge.RemoteDesktop.Service
             /// </summary>
             public SecurityStore()
             {
-                this.GlobalPassword = string.Empty;
-                this.UsersWithPassword = new Dictionary<string, string>();
+                GlobalPassword = string.Empty;
+                UsersWithPassword = new Dictionary<string, string>();
             }
 
             #endregion

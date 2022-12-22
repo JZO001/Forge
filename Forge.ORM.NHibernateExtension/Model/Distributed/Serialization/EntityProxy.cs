@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Shared;
 using System;
 using System.Diagnostics;
 using System.Runtime.Serialization;
@@ -23,10 +24,10 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed.Serialization
         #region Field(s)
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private Type mEntityType = null;
+        private readonly Type mEntityType = null;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private EntityId mEntityId = null;
+        private readonly EntityId mEntityId = null;
 
         #endregion
 
@@ -47,8 +48,8 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed.Serialization
             {
                 ThrowHelper.ThrowArgumentNullException("entityId");
             }
-            this.mEntityId = entityId;
-            this.mEntityType = entityType;
+            mEntityId = entityId;
+            mEntityType = entityType;
         }
 
         /// <summary>
@@ -65,8 +66,8 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed.Serialization
             {
                 ThrowHelper.ThrowArgumentException("Missing id from entity.", "entity");
             }
-            this.mEntityId = (EntityId)entity.Id.Clone();
-            this.mEntityType = entity.GetType();
+            mEntityId = (EntityId)entity.Id.Clone();
+            mEntityType = entity.GetType();
         }
 
         #endregion
@@ -153,7 +154,7 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed.Serialization
             if (!obj.GetType().Equals(GetType())) return false;
 
             EntityProxy other = (EntityProxy)obj;
-            return other.mEntityType.Equals(this.mEntityType) && other.mEntityId.Equals(this.mEntityId);
+            return other.mEntityType.Equals(mEntityType) && other.mEntityId.Equals(mEntityId);
         }
 
         /// <summary>
@@ -175,8 +176,8 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed.Serialization
         public override int GetHashCode()
         {
             int hash = 7;
-            hash = 47 * hash + (this.mEntityType != null ? this.mEntityType.GetHashCode() : 0);
-            hash = 47 * hash + (this.mEntityId != null ? this.mEntityId.GetHashCode() : 0);
+            hash = 47 * hash + (mEntityType != null ? mEntityType.GetHashCode() : 0);
+            hash = 47 * hash + (mEntityId != null ? mEntityId.GetHashCode() : 0);
             return hash;
         }
 
@@ -188,7 +189,7 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed.Serialization
         /// </returns>
         public override string ToString()
         {
-            return String.Format("{0}@{1}, {2} -> {3}", this.GetType().Name, GetHashCode().ToString(), mEntityType.FullName, mEntityId.ToString());
+            return string.Format("{0}@{1}, {2} -> {3}", GetType().Name, GetHashCode().ToString(), mEntityType.FullName, mEntityId.ToString());
         }
 
         #endregion

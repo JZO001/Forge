@@ -8,12 +8,13 @@ using System;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using Forge.Logging;
+using Forge.Logging.Abstraction;
 using Forge.Net.Synapse;
 using Forge.Net.TerraGraf.Contexts;
 using Forge.Net.TerraGraf.Formatters;
 using Forge.Net.TerraGraf.Messaging;
 using Forge.Net.TerraGraf.NetworkPeers;
+using Forge.Shared;
 
 namespace Forge.Net.TerraGraf.Connection
 {
@@ -26,7 +27,7 @@ namespace Forge.Net.TerraGraf.Connection
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(BroadcastServer));
+        private static readonly ILog LOGGER = LogManager.GetLogger<BroadcastServer>();
 
         private static readonly Forge.Threading.ThreadPool mThreadPool = new Forge.Threading.ThreadPool("TerraGraf_Network_BroadcastServer");
 
@@ -55,8 +56,8 @@ namespace Forge.Net.TerraGraf.Connection
             {
                 ThrowHelper.ThrowArgumentNullException("client");
             }
-            this.mBroadcastEp = endPoint;
-            this.mUdpClient = client;
+            mBroadcastEp = endPoint;
+            mUdpClient = client;
         }
 
         #endregion
@@ -108,11 +109,11 @@ namespace Forge.Net.TerraGraf.Connection
                     if (NetworkManager.Instance.NetworkContextRuleManager.CheckSeparation(NetworkManager.Instance.InternalLocalhost.NetworkContext.Name,
                         message.NetworkContextName))
                     {
-                        // láthatom ezt a context-et, megpróbálok rácsatlakozni
+                        // I can access this context, trying to connect...
                         INetworkPeerRemote peer = NetworkPeerContext.GetNetworkPeerById(message.SenderId);
                         if (peer == null || (peer != null && peer.Distance != 1))
                         {
-                            // nincs közvetlen kapcsolatom ilyen peer-el
+                            // there is no direct connection with this peer
                             mThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(ConnectionTask), message);
                         }
                         else
@@ -161,7 +162,7 @@ namespace Forge.Net.TerraGraf.Connection
                             }
                             if (remotePeer != null && remotePeer.Id.Equals(message.SenderId))
                             {
-                                // létrejött a kapcsolat, tovább nem próbálkozunk
+                                // connection established, no more trying to connect to
                                 if (LOGGER.IsInfoEnabled) LOGGER.Info(string.Format("BROADCAST_SERVER, successfully connected to '{0}' on TCP server.", message.SenderId));
                                 break;
                             }
@@ -201,7 +202,7 @@ namespace Forge.Net.TerraGraf.Connection
                                 }
                                 if (remotePeer != null && remotePeer.Id.Equals(message.SenderId))
                                 {
-                                    // létrejött a kapcsolat, tovább nem próbálkozunk
+                                    // connection established, no more trying to connect to
                                     if (LOGGER.IsInfoEnabled) LOGGER.Info(string.Format("BROADCAST_SERVER, successfully connected to '{0}' on NAT address.", message.SenderId));
                                     break;
                                 }

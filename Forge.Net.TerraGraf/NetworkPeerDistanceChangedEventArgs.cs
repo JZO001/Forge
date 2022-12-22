@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Forge.Net.TerraGraf.NetworkPeers;
+using Forge.Shared;
 
 namespace Forge.Net.TerraGraf
 {
@@ -50,8 +51,8 @@ namespace Forge.Net.TerraGraf
             {
                 ThrowHelper.ThrowArgumentNullException("networkPeersDistanceAfter");
             }
-            this.mNetworkPeersDistanceBefore = new Dictionary<INetworkPeerRemote, int>(networkPeersDistanceBefore);
-            this.mNetworkPeersDistanceAfter = new Dictionary<INetworkPeerRemote, int>(networkPeersDistanceAfter);
+            mNetworkPeersDistanceBefore = new Dictionary<INetworkPeerRemote, int>(networkPeersDistanceBefore);
+            mNetworkPeersDistanceAfter = new Dictionary<INetworkPeerRemote, int>(networkPeersDistanceAfter);
         }
 
         #endregion

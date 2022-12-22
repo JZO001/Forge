@@ -10,8 +10,8 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
-using Forge.EventRaiser;
-using Forge.Logging;
+using Forge.Invoker;
+using Forge.Shared;
 using NHibernate.Mapping.Attributes;
 
 namespace Forge.ORM.NHibernateExtension.Model
@@ -28,7 +28,7 @@ namespace Forge.ORM.NHibernateExtension.Model
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(EntityBaseWithoutId));
+        //private static readonly ILog LOGGER = LogManager.GetLogger<EntityBaseWithoutId>();
 
         [EntityFieldDescription("Represents the creation time (UTC) of the entity")]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -127,7 +127,7 @@ namespace Forge.ORM.NHibernateExtension.Model
             set
             {
                 OnPropertyChanging("Deleted");
-                this.deleted = value;
+                deleted = value;
                 OnPropertyChanged("Deleted");
             }
         }
@@ -159,7 +159,7 @@ namespace Forge.ORM.NHibernateExtension.Model
                     ThrowHelper.ThrowArgumentNullException("value");
                 }
                 OnPropertyChanging("EntityModificationTime");
-                this.entityModificationTime = value;
+                entityModificationTime = value;
                 OnPropertyChanged("EntityModificationTime");
             }
         }
@@ -173,8 +173,8 @@ namespace Forge.ORM.NHibernateExtension.Model
         [DebuggerHidden]
         public virtual bool IsSaved
         {
-            get { return this.isSaved; }
-            set { this.isSaved = value; }
+            get { return isSaved; }
+            set { isSaved = value; }
         }
 
         /// <summary>
@@ -202,13 +202,13 @@ namespace Forge.ORM.NHibernateExtension.Model
         /// </returns>
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder(this.GetType().Name);
+            StringBuilder sb = new StringBuilder(GetType().Name);
             sb.Append(", Created: ");
-            sb.Append(this.entityCreationTime.ToString());
+            sb.Append(entityCreationTime.ToString());
             sb.Append(", Modified: ");
-            sb.Append(this.entityModificationTime.ToString());
+            sb.Append(entityModificationTime.ToString());
             sb.Append(", Deleted: ");
-            sb.Append(this.deleted.ToString());
+            sb.Append(deleted.ToString());
             return sb.ToString();
         }
 
@@ -237,15 +237,15 @@ namespace Forge.ORM.NHibernateExtension.Model
             if (!obj.GetType().Equals(GetType())) return false;
 
             EntityBaseWithoutId other = (EntityBaseWithoutId)obj;
-            if (this.entityCreationTime != other.entityCreationTime && (this.entityCreationTime == null || !this.entityCreationTime.Equals(other.entityCreationTime)))
+            if (entityCreationTime != other.entityCreationTime && (entityCreationTime == null || !entityCreationTime.Equals(other.entityCreationTime)))
             {
                 return false;
             }
-            if (this.entityModificationTime != other.entityModificationTime && (this.entityModificationTime == null || !this.entityModificationTime.Equals(other.entityModificationTime)))
+            if (entityModificationTime != other.entityModificationTime && (entityModificationTime == null || !entityModificationTime.Equals(other.entityModificationTime)))
             {
                 return false;
             }
-            if (this.deleted != other.deleted)
+            if (deleted != other.deleted)
             {
                 return false;
             }
@@ -269,7 +269,7 @@ namespace Forge.ORM.NHibernateExtension.Model
         /// <returns></returns>
         public virtual int CompareTo(EntityBaseWithoutId o)
         {
-            return this.EntityCreationTime.CompareTo(o.EntityCreationTime);
+            return EntityCreationTime.CompareTo(o.EntityCreationTime);
         }
 
         /// <summary>
@@ -302,17 +302,16 @@ namespace Forge.ORM.NHibernateExtension.Model
         /// </returns>
         public virtual object Clone()
         {
-            EntityBaseWithoutId cloned = (EntityBaseWithoutId)this.GetType().GetConstructor(Type.EmptyTypes).Invoke(null);
+            EntityBaseWithoutId cloned = (EntityBaseWithoutId)GetType().GetConstructor(Type.EmptyTypes).Invoke(null);
 
-            // nem klónozom az id-t és a version-t. Ez sérti a klónozás szabályát, viszont csak így tudom biztonságosan védeni
-            // a rendszert, továbbá a klónt így el tudom menteni újként is. Ha tökéletes klónt szeretnénk készíteni, akkor a
-            // fejlesztő be tudja állítani az id-t és a version-t
+            // I do not clone id and version. This is harm the rules of cloning, but I need to protected the system.
+            // if you want to create a perfect clone, set the id and version values as well
             //        result.id = (EntityId) this.id.clone();
             //        result.version = (EntityVersion) this.version.clone();
-            cloned.entityCreationTime = this.entityCreationTime;
-            cloned.entityModificationTime = this.entityModificationTime;
-            cloned.deleted = this.deleted;
-            cloned.isSaved = this.isSaved;
+            cloned.entityCreationTime = entityCreationTime;
+            cloned.entityModificationTime = entityModificationTime;
+            cloned.deleted = deleted;
+            cloned.isSaved = isSaved;
 
             InternalClone(GetType(), cloned);
 
@@ -329,7 +328,7 @@ namespace Forge.ORM.NHibernateExtension.Model
         /// <param name="propertyName">Name of the property.</param>
         protected virtual void OnPropertyChanging(string propertyName)
         {
-            Raiser.CallDelegatorBySync(propertyChangingDelegate, new object[] { this, new PropertyChangingEventArgs(propertyName) }, false, false);
+            Executor.Invoke(propertyChangingDelegate, this, new PropertyChangingEventArgs(propertyName));
         }
 
         /// <summary>
@@ -338,8 +337,8 @@ namespace Forge.ORM.NHibernateExtension.Model
         /// <param name="propertyName">Name of the property.</param>
         protected virtual void OnPropertyChanged(string propertyName)
         {
-            this.isChanged = true;
-            Raiser.CallDelegatorBySync(propertyChangedDelegate, new object[] { this, new PropertyChangedEventArgs(propertyName) }, false, false);
+            isChanged = true;
+            Executor.Invoke(propertyChangedDelegate, this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>

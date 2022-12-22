@@ -47,9 +47,9 @@ namespace Forge.Net.TerraGraf.Messaging
             MessagePriorityEnum priority, MessageTypeEnum messageType)
             : base(senderId, messageId, messageCode)
         {
-            this.mPriority = priority;
-            this.mMessageType = messageType;
-            this.mTargetId = (targetId == null ? string.Empty : targetId);
+            mPriority = priority;
+            mMessageType = messageType;
+            mTargetId = (targetId == null ? string.Empty : targetId);
         }
 
         #endregion

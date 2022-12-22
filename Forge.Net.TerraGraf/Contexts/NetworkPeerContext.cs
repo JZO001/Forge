@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using Forge.Net.Synapse;
 using Forge.Net.TerraGraf.NetworkInfo;
 using Forge.Net.TerraGraf.NetworkPeers;
+using Forge.Shared;
 
 namespace Forge.Net.TerraGraf.Contexts
 {
@@ -285,11 +286,11 @@ namespace Forge.Net.TerraGraf.Contexts
                 //targetPeer.PeerRelationPairs.PeerRelationPairs.Clear();
                 if (sourcePeer.PeerRelations.PeerRelations != null)
                 {
-                    foreach (PeerRelation r in sourcePeer.PeerRelations.PeerRelations)
+                    foreach (PeerRelation realation in sourcePeer.PeerRelations.PeerRelations)
                     {
                         targetPeer.PeerRelationPairs.AddOrUpdatePeerRelationForce(
                             targetPeer,
-                            NetworkManager.Instance.InternalLocalhost.Id.Equals(r.PeerB) ? NetworkManager.Instance.InternalLocalhost : (NetworkPeerRemote)NetworkPeerContext.GetNetworkPeerById(r.PeerB), r.Connected, r.StateId);
+                            NetworkManager.Instance.InternalLocalhost.Id.Equals(realation.PeerB) ? NetworkManager.Instance.InternalLocalhost : (NetworkPeerRemote)NetworkPeerContext.GetNetworkPeerById(realation.PeerB), realation.Connected, realation.StateId);
                     }
                 }
             }

@@ -6,6 +6,7 @@
 
 using System;
 using Forge.Net.Synapse;
+using Forge.Shared;
 
 namespace Forge.Net.TerraGraf.Messaging
 {

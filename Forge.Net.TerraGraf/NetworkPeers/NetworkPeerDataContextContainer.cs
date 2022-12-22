@@ -6,6 +6,7 @@
 
 using System;
 using System.Diagnostics;
+using Forge.Legacy;
 using Forge.Net.TerraGraf.Contexts;
 using Forge.Net.TerraGraf.NetworkInfo;
 

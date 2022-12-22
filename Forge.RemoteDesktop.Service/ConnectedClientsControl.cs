@@ -111,7 +111,7 @@ namespace Forge.RemoteDesktop.Service
         /// <param name="e">The <see cref="ConnectionStateChangedEventArgs"/> instance containing the event data.</param>
         protected virtual void RemoteDesktopServiceManager_EventConnectionStateChange(object sender, ConnectionStateChangedEventArgs e)
         {
-            if (this.InvokeRequired)
+            if (InvokeRequired)
             {
                 try
                 {
@@ -169,7 +169,7 @@ namespace Forge.RemoteDesktop.Service
         /// <param name="e">The <see cref="AcceptClientEventArgs"/> instance containing the event data.</param>
         protected virtual void RemoteDesktopServiceManager_EventAcceptClient(object sender, AcceptClientEventArgs e)
         {
-            if (this.InvokeRequired)
+            if (InvokeRequired)
             {
                 try
                 {

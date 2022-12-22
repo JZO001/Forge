@@ -10,10 +10,17 @@ using System.Net;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using Forge.EventRaiser;
+using System.Threading.Tasks;
+using Forge.Invoker;
+using Forge.Legacy;
+using Forge.Shared;
+using Forge.Threading;
+using Forge.Threading.Tasking;
 
 namespace Forge.Net.Synapse.Icmp
 {
+
+#if NET40
 
     /// <summary>
     /// Delegate for async execution
@@ -24,6 +31,8 @@ namespace Forge.Net.Synapse.Icmp
     /// <param name="timeout">The timeout.</param>
     /// <param name="waitTimeBetweenAttempts">The wait time between attempts.</param>
     internal delegate void ExecuteDelegate(string host, int dataLength, int pingCount, int timeout, int waitTimeBetweenAttempts);
+
+#endif
 
     /// <summary>
     /// ICMP Ping implementation
@@ -86,7 +95,10 @@ namespace Forge.Net.Synapse.Icmp
 
         private int mPingLoop = 0;
 
+#if NET40
         private ExecuteDelegate mExecutionDelegate = null;
+#endif
+        private System.Action<string, int, int, int, int> mExecutionActionDelegate = null;
         private int mAsyncActiveExecutionCount = 0;
         private AutoResetEvent mAsyncActiveExecutionEvent = null;
 
@@ -222,6 +234,7 @@ namespace Forge.Net.Synapse.Icmp
         /// <value>
         ///   <c>true</c> if [sync event raiser]; otherwise, <c>false</c>.
         /// </value>
+        [Obsolete]
         public bool SyncEventRaiser { get; set; }
 
         /// <summary>
@@ -230,6 +243,7 @@ namespace Forge.Net.Synapse.Icmp
         /// <value>
         ///   <c>true</c> if [UI invoke on events]; otherwise, <c>false</c>.
         /// </value>
+        [Obsolete]
         public bool UIInvocationOnEvents { get; set; }
 
         /// <summary>
@@ -238,11 +252,14 @@ namespace Forge.Net.Synapse.Icmp
         /// <value>
         /// 	<c>true</c> if [parallel invocation on events]; otherwise, <c>false</c>.
         /// </value>
+        [Obsolete]
         public bool ParallelInvocationOnEvents { get; set; }
 
         #endregion
 
         #region Public method(s)
+
+#if NET40
 
         /// <summary>
         /// Begins the execute.
@@ -270,21 +287,143 @@ namespace Forge.Net.Synapse.Icmp
         public IAsyncResult BeginExecute(string host, int dataLength, int pingCount, int timeout, int waitTimeBetweenAttempts, AsyncCallback callback, object state)
         {
             Interlocked.Increment(ref mAsyncActiveExecutionCount);
-            ExecuteDelegate d = new ExecuteDelegate(this.Execute);
-            if (this.mAsyncActiveExecutionEvent == null)
+            ExecuteDelegate d = new ExecuteDelegate(Execute);
+            if (mAsyncActiveExecutionEvent == null)
             {
                 lock (LOCK_EXECUTE)
                 {
-                    if (this.mAsyncActiveExecutionEvent == null)
+                    if (mAsyncActiveExecutionEvent == null)
                     {
-                        this.mAsyncActiveExecutionEvent = new AutoResetEvent(true);
+                        mAsyncActiveExecutionEvent = new AutoResetEvent(true);
                     }
                 }
             }
-            this.mAsyncActiveExecutionEvent.WaitOne();
-            this.mExecutionDelegate = d;
+            mAsyncActiveExecutionEvent.WaitOne();
+            mExecutionDelegate = d;
             return d.BeginInvoke(host, dataLength, pingCount, timeout, waitTimeBetweenAttempts, callback, state);
         }
+
+        /// <summary>
+        /// Ends the execute.
+        /// </summary>
+        /// <param name="asyncResult">The async result.</param>
+        public void EndExecute(IAsyncResult asyncResult)
+        {
+            if (asyncResult == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("asyncResult");
+            }
+            if (mExecutionDelegate == null)
+            {
+                ThrowHelper.ThrowArgumentException("Wrong async result or EndAccept called multiple times.", "asyncResult");
+            }
+            try
+            {
+                mExecutionDelegate.EndInvoke(asyncResult);
+            }
+            finally
+            {
+                mExecutionDelegate = null;
+                mAsyncActiveExecutionEvent.Set();
+                CloseAsyncActiveExecutionEvent(Interlocked.Decrement(ref mAsyncActiveExecutionCount));
+            }
+        }
+
+#endif
+
+        /// <summary>
+        /// Begins the execute.
+        /// </summary>
+        /// <param name="host">The host.</param>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        public ITaskResult BeginExecute(string host, ReturnCallback callback, object state)
+        {
+            return BeginExecute(host, DEFAULT_PACKET_SIZE, DEFAULT_PING_COUNTER, DEFAULT_PING_TIMEOUT, DEFAULT_WAITTIME_ATTEMPTS, callback, state);
+        }
+
+        /// <summary>
+        /// Begins the execute.
+        /// </summary>
+        /// <param name="host">The host.</param>
+        /// <param name="dataLength">Length of the data.</param>
+        /// <param name="pingCount">The ping count.</param>
+        /// <param name="timeout">The timeout.</param>
+        /// <param name="waitTimeBetweenAttempts">The wait time between attempts.</param>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        public ITaskResult BeginExecute(string host, int dataLength, int pingCount, int timeout, int waitTimeBetweenAttempts, ReturnCallback callback, object state)
+        {
+            Interlocked.Increment(ref mAsyncActiveExecutionCount);
+            System.Action<string, int, int, int, int> d = new System.Action<string, int, int, int, int>(Execute);
+            if (mAsyncActiveExecutionEvent == null)
+            {
+                lock (LOCK_EXECUTE)
+                {
+                    if (mAsyncActiveExecutionEvent == null)
+                    {
+                        mAsyncActiveExecutionEvent = new AutoResetEvent(true);
+                    }
+                }
+            }
+            mAsyncActiveExecutionEvent.WaitOne();
+            mExecutionActionDelegate = d;
+            return d.BeginInvoke(host, dataLength, pingCount, timeout, waitTimeBetweenAttempts, callback, state);
+        }
+
+        /// <summary>
+        /// Ends the execute.
+        /// </summary>
+        /// <param name="asyncResult">The async result.</param>
+        public void EndExecute(ITaskResult asyncResult)
+        {
+            if (asyncResult == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("asyncResult");
+            }
+            if (mExecutionActionDelegate == null)
+            {
+                ThrowHelper.ThrowArgumentException("Wrong async result or EndAccept called multiple times.", "asyncResult");
+            }
+            try
+            {
+                mExecutionActionDelegate.EndInvoke(asyncResult);
+            }
+            finally
+            {
+                mExecutionActionDelegate = null;
+                mAsyncActiveExecutionEvent.Set();
+                CloseAsyncActiveExecutionEvent(Interlocked.Decrement(ref mAsyncActiveExecutionCount));
+            }
+        }
+
+#if NETCOREAPP3_1_OR_GREATER
+
+        /// <summary>
+        /// Pings the specified host.
+        /// </summary>
+        /// <param name="host">The host.</param>
+        public async Task ExecuteAsync(string host)
+        {
+            await Task.Run(() => Execute(host));
+        }
+
+        /// <summary>
+        /// Pings the specified host.
+        /// </summary>
+        /// <param name="host">The host.</param>
+        /// <param name="dataLength">Length of the data.</param>
+        /// <param name="pingCount">The ping count.</param>
+        /// <param name="timeout">The timeout.</param>
+        /// <param name="waitTimeBetweenAttempts">The wait time between attempts.</param>
+        public async Task ExecuteAsync(string host, int dataLength, int pingCount, int timeout, int waitTimeBetweenAttempts)
+        {
+            await Task.Run(() => Execute(host, dataLength, pingCount, timeout, waitTimeBetweenAttempts));
+        }
+
+#endif
 
         /// <summary>
         /// Pings the specified host.
@@ -323,7 +462,7 @@ namespace Forge.Net.Synapse.Icmp
                 ThrowHelper.ThrowArgumentOutOfRangeException("timeout");
             }
 
-            this.IsFinished = false;
+            IsFinished = false;
             IPHostEntry hostByName = null;
             int bytesReceived = 0;
             int tickCount = 0;
@@ -343,7 +482,7 @@ namespace Forge.Net.Synapse.Icmp
             }
 
             IPEndPoint remoteEP = new IPEndPoint(hostByName.AddressList[0], 0);
-            this.mRemoteIpAddress = remoteEP.Address;
+            mRemoteIpAddress = remoteEP.Address;
             EndPoint localPoint = new IPEndPoint(Dns.GetHostEntry(Dns.GetHostName()).AddressList[0], 0);
 
             IcmpPacket packet = new IcmpPacket();
@@ -361,7 +500,7 @@ namespace Forge.Net.Synapse.Icmp
 
             int packetSize = dataLength + 8;
             byte[] buffer = new byte[packetSize];
-            int res = this.CreatePacket(packet, buffer, packetSize, dataLength);
+            int res = CreatePacket(packet, buffer, packetSize, dataLength);
             if (res == SOCKET_ERROR)
             {
                 IsFinished = true;
@@ -381,10 +520,10 @@ namespace Forge.Net.Synapse.Icmp
                     }
                 }
 
-                packet.CheckSum = this.CheckSum(checksumBuffer);
+                packet.CheckSum = CheckSum(checksumBuffer);
 
                 byte[] dataBuffer = new byte[packetSize + 1];
-                if (this.CreatePacket(packet, dataBuffer, packetSize, dataLength) == SOCKET_ERROR)
+                if (CreatePacket(packet, dataBuffer, packetSize, dataLength) == SOCKET_ERROR)
                 {
                     IsFinished = true;
                     OnPingResult(PingResultEnum.BadPacketError);
@@ -393,10 +532,10 @@ namespace Forge.Net.Synapse.Icmp
                 else
                 {
                     long totalTime = 0L;
-                    this.mPacketSent = 0;
-                    this.mPacketReceived = 0;
-                    this.mMinimumPingTime = int.MaxValue;
-                    this.mMaximumPingTime = int.MinValue;
+                    mPacketSent = 0;
+                    mPacketReceived = 0;
+                    mMinimumPingTime = int.MaxValue;
+                    mMaximumPingTime = int.MinValue;
 
                     do
                     {
@@ -408,7 +547,7 @@ namespace Forge.Net.Synapse.Icmp
 
                             byte[] receiveBuffer = new byte[MAX_PACKET_SIZE];
                             tickCount = Environment.TickCount;
-                            this.mPacketSent++;
+                            mPacketSent++;
 
                             if (pingSocket.SendTo(dataBuffer, packetSize, SocketFlags.None, remoteEP) == SOCKET_ERROR)
                             {
@@ -455,15 +594,15 @@ namespace Forge.Net.Synapse.Icmp
                                 }
                                 if (receivedFlag)
                                 {
-                                    this.mPacketReceived++;
+                                    mPacketReceived++;
                                     totalTime += pingStop;
-                                    if (pingStop > this.mMaximumPingTime)
+                                    if (pingStop > mMaximumPingTime)
                                     {
-                                        this.mMaximumPingTime = pingStop;
+                                        mMaximumPingTime = pingStop;
                                     }
-                                    if (pingStop < this.mMinimumPingTime)
+                                    if (pingStop < mMinimumPingTime)
                                     {
-                                        this.mMinimumPingTime = pingStop;
+                                        mMinimumPingTime = pingStop;
                                     }
                                 }
                             }
@@ -483,18 +622,18 @@ namespace Forge.Net.Synapse.Icmp
                     }
                     while (mPingLoop < pingCount);
 
-                    this.mPacketLost = this.mPacketSent - this.mPacketReceived;
-                    if (this.mPacketReceived == 0)
+                    mPacketLost = mPacketSent - mPacketReceived;
+                    if (mPacketReceived == 0)
                     {
-                        this.mPacketLostPercent = 0.0;
-                        this.mMinimumPingTime = 0;
-                        this.mMaximumPingTime = 0;
-                        this.mAveragePingTime = 0;
+                        mPacketLostPercent = 0.0;
+                        mMinimumPingTime = 0;
+                        mMaximumPingTime = 0;
+                        mAveragePingTime = 0;
                     }
                     else
                     {
-                        this.mPacketLostPercent = (((double)(this.mPacketSent - this.mPacketReceived)) / ((double)this.mPacketSent)) * 100.0;
-                        this.mAveragePingTime = Convert.ToInt32((double)(((double)totalTime) / ((double)this.mPacketSent)));
+                        mPacketLostPercent = (((double)(mPacketSent - mPacketReceived)) / ((double)mPacketSent)) * 100.0;
+                        mAveragePingTime = Convert.ToInt32((double)(((double)totalTime) / ((double)mPacketSent)));
                     }
 
                     buffer = null;
@@ -506,32 +645,6 @@ namespace Forge.Net.Synapse.Icmp
                     IsFinished = true;
                     OnPingResult(PingResultEnum.Finished);
                 }
-            }
-        }
-
-        /// <summary>
-        /// Ends the execute.
-        /// </summary>
-        /// <param name="asyncResult">The async result.</param>
-        public void EndExecute(IAsyncResult asyncResult)
-        {
-            if (asyncResult == null)
-            {
-                ThrowHelper.ThrowArgumentNullException("asyncResult");
-            }
-            if (this.mExecutionDelegate == null)
-            {
-                ThrowHelper.ThrowArgumentException("Wrong async result or EndAccept called multiple times.", "asyncResult");
-            }
-            try
-            {
-                this.mExecutionDelegate.EndInvoke(asyncResult);
-            }
-            finally
-            {
-                this.mExecutionDelegate = null;
-                this.mAsyncActiveExecutionEvent.Set();
-                CloseAsyncActiveExecutionEvent(Interlocked.Decrement(ref mAsyncActiveExecutionCount));
             }
         }
 
@@ -611,34 +724,20 @@ namespace Forge.Net.Synapse.Icmp
 
         private void OnPingResult(PingResultEnum result)
         {
-            if (SyncEventRaiser)
-            {
-                Raiser.CallDelegatorBySync(EventPingResult, new object[] { this, new PingResultEventArgs(result) }, UIInvocationOnEvents, ParallelInvocationOnEvents);
-            }
-            else
-            {
-                Raiser.CallDelegatorByAsync(EventPingResult, new object[] { this, new PingResultEventArgs(result) }, UIInvocationOnEvents, ParallelInvocationOnEvents);
-            }
+            Executor.Invoke(EventPingResult, this, new PingResultEventArgs(result));
         }
 
         private void OnPingResult(int receivedBytes, int responseTime)
         {
-            if (SyncEventRaiser)
-            {
-                Raiser.CallDelegatorBySync(EventPingResult, new object[] { this, new PingResultEventArgs(mRemoteIpAddress, receivedBytes, responseTime) }, UIInvocationOnEvents, ParallelInvocationOnEvents);
-            }
-            else
-            {
-                Raiser.CallDelegatorByAsync(EventPingResult, new object[] { this, new PingResultEventArgs(mRemoteIpAddress, receivedBytes, responseTime) }, UIInvocationOnEvents, ParallelInvocationOnEvents);
-            }
+            Executor.Invoke(EventPingResult, this, new PingResultEventArgs(mRemoteIpAddress, receivedBytes, responseTime));
         }
 
         private void CloseAsyncActiveExecutionEvent(int asyncActiveCount)
         {
-            if ((this.mAsyncActiveExecutionEvent != null) && (asyncActiveCount == 0))
+            if ((mAsyncActiveExecutionEvent != null) && (asyncActiveCount == 0))
             {
-                this.mAsyncActiveExecutionEvent.Dispose();
-                this.mAsyncActiveExecutionEvent = null;
+                mAsyncActiveExecutionEvent.Dispose();
+                mAsyncActiveExecutionEvent = null;
             }
         }
 

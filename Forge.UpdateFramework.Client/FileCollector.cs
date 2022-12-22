@@ -10,10 +10,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Security;
+using Forge.Configuration;
 using Forge.Configuration.Shared;
-using Forge.IO;
-using Forge.Logging;
+using Forge.Legacy;
+using Forge.Logging.Abstraction;
 using Forge.Reflection;
+using Forge.Shared;
 using Forge.UpdateFramework.Client.Configuration;
 
 namespace Forge.UpdateFramework.Client
@@ -27,7 +29,7 @@ namespace Forge.UpdateFramework.Client
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(FileCollector));
+        private static readonly ILog LOGGER = LogManager.GetLogger<FileCollector>();
 
         private static readonly string CODEBASE_FOLDER = "CodeBaseFolder";
         private static readonly string CODEBASE_FOLDER_EXCLUSIONS = "CodeBaseFolderExclusions";
@@ -250,7 +252,7 @@ namespace Forge.UpdateFramework.Client
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public void Initialize(CategoryPropertyItem configuration)
+        public void Initialize(IPropertyItem configuration)
         {
             if (configuration == null)
             {
@@ -259,36 +261,36 @@ namespace Forge.UpdateFramework.Client
 
             if (!this.IsInitialized)
             {
-                ConfigurationAccessHelper.ParseStringValue(configuration.PropertyItems, CODEBASE_FOLDER, ref mCodeBaseFolder);
+                ConfigurationAccessHelper.ParseStringValue(configuration, CODEBASE_FOLDER, ref mCodeBaseFolder);
                 if (!PathHelper.IsAbsolutePath(mCodeBaseFolder))
                 {
                     throw new InitializationException(string.Format("Provided code base folder for file collector is not an absolute path: '{0}'", mCodeBaseFolder));
                 }
                 mCodeBaseFolder = PathHelper.CutoffBackslashFromPathEnd(new DirectoryInfo(mCodeBaseFolder).FullName.ToLower());
 
-                CategoryPropertyItem piExclusions = ConfigurationAccessHelper.GetCategoryPropertyByPath(configuration.PropertyItems, CODEBASE_FOLDER_EXCLUSIONS);
+                IPropertyItem piExclusions = ConfigurationAccessHelper.GetPropertyByPath(configuration, CODEBASE_FOLDER_EXCLUSIONS);
                 if (piExclusions != null)
                 {
-                    foreach (CategoryPropertyItem pi in piExclusions)
+                    foreach (IPropertyItem pi in piExclusions.Items.Values)
                     {
                         mFolderExclusions.Add(new DirectoryEntry(mCodeBaseFolder, pi));
                     }
                 }
                 mFolderExclusions.Add(new DirectoryEntry(Updater.Instance.Settings.DownloadFolder, true));
 
-                CategoryPropertyItem piExternals = ConfigurationAccessHelper.GetCategoryPropertyByPath(configuration.PropertyItems, EXTERNAL_FOLDERS);
+                IPropertyItem piExternals = ConfigurationAccessHelper.GetPropertyByPath(configuration, EXTERNAL_FOLDERS);
                 if (piExternals != null)
                 {
-                    foreach (CategoryPropertyItem pi in piExternals)
+                    foreach (IPropertyItem pi in piExternals.Items.Values)
                     {
                         mExternalFolders.Add(new DirectoryEntry(pi.Id, pi));
                     }
                 }
 
-                CategoryPropertyItem piExternalFiles = ConfigurationAccessHelper.GetCategoryPropertyByPath(configuration.PropertyItems, EXTERNAL_FILES);
+                IPropertyItem piExternalFiles = ConfigurationAccessHelper.GetPropertyByPath(configuration, EXTERNAL_FILES);
                 if (piExternalFiles != null)
                 {
-                    foreach (CategoryPropertyItem pi in piExternalFiles)
+                    foreach (IPropertyItem pi in piExternalFiles.Items.Values)
                     {
                         if (PathHelper.IsAbsolutePath(pi.Id))
                         {
@@ -301,23 +303,23 @@ namespace Forge.UpdateFramework.Client
                     }
                 }
 
-                ConfigurationAccessHelper.ParseBooleanValue(configuration.PropertyItems, PERFORM_SEC_TEST, ref mPerformSecurityTestOnFolders);
+                ConfigurationAccessHelper.ParseBooleanValue(configuration, PERFORM_SEC_TEST, ref mPerformSecurityTestOnFolders);
 
-                CategoryPropertyItem piExtensions = ConfigurationAccessHelper.GetCategoryPropertyByPath(configuration.PropertyItems, EXTENSIONS);
+                IPropertyItem piExtensions = ConfigurationAccessHelper.GetPropertyByPath(configuration, EXTENSIONS);
                 if (piExtensions != null)
                 {
-                    foreach (CategoryPropertyItem pi in piExtensions.PropertyItems)
+                    foreach (IPropertyItem pi in piExtensions.Items.Values)
                     {
                         string ext = pi.Id.ToLower().Trim().Replace(".", string.Empty);
                         if (!string.IsNullOrEmpty(ext))
                         {
-                            if (string.IsNullOrEmpty(pi.EntryValue))
+                            if (string.IsNullOrEmpty(pi.Value))
                             {
                                 mExtensionVsDescriptor[ext] = null;
                             }
                             else
                             {
-                                mExtensionVsDescriptor[ext] = TypeHelper.GetTypeFromString(pi.EntryValue);
+                                mExtensionVsDescriptor[ext] = TypeHelper.GetTypeFromString(pi.Value);
                             }
                         }
                     }

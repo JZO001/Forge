@@ -21,6 +21,11 @@ namespace Forge.Net.Remoting.Sinks
         /// </value>
         string MessageSinkId { get; }
 
+        /// <summary>Gets a value indicating whether [decompress data].</summary>
+        /// <value>
+        ///   <c>true</c> if [decompress data]; otherwise, <c>false</c>.</value>
+        bool DecompressData { get; }
+
     }
 
 }

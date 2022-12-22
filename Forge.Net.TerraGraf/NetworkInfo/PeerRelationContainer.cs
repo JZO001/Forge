@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Legacy;
 using System;
 using System.Diagnostics;
 

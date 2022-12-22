@@ -1,125 +1,44 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{5750674A-8247-4F44-BE3F-DFAC351E1F73}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Forge.WindowsServiceControl</RootNamespace>
-    <AssemblyName>Forge.WindowsServiceControl</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\Forge.WindowsServiceControl.xml</DocumentationFile>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <RunCodeAnalysis>false</RunCodeAnalysis>
-    <DocumentationFile>bin\Release\Forge.WindowsServiceControl.xml</DocumentationFile>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>Forge.pfx</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="NativeMethods.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServiceAccessRightsEnum.cs" />
-    <Compile Include="ServiceActionTypeEnum.cs" />
-    <Compile Include="ServiceConfig2InfoLevelEnum.cs" />
-    <Compile Include="ServiceControlAccessRightsEnum.cs" />
-    <Compile Include="ServiceControlManager.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Forge.pfx" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Forge.Base\Forge.Base.csproj">
-      <Project>{f3eed65e-c103-4ba8-af1d-37421d73a708}</Project>
-      <Name>Forge.Base</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>echo F|xcopy /r /y "$(TargetPath)" "$(SolutionDir).Output\$(TargetFileName)"
-echo F|xcopy /r /y "$(TargetDir)$(TargetName).pdb" "$(SolutionDir).Output\$(TargetName).pdb"
-echo F|xcopy /r /y "$(TargetDir)$(TargetName).xml" "$(SolutionDir).Output\$(TargetName).xml"
-</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup Label="Globals">
+		<SccProjectName>SAK</SccProjectName>
+		<SccProvider>SAK</SccProvider>
+		<SccAuxPath>SAK</SccAuxPath>
+		<SccLocalPath>SAK</SccLocalPath>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<TargetFrameworks>net40;netcoreapp3.1;net6.0-windows</TargetFrameworks>
+		<Version>2.0.0.0</Version>
+		<AssemblyVersion>2.0.0.0</AssemblyVersion>
+		<Copyright>Copyright © Zoltan Juhasz, 2004-2022</Copyright>
+		<Description>Forge Patterns and Practices</Description>
+		<Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
+		<Company>Forge Project Contributor(s)</Company>
+		<PackageId>Forge.WindowsServiceControl</PackageId>
+		<Authors>Zoltan Juhasz</Authors>
+		<Title>Forge Windows Service Control</Title>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<ProjectGuid>{61199D8A-F578-4825-BCB9-AED9F3006F77}</ProjectGuid>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<DocumentationFile>Forge.WindowsServiceControl.xml</DocumentationFile>
+		<RepositoryUrl>https://github.com/JZO001/Forge.WindowsServiceControl</RepositoryUrl>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Remove="Forge.WindowsServiceControl.xml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Forge.Legacy\Forge.Legacy.csproj" />
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
+	</Target>
+
 </Project>

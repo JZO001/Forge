@@ -4,6 +4,8 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Invoker;
+
 namespace Forge.RemoteDesktop.Client
 {
 
@@ -27,18 +29,18 @@ namespace Forge.RemoteDesktop.Client
         {
             channel.SessionStateChange += new System.EventHandler<Net.Remoting.Channels.SessionStateEventArgs>(Channel_SessionStateChange);
             Forge.Net.Remoting.Channels.ISessionInfo info = channel.GetSessionInfo(sessionId);
-            this.IsConnected = info == null ? false : true;
+            IsConnected = info == null ? false : true;
             if (info != null)
             {
-                this.RemoteHost = info.RemoteEndPoint.Host;
+                RemoteHost = info.RemoteEndPoint.Host;
             }
         }
 
         private void Channel_SessionStateChange(object sender, Net.Remoting.Channels.SessionStateEventArgs e)
         {
-            if (e.SessionId.Equals(this.SessionId) && !e.IsConnected)
+            if (e.SessionId.Equals(SessionId) && !e.IsConnected)
             {
-                OnDisconnected(new Contracts.DisconnectEventArgs(this.SessionId));
+                OnDisconnected(new Contracts.DisconnectEventArgs(SessionId));
             }
         }
 
@@ -50,10 +52,10 @@ namespace Forge.RemoteDesktop.Client
         /// <param name="e">The <see cref="Forge.RemoteDesktop.Contracts.DisconnectEventArgs"/> instance containing the event data.</param>
         protected virtual void OnDisconnected(Forge.RemoteDesktop.Contracts.DisconnectEventArgs e)
         {
-            this.IsAuthenticated = false;
-            this.IsActive = false;
-            this.IsConnected = false;
-            EventRaiser.Raiser.CallDelegatorBySync(Disconnected, new object[] { this, e });
+            IsAuthenticated = false;
+            IsActive = false;
+            IsConnected = false;
+            Executor.Invoke(Disconnected, this, e);
         }
 
         /// <summary>
@@ -65,11 +67,11 @@ namespace Forge.RemoteDesktop.Client
             base.Dispose(disposing);
             if (disposing)
             {
-                this.mChannel.SessionStateChange -= new System.EventHandler<Net.Remoting.Channels.SessionStateEventArgs>(Channel_SessionStateChange);
-                if (this.mChannel.IsSessionReusable)
+                mChannel.SessionStateChange -= new System.EventHandler<Net.Remoting.Channels.SessionStateEventArgs>(Channel_SessionStateChange);
+                if (mChannel.IsSessionReusable)
                 {
                     // release the connection anytime
-                    this.mChannel.Disconnect(mSessionId);
+                    mChannel.Disconnect(mSessionId);
                 }
             }
         }
@@ -161,11 +163,11 @@ namespace Forge.RemoteDesktop.Client
                 Forge.Net.Remoting.Messaging.MethodParameter[] _mps = null;
 
                 Forge.Net.Remoting.Messaging.RequestMessage _message = new Forge.Net.Remoting.Messaging.RequestMessage(System.Guid.NewGuid().ToString(), Forge.Net.Remoting.MessageTypeEnum.Request, Forge.Net.Remoting.MessageInvokeModeEnum.RequestService, typeof(Forge.RemoteDesktop.Contracts.IRemoteDesktop), "GetAuthenticationInfo", _mps);
-                _message.Context.Add(Forge.Net.Remoting.Proxy.ProxyBase.PROXY_ID, this.ProxyId);
+                _message.Context.Add(Forge.Net.Remoting.Proxy.ProxyBase.PROXY_ID, ProxyId);
 
                 long _timeout = GetTimeoutByMethod(typeof(Forge.RemoteDesktop.Contracts.IRemoteDesktop), "GetAuthenticationInfo", _mps, Forge.Net.Remoting.Proxy.MethodTimeoutEnum.CallTimeout);
 
-                _response = (Forge.Net.Remoting.Messaging.ResponseMessage)this.mChannel.SendMessage(this.mSessionId, _message, _timeout);
+                _response = (Forge.Net.Remoting.Messaging.ResponseMessage)mChannel.SendMessage(mSessionId, _message, _timeout);
             }
             catch (System.Exception ex)
             {
@@ -205,11 +207,11 @@ namespace Forge.RemoteDesktop.Client
                 _mps = new Forge.Net.Remoting.Messaging.MethodParameter[] { _mp0 };
 
                 Forge.Net.Remoting.Messaging.RequestMessage _message = new Forge.Net.Remoting.Messaging.RequestMessage(System.Guid.NewGuid().ToString(), Forge.Net.Remoting.MessageTypeEnum.Request, Forge.Net.Remoting.MessageInvokeModeEnum.RequestService, typeof(Forge.RemoteDesktop.Contracts.IRemoteDesktop), "Login", _mps);
-                _message.Context.Add(Forge.Net.Remoting.Proxy.ProxyBase.PROXY_ID, this.ProxyId);
+                _message.Context.Add(Forge.Net.Remoting.Proxy.ProxyBase.PROXY_ID, ProxyId);
 
                 long _timeout = GetTimeoutByMethod(typeof(Forge.RemoteDesktop.Contracts.IRemoteDesktop), "Login", _mps, Forge.Net.Remoting.Proxy.MethodTimeoutEnum.CallTimeout);
 
-                _response = (Forge.Net.Remoting.Messaging.ResponseMessage)this.mChannel.SendMessage(this.mSessionId, _message, _timeout);
+                _response = (Forge.Net.Remoting.Messaging.ResponseMessage)mChannel.SendMessage(mSessionId, _message, _timeout);
             }
             catch (System.Exception ex)
             {
@@ -245,11 +247,11 @@ namespace Forge.RemoteDesktop.Client
                 Forge.Net.Remoting.Messaging.MethodParameter[] _mps = null;
 
                 Forge.Net.Remoting.Messaging.RequestMessage _message = new Forge.Net.Remoting.Messaging.RequestMessage(System.Guid.NewGuid().ToString(), Forge.Net.Remoting.MessageTypeEnum.Request, Forge.Net.Remoting.MessageInvokeModeEnum.RequestService, typeof(Forge.RemoteDesktop.Contracts.IRemoteDesktop), "ClientGetConfiguration", _mps);
-                _message.Context.Add(Forge.Net.Remoting.Proxy.ProxyBase.PROXY_ID, this.ProxyId);
+                _message.Context.Add(Forge.Net.Remoting.Proxy.ProxyBase.PROXY_ID, ProxyId);
 
                 long _timeout = GetTimeoutByMethod(typeof(Forge.RemoteDesktop.Contracts.IRemoteDesktop), "ClientGetConfiguration", _mps, Forge.Net.Remoting.Proxy.MethodTimeoutEnum.CallTimeout);
 
-                _response = (Forge.Net.Remoting.Messaging.ResponseMessage)this.mChannel.SendMessage(this.mSessionId, _message, _timeout);
+                _response = (Forge.Net.Remoting.Messaging.ResponseMessage)mChannel.SendMessage(mSessionId, _message, _timeout);
             }
             catch (System.Exception ex)
             {
@@ -288,11 +290,11 @@ namespace Forge.RemoteDesktop.Client
                 _mps = new Forge.Net.Remoting.Messaging.MethodParameter[] { _mp0 };
 
                 Forge.Net.Remoting.Messaging.RequestMessage _message = new Forge.Net.Remoting.Messaging.RequestMessage(System.Guid.NewGuid().ToString(), Forge.Net.Remoting.MessageTypeEnum.Request, Forge.Net.Remoting.MessageInvokeModeEnum.RequestService, typeof(Forge.RemoteDesktop.Contracts.IRemoteDesktop), "ClientSetImageClipQuality", _mps);
-                _message.Context.Add(Forge.Net.Remoting.Proxy.ProxyBase.PROXY_ID, this.ProxyId);
+                _message.Context.Add(Forge.Net.Remoting.Proxy.ProxyBase.PROXY_ID, ProxyId);
 
                 long _timeout = GetTimeoutByMethod(typeof(Forge.RemoteDesktop.Contracts.IRemoteDesktop), "ClientSetImageClipQuality", _mps, Forge.Net.Remoting.Proxy.MethodTimeoutEnum.CallTimeout);
 
-                _response = (Forge.Net.Remoting.Messaging.ResponseMessage)this.mChannel.SendMessage(this.mSessionId, _message, _timeout);
+                _response = (Forge.Net.Remoting.Messaging.ResponseMessage)mChannel.SendMessage(mSessionId, _message, _timeout);
             }
             catch (System.Exception ex)
             {
@@ -322,11 +324,11 @@ namespace Forge.RemoteDesktop.Client
                 _mps = new Forge.Net.Remoting.Messaging.MethodParameter[] { _mp0 };
 
                 Forge.Net.Remoting.Messaging.RequestMessage _message = new Forge.Net.Remoting.Messaging.RequestMessage(System.Guid.NewGuid().ToString(), Forge.Net.Remoting.MessageTypeEnum.Datagram, Forge.Net.Remoting.MessageInvokeModeEnum.RequestService, typeof(Forge.RemoteDesktop.Contracts.IRemoteDesktop), "ClientSubscribeForDesktop", _mps);
-                _message.Context.Add(Forge.Net.Remoting.Proxy.ProxyBase.PROXY_ID, this.ProxyId);
+                _message.Context.Add(Forge.Net.Remoting.Proxy.ProxyBase.PROXY_ID, ProxyId);
 
                 long _timeout = GetTimeoutByMethod(typeof(Forge.RemoteDesktop.Contracts.IRemoteDesktop), "ClientSubscribeForDesktop", _mps, Forge.Net.Remoting.Proxy.MethodTimeoutEnum.CallTimeout);
 
-                this.mChannel.SendMessage(this.mSessionId, _message, _timeout);
+                mChannel.SendMessage(mSessionId, _message, _timeout);
             }
             catch (System.Exception ex)
             {
@@ -352,11 +354,11 @@ namespace Forge.RemoteDesktop.Client
                 Forge.Net.Remoting.Messaging.MethodParameter[] _mps = null;
 
                 Forge.Net.Remoting.Messaging.RequestMessage _message = new Forge.Net.Remoting.Messaging.RequestMessage(System.Guid.NewGuid().ToString(), Forge.Net.Remoting.MessageTypeEnum.Request, Forge.Net.Remoting.MessageInvokeModeEnum.RequestService, typeof(Forge.RemoteDesktop.Contracts.IRemoteDesktop), "ClientStartEventPump", _mps);
-                _message.Context.Add(Forge.Net.Remoting.Proxy.ProxyBase.PROXY_ID, this.ProxyId);
+                _message.Context.Add(Forge.Net.Remoting.Proxy.ProxyBase.PROXY_ID, ProxyId);
 
                 long _timeout = GetTimeoutByMethod(typeof(Forge.RemoteDesktop.Contracts.IRemoteDesktop), "ClientStartEventPump", _mps, Forge.Net.Remoting.Proxy.MethodTimeoutEnum.CallTimeout);
 
-                _response = (Forge.Net.Remoting.Messaging.ResponseMessage)this.mChannel.SendMessage(this.mSessionId, _message, _timeout);
+                _response = (Forge.Net.Remoting.Messaging.ResponseMessage)mChannel.SendMessage(mSessionId, _message, _timeout);
             }
             catch (System.Exception ex)
             {
@@ -391,11 +393,11 @@ namespace Forge.RemoteDesktop.Client
                 Forge.Net.Remoting.Messaging.MethodParameter[] _mps = null;
 
                 Forge.Net.Remoting.Messaging.RequestMessage _message = new Forge.Net.Remoting.Messaging.RequestMessage(System.Guid.NewGuid().ToString(), Forge.Net.Remoting.MessageTypeEnum.Request, Forge.Net.Remoting.MessageInvokeModeEnum.RequestService, typeof(Forge.RemoteDesktop.Contracts.IRemoteDesktop), "ClientStopEventPump", _mps);
-                _message.Context.Add(Forge.Net.Remoting.Proxy.ProxyBase.PROXY_ID, this.ProxyId);
+                _message.Context.Add(Forge.Net.Remoting.Proxy.ProxyBase.PROXY_ID, ProxyId);
 
                 long _timeout = GetTimeoutByMethod(typeof(Forge.RemoteDesktop.Contracts.IRemoteDesktop), "ClientStopEventPump", _mps, Forge.Net.Remoting.Proxy.MethodTimeoutEnum.CallTimeout);
 
-                _response = (Forge.Net.Remoting.Messaging.ResponseMessage)this.mChannel.SendMessage(this.mSessionId, _message, _timeout);
+                _response = (Forge.Net.Remoting.Messaging.ResponseMessage)mChannel.SendMessage(mSessionId, _message, _timeout);
             }
             catch (System.Exception ex)
             {
@@ -421,11 +423,11 @@ namespace Forge.RemoteDesktop.Client
                 Forge.Net.Remoting.Messaging.MethodParameter[] _mps = null;
 
                 Forge.Net.Remoting.Messaging.RequestMessage _message = new Forge.Net.Remoting.Messaging.RequestMessage(System.Guid.NewGuid().ToString(), Forge.Net.Remoting.MessageTypeEnum.DatagramOneway, Forge.Net.Remoting.MessageInvokeModeEnum.RequestService, typeof(Forge.RemoteDesktop.Contracts.IRemoteDesktop), "ClientRefreshDesktop", _mps);
-                _message.Context.Add(Forge.Net.Remoting.Proxy.ProxyBase.PROXY_ID, this.ProxyId);
+                _message.Context.Add(Forge.Net.Remoting.Proxy.ProxyBase.PROXY_ID, ProxyId);
 
                 long _timeout = GetTimeoutByMethod(typeof(Forge.RemoteDesktop.Contracts.IRemoteDesktop), "ClientRefreshDesktop", _mps, Forge.Net.Remoting.Proxy.MethodTimeoutEnum.CallTimeout);
 
-                this.mChannel.SendMessage(this.mSessionId, _message, _timeout);
+                mChannel.SendMessage(mSessionId, _message, _timeout);
             }
             catch (System.Exception ex)
             {
@@ -450,11 +452,11 @@ namespace Forge.RemoteDesktop.Client
                 _mps = new Forge.Net.Remoting.Messaging.MethodParameter[] { _mp0 };
 
                 Forge.Net.Remoting.Messaging.RequestMessage _message = new Forge.Net.Remoting.Messaging.RequestMessage(System.Guid.NewGuid().ToString(), Forge.Net.Remoting.MessageTypeEnum.DatagramOneway, Forge.Net.Remoting.MessageInvokeModeEnum.RequestService, typeof(Forge.RemoteDesktop.Contracts.IRemoteDesktop), "ClientSendKeyEvent", _mps);
-                _message.Context.Add(Forge.Net.Remoting.Proxy.ProxyBase.PROXY_ID, this.ProxyId);
+                _message.Context.Add(Forge.Net.Remoting.Proxy.ProxyBase.PROXY_ID, ProxyId);
 
                 long _timeout = GetTimeoutByMethod(typeof(Forge.RemoteDesktop.Contracts.IRemoteDesktop), "ClientSendKeyEvent", _mps, Forge.Net.Remoting.Proxy.MethodTimeoutEnum.CallTimeout);
 
-                this.mChannel.SendMessage(this.mSessionId, _message, _timeout);
+                mChannel.SendMessage(mSessionId, _message, _timeout);
             }
             catch (System.Exception ex)
             {
@@ -479,11 +481,11 @@ namespace Forge.RemoteDesktop.Client
                 _mps = new Forge.Net.Remoting.Messaging.MethodParameter[] { _mp0 };
 
                 Forge.Net.Remoting.Messaging.RequestMessage _message = new Forge.Net.Remoting.Messaging.RequestMessage(System.Guid.NewGuid().ToString(), Forge.Net.Remoting.MessageTypeEnum.DatagramOneway, Forge.Net.Remoting.MessageInvokeModeEnum.RequestService, typeof(Forge.RemoteDesktop.Contracts.IRemoteDesktop), "ClientSendMouseButtonEvent", _mps);
-                _message.Context.Add(Forge.Net.Remoting.Proxy.ProxyBase.PROXY_ID, this.ProxyId);
+                _message.Context.Add(Forge.Net.Remoting.Proxy.ProxyBase.PROXY_ID, ProxyId);
 
                 long _timeout = GetTimeoutByMethod(typeof(Forge.RemoteDesktop.Contracts.IRemoteDesktop), "ClientSendMouseButtonEvent", _mps, Forge.Net.Remoting.Proxy.MethodTimeoutEnum.CallTimeout);
 
-                this.mChannel.SendMessage(this.mSessionId, _message, _timeout);
+                mChannel.SendMessage(mSessionId, _message, _timeout);
             }
             catch (System.Exception ex)
             {
@@ -508,11 +510,11 @@ namespace Forge.RemoteDesktop.Client
                 _mps = new Forge.Net.Remoting.Messaging.MethodParameter[] { _mp0 };
 
                 Forge.Net.Remoting.Messaging.RequestMessage _message = new Forge.Net.Remoting.Messaging.RequestMessage(System.Guid.NewGuid().ToString(), Forge.Net.Remoting.MessageTypeEnum.DatagramOneway, Forge.Net.Remoting.MessageInvokeModeEnum.RequestService, typeof(Forge.RemoteDesktop.Contracts.IRemoteDesktop), "ClientSendMouseWheelEvent", _mps);
-                _message.Context.Add(Forge.Net.Remoting.Proxy.ProxyBase.PROXY_ID, this.ProxyId);
+                _message.Context.Add(Forge.Net.Remoting.Proxy.ProxyBase.PROXY_ID, ProxyId);
 
                 long _timeout = GetTimeoutByMethod(typeof(Forge.RemoteDesktop.Contracts.IRemoteDesktop), "ClientSendMouseWheelEvent", _mps, Forge.Net.Remoting.Proxy.MethodTimeoutEnum.CallTimeout);
 
-                this.mChannel.SendMessage(this.mSessionId, _message, _timeout);
+                mChannel.SendMessage(mSessionId, _message, _timeout);
             }
             catch (System.Exception ex)
             {
@@ -537,11 +539,11 @@ namespace Forge.RemoteDesktop.Client
                 _mps = new Forge.Net.Remoting.Messaging.MethodParameter[] { _mp0 };
 
                 Forge.Net.Remoting.Messaging.RequestMessage _message = new Forge.Net.Remoting.Messaging.RequestMessage(System.Guid.NewGuid().ToString(), Forge.Net.Remoting.MessageTypeEnum.DatagramOneway, Forge.Net.Remoting.MessageInvokeModeEnum.RequestService, typeof(Forge.RemoteDesktop.Contracts.IRemoteDesktop), "ClientSendMouseMoveEvent", _mps);
-                _message.Context.Add(Forge.Net.Remoting.Proxy.ProxyBase.PROXY_ID, this.ProxyId);
+                _message.Context.Add(Forge.Net.Remoting.Proxy.ProxyBase.PROXY_ID, ProxyId);
 
                 long _timeout = GetTimeoutByMethod(typeof(Forge.RemoteDesktop.Contracts.IRemoteDesktop), "ClientSendMouseMoveEvent", _mps, Forge.Net.Remoting.Proxy.MethodTimeoutEnum.CallTimeout);
 
-                this.mChannel.SendMessage(this.mSessionId, _message, _timeout);
+                mChannel.SendMessage(mSessionId, _message, _timeout);
             }
             catch (System.Exception ex)
             {
@@ -566,11 +568,11 @@ namespace Forge.RemoteDesktop.Client
                 _mps = new Forge.Net.Remoting.Messaging.MethodParameter[] { _mp0 };
 
                 Forge.Net.Remoting.Messaging.RequestMessage _message = new Forge.Net.Remoting.Messaging.RequestMessage(System.Guid.NewGuid().ToString(), Forge.Net.Remoting.MessageTypeEnum.DatagramOneway, Forge.Net.Remoting.MessageInvokeModeEnum.RequestService, typeof(Forge.RemoteDesktop.Contracts.IRemoteDesktop), "ClientSendClipboardContent", _mps);
-                _message.Context.Add(Forge.Net.Remoting.Proxy.ProxyBase.PROXY_ID, this.ProxyId);
+                _message.Context.Add(Forge.Net.Remoting.Proxy.ProxyBase.PROXY_ID, ProxyId);
 
                 long _timeout = GetTimeoutByMethod(typeof(Forge.RemoteDesktop.Contracts.IRemoteDesktop), "ClientSendClipboardContent", _mps, Forge.Net.Remoting.Proxy.MethodTimeoutEnum.CallTimeout);
 
-                this.mChannel.SendMessage(this.mSessionId, _message, _timeout);
+                mChannel.SendMessage(mSessionId, _message, _timeout);
             }
             catch (System.Exception ex)
             {
@@ -601,11 +603,11 @@ namespace Forge.RemoteDesktop.Client
                 _mps = new Forge.Net.Remoting.Messaging.MethodParameter[] { _mp0, _mp1 };
 
                 Forge.Net.Remoting.Messaging.RequestMessage _message = new Forge.Net.Remoting.Messaging.RequestMessage(System.Guid.NewGuid().ToString(), Forge.Net.Remoting.MessageTypeEnum.Datagram, Forge.Net.Remoting.MessageInvokeModeEnum.RequestService, typeof(Forge.RemoteDesktop.Contracts.IRemoteDesktop), "ClientSendFile", _mps, true);
-                _message.Context.Add(Forge.Net.Remoting.Proxy.ProxyBase.PROXY_ID, this.ProxyId);
+                _message.Context.Add(Forge.Net.Remoting.Proxy.ProxyBase.PROXY_ID, ProxyId);
 
                 long _timeout = GetTimeoutByMethod(typeof(Forge.RemoteDesktop.Contracts.IRemoteDesktop), "ClientSendFile", _mps, Forge.Net.Remoting.Proxy.MethodTimeoutEnum.CallTimeout);
 
-                this.mChannel.SendMessage(this.mSessionId, _message, _timeout);
+                mChannel.SendMessage(mSessionId, _message, _timeout);
             }
             catch (System.Exception ex)
             {

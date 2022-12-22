@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Shared;
 using System;
 using System.Diagnostics;
 using System.Net;
@@ -42,7 +43,7 @@ namespace Forge.Net.Synapse.Icmp
         /// <param name="result">The result.</param>
         internal PingResultEventArgs(PingResultEnum result)
         {
-            this.mPingResultType = result;
+            mPingResultType = result;
         }
 
         /// <summary>
@@ -58,9 +59,9 @@ namespace Forge.Net.Synapse.Icmp
             {
                 ThrowHelper.ThrowArgumentNullException("address");
             }
-            this.mIPAddress = address;
-            this.mReceivedBytes = receivedBytes;
-            this.mResponseTime = responseTime;
+            mIPAddress = address;
+            mReceivedBytes = receivedBytes;
+            mResponseTime = responseTime;
         }
 
         #endregion

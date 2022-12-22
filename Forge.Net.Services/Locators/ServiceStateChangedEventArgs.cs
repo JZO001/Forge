@@ -22,7 +22,7 @@ namespace Forge.Net.Services.Locators
         /// <param name="state">The state.</param>
         public ServiceStateChangedEventArgs(ServiceStateEnum state)
         {
-            this.ServiceState = state;
+            ServiceState = state;
         }
 
         /// <summary>

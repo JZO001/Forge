@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Forge.Collections;
 using Forge.Persistence.StorageProviders;
+using Forge.Shared;
 
 namespace Forge.Persistence.Collections
 {
@@ -28,8 +29,8 @@ namespace Forge.Persistence.Collections
         /// </summary>
         /// <param name="listId">The list id.</param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        public PersistentList(String listId)
-            : base(listId, CacheStrategyEnum.RecentlyUsed, Int32.MaxValue)
+        public PersistentList(string listId)
+            : base(listId, CacheStrategyEnum.RecentlyUsed, int.MaxValue)
         {
             SetStorageProvider(new FileStorageProvider<T>(listId), true);
             FillCache();
@@ -40,8 +41,8 @@ namespace Forge.Persistence.Collections
         /// </summary>
         /// <param name="listId">The list id.</param>
         /// <param name="provider">The provider.</param>
-        public PersistentList(String listId, IStorageProvider<T> provider)
-            : base(listId, CacheStrategyEnum.RecentlyUsed, Int32.MaxValue)
+        public PersistentList(string listId, IStorageProvider<T> provider)
+            : base(listId, CacheStrategyEnum.RecentlyUsed, int.MaxValue)
         {
             SetStorageProvider(provider, false);
             FillCache();
@@ -53,7 +54,7 @@ namespace Forge.Persistence.Collections
         /// <param name="listId">The list id.</param>
         /// <param name="provider">The provider.</param>
         /// <param name="cacheSize">Size of the cache.</param>
-        public PersistentList(String listId, IStorageProvider<T> provider, int cacheSize)
+        public PersistentList(string listId, IStorageProvider<T> provider, int cacheSize)
             : base(listId, CacheStrategyEnum.RecentlyUsed, cacheSize)
         {
             SetStorageProvider(provider, false);
@@ -66,7 +67,7 @@ namespace Forge.Persistence.Collections
         /// <param name="listId">The list id.</param>
         /// <param name="cacheSize">Size of the cache.</param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        public PersistentList(String listId, int cacheSize)
+        public PersistentList(string listId, int cacheSize)
             : base(listId, CacheStrategyEnum.RecentlyUsed, cacheSize)
         {
             SetStorageProvider(new FileStorageProvider<T>(listId), true);
@@ -78,7 +79,7 @@ namespace Forge.Persistence.Collections
         /// </summary>
         /// <param name="listId">The list id.</param>
         /// <param name="configurationName">Name of the configuration.</param>
-        public PersistentList(String listId, String configurationName)
+        public PersistentList(string listId, string configurationName)
             : base(listId, CacheStrategyEnum.RecentlyUsed, configurationName)
         {
         }

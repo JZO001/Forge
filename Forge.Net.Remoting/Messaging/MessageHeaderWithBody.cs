@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Shared;
 using System;
 using System.Diagnostics;
 
@@ -38,7 +39,7 @@ namespace Forge.Net.Remoting.Messaging
             {
                 ThrowHelper.ThrowArgumentNullException("data");
             }
-            this.mData = data;
+            mData = data;
         }
 
         #endregion

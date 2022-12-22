@@ -8,8 +8,10 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.Serialization;
+using Forge.Formatters;
 using Forge.Persistence.Serialization;
 using Forge.Reflection;
+using Forge.Shared;
 
 namespace Forge.Persistence.Formatters
 {
@@ -23,7 +25,7 @@ namespace Forge.Persistence.Formatters
 
         #region Field(s)
 
-        private BinarySerializer mFormatter = new BinarySerializer();
+        private readonly BinarySerializer mFormatter = new BinarySerializer();
 
         #endregion
 
@@ -42,7 +44,7 @@ namespace Forge.Persistence.Formatters
         /// <param name="behavior">The behavior.</param>
         public BinarySerializerFormatter(BinarySerializerBehaviorEnum behavior)
         {
-            this.mFormatter.SerializerBehavior = behavior;
+            mFormatter.SerializerBehavior = behavior;
         }
 
         /// <summary>
@@ -53,9 +55,9 @@ namespace Forge.Persistence.Formatters
         /// <param name="findNewestTypeVersion">if set to <c>true</c> [find newest type version].</param>
         public BinarySerializerFormatter(BinarySerializerBehaviorEnum behavior, TypeLookupModeEnum typeLookupMode, bool findNewestTypeVersion)
         {
-            this.mFormatter.SerializerBehavior = behavior;
-            this.mFormatter.TypeLookupMode = typeLookupMode;
-            this.mFormatter.FindNewestTypeVersion = findNewestTypeVersion;
+            mFormatter.SerializerBehavior = behavior;
+            mFormatter.TypeLookupMode = typeLookupMode;
+            mFormatter.FindNewestTypeVersion = findNewestTypeVersion;
         }
 
         #endregion
@@ -70,8 +72,8 @@ namespace Forge.Persistence.Formatters
         /// </value>
         public StreamingContext Context
         {
-            get { return this.mFormatter.Context; }
-            set { this.mFormatter.Context = value; }
+            get { return mFormatter.Context; }
+            set { mFormatter.Context = value; }
         }
 
         /// <summary>
@@ -82,8 +84,8 @@ namespace Forge.Persistence.Formatters
         /// </value>
         public ISurrogateSelector Selector
         {
-            get { return this.mFormatter.Selector; }
-            set { this.mFormatter.Selector = value; }
+            get { return mFormatter.Selector; }
+            set { mFormatter.Selector = value; }
         }
 
         /// <summary>
@@ -95,8 +97,8 @@ namespace Forge.Persistence.Formatters
         [DefaultValue(0)]
         public BinarySerializerBehaviorEnum SerializerBehavior
         {
-            get { return this.mFormatter.SerializerBehavior; }
-            set { this.mFormatter.SerializerBehavior = value; }
+            get { return mFormatter.SerializerBehavior; }
+            set { mFormatter.SerializerBehavior = value; }
         }
 
         /// <summary>
@@ -108,8 +110,8 @@ namespace Forge.Persistence.Formatters
         [DefaultValue(2)]
         public TypeLookupModeEnum TypeLookupMode
         {
-            get { return this.mFormatter.TypeLookupMode; }
-            set { this.mFormatter.TypeLookupMode = value; }
+            get { return mFormatter.TypeLookupMode; }
+            set { mFormatter.TypeLookupMode = value; }
         }
 
         /// <summary>
@@ -121,8 +123,8 @@ namespace Forge.Persistence.Formatters
         [DefaultValue(false)]
         public bool FindNewestTypeVersion
         {
-            get { return this.mFormatter.FindNewestTypeVersion; }
-            set { this.mFormatter.FindNewestTypeVersion = value; }
+            get { return mFormatter.FindNewestTypeVersion; }
+            set { mFormatter.FindNewestTypeVersion = value; }
         }
 
         #endregion
@@ -151,7 +153,7 @@ namespace Forge.Persistence.Formatters
                 long pos = stream.Position;
                 try
                 {
-                    this.mFormatter.Deserialize(stream);
+                    mFormatter.Deserialize(stream);
                 }
                 catch (Exception)
                 {
@@ -189,7 +191,7 @@ namespace Forge.Persistence.Formatters
             {
                 using (MemoryStream ms = new MemoryStream())
                 {
-                    this.mFormatter.Serialize(ms, item);
+                    mFormatter.Serialize(ms, item);
                     result = true;
                 }
             }
@@ -216,7 +218,7 @@ namespace Forge.Persistence.Formatters
 
             try
             {
-                return (T)this.mFormatter.Deserialize(stream);
+                return (T)mFormatter.Deserialize(stream);
             }
             catch (FormatException)
             {
@@ -253,7 +255,7 @@ namespace Forge.Persistence.Formatters
 
             try
             {
-                this.mFormatter.Serialize(stream, data);
+                mFormatter.Serialize(stream, data);
             }
             catch (FormatException)
             {

@@ -10,10 +10,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Forge.Configuration.Shared;
-using Forge.Logging;
+using Forge.Logging.Abstraction;
 using Forge.Net.Synapse;
 using Forge.Net.TerraGraf.ConfigSection;
 using Forge.Net.TerraGraf.NetworkPeers;
+using Forge.Shared;
 
 namespace Forge.Net.TerraGraf.Configuration
 {
@@ -27,7 +28,7 @@ namespace Forge.Net.TerraGraf.Configuration
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(NATGatewaySettings));
+        private static readonly ILog LOGGER = LogManager.GetLogger<NATGatewaySettings>();
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private List<AddressEndPoint> mEndPoints = new List<AddressEndPoint>();
@@ -41,7 +42,7 @@ namespace Forge.Net.TerraGraf.Configuration
         /// <summary>
         /// Initializes a new instance of the <see cref="NATGatewaySettings"/> class.
         /// </summary>
-        internal NATGatewaySettings()
+        public NATGatewaySettings()
         {
         }
 
@@ -57,7 +58,7 @@ namespace Forge.Net.TerraGraf.Configuration
         /// </value>
         public List<AddressEndPoint> EndPoints
         {
-            get { return new List<AddressEndPoint>(mEndPoints); }
+            get { return mInitialized ? new List<AddressEndPoint>(mEndPoints) : mEndPoints; }
             set
             {
                 if (value == null)
@@ -65,7 +66,7 @@ namespace Forge.Net.TerraGraf.Configuration
                     ThrowHelper.ThrowArgumentNullException("value");
                 }
 
-                // különböznek?
+                // are they different?
                 bool dif = value.Count != mEndPoints.Count;
                 if (!dif)
                 {
@@ -85,7 +86,7 @@ namespace Forge.Net.TerraGraf.Configuration
                     mEndPoints.AddRange(value);
                     if (mInitialized)
                     {
-                        // változtatások propagálása
+                        // propagate changes
                         if (NetworkManager.Instance.ManagerState == Management.ManagerStateEnum.Started)
                         {
                             NetworkManager.Instance.SyncRoot.Lock();
@@ -100,8 +101,7 @@ namespace Forge.Net.TerraGraf.Configuration
                                         NetworkManager.Instance.InternalLocalhost.NATGatewayCollection.NATGateways.Add(gw);
                                         changes = true;
                                     }
-                                }
-                                );
+                                });
                                 if (changes)
                                 {
                                     NetworkManager.Instance.InternalSendNATGateways();
@@ -139,9 +139,22 @@ namespace Forge.Net.TerraGraf.Configuration
         /// </summary>
         internal void Initialize()
         {
-            TerraGrafConfiguration.SectionHandler.OnConfigurationChanged += new EventHandler<EventArgs>(SectionHandler_OnConfigurationChanged);
-            SectionHandler_OnConfigurationChanged(null, null);
-            this.mInitialized = true;
+            if (NetworkManager.ConfigurationSource == ConfigurationSourceEnum.ConfigurationManager)
+            {
+                TerraGrafConfiguration.SectionHandler.OnConfigurationChanged += new EventHandler<EventArgs>(SectionHandler_OnConfigurationChanged);
+                SectionHandler_OnConfigurationChanged(null, null);
+            }
+            mInitialized = true;
+        }
+
+        /// <summary>Cleans up.</summary>
+        internal void CleanUp()
+        {
+            if (mInitialized && NetworkManager.ConfigurationSource == ConfigurationSourceEnum.ConfigurationManager)
+            {
+                TerraGrafConfiguration.SectionHandler.OnConfigurationChanged -= new EventHandler<EventArgs>(SectionHandler_OnConfigurationChanged);
+            }
+            mInitialized = false;
         }
 
         #endregion

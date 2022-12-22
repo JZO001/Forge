@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Configuration.Shared;
 using System.Security.Permissions;
 
 namespace Forge.RemoteDesktop.ConfigSection
@@ -15,7 +16,7 @@ namespace Forge.RemoteDesktop.ConfigSection
 #if NETFRAMEWORK
     [SecurityPermission(SecurityAction.Demand, Unrestricted = true)]
 #endif
-    public class RemoteDesktopConfiguration : Forge.Configuration.Shared.SharedConfigSettings<RemoteDesktopSection, RemoteDesktopConfiguration>
+    public class RemoteDesktopConfiguration : SharedConfigSettings<RemoteDesktopSection, RemoteDesktopConfiguration>
     {
 
         #region Constructor(s)

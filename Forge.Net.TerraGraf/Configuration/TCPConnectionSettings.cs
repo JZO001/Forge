@@ -11,9 +11,10 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using Forge.Configuration.Shared;
-using Forge.Logging;
+using Forge.Logging.Abstraction;
 using Forge.Net.Synapse;
 using Forge.Net.TerraGraf.ConfigSection;
+using Forge.Shared;
 
 namespace Forge.Net.TerraGraf.Configuration
 {
@@ -27,7 +28,7 @@ namespace Forge.Net.TerraGraf.Configuration
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(TCPConnectionSettings));
+        private static readonly ILog LOGGER = LogManager.GetLogger<TCPConnectionSettings>();
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private List<ConnectionEntry> mEndPoints = new List<ConnectionEntry>();
@@ -41,7 +42,7 @@ namespace Forge.Net.TerraGraf.Configuration
         /// <summary>
         /// Initializes a new instance of the <see cref="TCPConnectionSettings"/> class.
         /// </summary>
-        internal TCPConnectionSettings()
+        public TCPConnectionSettings()
         {
         }
 
@@ -57,7 +58,7 @@ namespace Forge.Net.TerraGraf.Configuration
         /// </value>
         public List<ConnectionEntry> EndPoints
         {
-            get { return new List<ConnectionEntry>(mEndPoints); }
+            get { return mInitialized ? new List<ConnectionEntry>(mEndPoints) : mEndPoints; }
             set
             {
                 if (value == null)
@@ -65,7 +66,7 @@ namespace Forge.Net.TerraGraf.Configuration
                     ThrowHelper.ThrowArgumentNullException("value");
                 }
 
-                // különböznek?
+                // are they different?
                 bool dif = value.Count != mEndPoints.Count;
                 if (!dif)
                 {
@@ -85,7 +86,7 @@ namespace Forge.Net.TerraGraf.Configuration
                     mEndPoints.AddRange(value);
                     if (mInitialized)
                     {
-                        // változtatások propagálása
+                        // propagate changes
 
                     }
                 }
@@ -114,9 +115,22 @@ namespace Forge.Net.TerraGraf.Configuration
         /// </summary>
         internal void Initialize()
         {
-            TerraGrafConfiguration.SectionHandler.OnConfigurationChanged += new EventHandler<EventArgs>(SectionHandler_OnConfigurationChanged);
-            SectionHandler_OnConfigurationChanged(null, null);
-            this.mInitialized = true;
+            if (NetworkManager.ConfigurationSource == ConfigurationSourceEnum.ConfigurationManager)
+            {
+                TerraGrafConfiguration.SectionHandler.OnConfigurationChanged += new EventHandler<EventArgs>(SectionHandler_OnConfigurationChanged);
+                SectionHandler_OnConfigurationChanged(null, null);
+            }
+            mInitialized = true;
+        }
+
+        /// <summary>Cleans up.</summary>
+        internal void CleanUp()
+        {
+            if (mInitialized && NetworkManager.ConfigurationSource == ConfigurationSourceEnum.ConfigurationManager)
+            {
+                TerraGrafConfiguration.SectionHandler.OnConfigurationChanged -= new EventHandler<EventArgs>(SectionHandler_OnConfigurationChanged);
+            }
+            mInitialized = false;
         }
 
         #endregion

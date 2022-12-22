@@ -25,7 +25,7 @@ namespace Forge.UpdateFramework
         public AppConfigDescriptor(FileInfo fileInfo)
             : base(Guid.NewGuid().ToString(), DescriptorTypeEnum.Configuration, fileInfo)
         {
-            this.IsValid = ConfigurationValidator.ValidateConfiguration(fileInfo.FullName);
+            IsValid = ConfigurationValidator.ValidateConfiguration(fileInfo.FullName);
         }
 
         /// <summary>

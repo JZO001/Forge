@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Shared;
 using System;
 using System.Diagnostics;
 
@@ -19,10 +20,10 @@ namespace Forge.Net.TerraGraf.Messaging
         #region Field(s)
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private MessageTask mMessageTask = null;
+        private readonly MessageTask mMessageTask = null;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private bool mMessageSent = false;
+        private readonly bool mMessageSent = false;
 
         #endregion
 
@@ -38,7 +39,7 @@ namespace Forge.Net.TerraGraf.Messaging
             {
                 ThrowHelper.ThrowArgumentNullException("messageTask");
             }
-            this.mMessageTask = messageTask;
+            mMessageTask = messageTask;
         }
 
         /// <summary>
@@ -49,7 +50,7 @@ namespace Forge.Net.TerraGraf.Messaging
         internal MessageSendEventArgs(MessageTask messageTask, bool messageSent)
             : this(messageTask)
         {
-            this.mMessageSent = messageSent;
+            mMessageSent = messageSent;
         }
 
         #endregion

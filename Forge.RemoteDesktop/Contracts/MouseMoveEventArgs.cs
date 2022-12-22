@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Shared;
 using System;
 using System.Drawing;
 
@@ -27,7 +28,7 @@ namespace Forge.RemoteDesktop.Contracts
             {
                 ThrowHelper.ThrowArgumentNullException("position");
             }
-            this.Position = position;
+            Position = position;
         }
 
         /// <summary>

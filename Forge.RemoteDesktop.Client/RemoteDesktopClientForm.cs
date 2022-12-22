@@ -9,8 +9,8 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using Forge.Collections;
-using Forge.EventRaiser;
-using Forge.Logging;
+using Forge.Invoker;
+using Forge.Logging.Abstraction;
 using Forge.Net.Services.Locators;
 using Forge.Net.Synapse;
 using Forge.RemoteDesktop.Client.Properties;
@@ -27,7 +27,7 @@ namespace Forge.RemoteDesktop.Client
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(RemoteDesktopClientForm));
+        private static readonly ILog LOGGER = LogManager.GetLogger<RemoteDesktopClientForm>();
 
         private string mLastChannelId = string.Empty;
 
@@ -59,7 +59,7 @@ namespace Forge.RemoteDesktop.Client
         {
             InitializeComponent();
 
-            this.Text = Resources.FormTitle;
+            Text = Resources.FormTitle;
             fullScreenToolStripMenuItem.Text = Resources.cmFullScreen;
             pauseToolStripMenuItem.Text = Resources.cmPause;
             setQualityToolStripMenuItem.Text = Resources.cmSetQuality;
@@ -150,8 +150,8 @@ namespace Forge.RemoteDesktop.Client
         public void Connect(string channelId, AddressEndPoint endPoint)
         {
             rdpClient.Connect(channelId, endPoint);
-            this.mLastChannelId = channelId;
-            this.mLastAddressEp = endPoint;
+            mLastChannelId = channelId;
+            mLastAddressEp = endPoint;
         }
 
         /// <summary>
@@ -295,7 +295,7 @@ namespace Forge.RemoteDesktop.Client
                 sendAFileToolStripMenuItem.Enabled = false;
                 rdpClient.UnsubscribeForKeys(new KeysSubscription(Keys.F, false, true, true), new EventHandler<SubscribedKeyPressEventArgs>(FullScreenHandler));
             }
-            Raiser.CallDelegatorBySync(EventConnectionStateChange, new object[] { e });
+            Executor.Invoke(EventConnectionStateChange, this, e);
         }
 
         /// <summary>
@@ -350,10 +350,10 @@ namespace Forge.RemoteDesktop.Client
 
             if (this.FormBorderStyle == System.Windows.Forms.FormBorderStyle.None)
             {
-                this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
-                this.TopMost = mTopMostStateBeforeFullScreen;
-                this.DesktopBounds = mBoundaryBeforeFullScreen;
-                this.WindowState = mPreviousWindowState;
+                FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+                TopMost = mTopMostStateBeforeFullScreen;
+                DesktopBounds = mBoundaryBeforeFullScreen;
+                WindowState = mPreviousWindowState;
                 fullScreenToolStripMenuItem.Text = Resources.cmFullScreen;
             }
             else
@@ -362,10 +362,10 @@ namespace Forge.RemoteDesktop.Client
                 mTopMostStateBeforeFullScreen = this.TopMost;
                 mBoundaryBeforeFullScreen = this.DesktopBounds;
                 Screen currentScreen = Screen.FromControl(this);
-                this.WindowState = FormWindowState.Normal;
-                this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-                this.TopMost = true;
-                this.DesktopBounds = currentScreen.Bounds;
+                WindowState = FormWindowState.Normal;
+                FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+                TopMost = true;
+                DesktopBounds = currentScreen.Bounds;
                 fullScreenToolStripMenuItem.Text = Resources.cmFullScreenExit;
             }
         }
@@ -475,7 +475,7 @@ namespace Forge.RemoteDesktop.Client
             try
             {
                 rdpClient.Connect(mLastChannelId, mLastAddressEp);
-                if (this.Login(mLastUsername, mLastPassword) == LoginResponseStateEnum.AccessGranted)
+                if (Login(mLastUsername, mLastPassword) == LoginResponseStateEnum.AccessGranted)
                 {
                     rdpClient.StartEventPump();
                 }

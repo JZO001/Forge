@@ -11,15 +11,16 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Forge.Collections;
+using Forge.Configuration;
 using Forge.Configuration.Shared;
-using Forge.IO;
-using Forge.Logging;
+using Forge.Logging.Abstraction;
 using Forge.Net.Remoting.Messaging;
 using Forge.Net.Remoting.Sinks;
 using Forge.Net.Synapse;
 using Forge.Net.Synapse.NetworkFactory;
 using Forge.Net.Synapse.NetworkServices;
 using Forge.Reflection;
+using Forge.Shared;
 using Forge.Threading;
 
 namespace Forge.Net.Remoting.Channels
@@ -30,12 +31,12 @@ namespace Forge.Net.Remoting.Channels
     /// <summary>
     /// TCP Channel implementation
     /// </summary>
-    public sealed class TCPChannel : Channel
+    public sealed class TCPChannel : Channel, ITCPChannel
     {
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(TCPChannel));
+        private static readonly ILog LOGGER = LogManager.GetLogger<TCPChannel>();
 
         private static readonly Protocol mNetworkProtocol = new Protocol();
 
@@ -43,14 +44,14 @@ namespace Forge.Net.Remoting.Channels
 
         private readonly Dictionary<long, SessionMap> mConnectionId_and_SessionMap = new Dictionary<long, SessionMap>();
 
-        private readonly Dictionary<String, SessionMap> mSessionId_and_SessionMap = new Dictionary<String, SessionMap>();
+        private readonly Dictionary<string, SessionMap> mSessionId_and_SessionMap = new Dictionary<string, SessionMap>();
 
         private DeadlockSafeLock mSessionMapLock = null;
 
         private bool mListening = false;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private String mTempStreamStorageFolder = string.Empty;
+        private string mTempStreamStorageFolder = string.Empty;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private int mMaxSendMessageSize = 32768; // 32KiB
@@ -77,7 +78,7 @@ namespace Forge.Net.Remoting.Channels
         public TCPChannel()
             : base()
         {
-            this.mStreamsSupported = true;
+            mStreamsSupported = true;
         }
 
         /// <summary>
@@ -86,7 +87,7 @@ namespace Forge.Net.Remoting.Channels
         /// <param name="channelId">The channel id.</param>
         /// <param name="sendMessageSinks">The send message sinks.</param>
         /// <param name="receiveMessageSinks">The receive message sinks.</param>
-        public TCPChannel(String channelId, ICollection<IMessageSink> sendMessageSinks, ICollection<IMessageSink> receiveMessageSinks)
+        public TCPChannel(string channelId, ICollection<IMessageSink> sendMessageSinks, ICollection<IMessageSink> receiveMessageSinks)
             : this(channelId, sendMessageSinks, receiveMessageSinks, new List<AddressEndPoint>())
         {
         }
@@ -98,7 +99,7 @@ namespace Forge.Net.Remoting.Channels
         /// <param name="sendMessageSinks">The send message sinks.</param>
         /// <param name="receiveMessageSinks">The receive message sinks.</param>
         /// <param name="serverData">The server data.</param>
-        public TCPChannel(String channelId, ICollection<IMessageSink> sendMessageSinks, ICollection<IMessageSink> receiveMessageSinks,
+        public TCPChannel(string channelId, ICollection<IMessageSink> sendMessageSinks, ICollection<IMessageSink> receiveMessageSinks,
             IEnumerable<AddressEndPoint> serverData)
             : this(channelId, sendMessageSinks, receiveMessageSinks, new List<AddressEndPoint>(), new DefaultNetworkFactory(),
             NetworkManager.DefaultServerStreamFactory, NetworkManager.DefaultClientStreamFactory)
@@ -114,8 +115,8 @@ namespace Forge.Net.Remoting.Channels
         /// <param name="networkFactory">The network factory.</param>
         /// <param name="serverStreamFactory">The server stream factory.</param>
         /// <param name="clientStreamFactory">The client stream factory.</param>
-        public TCPChannel(String channelId, ICollection<IMessageSink> sendMessageSinks, ICollection<IMessageSink> receiveMessageSinks,
-            INetworkFactory networkFactory, IServerStreamFactory serverStreamFactory, IClientStreamFactory clientStreamFactory)
+        public TCPChannel(string channelId, ICollection<IMessageSink> sendMessageSinks, ICollection<IMessageSink> receiveMessageSinks,
+            INetworkFactoryBase networkFactory, IServerStreamFactory serverStreamFactory, IClientStreamFactory clientStreamFactory)
             : this(channelId, sendMessageSinks, receiveMessageSinks, new List<AddressEndPoint>(), networkFactory, serverStreamFactory, clientStreamFactory)
         {
         }
@@ -128,8 +129,8 @@ namespace Forge.Net.Remoting.Channels
         /// <param name="receiveMessageSinks">The receive message sinks.</param>
         /// <param name="serverData">The server data.</param>
         /// <param name="networkFactory">The network factory.</param>
-        public TCPChannel(String channelId, ICollection<IMessageSink> sendMessageSinks, ICollection<IMessageSink> receiveMessageSinks,
-            IEnumerable<AddressEndPoint> serverData, INetworkFactory networkFactory)
+        public TCPChannel(string channelId, ICollection<IMessageSink> sendMessageSinks, ICollection<IMessageSink> receiveMessageSinks,
+            IEnumerable<AddressEndPoint> serverData, INetworkFactoryBase networkFactory)
             : this(channelId, sendMessageSinks, receiveMessageSinks, serverData, networkFactory,
             NetworkManager.DefaultServerStreamFactory, NetworkManager.DefaultClientStreamFactory)
         {
@@ -145,9 +146,9 @@ namespace Forge.Net.Remoting.Channels
         /// <param name="networkFactory">The network factory.</param>
         /// <param name="serverStreamFactory">The server stream factory.</param>
         /// <param name="clientStreamFactory">The client stream factory.</param>
-        public TCPChannel(String channelId, ICollection<IMessageSink> sendMessageSinks, ICollection<IMessageSink> receiveMessageSinks,
+        public TCPChannel(string channelId, ICollection<IMessageSink> sendMessageSinks, ICollection<IMessageSink> receiveMessageSinks,
             IEnumerable<AddressEndPoint> serverData,
-            INetworkFactory networkFactory, IServerStreamFactory serverStreamFactory, IClientStreamFactory clientStreamFactory)
+            INetworkFactoryBase networkFactory, IServerStreamFactory serverStreamFactory, IClientStreamFactory clientStreamFactory)
             : base(channelId, sendMessageSinks, receiveMessageSinks)
         {
             if (serverData == null)
@@ -167,14 +168,14 @@ namespace Forge.Net.Remoting.Channels
                 ThrowHelper.ThrowArgumentNullException("clientStreamFactory");
             }
 
-            this.mNetworkManager = new NetworkManager(networkFactory);
-            this.mNetworkManager.ServerStreamFactory = serverStreamFactory;
-            this.mNetworkManager.ClientStreamFactory = clientStreamFactory;
-            this.mServerEndpoints.AddRange(serverData);
-            this.mNetworkManager.NetworkPeerConnected += new EventHandler<ConnectionEventArgs>(NetworkManager_NetworkPeerConnected);
-            this.mStreamsSupported = true;
-            this.mSessionMapLock = new DeadlockSafeLock(String.Format("TCPChannel_SessionMaps_{0}", mChannelId));
-            this.mInitialized = true;
+            mNetworkManager = new NetworkManager(networkFactory);
+            mNetworkManager.ServerStreamFactory = serverStreamFactory;
+            mNetworkManager.ClientStreamFactory = clientStreamFactory;
+            mServerEndpoints.AddRange(serverData);
+            mNetworkManager.NetworkPeerConnected += new EventHandler<ConnectionEventArgs>(NetworkManager_NetworkPeerConnected);
+            mStreamsSupported = true;
+            mSessionMapLock = new DeadlockSafeLock(string.Format("TCPChannel_SessionMaps_{0}", mChannelId));
+            mInitialized = true;
         }
 
         #endregion
@@ -188,7 +189,7 @@ namespace Forge.Net.Remoting.Channels
         /// The temp stream storage folder.
         /// </value>
         /// <exception cref="Forge.Configuration.Shared.InvalidConfigurationException"></exception>
-        public String TempStreamStorageFolder
+        public string TempStreamStorageFolder
         {
             get { return mTempStreamStorageFolder; }
             set
@@ -199,7 +200,7 @@ namespace Forge.Net.Remoting.Channels
                 }
                 if (!PathHelper.PerformFolderSecurityTest(value))
                 {
-                    throw new InvalidConfigurationException(String.Format("Security test failed on the temp stream folder: {0}. Please add read, write and delete rights to this folder.", this.mTempStreamStorageFolder));
+                    throw new InvalidConfigurationException(string.Format("Security test failed on the temp stream folder: {0}. Please add read, write and delete rights to this folder.", mTempStreamStorageFolder));
                 }
                 mTempStreamStorageFolder = value;
             }
@@ -321,103 +322,98 @@ namespace Forge.Net.Remoting.Channels
         /// <exception cref="Forge.Configuration.Shared.InvalidConfigurationValueException">No server stream factory type definied.
         /// or
         /// No client stream factory type definied.</exception>
-        public override void Initialize(CategoryPropertyItem pi)
+        public override void Initialize(IPropertyItem pi)
         {
             if (!mInitialized)
             {
                 base.Initialize(pi);
                 try
                 {
-                    if (string.IsNullOrEmpty(pi.Id))
                     {
-                        throw new InvalidConfigurationException("Channel id has not been definied.");
-                    }
-                    this.mChannelId = pi.Id;
-                    {
-                        CategoryPropertyItem tempStreamFolder = ConfigurationAccessHelper.GetCategoryPropertyByPath(pi.PropertyItems, "TempStreamStorageFolder");
-                        if (tempStreamFolder != null && tempStreamFolder.EntryValue != null)
+                        IPropertyItem tempStreamFolder = ConfigurationAccessHelper.GetPropertyByPath(pi, "TempStreamStorageFolder");
+                        if (tempStreamFolder != null && tempStreamFolder.Value != null)
                         {
-                            this.mTempStreamStorageFolder = tempStreamFolder.EntryValue;
+                            mTempStreamStorageFolder = tempStreamFolder.Value;
                         }
                         try
                         {
-                            if (!PathHelper.PerformFolderSecurityTest(this.mTempStreamStorageFolder))
+                            if (!PathHelper.PerformFolderSecurityTest(mTempStreamStorageFolder))
                             {
                                 throw new IOException("Temp stream folder failed on security test.");
                             }
                         }
                         catch (IOException ex)
                         {
-                            throw new InvalidConfigurationException(String.Format("Security test failed on the temp stream folder: {0}. Please add read, write and delete rights to this folder.", this.mTempStreamStorageFolder), ex);
+                            throw new InvalidConfigurationException(string.Format("Security test failed on the temp stream folder: {0}. Please add read, write and delete rights to this folder.", mTempStreamStorageFolder), ex);
                         }
                     }
                     {
-                        this.mMaxSendMessageSize = 32768;
+                        mMaxSendMessageSize = 32768;
                         int value = 32768;
-                        if (ConfigurationAccessHelper.ParseIntValue(pi.PropertyItems, "MaxSendMessageSize", 1, Int32.MaxValue, ref value))
+                        if (ConfigurationAccessHelper.ParseIntValue(pi, "MaxSendMessageSize", 1, int.MaxValue, ref value))
                         {
-                            this.mMaxSendMessageSize = value;
+                            mMaxSendMessageSize = value;
                         }
                     }
                     {
-                        this.mMaxReceiveMessageSize = 32768;
+                        mMaxReceiveMessageSize = 32768;
                         int value = 32768;
-                        if (ConfigurationAccessHelper.ParseIntValue(pi.PropertyItems, "MaxReceiveMessageSize", 1, Int32.MaxValue, ref value))
+                        if (ConfigurationAccessHelper.ParseIntValue(pi, "MaxReceiveMessageSize", 1, int.MaxValue, ref value))
                         {
-                            this.mMaxReceiveMessageSize = value;
+                            mMaxReceiveMessageSize = value;
                         }
                     }
                     {
-                        this.mMaxSendStreamSize = 268435456;
+                        mMaxSendStreamSize = 268435456;
                         long value = 268435456;
-                        if (ConfigurationAccessHelper.ParseLongValue(pi.PropertyItems, "MaxSendStreamSize", 1, Int64.MaxValue, ref value))
+                        if (ConfigurationAccessHelper.ParseLongValue(pi, "MaxSendStreamSize", 1, long.MaxValue, ref value))
                         {
-                            this.mMaxSendStreamSize = value;
+                            mMaxSendStreamSize = value;
                         }
                     }
                     {
-                        this.mMaxReceiveStreamSize = 268435456;
+                        mMaxReceiveStreamSize = 268435456;
                         long value = 268435456;
-                        if (ConfigurationAccessHelper.ParseLongValue(pi.PropertyItems, "MaxReceiveStreamSize", 1, Int64.MaxValue, ref value))
+                        if (ConfigurationAccessHelper.ParseLongValue(pi, "MaxReceiveStreamSize", 1, long.MaxValue, ref value))
                         {
-                            this.mMaxReceiveStreamSize = value;
+                            mMaxReceiveStreamSize = value;
                         }
                     }
                     {
-                        this.mSendMessageSinks.Clear();
-                        this.mReceiveMessageSinks.Clear();
-                        CategoryPropertyItem itemRoot = ConfigurationAccessHelper.GetCategoryPropertyByPath(pi.PropertyItems, "SendSinks");
+                        mSendMessageSinks.Clear();
+                        mReceiveMessageSinks.Clear();
+                        IPropertyItem itemRoot = ConfigurationAccessHelper.GetPropertyByPath(pi, "SendSinks");
                         if (itemRoot != null)
                         {
-                            IEnumerator<CategoryPropertyItem> iterator = itemRoot.GetEnumerator();
+                            IEnumerator<IPropertyItem> iterator = itemRoot.Items.Values.GetEnumerator();
                             while (iterator.MoveNext())
                             {
-                                this.mSendMessageSinks.Add(CreateMessageSink(iterator.Current));
+                                mSendMessageSinks.Add(CreateMessageSink(iterator.Current));
                             }
                         }
-                        itemRoot = ConfigurationAccessHelper.GetCategoryPropertyByPath(pi.PropertyItems, "ReceiveSinks");
+                        itemRoot = ConfigurationAccessHelper.GetPropertyByPath(pi, "ReceiveSinks");
                         if (itemRoot != null)
                         {
-                            IEnumerator<CategoryPropertyItem> iterator = itemRoot.GetEnumerator();
+                            IEnumerator<IPropertyItem> iterator = itemRoot.Items.Values.GetEnumerator();
                             while (iterator.MoveNext())
                             {
-                                this.mReceiveMessageSinks.Add(CreateMessageSink(iterator.Current));
+                                mReceiveMessageSinks.Add(CreateMessageSink(iterator.Current));
                             }
                         }
-                        if (this.mSendMessageSinks.Count == 0)
+                        if (mSendMessageSinks.Count == 0)
                         {
                             throw new InvalidConfigurationException("No send message sink definied.");
                         }
-                        if (this.mReceiveMessageSinks.Count == 0)
+                        if (mReceiveMessageSinks.Count == 0)
                         {
                             throw new InvalidConfigurationException("No receive message sink definied.");
                         }
                     }
                     {
-                        CategoryPropertyItem itemRoot = ConfigurationAccessHelper.GetCategoryPropertyByPath(pi.PropertyItems, "NetworkFactoryType");
+                        IPropertyItem itemRoot = ConfigurationAccessHelper.GetPropertyByPath(pi, "NetworkFactoryType");
                         if (itemRoot != null)
                         {
-                            if (string.IsNullOrEmpty(itemRoot.EntryValue))
+                            if (string.IsNullOrEmpty(itemRoot.Value))
                             {
                                 mNetworkManager = new NetworkManager();
                             }
@@ -425,14 +421,14 @@ namespace Forge.Net.Remoting.Channels
                             {
                                 try
                                 {
-                                    if (LOGGER.IsInfoEnabled) LOGGER.Info(string.Format("TCPChannel, create network factory instance from type '{0}'. ChannelId: '{1}'.", itemRoot.EntryValue, this.ChannelId));
-                                    Type networkFactoryType = TypeHelper.GetTypeFromString(itemRoot.EntryValue);
-                                    INetworkFactory factory = (INetworkFactory)networkFactoryType.GetConstructor(new Type[] { }).Invoke(null);
+                                    if (LOGGER.IsInfoEnabled) LOGGER.Info(string.Format("TCPChannel, create network factory instance from type '{0}'. ChannelId: '{1}'.", itemRoot.Value, ChannelId));
+                                    Type networkFactoryType = TypeHelper.GetTypeFromString(itemRoot.Value);
+                                    INetworkFactoryBase factory = (INetworkFactoryBase)networkFactoryType.GetConstructor(new Type[] { }).Invoke(null);
                                     mNetworkManager = new NetworkManager(factory);
                                 }
                                 catch (Exception ex)
                                 {
-                                    throw new InvalidConfigurationException(string.Format("Failed to instantiate network factory, type: {0}", itemRoot.EntryValue), ex);
+                                    throw new InvalidConfigurationException(string.Format("Failed to instantiate network factory, type: {0}", itemRoot.Value), ex);
                                 }
                             }
                         }
@@ -442,59 +438,59 @@ namespace Forge.Net.Remoting.Channels
                         }
                     }
                     {
-                        CategoryPropertyItem itemRoot = ConfigurationAccessHelper.GetCategoryPropertyByPath(pi.PropertyItems, "ServerStreamFactoryType");
+                        IPropertyItem itemRoot = ConfigurationAccessHelper.GetPropertyByPath(pi, "ServerStreamFactoryType");
                         if (itemRoot != null)
                         {
-                            if (string.IsNullOrEmpty(itemRoot.EntryValue))
+                            if (string.IsNullOrEmpty(itemRoot.Value))
                             {
                                 throw new InvalidConfigurationValueException("No server stream factory type definied.");
                             }
                             IServerStreamFactory factory = null;
                             try
                             {
-                                if (LOGGER.IsInfoEnabled) LOGGER.Info(string.Format("TCPChannel, create server stream factory instance from type '{0}'. ChannelId: '{1}'.", itemRoot.EntryValue, this.ChannelId));
-                                Type serverStreamFactoryType = TypeHelper.GetTypeFromString(itemRoot.EntryValue);
+                                if (LOGGER.IsInfoEnabled) LOGGER.Info(string.Format("TCPChannel, create server stream factory instance from type '{0}'. ChannelId: '{1}'.", itemRoot.Value, ChannelId));
+                                Type serverStreamFactoryType = TypeHelper.GetTypeFromString(itemRoot.Value);
                                 factory = (IServerStreamFactory)serverStreamFactoryType.GetConstructor(new Type[] { }).Invoke(null);
                             }
                             catch (Exception ex)
                             {
-                                throw new InvalidConfigurationException(string.Format("Failed to instantiate server stream factory, type: {0}", itemRoot.EntryValue), ex);
+                                throw new InvalidConfigurationException(string.Format("Failed to instantiate server stream factory, type: {0}", itemRoot.Value), ex);
                             }
                             factory.Initialize(itemRoot);
                             mNetworkManager.ServerStreamFactory = factory;
                         }
                     }
                     {
-                        CategoryPropertyItem itemRoot = ConfigurationAccessHelper.GetCategoryPropertyByPath(pi.PropertyItems, "ClientStreamFactoryType");
+                        IPropertyItem itemRoot = ConfigurationAccessHelper.GetPropertyByPath(pi, "ClientStreamFactoryType");
                         if (itemRoot != null)
                         {
-                            if (string.IsNullOrEmpty(itemRoot.EntryValue))
+                            if (string.IsNullOrEmpty(itemRoot.Value))
                             {
                                 throw new InvalidConfigurationValueException("No client stream factory type definied.");
                             }
                             IClientStreamFactory factory = null;
                             try
                             {
-                                if (LOGGER.IsInfoEnabled) LOGGER.Info(string.Format("TCPChannel, create client stream factory instance from type '{0}'. ChannelId: '{1}'.", itemRoot.EntryValue, this.ChannelId));
-                                Type clientStreamFactoryType = TypeHelper.GetTypeFromString(itemRoot.EntryValue);
+                                if (LOGGER.IsInfoEnabled) LOGGER.Info(string.Format("TCPChannel, create client stream factory instance from type '{0}'. ChannelId: '{1}'.", itemRoot.Value, ChannelId));
+                                Type clientStreamFactoryType = TypeHelper.GetTypeFromString(itemRoot.Value);
                                 factory = (IClientStreamFactory)clientStreamFactoryType.GetConstructor(new Type[] { }).Invoke(null);
                             }
                             catch (Exception ex)
                             {
-                                throw new InvalidConfigurationException(string.Format("Failed to instantiate client stream factory, type: {0}", itemRoot.EntryValue), ex);
+                                throw new InvalidConfigurationException(string.Format("Failed to instantiate client stream factory, type: {0}", itemRoot.Value), ex);
                             }
                             factory.Initialize(itemRoot);
                             mNetworkManager.ClientStreamFactory = factory;
                         }
                     }
-                    this.mSessionMapLock = new DeadlockSafeLock(String.Format("TCPChannel_SessionMaps_{0}", mChannelId));
-                    this.mNetworkManager.NetworkPeerConnected += new EventHandler<ConnectionEventArgs>(NetworkManager_NetworkPeerConnected);
-                    this.mInitialized = true;
+                    mSessionMapLock = new DeadlockSafeLock(string.Format("TCPChannel_SessionMaps_{0}", mChannelId));
+                    mNetworkManager.NetworkPeerConnected += new EventHandler<ConnectionEventArgs>(NetworkManager_NetworkPeerConnected);
+                    mInitialized = true;
                 }
                 catch (InvalidConfigurationException ex)
                 {
                     if (LOGGER.IsErrorEnabled) LOGGER.Error("Failed to initialize TCPChannel.", ex);
-                    throw ex;
+                    throw;
                 }
             }
         }
@@ -511,7 +507,7 @@ namespace Forge.Net.Remoting.Channels
             {
                 throw new IOException("Connection information has not been specified.");
             }
-            return Connect(mConnectionData);
+            return ConnectTo(mConnectionData);
         }
 
         /// <summary>
@@ -519,7 +515,7 @@ namespace Forge.Net.Remoting.Channels
         /// </summary>
         /// <param name="remoteEp">The remote ep.</param>
         /// <returns>SessionId</returns>
-        public override string Connect(AddressEndPoint remoteEp)
+        public override string ConnectTo(AddressEndPoint remoteEp)
         {
             DoDisposeCheck();
             if (remoteEp == null)
@@ -527,42 +523,42 @@ namespace Forge.Net.Remoting.Channels
                 ThrowHelper.ThrowArgumentNullException("remoteEp");
             }
 
-            String result = null;
+            string result = null;
 
-            this.mSessionMapLock.Lock();
+            mSessionMapLock.Lock();
             try
             {
                 foreach (SessionMap map in mConnectionId_and_SessionMap.Values)
                 {
                     if (map.Reconnectable)
                     {
-                        if (map.RemoteEndPoint.Host.Equals(remoteEp.Host) && map.RemoteEndPoint.Port.Equals(remoteEp.Port) && map.Stream.Connected)
+                        if (map.RemoteEndPoint.Host.Equals(remoteEp.Host) && map.RemoteEndPoint.Port.Equals(remoteEp.Port))
                         {
-                            result = map.SessionId;
+                            if (map.Stream.Connected) result = map.SessionId;
+                            break;
                         }
-                        break;
                     }
                 }
             }
             finally
             {
-                this.mSessionMapLock.Unlock();
+                mSessionMapLock.Unlock();
             }
 
             if (result == null)
             {
-                NetworkStream networkStream = mNetworkManager.Connect(remoteEp); // csatlakozás
-                this.mSessionMapLock.Lock();
+                NetworkStream networkStream = mNetworkManager.Connect(remoteEp); // connection
+                mSessionMapLock.Lock();
                 try
                 {
                     ConnectionEstablishedEventHandler(networkStream);
-                    SessionMap map = mConnectionId_and_SessionMap[networkStream.Id]; // map kinyerése és adminja
-                    map.Reconnectable = true; // általam kezdeményezett kapcsolat session-je újraindítható
+                    SessionMap map = mConnectionId_and_SessionMap[networkStream.Id]; // map acquire and admin
+                    map.Reconnectable = true; // session can be recycle if I started it
                     result = map.SessionId;
                 }
                 finally
                 {
-                    this.mSessionMapLock.Unlock();
+                    mSessionMapLock.Unlock();
                 }
             }
 
@@ -585,14 +581,14 @@ namespace Forge.Net.Remoting.Channels
 
             bool result = false;
 
-            this.mSessionMapLock.Lock();
+            mSessionMapLock.Lock();
             try
             {
                 foreach (SessionMap map in mConnectionId_and_SessionMap.Values)
                 {
                     if (map.SessionId.Equals(sessionId))
                     {
-                        map.Reconnectable = false; // a SessionMap eldobásra kerül, a session azonosító megszűnik
+                        map.Reconnectable = false; // drop SessionMap, session identifier dropped out
                         map.Stream.Dispose();
                         ConnectionEndEventHandler(map.Stream);
                         result = true;
@@ -602,7 +598,7 @@ namespace Forge.Net.Remoting.Channels
             }
             finally
             {
-                this.mSessionMapLock.Unlock();
+                mSessionMapLock.Unlock();
             }
 
             return result;
@@ -640,7 +636,7 @@ namespace Forge.Net.Remoting.Channels
 
             SessionMap map = null;
             bool connectIt = false;
-            this.mSessionMapLock.Lock();
+            mSessionMapLock.Lock();
             try
             {
                 if (mSessionId_and_SessionMap.ContainsKey(sessionId))
@@ -656,13 +652,13 @@ namespace Forge.Net.Remoting.Channels
                         }
                         else
                         {
-                            throw new ConnectionNotFoundException(String.Format("Unable to reopen connection. SessionId: '{0}'.", sessionId));
+                            throw new ConnectionNotFoundException(string.Format("Unable to reopen connection. SessionId: '{0}'.", sessionId));
                         }
                     }
                 }
                 else
                 {
-                    throw new ConnectionNotFoundException(String.Format("Session not found. SessionId: '{0}'.", sessionId));
+                    throw new ConnectionNotFoundException(string.Format("Session not found. SessionId: '{0}'.", sessionId));
                 }
 
                 //LOGGER.info("SessionId: " + sessionId + ", Connect: " + connectIt);
@@ -681,7 +677,7 @@ namespace Forge.Net.Remoting.Channels
 
                         if (map == null || (!map.SessionId.Equals(sessionId) && !string.IsNullOrEmpty(sessionId)))
                         {
-                            throw new IOException(String.Format("Unable to reopen connection with the same sessionId. New sessionId: {0}, old sessionId: {1}", map == null ? "" : map.SessionId, sessionId));
+                            throw new IOException(string.Format("Unable to reopen connection with the same sessionId. New sessionId: {0}, old sessionId: {1}", map == null ? "" : map.SessionId, sessionId));
                         }
                         if (!map.Stream.Connected)
                         {
@@ -700,7 +696,7 @@ namespace Forge.Net.Remoting.Channels
             }
             finally
             {
-                this.mSessionMapLock.Unlock();
+                mSessionMapLock.Unlock();
             }
 
             // üzenet küldése
@@ -739,7 +735,7 @@ namespace Forge.Net.Remoting.Channels
                         mServerActiveEndpoints.AddRange(tmpList);
                     }
                 }
-                this.mListening = true;
+                mListening = true;
             }
         }
 
@@ -749,11 +745,11 @@ namespace Forge.Net.Remoting.Channels
         public override void StopListening()
         {
             DoDisposeCheck();
-            if (this.mNetworkManager != null)
+            if (mNetworkManager != null)
             {
-                this.mNetworkManager.StopServers();
+                mNetworkManager.StopServers();
             }
-            this.mListening = false;
+            mListening = false;
         }
 
         /// <summary>
@@ -765,16 +761,39 @@ namespace Forge.Net.Remoting.Channels
         {
             SessionMap result = null;
 
-            this.mSessionMapLock.Lock();
+            mSessionMapLock.Lock();
             try
             {
                 mSessionId_and_SessionMap.TryGetValue(sessionId, out result);
             }
             finally
             {
-                this.mSessionMapLock.Unlock();
+                mSessionMapLock.Unlock();
             }
 
+            return result;
+        }
+
+        /// <summary>Determines whether the specified session identifier is connected.</summary>
+        /// <param name="sessionId">The session identifier.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified session identifier is connected; otherwise, <c>false</c>.</returns>
+        public override bool IsConnected(string sessionId)
+        {
+            bool result = false;
+            mSessionMapLock.Lock();
+            try
+            {
+                SessionMap sessionMap = null;
+                if (mSessionId_and_SessionMap.TryGetValue(sessionId, out sessionMap))
+                {
+                    result = sessionMap.Stream.Connected;
+                }
+            }
+            finally
+            {
+                mSessionMapLock.Unlock();
+            }
             return result;
         }
 
@@ -790,29 +809,29 @@ namespace Forge.Net.Remoting.Channels
         {
             if (disposing && !IsDisposed)
             {
-                if (this.mNetworkManager != null)
+                if (mNetworkManager != null)
                 {
-                    this.mNetworkManager.StopServers();
-                    this.mNetworkManager.NetworkPeerConnected -= new EventHandler<ConnectionEventArgs>(NetworkManager_NetworkPeerConnected);
+                    mNetworkManager.StopServers();
+                    mNetworkManager.NetworkPeerConnected -= new EventHandler<ConnectionEventArgs>(NetworkManager_NetworkPeerConnected);
 
-                    if (this.mSessionMapLock != null)
+                    if (mSessionMapLock != null)
                     {
-                        this.mSessionMapLock.Lock();
+                        mSessionMapLock.Lock();
                         try
                         {
-                            foreach (KeyValuePair<string, SessionMap> entry in this.mSessionId_and_SessionMap)
+                            foreach (KeyValuePair<string, SessionMap> entry in mSessionId_and_SessionMap)
                             {
                                 entry.Value.Stream.Dispose();
                             }
-                            this.mSessionId_and_SessionMap.Clear();
+                            mSessionId_and_SessionMap.Clear();
                         }
                         finally
                         {
-                            this.mSessionMapLock.Unlock();
+                            mSessionMapLock.Unlock();
                         }
                     }
 
-                    this.mNetworkManager.Dispose();
+                    mNetworkManager.Dispose();
                 }
             }
             base.Dispose(disposing);
@@ -829,12 +848,12 @@ namespace Forge.Net.Remoting.Channels
 
         private void ConnectionEstablishedEventHandler(NetworkStream stream)
         {
-            this.mSessionMapLock.Lock();
+            mSessionMapLock.Lock();
             try
             {
                 SessionMap sessionMap = null;
                 bool isExist = false;
-                foreach (KeyValuePair<String, SessionMap> entry in this.mSessionId_and_SessionMap)
+                foreach (KeyValuePair<string, SessionMap> entry in mSessionId_and_SessionMap)
                 {
                     SessionMap innerSessionMap = entry.Value;
                     if (innerSessionMap.Reconnectable && !innerSessionMap.Stream.Connected
@@ -845,19 +864,19 @@ namespace Forge.Net.Remoting.Channels
                         isExist = true;
                         innerSessionMap.Stream = stream;
                         sessionMap = innerSessionMap;
-                        if (LOGGER.IsDebugEnabled) LOGGER.Debug(String.Format("TCPChannel, Session revived: {0}, StreamId: {1}", innerSessionMap.SessionId, stream.Id));
+                        if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("TCPChannel, Session revived: {0}, StreamId: {1}", innerSessionMap.SessionId, stream.Id));
                         break;
                     }
                 }
                 if (!isExist)
                 {
                     sessionMap = new SessionMap(this, stream.RemoteEndPoint, stream.LocalEndPoint, stream);
-                    this.mSessionId_and_SessionMap.Add(sessionMap.SessionId, sessionMap);
+                    mSessionId_and_SessionMap.Add(sessionMap.SessionId, sessionMap);
                 }
 
                 if (stream.Connected)
                 {
-                    this.mConnectionId_and_SessionMap.Add(stream.Id, sessionMap);
+                    mConnectionId_and_SessionMap.Add(stream.Id, sessionMap);
                     sessionMap.StartReceive();
                     sessionMap.StartSend();
                     OnSessionStateChange(new SessionStateEventArgs(sessionMap.SessionId, true));
@@ -869,45 +888,44 @@ namespace Forge.Net.Remoting.Channels
             }
             catch (Exception ex)
             {
-                String message = "Unexpected exception occured while processing new connection.";
-                if (LOGGER.IsErrorEnabled) LOGGER.Error(message, ex);
+                if (LOGGER.IsErrorEnabled) LOGGER.Error("Unexpected exception occured while processing new connection.", ex);
             }
             finally
             {
-                this.mSessionMapLock.Unlock();
+                mSessionMapLock.Unlock();
             }
         }
 
         private void ConnectionEndEventHandler(NetworkStream stream)
         {
-            String sessionId = null;
+            string sessionId = null;
 
-            if (LOGGER.IsDebugEnabled) LOGGER.Debug(String.Format("TCPChannel, an underlying connection lost. Id: {0}", stream.Id));
+            if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("TCPChannel, an underlying connection lost. Id: {0}", stream.Id));
 
-            this.mSessionMapLock.Lock();
+            mSessionMapLock.Lock();
             try
             {
                 long id = stream.Id;
-                if (this.mConnectionId_and_SessionMap.ContainsKey(id))
+                if (mConnectionId_and_SessionMap.ContainsKey(id))
                 {
-                    SessionMap map = this.mConnectionId_and_SessionMap[id];
+                    SessionMap map = mConnectionId_and_SessionMap[id];
                     sessionId = map.SessionId;
-                    this.mConnectionId_and_SessionMap.Remove(id);
+                    mConnectionId_and_SessionMap.Remove(id);
                     if (!map.Reconnectable)
                     {
                         // ha nem újracsatlakoztatható, a session-t eldobjuk azonnal
-                        this.mSessionId_and_SessionMap.Remove(sessionId);
+                        mSessionId_and_SessionMap.Remove(sessionId);
                     }
                 }
             }
             finally
             {
-                this.mSessionMapLock.Unlock();
+                mSessionMapLock.Unlock();
             }
 
             if (sessionId != null)
             {
-                if (LOGGER.IsDebugEnabled) LOGGER.Debug(String.Format("TCPChannel, a session has been deactivated. SessionId: {0}", sessionId));
+                if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("TCPChannel, a session has been deactivated. SessionId: {0}", sessionId));
                 OnSessionStateChange(new SessionStateEventArgs(sessionId, false));
             }
         }
@@ -925,7 +943,7 @@ namespace Forge.Net.Remoting.Channels
             #region Field(s)
 
             [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-            private readonly String mSessionId = Guid.NewGuid().ToString();
+            private readonly string mSessionId = Guid.NewGuid().ToString();
 
             [DebuggerBrowsable(DebuggerBrowsableState.Never)]
             private TCPChannel mChannel = null;
@@ -941,9 +959,9 @@ namespace Forge.Net.Remoting.Channels
             [DebuggerBrowsable(DebuggerBrowsableState.Never)]
             private bool mReconnectable = false;
 
-            private readonly Dictionary<String, SendTask> mWaitsForAcknowledge = new Dictionary<String, SendTask>();
+            private readonly Dictionary<string, SendTask> mWaitsForAcknowledge = new Dictionary<string, SendTask>();
 
-            private readonly Dictionary<String, SendTask> mWaitsForResponse = new Dictionary<String, SendTask>();
+            private readonly Dictionary<string, SendTask> mWaitsForResponse = new Dictionary<string, SendTask>();
 
             private Thread mReceiveThread = null;
 
@@ -970,10 +988,10 @@ namespace Forge.Net.Remoting.Channels
             /// <param name="stream">The stream.</param>
             internal SessionMap(TCPChannel channel, AddressEndPoint remoteEndPoint, AddressEndPoint localEndPoint, NetworkStream stream)
             {
-                this.mChannel = channel;
-                this.mRemoteEndPoint = remoteEndPoint;
-                this.mLocalEndPoint = localEndPoint;
-                this.mStream = stream;
+                mChannel = channel;
+                mRemoteEndPoint = remoteEndPoint;
+                mLocalEndPoint = localEndPoint;
+                mStream = stream;
             }
 
             #endregion
@@ -984,7 +1002,7 @@ namespace Forge.Net.Remoting.Channels
             /// Gets the session id.
             /// </summary>
             [DebuggerHidden]
-            public String SessionId
+            public string SessionId
             {
                 get { return mSessionId; }
             }
@@ -1091,7 +1109,7 @@ namespace Forge.Net.Remoting.Channels
             {
                 if (message.MessageType == MessageTypeEnum.Acknowledge && !isAcknowledgeMessageEnabled)
                 {
-                    throw new InvalidMessageException(String.Format("Invalid message type: {0}", MessageTypeEnum.Acknowledge.ToString()));
+                    throw new InvalidMessageException(string.Format("Invalid message type: {0}", MessageTypeEnum.Acknowledge.ToString()));
                 }
 
                 if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("TCPChannel-Send, sending {0}", message.ToString()));
@@ -1134,7 +1152,7 @@ namespace Forge.Net.Remoting.Channels
                     }
                 }
 
-                NetworkStream ns = this.mStream;
+                NetworkStream ns = mStream;
                 if (ns == null)
                 {
                     throw new IOException("Connection closed while sending message.");
@@ -1248,7 +1266,7 @@ namespace Forge.Net.Remoting.Channels
 
             private void SendMain()
             {
-                NetworkStream networkStream = this.mStream;
+                NetworkStream networkStream = mStream;
                 if (networkStream != null)
                 {
                     while (networkStream.Connected)
@@ -1279,7 +1297,7 @@ namespace Forge.Net.Remoting.Channels
 
             private void ReceiveMain()
             {
-                NetworkStream networkStream = this.mStream;
+                NetworkStream networkStream = mStream;
                 if (networkStream != null)
                 {
                     // ezzel a lock-al megakadályozom, hogy session újraélesztéskor véletlenül egynél több szál ügyködjön a run metóduson.
@@ -1307,7 +1325,7 @@ namespace Forge.Net.Remoting.Channels
                             if (message == null)
                             {
                                 // nem található sink a megadott ID-val, ezért nincs mivel visszafordítani az üzenetet
-                                if (LOGGER.IsErrorEnabled) LOGGER.Error(String.Format("TCPChannel-SessionMap, unable to find {0} with id '{1}'. Connection will be dropped.", typeof(IMessageSink).Name, headerWithBody.MessageSinkId));
+                                if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format("TCPChannel-SessionMap, unable to find {0} with id '{1}'. Connection will be dropped.", typeof(IMessageSink).Name, headerWithBody.MessageSinkId));
                                 networkStream.Close(); // mivel nem értjük a másik oldal nyelvét, lezárjuk a kapcsolatot
                                 break;
                             }
@@ -1326,7 +1344,7 @@ namespace Forge.Net.Remoting.Channels
                                         }
                                         else
                                         {
-                                            if (LOGGER.IsDebugEnabled) LOGGER.Debug(String.Format("TCPChannel-SessionMap, unable to find send task for acknowledge message, correlation id: {0}, size of the map: {1}", message.CorrelationId, mWaitsForAcknowledge.Count));
+                                            if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("TCPChannel-SessionMap, unable to find send task for acknowledge message, correlation id: {0}, size of the map: {1}", message.CorrelationId, mWaitsForAcknowledge.Count));
                                         }
                                     }
                                 }
@@ -1385,7 +1403,7 @@ namespace Forge.Net.Remoting.Channels
                                             }
                                             else
                                             {
-                                                if (LOGGER.IsDebugEnabled) LOGGER.Debug(String.Format("TCPChannel-SessionMap, unable to find send task for response message, correlation id: {0}, size of the map: {1}", message.CorrelationId, mWaitsForResponse.Count));
+                                                if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("TCPChannel-SessionMap, unable to find send task for response message, correlation id: {0}, size of the map: {1}", message.CorrelationId, mWaitsForResponse.Count));
                                             }
                                         }
                                     }
@@ -1401,40 +1419,40 @@ namespace Forge.Net.Remoting.Channels
                         catch (FormatException ex)
                         {
                             // akkor dobódik, ha a message nem állítható vissza a kapott adatokból. Olyan formátumban van, amit nem értünk.
-                            String message = String.Format("TCPChannel-SessionMap, unable to deserialize data from the network stream. NetworkStreamId: {0}, Reason: {1}", networkStream.Id, ex.Message);
+                            string message = string.Format("TCPChannel-SessionMap, unable to deserialize data from the network stream. NetworkStreamId: {0}, Reason: {1}", networkStream.Id, ex.Message);
                             if (LOGGER.IsErrorEnabled) LOGGER.Error(message, ex);
                             break;
                         }
                         catch (ObjectDisposedException)
                         {
                             // tipikusan akkor történik, ha a kapcsolat megszakadt és a stream-et már ki is dobtuk.
-                            if (LOGGER.IsDebugEnabled) LOGGER.Debug(String.Format("TCPChannel-SessionMap, connection lost and the network stream already disposed while receving data. NetworkStreamId: {0}", networkStream.Id));
+                            if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("TCPChannel-SessionMap, connection lost and the network stream already disposed while receving data. NetworkStreamId: {0}", networkStream.Id));
                             break;
                         }
                         catch (IOException ex)
                         {
                             // tipikusan akkor történik, ha a kapcsolat megszakadt vagy probléma van az adatátvitellel. Okozhatja még stream feltöltési hiba is.
-                            if (LOGGER.IsDebugEnabled) LOGGER.Debug(String.Format("TCPChannel-SessionMap, a connection or a network stream has been closed while listening. NetworkStreamId: {0}, Reason: {1}", networkStream.Id, ex.Message));
+                            if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("TCPChannel-SessionMap, a connection or a network stream has been closed while listening. NetworkStreamId: {0}, Reason: {1}", networkStream.Id, ex.Message));
                             break;
                         }
                         catch (MessageSecurityException ex)
                         {
                             // protocol handler vagy a StreamReceiveTask dobja, ha az üzenet mérete maximalizált és az túl nagy
-                            String message = String.Format("TCPChannel-SessionMap, oversized message detected. NetworkStreamId: {0}", networkStream.Id);
+                            string message = string.Format("TCPChannel-SessionMap, oversized message detected. NetworkStreamId: {0}", networkStream.Id);
                             if (LOGGER.IsErrorEnabled) LOGGER.Error(message, ex);
                             break;
                         }
                         catch (ProtocolViolationException ex)
                         {
                             // protocol handler dobja, ha nem tudja a header-t visszaolvasni.
-                            String message = String.Format("TCPChannel-SessionMap, protocol violation detected. NetworkStreamId: {0}, Reason: {1}", networkStream.Id, ex.Message);
+                            string message = string.Format("TCPChannel-SessionMap, protocol violation detected. NetworkStreamId: {0}, Reason: {1}", networkStream.Id, ex.Message);
                             if (LOGGER.IsErrorEnabled) LOGGER.Error(message);
                             break;
                         }
                         catch (Exception ex)
                         {
                             // ismeretlen eredetű hiba keletkezett
-                            String message = string.Format("TCPChannel-SessionMap, unexpected exception occured. NetworkStreamId: {0}", networkStream.Id);
+                            string message = string.Format("TCPChannel-SessionMap, unexpected exception occured. NetworkStreamId: {0}", networkStream.Id);
                             if (LOGGER.IsErrorEnabled) LOGGER.Error(message, ex);
                             break;
                         }
@@ -1459,7 +1477,7 @@ namespace Forge.Net.Remoting.Channels
 
             private void ConnectionEndEventHandler()
             {
-                if (LOGGER.IsDebugEnabled) LOGGER.Debug(String.Format("TCPChannel-SessionMap, underlying network stream closed. Id: {0}. Removing waiting process(es).", mStream.Id));
+                if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("TCPChannel-SessionMap, underlying network stream closed. Id: {0}. Removing waiting process(es).", mStream.Id));
                 mSendTaskEvent.Release();
                 lock (mWaitsForAcknowledge)
                 {
@@ -1503,7 +1521,7 @@ namespace Forge.Net.Remoting.Channels
             #region Field(s)
 
             private NetworkStream mNetworkStream = null;
-            private String mTempStorageFolder = string.Empty;
+            private string mTempStorageFolder = string.Empty;
             private int mStreamSize = 0;
             private FileInfo mTempFile = null;
             private FileStream mFileStream = null;
@@ -1518,11 +1536,11 @@ namespace Forge.Net.Remoting.Channels
             /// <param name="networkStream">The network stream.</param>
             /// <param name="tempStorageFolder">The temp storage folder.</param>
             /// <param name="streamSize">Size of the stream.</param>
-            internal StreamReceiveTask(NetworkStream networkStream, String tempStorageFolder, int streamSize)
+            internal StreamReceiveTask(NetworkStream networkStream, string tempStorageFolder, int streamSize)
             {
-                this.mNetworkStream = networkStream;
-                this.mTempStorageFolder = tempStorageFolder;
-                this.mStreamSize = streamSize;
+                mNetworkStream = networkStream;
+                mTempStorageFolder = tempStorageFolder;
+                mStreamSize = streamSize;
             }
 
             #endregion
@@ -1636,11 +1654,11 @@ namespace Forge.Net.Remoting.Channels
             /// <param name="protocol">The protocol.</param>
             internal SendTask(IMessage message, List<Stream> streams, NetworkStream streamLocal, TCPChannel channelLocal, Protocol protocol)
             {
-                this.mMessage = message;
-                this.mStreams = streams;
-                this.mStreamLocal = streamLocal;
-                this.mChannelLocal = channelLocal;
-                this.mProtocol = protocol;
+                mMessage = message;
+                mStreams = streams;
+                mStreamLocal = streamLocal;
+                mChannelLocal = channelLocal;
+                mProtocol = protocol;
                 if (message.MessageType != MessageTypeEnum.DatagramOneway)
                 {
                     // oneway datagram üzeentnél nincs timeout, sem ack
@@ -1739,7 +1757,7 @@ namespace Forge.Net.Remoting.Channels
                 try
                 {
                     // a sync context azért kell, hogy ugyanazon a kapcsolaton egyszerre ne lehessen több szálnak adatot küldenie, mert összeakadnak
-                    NetworkStream ns = this.mStreamLocal;
+                    NetworkStream ns = mStreamLocal;
                     lock (ns)
                     {
                         // küldöm az üzenetet
@@ -1789,7 +1807,7 @@ namespace Forge.Net.Remoting.Channels
 
                     if (mMessage.MessageType == MessageTypeEnum.Request || mMessage.MessageType == MessageTypeEnum.Response || mMessage.MessageType == MessageTypeEnum.Datagram)
                     {
-                        this.mAcknowledgeEvent.WaitOne(); // várakozás a Response-ra vagy az Acknowledge üzenetre
+                        mAcknowledgeEvent.WaitOne(); // várakozás a Response-ra vagy az Acknowledge üzenetre
                         if (!mStreamLocal.Connected)
                         {
                             throw new IOException("Network stream closed and disposed while sending message content.");
@@ -1803,24 +1821,24 @@ namespace Forge.Net.Remoting.Channels
                 }
                 catch (IOException ex)
                 {
-                    this.mConnected = false;
-                    this.mException = ex;
+                    mConnected = false;
+                    mException = ex;
                 }
                 catch (ObjectDisposedException ex)
                 {
-                    this.mConnected = false;
-                    this.mException = new IOException("Network stream closed and disposed while sending message content.", ex);
+                    mConnected = false;
+                    mException = new IOException("Network stream closed and disposed while sending message content.", ex);
                 }
                 catch (Exception ex)
                 {
-                    this.mConnected = false;
-                    this.mException = new IOException("Unexpected exception occured while sending Message.", ex);
-                    this.mStreamLocal.Dispose();
+                    mConnected = false;
+                    mException = new IOException("Unexpected exception occured while sending Message.", ex);
+                    mStreamLocal.Dispose();
                 }
                 finally
                 {
-                    this.mFinished = true;
-                    if (this.mWaitHandleForTimeoutEvent != null)
+                    mFinished = true;
+                    if (mWaitHandleForTimeoutEvent != null)
                     {
                         try
                         {
@@ -1854,16 +1872,16 @@ namespace Forge.Net.Remoting.Channels
             {
                 if (disposing && !mDisposed)
                 {
-                    this.mDisposed = true;
-                    if (this.mWaitHandleForTimeoutEvent != null)
+                    mDisposed = true;
+                    if (mWaitHandleForTimeoutEvent != null)
                     {
-                        this.mWaitHandleForTimeoutEvent.Set();
-                        this.mWaitHandleForTimeoutEvent.Dispose();
+                        mWaitHandleForTimeoutEvent.Set();
+                        mWaitHandleForTimeoutEvent.Dispose();
                     }
-                    if (this.mAcknowledgeEvent != null)
+                    if (mAcknowledgeEvent != null)
                     {
-                        this.mAcknowledgeEvent.Set();
-                        this.mAcknowledgeEvent.Dispose();
+                        mAcknowledgeEvent.Set();
+                        mAcknowledgeEvent.Dispose();
                     }
                 }
             }

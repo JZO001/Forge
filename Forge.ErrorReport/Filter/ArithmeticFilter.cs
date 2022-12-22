@@ -5,8 +5,10 @@
 ***********************************************************************/
 
 using System;
+using Forge.Configuration;
 using Forge.Configuration.Shared;
 using Forge.Reflection;
+using Forge.Shared;
 
 namespace Forge.ErrorReport.Filter
 {
@@ -53,21 +55,21 @@ namespace Forge.ErrorReport.Filter
         /// Initializes the specified item.
         /// </summary>
         /// <param name="item">The item.</param>
-        public override void Initialize(CategoryPropertyItem item)
+        public override void Initialize(IPropertyItem item)
         {
             base.Initialize(item);
 
-            this.Operand = ArithmeticFilterOperandEnum.Equal;
-            if (item.PropertyItems != null)
+            Operand = ArithmeticFilterOperandEnum.Equal;
+            if (item.Items.Count > 0)
             {
                 ArithmeticFilterOperandEnum operand = ArithmeticFilterOperandEnum.Equal;
-                if (ConfigurationAccessHelper.ParseEnumValue<ArithmeticFilterOperandEnum>(item.PropertyItems, CONFIG_OPERAND, ref operand))
+                if (ConfigurationAccessHelper.ParseEnumValue<ArithmeticFilterOperandEnum>(item, CONFIG_OPERAND, ref operand))
                 {
-                    this.Operand = operand;
+                    Operand = operand;
                 }
             }
 
-            this.IsInitialized = true;
+            IsInitialized = true;
         }
 
         /// <summary>
@@ -83,95 +85,95 @@ namespace Forge.ErrorReport.Filter
 
             bool result = false;
 
-            IComparable value = (IComparable)ExtractObjectData.Create(this.MemberName).GetValue(package);
+            IComparable value = (IComparable)ExtractObjectData.Create(MemberName).GetValue(package);
 
-            switch (this.Operand)
+            switch (Operand)
             {
                 case ArithmeticFilterOperandEnum.Equal:
                     {
-                        if (value == null && this.Value == null)
+                        if (value == null && Value == null)
                         {
                             result = true;
                         }
-                        else if (value == null || this.Value == null)
+                        else if (value == null || Value == null)
                         {
                         }
                         else
                         {
-                            result = value.Equals((IComparable)Convert.ChangeType(this.Value, value.GetType()));
+                            result = value.Equals((IComparable)Convert.ChangeType(Value, value.GetType()));
                         }
                     }
                     break;
 
                 case ArithmeticFilterOperandEnum.NotEqual:
                     {
-                        if (value == null && this.Value == null)
+                        if (value == null && Value == null)
                         {
                         }
-                        else if (value == null || this.Value == null)
+                        else if (value == null || Value == null)
                         {
                             result = true;
                         }
                         else
                         {
-                            result = !value.Equals((IComparable)Convert.ChangeType(this.Value, value.GetType()));
+                            result = !value.Equals((IComparable)Convert.ChangeType(Value, value.GetType()));
                         }
                     }
                     break;
 
                 case ArithmeticFilterOperandEnum.Greater:
                     {
-                        if (this.Value == null)
+                        if (Value == null)
                         {
                             throw new NullReferenceException("Filter value is null");
                         }
                         if (value == null)
                         {
-                            throw new NullReferenceException(string.Format("Field or property value is null '{0}'", this.MemberName));
+                            throw new NullReferenceException(string.Format("Field or property value is null '{0}'", MemberName));
                         }
-                        result = value.CompareTo((IComparable)Convert.ChangeType(this.Value, value.GetType())) < 0;
+                        result = value.CompareTo((IComparable)Convert.ChangeType(Value, value.GetType())) < 0;
                     }
                     break;
 
                 case ArithmeticFilterOperandEnum.Lower:
                     {
-                        if (this.Value == null)
+                        if (Value == null)
                         {
                             throw new NullReferenceException("Filter value is null");
                         }
                         if (value == null)
                         {
-                            throw new NullReferenceException(string.Format("Field or property value is null '{0}'", this.MemberName));
+                            throw new NullReferenceException(string.Format("Field or property value is null '{0}'", MemberName));
                         }
-                        result = value.CompareTo((IComparable)Convert.ChangeType(this.Value, value.GetType())) > 0;
+                        result = value.CompareTo((IComparable)Convert.ChangeType(Value, value.GetType())) > 0;
                     }
                     break;
 
                 case ArithmeticFilterOperandEnum.GreaterOrEqual:
                     {
-                        if (this.Value == null)
+                        if (Value == null)
                         {
                             throw new NullReferenceException("Filter value is null");
                         }
                         if (value == null)
                         {
-                            throw new NullReferenceException(string.Format("Field or property value is null '{0}'", this.MemberName));
+                            throw new NullReferenceException(string.Format("Field or property value is null '{0}'", MemberName));
                         }
-                        result = value.CompareTo((IComparable)Convert.ChangeType(this.Value, value.GetType())) <= 0;
+                        result = value.CompareTo((IComparable)Convert.ChangeType(Value, value.GetType())) <= 0;
                     }
                     break;
 
                 case ArithmeticFilterOperandEnum.LowerOrEqual:
                     {
-                        if (this.Value == null)
+                        if (Value == null)
                         {
                             throw new NullReferenceException("Filter value is null");
                         }
                         if (value == null)
                         {
-                            throw new NullReferenceException(string.Format("Field or property value is null '{0}'", this.MemberName));
+                            throw new NullReferenceException(string.Format("Field or property value is null '{0}'", MemberName));
                         }
-                        result = value.CompareTo((IComparable)Convert.ChangeType(this.Value, value.GetType())) >= 0;
+                        result = value.CompareTo((IComparable)Convert.ChangeType(Value, value.GetType())) >= 0;
                     }
                     break;
             }
@@ -190,7 +192,7 @@ namespace Forge.ErrorReport.Filter
         protected override void DoInitializationCheck()
         {
             base.DoInitializationCheck();
-            if (string.IsNullOrEmpty(this.MemberName))
+            if (string.IsNullOrEmpty(MemberName))
             {
                 throw new InitializationException("Member name has not been definied.");
             }

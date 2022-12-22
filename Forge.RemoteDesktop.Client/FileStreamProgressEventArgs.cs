@@ -23,9 +23,9 @@ namespace Forge.RemoteDesktop.Client
         /// <param name="percent">The percent.</param>
         public FileStreamProgressEventArgs(long length, long position, double percent)
         {
-            this.Length = length;
-            this.Position = position;
-            this.Percent = percent;
+            Length = length;
+            Position = position;
+            Percent = percent;
         }
 
         /// <summary>

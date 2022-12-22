@@ -19,7 +19,7 @@ namespace Forge.Net.Services.ConfigSection
     public class NetworkServiceConfiguration : Forge.Configuration.Shared.SharedConfigSettings<NetworkServiceSection, NetworkServiceConfiguration>
     {
 
-#region Constructor(s)
+        #region Constructor(s)
 
         /// <summary>
         /// Initializes the <see cref="NetworkServiceConfiguration"/> class.
@@ -38,7 +38,7 @@ namespace Forge.Net.Services.ConfigSection
         {
         }
 
-#endregion
+        #endregion
 
     }
 

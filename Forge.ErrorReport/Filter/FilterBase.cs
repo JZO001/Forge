@@ -5,7 +5,9 @@
 ***********************************************************************/
 
 using System;
+using Forge.Configuration;
 using Forge.Configuration.Shared;
+using Forge.Shared;
 
 namespace Forge.ErrorReport.Filter
 {
@@ -62,24 +64,24 @@ namespace Forge.ErrorReport.Filter
         #endregion
 
         #region Public method(s)
-        
+
         /// <summary>
         /// Initializes the specified item.
         /// </summary>
         /// <param name="item">The item.</param>
-        public virtual void Initialize(CategoryPropertyItem item)
+        public virtual void Initialize(IPropertyItem item)
         {
             if (item == null)
             {
                 ThrowHelper.ThrowArgumentNullException("item");
             }
 
-            if (item.PropertyItems != null)
+            if (item.Items != null)
             {
                 bool negation = false;
-                if (ConfigurationAccessHelper.ParseBooleanValue(item.PropertyItems, CONFIG_NEGATION, ref negation))
+                if (ConfigurationAccessHelper.ParseBooleanValue(item, CONFIG_NEGATION, ref negation))
                 {
-                    this.Negation = negation;
+                    Negation = negation;
                 }
             }
         }

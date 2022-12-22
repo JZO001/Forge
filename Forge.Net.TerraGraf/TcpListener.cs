@@ -7,8 +7,14 @@
 using System;
 using System.Diagnostics;
 using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
+using Forge.Legacy;
 using Forge.Net.Synapse;
 using Forge.Net.Synapse.NetworkServices;
+using Forge.Shared;
+using Forge.Threading.Tasking;
+using Forge.Threading;
 
 namespace Forge.Net.TerraGraf
 {
@@ -28,6 +34,16 @@ namespace Forge.Net.TerraGraf
         private Socket mSocket = null;
 
         private bool mActive = false;
+
+        private System.Func<ISocket> mAcceptSocketDelegate = null;
+        private int mAsyncActiveAcceptSocketCount = 0;
+        private AutoResetEvent mAsyncActiveAcceptSocketEvent = null;
+        private readonly object LOCK_ACCEPT_SOCKET = new object();
+
+        private System.Func<ITcpClient> mAcceptTcpClientDelegate = null;
+        private int mAsyncActiveAcceptTcpClientCount = 0;
+        private AutoResetEvent mAsyncActiveAcceptTcpClientEvent = null;
+        private readonly object LOCK_ACCEPT_TCPCLIENT = new object();
 
         #endregion
 
@@ -93,23 +109,25 @@ namespace Forge.Net.TerraGraf
 
         #region Public method(s)
 
+#if NETCOREAPP3_1_OR_GREATER
         /// <summary>
-        /// Begins the accept socket.
+        /// Accepts the socket.
         /// </summary>
-        /// <param name="callback">The callback.</param>
-        /// <param name="state">The state.</param>
-        /// <returns>
-        /// Async property
-        /// </returns>
-        /// <exception cref="System.InvalidOperationException">TCP Listener is not active.</exception>
-        public IAsyncResult BeginAcceptSocket(AsyncCallback callback, object state)
+        /// <returns>Socket instance</returns>
+        public async Task<ISocket> AcceptSocketAsync()
         {
-            if (!this.mActive)
-            {
-                throw new InvalidOperationException("TCP Listener is not active.");
-            }
-            return mSocket.BeginAccept(callback, state);
+            return await mSocket.AcceptAsync();
         }
+
+        /// <summary>
+        /// Accepts the TCP client.
+        /// </summary>
+        /// <returns>TcpClient implementation</returns>
+        public async Task<ITcpClient> AcceptTcpClientAsync()
+        {
+            return await Task.Run(() => AcceptTcpClient());
+        }
+#endif
 
         /// <summary>
         /// Accepts the socket.
@@ -125,6 +143,37 @@ namespace Forge.Net.TerraGraf
                 throw new InvalidOperationException("Listener not active.");
             }
             return mSocket.Accept();
+        }
+
+        /// <summary>
+        /// Accepts the TCP client.
+        /// </summary>
+        /// <returns>
+        /// TcpClient implementation
+        /// </returns>
+        public ITcpClient AcceptTcpClient()
+        {
+            return new TcpClient((Socket)AcceptSocket());
+        }
+
+#if NET40
+
+        /// <summary>
+        /// Begins the accept socket.
+        /// </summary>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>
+        /// Async property
+        /// </returns>
+        /// <exception cref="System.InvalidOperationException">TCP Listener is not active.</exception>
+        public IAsyncResult BeginAcceptSocket(AsyncCallback callback, object state)
+        {
+            if (!mActive)
+            {
+                throw new InvalidOperationException("TCP Listener is not active.");
+            }
+            return mSocket.BeginAccept(callback, state);
         }
 
         /// <summary>
@@ -155,22 +204,11 @@ namespace Forge.Net.TerraGraf
         /// <exception cref="System.InvalidOperationException">TCP Listener is not active.</exception>
         public IAsyncResult BeginAcceptTcpClient(AsyncCallback callback, object state)
         {
-            if (!this.mActive)
+            if (!mActive)
             {
                 throw new InvalidOperationException("TCP Listener is not active.");
             }
             return mSocket.BeginAccept(callback, state);
-        }
-
-        /// <summary>
-        /// Accepts the TCP client.
-        /// </summary>
-        /// <returns>
-        /// TcpClient implementation
-        /// </returns>
-        public ITcpClient AcceptTcpClient()
-        {
-            return new TcpClient((Socket)AcceptSocket());
         }
 
         /// <summary>
@@ -187,6 +225,104 @@ namespace Forge.Net.TerraGraf
                 ThrowHelper.ThrowArgumentNullException("asyncResult");
             }
             return new TcpClient((Socket)EndAcceptSocket(asyncResult));
+        }
+
+#endif
+
+        /// <summary>Begins the accept socket.</summary>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        public ITaskResult BeginAcceptSocket(ReturnCallback callback, object state)
+        {
+            Interlocked.Increment(ref mAsyncActiveAcceptSocketCount);
+            System.Func<ISocket> d = new System.Func<ISocket>(AcceptSocket);
+            if (mAsyncActiveAcceptSocketEvent == null)
+            {
+                lock (LOCK_ACCEPT_SOCKET)
+                {
+                    if (mAsyncActiveAcceptSocketEvent == null)
+                    {
+                        mAsyncActiveAcceptSocketEvent = new AutoResetEvent(true);
+                    }
+                }
+            }
+            mAsyncActiveAcceptSocketEvent.WaitOne();
+            mAcceptSocketDelegate = d;
+            return d.BeginInvoke(callback, state);
+        }
+
+        /// <summary>Ends the accept socket.</summary>
+        /// <param name="asyncResult">The async result.</param>
+        /// <returns>Socket implementation</returns>
+        public ISocket EndAcceptSocket(ITaskResult asyncResult)
+        {
+            if (asyncResult == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("asyncResult");
+            }
+            if (mAcceptSocketDelegate == null)
+            {
+                ThrowHelper.ThrowArgumentException("Wrong async result or EndAcceptSocket called multiple times.", "asyncResult");
+            }
+            try
+            {
+                return mAcceptSocketDelegate.EndInvoke(asyncResult);
+            }
+            finally
+            {
+                mAcceptSocketDelegate = null;
+                mAsyncActiveAcceptSocketEvent.Set();
+                CloseAsyncActiveAcceptSocketEvent(Interlocked.Decrement(ref mAsyncActiveAcceptSocketCount));
+            }
+        }
+
+        /// <summary>Begins the accept TCP client.</summary>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        public ITaskResult BeginAcceptTcpClient(ReturnCallback callback, object state)
+        {
+            Interlocked.Increment(ref mAsyncActiveAcceptTcpClientCount);
+            System.Func<ITcpClient> d = new System.Func<ITcpClient>(AcceptTcpClient);
+            if (mAsyncActiveAcceptTcpClientEvent == null)
+            {
+                lock (LOCK_ACCEPT_TCPCLIENT)
+                {
+                    if (mAsyncActiveAcceptTcpClientEvent == null)
+                    {
+                        mAsyncActiveAcceptTcpClientEvent = new AutoResetEvent(true);
+                    }
+                }
+            }
+            mAsyncActiveAcceptTcpClientEvent.WaitOne();
+            mAcceptTcpClientDelegate = d;
+            return d.BeginInvoke(callback, state);
+        }
+
+        /// <summary>Ends the accept TCP client.</summary>
+        /// <param name="asyncResult">The async result.</param>
+        /// <returns>TcpClient implementation</returns>
+        public ITcpClient EndAcceptTcpClient(ITaskResult asyncResult)
+        {
+            if (asyncResult == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("asyncResult");
+            }
+            if (mAcceptTcpClientDelegate == null)
+            {
+                ThrowHelper.ThrowArgumentException("Wrong async result or EndAcceptTcpClient called multiple times.", "asyncResult");
+            }
+            try
+            {
+                return mAcceptTcpClientDelegate.EndInvoke(asyncResult);
+            }
+            finally
+            {
+                mAcceptTcpClientDelegate = null;
+                mAsyncActiveAcceptTcpClientEvent.Set();
+                CloseAsyncActiveAcceptTcpClientEvent(Interlocked.Decrement(ref mAsyncActiveAcceptTcpClientCount));
+            }
         }
 
         /// <summary>
@@ -241,6 +377,28 @@ namespace Forge.Net.TerraGraf
                 mSocket.Dispose();
                 mSocket = new Socket(SocketType.Stream, ProtocolType.Tcp);
                 mActive = false;
+            }
+        }
+
+        #endregion
+
+        #region Private method(s)
+
+        private void CloseAsyncActiveAcceptSocketEvent(int asyncActiveCount)
+        {
+            if ((mAsyncActiveAcceptSocketEvent != null) && (asyncActiveCount == 0))
+            {
+                mAsyncActiveAcceptSocketEvent.Dispose();
+                mAsyncActiveAcceptSocketEvent = null;
+            }
+        }
+
+        private void CloseAsyncActiveAcceptTcpClientEvent(int asyncActiveCount)
+        {
+            if ((mAsyncActiveAcceptTcpClientEvent != null) && (asyncActiveCount == 0))
+            {
+                mAsyncActiveAcceptTcpClientEvent.Dispose();
+                mAsyncActiveAcceptTcpClientEvent = null;
             }
         }
 

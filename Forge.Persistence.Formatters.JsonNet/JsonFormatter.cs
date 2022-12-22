@@ -6,6 +6,8 @@
 
 using System;
 using System.IO;
+using Forge.Formatters;
+using Forge.Shared;
 using Newtonsoft.Json;
 
 namespace Forge.Persistence.Formatters.JsonNet

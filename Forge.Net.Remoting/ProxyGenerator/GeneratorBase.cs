@@ -10,9 +10,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using Forge.Legacy;
 using Forge.Net.Remoting.Channels;
 using Forge.Net.Remoting.Proxy;
 using Forge.Net.Remoting.Validators;
+using Forge.Shared;
 
 namespace Forge.Net.Remoting.ProxyGenerator
 {
@@ -23,11 +25,11 @@ namespace Forge.Net.Remoting.ProxyGenerator
     internal abstract class GeneratorBase
     {
 
-        protected static readonly String TAB_SPACE = "    ";
+        protected static readonly string TAB_SPACE = "    ";
 
         protected static readonly byte[] TAB_SPACE_BYTES = GetBytes("    ");
 
-        protected static readonly String NEW_LINE = Environment.NewLine;
+        protected static readonly string NEW_LINE = Environment.NewLine;
 
         protected static readonly byte[] NEW_LINE_BYTES = GetBytes(NEW_LINE);
 
@@ -55,17 +57,17 @@ namespace Forge.Net.Remoting.ProxyGenerator
 
         protected static readonly byte[] CODE_METHOD_PARAMETER_DECLARATION = GetBytes(TAB_SPACE + TAB_SPACE + TAB_SPACE + TAB_SPACE + "Forge.Net.Remoting.Messaging.MethodParameter[] _mps = null;" + NEW_LINE);
 
-        protected static readonly String CODE_METHOD_PARAMETER_ITEM = TAB_SPACE + TAB_SPACE + TAB_SPACE + TAB_SPACE + "Forge.Net.Remoting.Messaging.MethodParameter _mp{0} = new Forge.Net.Remoting.Messaging.MethodParameter({1}, typeof({2}).FullName + \", \" + new System.Reflection.AssemblyName(typeof({2}).Assembly.FullName).Name, _p{3});" + NEW_LINE;
+        protected static readonly string CODE_METHOD_PARAMETER_ITEM = TAB_SPACE + TAB_SPACE + TAB_SPACE + TAB_SPACE + "Forge.Net.Remoting.Messaging.MethodParameter _mp{0} = new Forge.Net.Remoting.Messaging.MethodParameter({1}, typeof({2}).FullName + \", \" + new System.Reflection.AssemblyName(typeof({2}).Assembly.FullName).Name, {3});" + NEW_LINE;
 
-        protected static readonly String CODE_METHOD_PARAMETER_ARRAY = TAB_SPACE + TAB_SPACE + TAB_SPACE + TAB_SPACE + "_mps = new Forge.Net.Remoting.Messaging.MethodParameter[] <REPLACELEFT> {0} <REPLACERIGHT>;" + NEW_LINE;
+        protected static readonly string CODE_METHOD_PARAMETER_ARRAY = TAB_SPACE + TAB_SPACE + TAB_SPACE + TAB_SPACE + "_mps = new Forge.Net.Remoting.Messaging.MethodParameter[] <REPLACELEFT> {0} <REPLACERIGHT>;" + NEW_LINE;
 
-        protected static readonly String CODE_MESSAGE_DECLARATION = TAB_SPACE + TAB_SPACE + TAB_SPACE + TAB_SPACE + "Forge.Net.Remoting.Messaging.RequestMessage _message = new Forge.Net.Remoting.Messaging.RequestMessage(System.Guid.NewGuid().ToString(), Forge.Net.Remoting.MessageTypeEnum.{0}, Forge.Net.Remoting.MessageInvokeModeEnum.{1}, typeof({2}), \"{3}\", _mps, {4});" + NEW_LINE;
+        protected static readonly string CODE_MESSAGE_DECLARATION = TAB_SPACE + TAB_SPACE + TAB_SPACE + TAB_SPACE + "Forge.Net.Remoting.Messaging.RequestMessage _message = new Forge.Net.Remoting.Messaging.RequestMessage(System.Guid.NewGuid().ToString(), Forge.Net.Remoting.MessageTypeEnum.{0}, Forge.Net.Remoting.MessageInvokeModeEnum.{1}, typeof({2}), \"{3}\", _mps, {4});" + NEW_LINE;
 
         protected static readonly byte[] CODE_CONTEXT_FILL_SERVICESIDE = GetBytes(TAB_SPACE + TAB_SPACE + TAB_SPACE + TAB_SPACE + "_message.Context.Add(Forge.Net.Remoting.Proxy.ProxyBase.PROXY_ID, Forge.Net.Remoting.ServiceBase.GetPeerProxyId(this));" + NEW_LINE);
 
         protected static readonly byte[] CODE_CONTEXT_FILL_PROXYSIDE = GetBytes(TAB_SPACE + TAB_SPACE + TAB_SPACE + TAB_SPACE + "_message.Context.Add(Forge.Net.Remoting.Proxy.ProxyBase.PROXY_ID, this.ProxyId);" + NEW_LINE);
 
-        protected static readonly String CODE_TIMEOUT = TAB_SPACE + TAB_SPACE + TAB_SPACE + TAB_SPACE + "long _timeout = GetTimeoutByMethod(typeof({0}), \"{1}\", _mps, Forge.Net.Remoting.Proxy.MethodTimeoutEnum.CallTimeout);" + NEW_LINE;
+        protected static readonly string CODE_TIMEOUT = TAB_SPACE + TAB_SPACE + TAB_SPACE + TAB_SPACE + "long _timeout = GetTimeoutByMethod(typeof({0}), \"{1}\", _mps, Forge.Net.Remoting.Proxy.MethodTimeoutEnum.CallTimeout);" + NEW_LINE;
 
         protected static readonly byte[] CODE_RESPONSE_MESSAGE_ASSIGN = GetBytes(TAB_SPACE + TAB_SPACE + TAB_SPACE + TAB_SPACE + "_response = (Forge.Net.Remoting.Messaging.ResponseMessage)");
 
@@ -81,7 +83,7 @@ namespace Forge.Net.Remoting.ProxyGenerator
 
         protected static readonly byte[] CODE_TRY_FINALLY = GetBytes(TAB_SPACE + TAB_SPACE + TAB_SPACE + "}" + NEW_LINE + TAB_SPACE + TAB_SPACE + TAB_SPACE + "finally" + NEW_LINE + TAB_SPACE + TAB_SPACE + TAB_SPACE + "{" + NEW_LINE);
 
-        protected static readonly String CODE_RETURN_VALUE = "return ({0})_response.ReturnValue.Value;" + NEW_LINE;
+        protected static readonly string CODE_RETURN_VALUE = "return ({0})_response.ReturnValue.Value;" + NEW_LINE;
 
         protected static readonly byte[] VOID = GetBytes("void");
 
@@ -172,7 +174,7 @@ namespace Forge.Net.Remoting.ProxyGenerator
         /// <param name="superClassType">Type of the super class.</param>
         /// <param name="isServiceProxy">if set to <c>true</c> [is service proxy].</param>
         /// <param name="stream">The stream.</param>
-        public static void WriteImplementationClassHeader(Type contractType, String superClassType, bool isServiceProxy, Stream stream)
+        public static void WriteImplementationClassHeader(Type contractType, string superClassType, bool isServiceProxy, Stream stream)
         {
             if (contractType == null)
             {
@@ -245,7 +247,7 @@ namespace Forge.Net.Remoting.ProxyGenerator
         /// <param name="isVisible">if set to <c>true</c> [is visible].</param>
         /// <param name="typeName">Name of the type.</param>
         /// <param name="stream">The stream.</param>
-        public static void WriteEmptyContructor(bool isVisible, String typeName, Stream stream)
+        public static void WriteEmptyContructor(bool isVisible, string typeName, Stream stream)
         {
             if (string.IsNullOrEmpty(typeName))
             {
@@ -285,7 +287,7 @@ namespace Forge.Net.Remoting.ProxyGenerator
         /// <param name="isVisible">if set to <c>true</c> [is visible].</param>
         /// <param name="typeName">Name of the type.</param>
         /// <param name="stream">The stream.</param>
-        public static void WriteProxyContructor(bool isVisible, String typeName, Stream stream)
+        public static void WriteProxyContructor(bool isVisible, string typeName, Stream stream)
         {
             if (string.IsNullOrEmpty(typeName))
             {
@@ -309,7 +311,7 @@ namespace Forge.Net.Remoting.ProxyGenerator
             Write(stream, BRACKET_LEFT);
             Write(stream, typeof(Channel).FullName);
             Write(stream, " channel, ");
-            Write(stream, typeof(String).FullName);
+            Write(stream, typeof(string).FullName);
             Write(stream, " sessionId) : base(channel, sessionId) { }");
             Write(stream, NEW_LINE_BYTES);
         }
@@ -357,8 +359,20 @@ namespace Forge.Net.Remoting.ProxyGenerator
                         {
                             Write(stream, ", ");
                         }
-                        Write(stream, mc.Method.GetParameters()[i].ParameterType.FullName);
-                        Write(stream, String.Format(" _p{0}", i));
+                        Type pType = mc.Method.GetParameters()[i].ParameterType;
+                        if (IsTypeFromNullable(ref pType))
+                        {
+                            Write(stream, string.Format("{0}?", pType.FullName));
+                        }
+                        else
+                        {
+                            Write(stream, pType.FullName);
+                        }
+#if NET40
+                        Write(stream, string.Format(" _p{0}", i));
+#else
+                        Write(stream, string.Format(" {0}", mc.Method.GetParameters()[i].Name));
+#endif
                     }
                 }
                 Write(stream, BRACKET_RIGHT);
@@ -414,8 +428,20 @@ namespace Forge.Net.Remoting.ProxyGenerator
                         {
                             Write(stream, ", ");
                         }
-                        Write(stream, mc.Method.GetParameters()[i].ParameterType.FullName);
-                        Write(stream, String.Format(" _p{0}", i));
+                        Type pType = mc.Method.GetParameters()[i].ParameterType;
+                        if (IsTypeFromNullable(ref pType))
+                        {
+                            Write(stream, string.Format("{0}?", pType.FullName));
+                        }
+                        else
+                        {
+                            Write(stream, pType.FullName);
+                        }
+#if NET40
+                        Write(stream, string.Format(" _p{0}", i));
+#else
+                        Write(stream, string.Format(" {0}", mc.Method.GetParameters()[i].Name));
+#endif
                     }
                 }
                 Write(stream, BRACKET_RIGHT);
@@ -446,7 +472,11 @@ namespace Forge.Net.Remoting.ProxyGenerator
                         Write(stream, TAB_SPACE_BYTES);
                         Write(stream, TAB_SPACE_BYTES);
                         Write(stream, TAB_SPACE_BYTES);
-                        Write(stream, String.Format("if (_p{0} != null)", index));
+#if NET40
+                        Write(stream, string.Format("if (_p{0} != null)", index));
+#else
+                        Write(stream, string.Format("if ({0} != null)", cls.Name));
+#endif
                         Write(stream, NEW_LINE_BYTES);
                         Write(stream, TAB_SPACE_BYTES);
                         Write(stream, TAB_SPACE_BYTES);
@@ -459,7 +489,11 @@ namespace Forge.Net.Remoting.ProxyGenerator
                         Write(stream, TAB_SPACE_BYTES);
                         Write(stream, TAB_SPACE_BYTES);
                         Write(stream, TAB_SPACE_BYTES);
-                        Write(stream, String.Format("_p{0}.Dispose();", index));
+#if NET40
+                        Write(stream, string.Format("_p{0}.Dispose();", index));
+#else
+                        Write(stream, string.Format("{0}.Dispose();", cls.Name));
+#endif
                         Write(stream, NEW_LINE_BYTES);
                         Write(stream, TAB_SPACE_BYTES);
                         Write(stream, TAB_SPACE_BYTES);
@@ -754,7 +788,7 @@ namespace Forge.Net.Remoting.ProxyGenerator
                 Write(stream, TAB_SPACE_BYTES);
                 Write(stream, TAB_SPACE_BYTES);
                 Write(stream, TAB_SPACE_BYTES);
-                Write(stream, String.Format(CODE_RETURN_VALUE, method.ReturnType.FullName));
+                Write(stream, string.Format(CODE_RETURN_VALUE, method.ReturnType.FullName));
                 Write(stream, TAB_SPACE_BYTES);
                 Write(stream, TAB_SPACE_BYTES);
                 Write(stream, TAB_SPACE_BYTES);
@@ -782,6 +816,24 @@ namespace Forge.Net.Remoting.ProxyGenerator
                 stream.Write(RIGHT_CURLY_BRACE, 0, RIGHT_CURLY_BRACE.Length);
                 Write(stream, NEW_LINE_BYTES);
             }
+        }
+
+        protected static bool IsTypeFromNullable(ref Type type)
+        {
+            bool result = false;
+            
+            if (type.IsGenericType)
+            {
+                // mc.Method.GetParameters()[i].ParameterType.GenericTypeArguments
+                if (type.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+                {
+                    Type[] types = type.GetGenericArguments();
+                    type = types[0];
+                    result = true;
+                }
+            }
+
+            return result;
         }
 
     }

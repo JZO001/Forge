@@ -8,6 +8,7 @@ using System;
 using System.Diagnostics;
 using System.Text;
 using Forge.Net.Synapse;
+using Forge.Shared;
 
 namespace Forge.Net.TerraGraf.Messaging
 {
@@ -47,7 +48,7 @@ namespace Forge.Net.TerraGraf.Messaging
             }
             AddressEndPoint.ValidateTcpPort(senderPort);
             AddressEndPoint.ValidateTcpPort(targetPort);
-            this.mData = data;
+            mData = data;
         }
 
         /// <summary>
@@ -71,7 +72,7 @@ namespace Forge.Net.TerraGraf.Messaging
             }
             AddressEndPoint.ValidateTcpPort(senderPort);
             AddressEndPoint.ValidateTcpPort(targetPort);
-            this.mData = data;
+            mData = data;
         }
 
         /// <summary>
@@ -106,8 +107,8 @@ namespace Forge.Net.TerraGraf.Messaging
             }
             AddressEndPoint.ValidateTcpPort(senderPort);
             AddressEndPoint.ValidateTcpPort(targetPort);
-            this.mPacketOrderNumber = packetOrderNumber;
-            this.mData = data;
+            mPacketOrderNumber = packetOrderNumber;
+            mData = data;
         }
 
         #endregion

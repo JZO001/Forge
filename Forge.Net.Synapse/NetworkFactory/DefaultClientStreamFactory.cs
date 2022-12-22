@@ -5,6 +5,7 @@
 ***********************************************************************/
 
 using Forge.Net.Synapse.NetworkServices;
+using Forge.Shared;
 
 namespace Forge.Net.Synapse.NetworkFactory
 {
@@ -45,7 +46,7 @@ namespace Forge.Net.Synapse.NetworkFactory
         /// </summary>
         /// <param name="tcpClient">The TcpClient service</param>
         /// <returns>Network Stream instance</returns>
-        public virtual NetworkStream CreateNetworkStream(ITcpClient tcpClient)
+        public override NetworkStream CreateNetworkStream(ITcpClient tcpClient)
         {
             if (tcpClient == null)
             {

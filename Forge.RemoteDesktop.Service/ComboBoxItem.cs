@@ -24,7 +24,7 @@ namespace Forge.RemoteDesktop.Service
         /// <param name="item">The item.</param>
         public ComboBoxItem(T item)
         {
-            this.Item = item;
+            Item = item;
         }
 
         /// <summary>

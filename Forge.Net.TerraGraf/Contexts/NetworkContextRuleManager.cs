@@ -7,6 +7,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Forge.Net.TerraGraf.Configuration;
+using Forge.Shared;
 
 namespace Forge.Net.TerraGraf.Contexts
 {
@@ -38,12 +39,12 @@ namespace Forge.Net.TerraGraf.Contexts
             List<ContextRule> contextRules = null;
             if (mSeparation)
             {
-                // van szeparáció, whitelist olvasása (kivételek)
+                // separation exists, reading whitelist (exceptions)
                 contextRules = NetworkManager.Instance.InternalConfiguration.NetworkContext.WhiteList;
             }
             else
             {
-                // blacklist olvasása (tiltások)
+                // reading blacklist (restrictions)
                 contextRules = NetworkManager.Instance.InternalConfiguration.NetworkContext.BlackList;
             }
             foreach (ContextRule rule in contextRules)
@@ -114,18 +115,18 @@ namespace Forge.Net.TerraGraf.Contexts
                 ThrowHelper.ThrowArgumentNullException("b");
             }
 
-            bool result = !mSeparation; // true, ha nincs szeparáció
+            bool result = !mSeparation; // true, if there is no separation
 
             string valueA = a.ToLower().Trim();
             string valueB = b.ToLower().Trim();
 
             if (valueA.Equals(valueB))
             {
-                result = true; // saját context-be mehet minden
+                result = true; // everything allowed to go into my own context
             }
             else if (mJokers.Contains<string>(valueA) || mJokers.Contains<string>(valueB))
             {
-                result = !result; // joker lista miatt tagadás
+                result = !result; // deny because of joker list
             }
             else
             {

@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Runtime.Serialization;
 using Forge.ORM.NHibernateExtension.Model;
 using Forge.Reflection;
+using Forge.Shared;
 using NHibernate.Criterion;
 
 namespace Forge.ORM.NHibernateExtension.Criterias
@@ -77,8 +78,8 @@ namespace Forge.ORM.NHibernateExtension.Criterias
             {
                 ThrowHelper.ThrowArgumentNullException("value");
             }
-            this.mValue = value;
-            this.mMatchMode = matchMode;
+            mValue = value;
+            mMatchMode = matchMode;
         }
 
         #endregion
@@ -100,7 +101,7 @@ namespace Forge.ORM.NHibernateExtension.Criterias
                 {
                     ThrowHelper.ThrowArgumentNullException("value");
                 }
-                this.mValue = value;
+                mValue = value;
                 Reset();
             }
         }
@@ -116,7 +117,7 @@ namespace Forge.ORM.NHibernateExtension.Criterias
             get { return mMatchMode; }
             set
             {
-                this.mMatchMode = value;
+                mMatchMode = value;
                 Reset();
             }
         }
@@ -183,8 +184,8 @@ namespace Forge.ORM.NHibernateExtension.Criterias
         public override object Clone()
         {
             LikeCriteria cloned = (LikeCriteria)base.Clone();
-            cloned.mValue = this.mValue;
-            cloned.mMatchMode = this.mMatchMode;
+            cloned.mValue = mValue;
+            cloned.mMatchMode = mMatchMode;
             return cloned;
         }
 

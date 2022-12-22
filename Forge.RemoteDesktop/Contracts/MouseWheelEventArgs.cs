@@ -25,8 +25,8 @@ namespace Forge.RemoteDesktop.Contracts
         /// <param name="amount">The amount.</param>
         public MouseWheelEventArgs(MouseWheelTypeEnum wheelType, int amount)
         {
-            this.WheelType = wheelType;
-            this.Amount = amount;
+            WheelType = wheelType;
+            Amount = amount;
         }
 
         #endregion

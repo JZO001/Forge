@@ -6,7 +6,9 @@
 
 using System.Net;
 using System.Net.Sockets;
+using Forge.Legacy;
 using Forge.Net.Synapse.NetworkServices;
+using Forge.Net.Synapse.NetworkServices.Defaults;
 
 namespace Forge.Net.Synapse.NetworkFactory
 {
@@ -14,7 +16,7 @@ namespace Forge.Net.Synapse.NetworkFactory
     /// <summary>
     /// Represents the default network factory for .NET low level sockets
     /// </summary>
-    public class DefaultNetworkFactory : MBRBase, INetworkFactory
+    public class DefaultNetworkFactory : MBRBase, IDefaultNetworkFactory
     {
 
         /// <summary>

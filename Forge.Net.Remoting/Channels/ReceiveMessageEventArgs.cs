@@ -7,6 +7,7 @@
 using System;
 using System.Diagnostics;
 using Forge.Net.Remoting.Messaging;
+using Forge.Shared;
 
 namespace Forge.Net.Remoting.Channels
 {
@@ -19,10 +20,10 @@ namespace Forge.Net.Remoting.Channels
     {
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private string mSessionId = string.Empty;
+        private readonly string mSessionId = string.Empty;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private IMessage mMessage = null;
+        private readonly IMessage mMessage = null;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReceiveMessageEventArgs"/> class.
@@ -42,8 +43,8 @@ namespace Forge.Net.Remoting.Channels
             if (message is AcknowledgeMessage) {
                 ThrowHelper.ThrowArgumentException("Invalid message type.");
             }
-            this.mSessionId = sessionId;
-            this.mMessage = message;
+            mSessionId = sessionId;
+            mMessage = message;
         }
 
         /// <summary>

@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Shared;
 using System;
 
 namespace Forge.RemoteDesktop.Contracts
@@ -27,7 +28,7 @@ namespace Forge.RemoteDesktop.Contracts
                 ThrowHelper.ThrowArgumentNullException("sessionId");
             }
 
-            this.SessionId = sessionId;
+            SessionId = sessionId;
         }
 
         /// <summary>

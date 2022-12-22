@@ -11,9 +11,10 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Forge.Collections;
 using Forge.Configuration.Shared;
-using Forge.Logging;
+using Forge.Logging.Abstraction;
 using Forge.Persistence.StorageProviders;
 using Forge.Persistence.StorageProviders.ConfigSection;
+using Forge.Shared;
 
 namespace Forge.Persistence.Collections
 {
@@ -28,13 +29,13 @@ namespace Forge.Persistence.Collections
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(PersistentCache<>));
+        private static readonly ILog LOGGER = LogManager.GetLogger<PersistentCache<T>>();
 
-        private static readonly HashSet<String> GLOBAL_IDENTIFIERS = new HashSet<String>(); // ezzel segítek elkerülni, hogy ugyanazzal az ID-val két collection példányosodjon
+        private static readonly HashSet<string> GLOBAL_IDENTIFIERS = new HashSet<string>(); // ezzel segítek elkerülni, hogy ugyanazzal az ID-val két collection példányosodjon
 
-        private String mId = string.Empty;
+        private string mId = string.Empty;
 
-        private int mCacheSize = Int32.MaxValue;
+        private int mCacheSize = int.MaxValue;
 
         private CacheStrategyEnum mCacheStrategy = CacheStrategyEnum.RecentlyUsed;
 
@@ -63,9 +64,9 @@ namespace Forge.Persistence.Collections
         /// </summary>
         /// <param name="cacheId">The cache id.</param>
         /// <param name="cacheStrategy">The cache strategy.</param>
-        private PersistentCache(String cacheId, CacheStrategyEnum cacheStrategy)
+        private PersistentCache(string cacheId, CacheStrategyEnum cacheStrategy)
         {
-            if (String.IsNullOrEmpty(cacheId))
+            if (string.IsNullOrEmpty(cacheId))
             {
                 ThrowHelper.ThrowArgumentNullException("cacheId");
             }
@@ -79,14 +80,14 @@ namespace Forge.Persistence.Collections
         /// <param name="cacheId">The cache id.</param>
         /// <param name="cacheStrategy">The cache strategy.</param>
         /// <param name="cacheSize">Size of the cache.</param>
-        protected PersistentCache(String cacheId, CacheStrategyEnum cacheStrategy, int cacheSize)
+        protected PersistentCache(string cacheId, CacheStrategyEnum cacheStrategy, int cacheSize)
             : this(cacheId, cacheStrategy)
         {
             if (cacheSize < 0)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException("cacheSize");
             }
-            this.mCacheSize = cacheSize == Int32.MaxValue ? cacheSize - 1 : cacheSize; // max integer méretnél egy helyet hagyni kell a végére
+            this.mCacheSize = cacheSize == int.MaxValue ? cacheSize - 1 : cacheSize; // max integer méretnél egy helyet hagyni kell a végére
 
             RegisterCacheId(cacheId);
         }
@@ -98,27 +99,27 @@ namespace Forge.Persistence.Collections
         /// <param name="cacheStrategy">The cache strategy.</param>
         /// <param name="configurationName">Name of the configuration.</param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object)"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.Int32.Parse(System.String)"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2201:DoNotRaiseReservedExceptionTypes"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        protected PersistentCache(String cacheId, CacheStrategyEnum cacheStrategy, String configurationName)
+        protected PersistentCache(string cacheId, CacheStrategyEnum cacheStrategy, string configurationName)
             : this(cacheId, cacheStrategy)
         {
-            if (String.IsNullOrEmpty(configurationName))
+            if (string.IsNullOrEmpty(configurationName))
             {
                 ThrowHelper.ThrowArgumentNullException("configurationName");
             }
 
-            String configPath = "Collections/" + configurationName;
+            string configPath = "Collections/" + configurationName;
             {
-                String cacheSizeStr = ConfigurationAccessHelper.GetValueByPath(StorageConfiguration.Settings.CategoryPropertyItems, configPath + "/CacheSize");
-                if (!String.IsNullOrEmpty(cacheSizeStr))
+                string cacheSizeStr = ConfigurationAccessHelper.GetValueByPath(StorageConfiguration.Settings.CategoryPropertyItems, configPath + "/CacheSize");
+                if (!string.IsNullOrEmpty(cacheSizeStr))
                 {
                     try
                     {
-                        this.mCacheSize = Int32.Parse(cacheSizeStr);
+                        this.mCacheSize = int.Parse(cacheSizeStr);
                         if (this.mCacheSize < 0)
                         {
                             throw new InvalidConfigurationValueException("Cache size is lower than zero.");
                         }
-                        mCacheSize = mCacheSize == Int32.MaxValue ? mCacheSize - 1 : mCacheSize; // max integer méretnél egy helyet hagyni kell a végére
+                        mCacheSize = mCacheSize == int.MaxValue ? mCacheSize - 1 : mCacheSize; // max integer méretnél egy helyet hagyni kell a végére
                     }
                     catch (InvalidConfigurationValueException)
                     {
@@ -138,7 +139,7 @@ namespace Forge.Persistence.Collections
                 }
                 else
                 {
-                    if (String.IsNullOrEmpty(providerConfigItem.EntryValue))
+                    if (string.IsNullOrEmpty(providerConfigItem.EntryValue))
                     {
                         SetStorageProvider(new FileStorageProvider<T>(cacheId, providerConfigItem), true);
                     }
@@ -151,15 +152,15 @@ namespace Forge.Persistence.Collections
                         }
                         catch (Exception ex)
                         {
-                            throw new Exception(String.Format("Unable to find storage provider: {0}", providerConfigItem.EntryValue), ex);
+                            throw new Exception(string.Format("Unable to find storage provider: {0}", providerConfigItem.EntryValue), ex);
                         }
                         try
                         {
-                            SetStorageProvider((IStorageProvider<T>)type.GetConstructor(new Type[] { typeof(String), typeof(CategoryPropertyItem) }).Invoke(new object[] { cacheId, providerConfigItem }), true);
+                            SetStorageProvider((IStorageProvider<T>)type.GetConstructor(new Type[] { typeof(string), typeof(CategoryPropertyItem) }).Invoke(new object[] { cacheId, providerConfigItem }), true);
                         }
                         catch (Exception ex)
                         {
-                            throw new Exception(String.Format("Unable to instantiate storage provider: {0}", providerConfigItem.EntryValue), ex);
+                            throw new Exception(string.Format("Unable to instantiate storage provider: {0}", providerConfigItem.EntryValue), ex);
                         }
                     }
                 }
@@ -215,7 +216,7 @@ namespace Forge.Persistence.Collections
                 }
                 lock (mLockObject)
                 {
-                    this.mCacheSize = value == Int32.MaxValue ? value - 1 : value; // max integer méretnél egy helyet hagyni kell a végére
+                    this.mCacheSize = value == int.MaxValue ? value - 1 : value; // max integer méretnél egy helyet hagyni kell a végére
                     if (value == 0)
                     {
                         // cache kikapcsolása
@@ -954,7 +955,7 @@ namespace Forge.Persistence.Collections
         {
             if (mDisposed)
             {
-                throw new ObjectDisposedException(String.Format("{0}, Id: '{1}' already disposed.", GetType().Name, this.mId));
+                throw new ObjectDisposedException(string.Format("{0}, Id: '{1}' already disposed.", GetType().Name, this.mId));
             }
         }
 
@@ -993,7 +994,7 @@ namespace Forge.Persistence.Collections
         /// </summary>
         protected void IncVersion()
         {
-            if (Int32.MaxValue == this.mVersion)
+            if (int.MaxValue == this.mVersion)
             {
                 this.mVersion = 0;
             }
@@ -1005,7 +1006,7 @@ namespace Forge.Persistence.Collections
         /// </summary>
         protected void DecVersion()
         {
-            if (Int32.MinValue == this.mVersion)
+            if (int.MinValue == this.mVersion)
             {
                 this.mVersion = 0;
             }
@@ -1016,16 +1017,16 @@ namespace Forge.Persistence.Collections
         /// Writes the dump.
         /// </summary>
         /// <param name="comment">The comment.</param>
-        protected void WriteDump(String comment)
+        protected void WriteDump(string comment)
         {
             if (LOGGER.IsDebugEnabled && mCache.Count > 0)
             {
-                LOGGER.Debug(String.Format("<----- DUMP BEGIN ({0}), '{1}' ----->", this.mId, comment));
+                LOGGER.Debug(string.Format("<----- DUMP BEGIN ({0}), '{1}' ----->", this.mId, comment));
                 foreach (CacheItem<T> item in mCache)
                 {
-                    LOGGER.Debug(String.Format("{0}: {1}", comment, item));
+                    LOGGER.Debug(string.Format("{0}: {1}", comment, item));
                 }
-                LOGGER.Debug(String.Format("<-----  DUMP END ({0}), '{1}'  ----->", this.mId, comment));
+                LOGGER.Debug(string.Format("<-----  DUMP END ({0}), '{1}'  ----->", this.mId, comment));
             }
         }
 
@@ -1053,13 +1054,13 @@ namespace Forge.Persistence.Collections
 
         #region Private method(s)
 
-        private static void RegisterCacheId(String cacheId)
+        private static void RegisterCacheId(string cacheId)
         {
             lock (GLOBAL_IDENTIFIERS)
             {
                 if (GLOBAL_IDENTIFIERS.Contains(cacheId))
                 {
-                    throw new DuplicatedCacheIdentifierException(String.Format("Identifier already exist: {0}", cacheId));
+                    throw new DuplicatedCacheIdentifierException(string.Format("Identifier already exist: {0}", cacheId));
                 }
                 GLOBAL_IDENTIFIERS.Add(cacheId);
             }
@@ -1248,9 +1249,9 @@ namespace Forge.Persistence.Collections
             /// <returns>
             /// A <see cref="System.String"/> that represents this instance.
             /// </returns>
-            public override String ToString()
+            public override string ToString()
             {
-                return String.Format("{0}, index: {1}, element: {2}", GetType().Name, mIndex, mElement);
+                return string.Format("{0}, index: {1}, element: {2}", GetType().Name, mIndex, mElement);
             }
 
             #endregion

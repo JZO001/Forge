@@ -7,6 +7,7 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.Serialization;
+using Forge.Shared;
 using NHibernate.Mapping.Attributes;
 
 namespace Forge.ORM.NHibernateExtension.Model
@@ -58,18 +59,18 @@ namespace Forge.ORM.NHibernateExtension.Model
         {
             get
             {
-                return this.id;
+                return id;
             }
             set
             {
-                if (this.id != -1 && this.IsSaved)
+                if (id != -1 && IsSaved)
                 {
                     ThrowHelper.ThrowArgumentException("Unable to replace identifier of an existing entity.", "value");
                 }
 
                 OnPropertyChanging("Id");
-                this.id = value;
-                this.IsSaved = false; // ha beállítok id-t, az azt jelenti, hogy most lesz először mentve
+                id = value;
+                IsSaved = false; // ha beállítok id-t, az azt jelenti, hogy most lesz először mentve
                 OnPropertyChanged("Id");
             }
         }
@@ -83,7 +84,7 @@ namespace Forge.ORM.NHibernateExtension.Model
         [DebuggerHidden]
         public override bool IsSaved
         {
-            get { return this.Id != -1 && base.IsSaved; }
+            get { return Id != -1 && base.IsSaved; }
             set { base.IsSaved = value; }
         }
 

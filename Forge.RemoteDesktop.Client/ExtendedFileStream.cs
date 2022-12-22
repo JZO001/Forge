@@ -6,7 +6,7 @@
 
 using System;
 using System.IO;
-using Forge.EventRaiser;
+using Forge.Invoker;
 
 namespace Forge.RemoteDesktop.Client
 {
@@ -91,12 +91,12 @@ namespace Forge.RemoteDesktop.Client
         private void OnFileRead()
         {
             mReadCounter++;
-            int percent = Convert.ToInt32(Convert.ToDouble(this.Position) / (Convert.ToDouble(this.Length) / 100d));
+            int percent = Convert.ToInt32(Convert.ToDouble(Position) / (Convert.ToDouble(Length) / 100d));
             if (percent != mLastPercent || mReadCounter == 3)
             {
                 mReadCounter = 0;
                 mLastPercent = percent;
-                Raiser.CallDelegatorBySync(EventFileRead, new object[] { this, new FileStreamProgressEventArgs(this.Length, this.Position, percent) });
+                Executor.Invoke(EventFileRead, this, new FileStreamProgressEventArgs(Length, Position, percent));
             }
         }
 

@@ -7,6 +7,7 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.Serialization;
+using Forge.Shared;
 using NHibernate.Mapping.Attributes;
 
 namespace Forge.ORM.NHibernateExtension.Model.Distributed
@@ -58,18 +59,18 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed
         /// <param name="entityId">The entity id.</param>
         public EntityId(string entityId)
         {
-            if (String.IsNullOrEmpty(entityId))
+            if (string.IsNullOrEmpty(entityId))
             {
                 ThrowHelper.ThrowArgumentNullException("entityId");
             }
-            String[] elements = entityId.Split(ID_SEPARATOR);
+            string[] elements = entityId.Split(ID_SEPARATOR);
             if (elements.Length != 3 || elements[0].Length == 0 || elements[1].Length == 0 || elements[2].Length == 0)
             {
                 throw new ArgumentException("Invalid entityId argument provided.");
             }
-            this.systemId = Int64.Parse(elements[0]);
-            this.deviceId = Int64.Parse(elements[1]);
-            this.id = Int64.Parse(elements[2]);
+            systemId = long.Parse(elements[0]);
+            deviceId = long.Parse(elements[1]);
+            id = long.Parse(elements[2]);
         }
 
         /// <summary>
@@ -82,9 +83,9 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed
             {
                 ThrowHelper.ThrowArgumentNullException("entityId");
             }
-            this.systemId = entityId.systemId;
-            this.deviceId = entityId.deviceId;
-            this.id = entityId.id;
+            systemId = entityId.systemId;
+            deviceId = entityId.deviceId;
+            id = entityId.id;
         }
 
         /// <summary>
@@ -202,14 +203,14 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed
             {
                 ThrowHelper.ThrowArgumentNullException("other");
             }
-            int ret = this.systemId.CompareTo(other.systemId);
+            int ret = systemId.CompareTo(other.systemId);
             if (ret == 0)
             {
-                ret = this.deviceId.CompareTo(other.deviceId);
+                ret = deviceId.CompareTo(other.deviceId);
             }
             if (ret == 0)
             {
-                ret = this.id.CompareTo(other.id);
+                ret = id.CompareTo(other.id);
             }
             return ret;
         }
@@ -284,9 +285,9 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed
         /// <returns>
         /// A <see cref="System.String"/> that represents this instance.
         /// </returns>
-        public override String ToString()
+        public override string ToString()
         {
-            return String.Format("{0}{1}{2}{3}{4}", SystemId, ID_SEPARATOR, DeviceId, ID_SEPARATOR, Id);
+            return string.Format("{0}{1}{2}{3}{4}", SystemId, ID_SEPARATOR, DeviceId, ID_SEPARATOR, Id);
         }
 
         /// <summary>
@@ -297,7 +298,7 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed
         /// </returns>
         public virtual object Clone()
         {
-            return this.GetType().GetConstructor(new Type[] { typeof(long), typeof(long), typeof(long) }).Invoke(new object[] { this.systemId, this.deviceId, this.id });
+            return GetType().GetConstructor(new Type[] { typeof(long), typeof(long), typeof(long) }).Invoke(new object[] { systemId, deviceId, id });
         }
 
         #endregion

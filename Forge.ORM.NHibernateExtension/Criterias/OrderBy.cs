@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Runtime.Serialization;
 using Forge.ORM.NHibernateExtension.Model;
 using Forge.Reflection;
+using Forge.Shared;
 
 namespace Forge.ORM.NHibernateExtension.Criterias
 {
@@ -42,7 +43,7 @@ namespace Forge.ORM.NHibernateExtension.Criterias
         #region Field(s)
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private string mFieldName = string.Empty;
+        private readonly string mFieldName = string.Empty;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private OrderModeEnum mOrderMode = OrderModeEnum.Asc;
@@ -74,12 +75,12 @@ namespace Forge.ORM.NHibernateExtension.Criterias
         /// <param name="orderMode">The order mode.</param>
         public OrderBy(string fieldName, OrderModeEnum orderMode)
         {
-            if (String.IsNullOrEmpty(fieldName))
+            if (string.IsNullOrEmpty(fieldName))
             {
                 ThrowHelper.ThrowArgumentNullException("fieldName");
             }
-            this.mFieldName = fieldName;
-            this.mOrderMode = orderMode;
+            mFieldName = fieldName;
+            mOrderMode = orderMode;
         }
 
         #endregion
@@ -146,7 +147,7 @@ namespace Forge.ORM.NHibernateExtension.Criterias
 
             if (entityValueLeft == null && entityValueRight == null)
             {
-                // egyenlőek
+                // equals
             }
             else if (entityValueLeft == null)
             {
@@ -184,8 +185,8 @@ namespace Forge.ORM.NHibernateExtension.Criterias
             if (!obj.GetType().Equals(GetType())) return false;
 
             OrderBy ob = (OrderBy)obj;
-            return ((ob.mFieldName == null ? this.mFieldName == null : ob.mFieldName.Equals(this.mFieldName))
-                        && ob.mOrderMode.Equals(this.mOrderMode));
+            return ((ob.mFieldName == null ? mFieldName == null : ob.mFieldName.Equals(mFieldName))
+                        && ob.mOrderMode.Equals(mOrderMode));
         }
 
         /// <summary>
@@ -217,7 +218,7 @@ namespace Forge.ORM.NHibernateExtension.Criterias
         /// </returns>
         public override string ToString()
         {
-            return String.Format("{0}, Field name: '{1}', Order: {2}", base.ToString(), FieldName, OrderMode);
+            return string.Format("{0}, Field name: '{1}', Order: {2}", base.ToString(), FieldName, OrderMode);
         }
 
         #endregion

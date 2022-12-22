@@ -4,6 +4,8 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+#if IS_WINDOWS
+
 using System;
 
 namespace Forge.Net.Synapse
@@ -51,3 +53,5 @@ namespace Forge.Net.Synapse
     }
 
 }
+
+#endif

@@ -9,6 +9,7 @@ using System.Reflection;
 using Forge.Net.Remoting.Channels;
 using Forge.Net.Remoting.Proxy;
 using Forge.Reflection;
+using Forge.Shared;
 
 namespace Forge.Net.Remoting.Validators
 {

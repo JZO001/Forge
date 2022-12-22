@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Shared;
 using System;
 using System.Diagnostics;
 
@@ -29,6 +30,11 @@ namespace Forge.Net.TerraGraf.Configuration
 
         #region Constructor(s)
 
+        /// <summary>Initializes a new instance of the <see cref="ContextRule" /> class.</summary>
+        public ContextRule()
+        {
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ContextRule"/> class.
         /// </summary>
@@ -44,8 +50,8 @@ namespace Forge.Net.TerraGraf.Configuration
             {
                 ThrowHelper.ThrowArgumentNullException("rule");
             }
-            this.mNetworkContextName = networkContextName;
-            this.mRule = rule;
+            mNetworkContextName = networkContextName;
+            mRule = rule;
         }
 
         #endregion
@@ -62,6 +68,11 @@ namespace Forge.Net.TerraGraf.Configuration
         public string NetworkContextName
         {
             get { return mNetworkContextName; }
+            set 
+            { 
+                if (string.IsNullOrWhiteSpace(value)) ThrowHelper.ThrowArgumentNullException("value");
+                mNetworkContextName = value; 
+            }
         }
 
         /// <summary>
@@ -74,6 +85,11 @@ namespace Forge.Net.TerraGraf.Configuration
         public string Rule
         {
             get { return mRule; }
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value)) ThrowHelper.ThrowArgumentNullException("value");
+                mRule = value;
+            }
         }
 
         #endregion

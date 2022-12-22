@@ -4,6 +4,8 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Legacy;
+using Forge.Shared;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -41,14 +43,14 @@ namespace Forge.Net.Remoting.Validators
             {
                 ThrowHelper.ThrowArgumentNullException("pi");
             }
-            this.mPropertyInfo = pi;
+            mPropertyInfo = pi;
             if (pi.GetGetMethod() != null)
             {
-                this.mGetMethod = new MethodComparator(pi.GetGetMethod());
+                mGetMethod = new MethodComparator(pi.GetGetMethod());
             }
             if (pi.GetSetMethod() != null)
             {
-                this.mSetMethod = new MethodComparator(pi.GetSetMethod());
+                mSetMethod = new MethodComparator(pi.GetSetMethod());
             }
         }
 

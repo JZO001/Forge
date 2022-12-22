@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Shared;
 using System;
 using System.Diagnostics;
 using System.Reflection;
@@ -84,10 +85,10 @@ namespace Forge.Net.Remoting.Messaging
             {
                 ThrowHelper.ThrowArgumentNullException("methodName");
             }
-            this.mContractName = string.Format("{0}, {1}", contract.FullName, new AssemblyName(contract.Assembly.FullName).Name);
-            this.mMethodName = methodName;
-            this.mMethodParameters = methodParameters;
-            this.mMessageInvokeMode = messageInvokeMode;
+            mContractName = string.Format("{0}, {1}", contract.FullName, new AssemblyName(contract.Assembly.FullName).Name);
+            mMethodName = methodName;
+            mMethodParameters = methodParameters;
+            mMessageInvokeMode = messageInvokeMode;
         }
 
         /// <summary>

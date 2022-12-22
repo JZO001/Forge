@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Runtime.Serialization;
 using Forge.ORM.NHibernateExtension.Model;
 using Forge.Reflection;
+using Forge.Shared;
 using NHibernate.Criterion;
 
 namespace Forge.ORM.NHibernateExtension.Criterias
@@ -89,19 +90,19 @@ namespace Forge.ORM.NHibernateExtension.Criterias
                 }
                 if (fieldName.ToLower().Equals("id"))
                 {
-                    this.FieldName = fieldName;
+                    FieldName = fieldName;
                 }
                 else
                 {
-                    this.FieldName = fieldName.ToLower().EndsWith(".id") ? fieldName : String.Format("{0}.id", fieldName);
+                    FieldName = fieldName.ToLower().EndsWith(".id") ? fieldName : String.Format("{0}.id", fieldName);
                 }
-                this.mValue = dynValue.Id;
+                mValue = dynValue.Id;
             }
             else
             {
-                this.mValue = value;
+                mValue = value;
             }
-            this.mOperand = operand;
+            mOperand = operand;
         }
 
         #endregion
@@ -131,11 +132,11 @@ namespace Forge.ORM.NHibernateExtension.Criterias
                     {
                         ThrowHelper.ThrowArgumentException(String.Format("Provided entity has not got identifier. Entity type: '{0}'.", valueType.FullName), "value");
                     }
-                    this.mValue = dynValue.Id;
+                    mValue = dynValue.Id;
                 }
                 else
                 {
-                    this.mValue = value;
+                    mValue = value;
                 }
                 Reset();
             }
@@ -175,7 +176,7 @@ namespace Forge.ORM.NHibernateExtension.Criterias
 
             bool result = false;
             ExtractObjectData ef = ExtractObjectData.Create(FieldName);
-            Object fieldValue = ef.GetValue(entity);
+            object fieldValue = ef.GetValue(entity);
 
             switch (Operand)
             {
@@ -224,8 +225,8 @@ namespace Forge.ORM.NHibernateExtension.Criterias
         public override object Clone()
         {
             ArithmeticCriteria cloned = (ArithmeticCriteria)base.Clone();
-            cloned.mOperand = this.mOperand;
-            cloned.mValue = this.mValue;
+            cloned.mOperand = mOperand;
+            cloned.mValue = mValue;
             return cloned;
         }
 

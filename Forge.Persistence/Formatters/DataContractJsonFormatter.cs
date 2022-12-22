@@ -4,6 +4,8 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Formatters;
+using Forge.Shared;
 using System;
 using System.IO;
 using System.Runtime.Serialization.Json;

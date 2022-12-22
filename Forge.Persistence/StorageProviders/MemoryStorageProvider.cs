@@ -7,13 +7,13 @@
 using System;
 using System.Collections.Generic;
 using Forge.Collections;
+using Forge.Configuration;
+using Forge.Persistence.StorageProviders.Options;
 
 namespace Forge.Persistence.StorageProviders
 {
 
-    /// <summary>
-    /// Memory based provider
-    /// </summary>
+    /// <summary>Memory based provider</summary>
     /// <typeparam name="T">Generic type</typeparam>
     [Serializable]
     public sealed class MemoryStorageProvider<T> : StorageProviderBase<T>
@@ -39,8 +39,28 @@ namespace Forge.Persistence.StorageProviders
         /// Initializes a new instance of the <see cref="MemoryStorageProvider&lt;T&gt;"/> class.
         /// </summary>
         /// <param name="storageId">The storage id.</param>
-        public MemoryStorageProvider(String storageId)
+        public MemoryStorageProvider(string storageId)
             : base(storageId)
+        {
+        }
+
+#if NETSTANDARD2_0_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+        /// <summary>Initializes a new instance of the <see cref="MemoryStorageProvider{T}" /> class.</summary>
+        /// <param name="options">The options.</param>
+        public MemoryStorageProvider(Microsoft.Extensions.Options.IOptions<MemoryStorageProviderOption> options) : base(options.Value)
+        {
+        }
+#endif
+
+        /// <summary>Initializes a new instance of the <see cref="MemoryStorageProvider{T}" /> class.</summary>
+        /// <param name="options">The options.</param>
+        public MemoryStorageProvider(MemoryStorageProviderOption options) : base(options)
+        {
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="MemoryStorageProvider{T}" /> class.</summary>
+        /// <param name="propertyItem">The property item.</param>
+        public MemoryStorageProvider(PropertyItem propertyItem) : base(propertyItem)
         {
         }
 

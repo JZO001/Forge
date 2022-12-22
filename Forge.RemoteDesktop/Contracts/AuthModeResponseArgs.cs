@@ -22,7 +22,7 @@ namespace Forge.RemoteDesktop.Contracts
         /// <param name="mode">The mode.</param>
         public AuthModeResponseArgs(AuthenticationModeEnum mode)
         {
-            this.AuthenticationMode = mode;
+            AuthenticationMode = mode;
         }
 
         /// <summary>

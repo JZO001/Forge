@@ -7,8 +7,9 @@
 using System;
 using System.Threading;
 using System.Windows.Forms;
-using Forge.Logging;
+using Forge.Logging.Abstraction;
 using Forge.RemoteDesktop.Client.Properties;
+using Forge.Shared;
 
 namespace Forge.RemoteDesktop.Client
 {
@@ -23,7 +24,7 @@ namespace Forge.RemoteDesktop.Client
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(FileSendProgressForm));
+        private static readonly ILog LOGGER = LogManager.GetLogger<FileSendProgressForm>();
 
         private readonly string mFileName = string.Empty;
 
@@ -93,7 +94,7 @@ namespace Forge.RemoteDesktop.Client
 
         private void Stream_EventFileRead(object sender, FileStreamProgressEventArgs e)
         {
-            if (this.InvokeRequired)
+            if (InvokeRequired)
             {
                 EventHandler<FileStreamProgressEventArgs> d = new EventHandler<FileStreamProgressEventArgs>(Stream_EventFileRead);
                 ((FileSendProgressForm)d.Target).Invoke(d, sender, e);
@@ -127,7 +128,7 @@ namespace Forge.RemoteDesktop.Client
 
             try
             {
-                Action d = new Action(this.Close);
+                Action d = new Action(Close);
                 ((FileSendProgressForm)d.Target).Invoke(d);
             }
             catch (Exception) { }
@@ -144,7 +145,7 @@ namespace Forge.RemoteDesktop.Client
             if (MessageBox.Show(this, Resources.Dialog_AbortFileSend, Resources.Confirmation, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
             {
                 mService.Disconnect();
-                this.Close();
+                Close();
             }
         }
 

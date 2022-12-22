@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Shared;
 using System;
 using System.Diagnostics;
 using System.Net;
@@ -64,6 +65,14 @@ namespace Forge.Net.Synapse
         public long ServerId
         {
             get { return mServerId; }
+        }
+
+        /// <summary>Gets the local end point.</summary>
+        /// <value>The local end point.</value>
+        [DebuggerHidden]
+        public EndPoint LocalEndPoint
+        {
+            get { return mLocalEndPoint; }
         }
 
         /// <summary>

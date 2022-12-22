@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Shared;
 using System;
 using System.Collections.Generic;
 
@@ -29,8 +30,8 @@ namespace Forge.UpdateFramework.Contracts
                 ThrowHelper.ThrowArgumentNullException("descriptors");
             }
 
-            this.ProductId = productId;
-            this.Descriptors = descriptors;
+            ProductId = productId;
+            Descriptors = descriptors;
         }
 
         /// <summary>

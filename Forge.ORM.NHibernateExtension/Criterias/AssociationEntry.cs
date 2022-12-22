@@ -6,6 +6,7 @@
 
 using System;
 using System.Diagnostics;
+using Forge.Shared;
 using NHibernate.Criterion;
 
 namespace Forge.ORM.NHibernateExtension.Criterias
@@ -42,9 +43,9 @@ namespace Forge.ORM.NHibernateExtension.Criterias
                 ThrowHelper.ThrowArgumentNullException("alias");
             }
 
-            this.Key = key;
-            this.Association = association;
-            this.Alias = alias;
+            Key = key;
+            Association = association;
+            Alias = alias;
         }
 
         #endregion

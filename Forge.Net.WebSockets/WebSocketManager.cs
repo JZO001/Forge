@@ -14,11 +14,13 @@ using System.Threading.Tasks;
 namespace Forge.Net.WebSockets
 {
 
+    /// <summary>WebSocket manager</summary>
     public class WebSocketManager
     {
 
-        private ConcurrentDictionary<string, WebSocket> mSockets = new ConcurrentDictionary<string, WebSocket>();
+        private readonly ConcurrentDictionary<string, WebSocket> mSockets = new ConcurrentDictionary<string, WebSocket>();
 
+        /// <summary>Initializes a new instance of the <see cref="WebSocketManager" /> class.</summary>
         public WebSocketManager()
         {
         }

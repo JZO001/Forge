@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using Forge.Configuration;
 using Forge.Net.Synapse;
 using Forge.Net.TerraGraf.NetworkPeers;
+using Forge.Shared;
 
 namespace Forge.Net.Services.Locators
 {
@@ -23,7 +24,7 @@ namespace Forge.Net.Services.Locators
 
         #region Field(s)
 
-        private readonly Dictionary<string, PropertyItem> mProperties = null;
+        private readonly Dictionary<string, IPropertyItem> mProperties = null;
 
         #endregion
 
@@ -37,7 +38,7 @@ namespace Forge.Net.Services.Locators
         /// <param name="priority">The priority.</param>
         /// <param name="properties">The properties.</param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "ep")]
-        public ServiceProvider(INetworkPeer peer, AddressEndPoint ep, long priority, Dictionary<string, PropertyItem> properties)
+        public ServiceProvider(INetworkPeer peer, AddressEndPoint ep, long priority, Dictionary<string, IPropertyItem> properties)
         {
             if (peer == null)
             {
@@ -52,10 +53,10 @@ namespace Forge.Net.Services.Locators
                 ThrowHelper.ThrowArgumentOutOfRangeException("priority");
             }
 
-            this.NetworkPeer = peer;
-            this.RemoteEndPoint = ep;
-            this.Priority = priority;
-            this.mProperties = properties == null ? new Dictionary<string, PropertyItem>() : new Dictionary<string, PropertyItem>(properties);
+            NetworkPeer = peer;
+            RemoteEndPoint = ep;
+            Priority = priority;
+            mProperties = properties == null ? new Dictionary<string, IPropertyItem>() : new Dictionary<string, IPropertyItem>(properties);
         }
 
         #endregion
@@ -92,10 +93,10 @@ namespace Forge.Net.Services.Locators
         /// <value>
         /// The properties.
         /// </value>
-        public Dictionary<string, PropertyItem> Properties
+        public Dictionary<string, IPropertyItem> Properties
         {
             [MethodImpl(MethodImplOptions.Synchronized)]
-            get { return new Dictionary<string, PropertyItem>(mProperties); }
+            get { return new Dictionary<string, IPropertyItem>(mProperties); }
 
             [MethodImpl(MethodImplOptions.Synchronized)]
             internal set
@@ -103,7 +104,7 @@ namespace Forge.Net.Services.Locators
                 mProperties.Clear();
                 if (value != null)
                 {
-                    foreach (KeyValuePair<string, PropertyItem> kv in value)
+                    foreach (KeyValuePair<string, IPropertyItem> kv in value)
                     {
                         mProperties.Add(kv.Key, kv.Value);
                     }
@@ -123,7 +124,7 @@ namespace Forge.Net.Services.Locators
         /// <exception cref="System.NotImplementedException"></exception>
         public int CompareTo(long other)
         {
-            return this.Priority.CompareTo(other);
+            return Priority.CompareTo(other);
         }
 
         /// <summary>
@@ -136,9 +137,9 @@ namespace Forge.Net.Services.Locators
         public int CompareTo(object obj)
         {
             int result = 0;
-            if (obj is Int64)
+            if (obj is long)
             {
-                result = this.Priority.CompareTo((long)obj);
+                result = Priority.CompareTo((long)obj);
             }
             return result;
         }

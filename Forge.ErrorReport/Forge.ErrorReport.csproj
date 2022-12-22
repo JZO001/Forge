@@ -1,111 +1,57 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{C7A8F803-2AF4-4211-8EF4-BB62A9EC0B34}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Forge.ErrorReport</RootNamespace>
-    <AssemblyName>Forge.ErrorReport</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <DocumentationFile>bin\Debug\Forge.ErrorReport.xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\Forge.ErrorReport.xml</DocumentationFile>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>Forge.pfx</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="log4net, Version=2.0.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.15\lib\net45\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Web" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="ConfigSection\ErrorReportConfiguration.cs" />
-    <Compile Include="ConfigSection\ErrorReportSection.cs" />
-    <Compile Include="Consts.cs" />
-    <Compile Include="Contracts\IErrorReportSendContract.cs" />
-    <Compile Include="Filter\ArithmeticFilter.cs" />
-    <Compile Include="Filter\ArithmeticFilterOperandEnum.cs" />
-    <Compile Include="Filter\FilterBase.cs" />
-    <Compile Include="Filter\FilterMemberNameAndValue.cs" />
-    <Compile Include="Filter\GroupFilter.cs" />
-    <Compile Include="Filter\GroupFilterLoginEnum.cs" />
-    <Compile Include="Filter\IErrorReportFilter.cs" />
-    <Compile Include="Filter\LikeFilter.cs" />
-    <Compile Include="Filter\LikeMatchModeFilterEnum.cs" />
-    <Compile Include="ReportPackage.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReportPackageDescriptor.cs" />
-    <Compile Include="Sink\IErrorReportPackageSink.cs" />
-    <Compile Include="Sink\SinkBase.cs" />
-    <Compile Include="Sink\SmtpSink.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Forge.pfx" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Forge.Base\Forge.Base.csproj">
-      <Project>{f3eed65e-c103-4ba8-af1d-37421d73a708}</Project>
-      <Name>Forge.Base</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Forge.Net.Remoting\Forge.Net.Remoting.csproj">
-      <Project>{0f590995-e709-4bd6-85fb-4059d2d7507e}</Project>
-      <Name>Forge.Net.Remoting</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Forge.ORM.NHibernateExtension\Forge.ORM.NHibernateExtension.csproj">
-      <Project>{d1427fb9-2787-46e6-a5ac-d98e8476f4f7}</Project>
-      <Name>Forge.ORM.NHibernateExtension</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>echo F|xcopy /r /y "$(TargetPath)" "$(SolutionDir).Output\$(TargetFileName)"
-echo F|xcopy /r /y "$(TargetDir)$(TargetName).pdb" "$(SolutionDir).Output\$(TargetName).pdb"
-echo F|xcopy /r /y "$(TargetDir)$(TargetName).xml" "$(SolutionDir).Output\$(TargetName).xml"
-</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup Label="Globals">
+	  <SccProjectName>SAK</SccProjectName>
+	  <SccProvider>SAK</SccProvider>
+	  <SccAuxPath>SAK</SccAuxPath>
+	  <SccLocalPath>SAK</SccLocalPath>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<TargetFrameworks>net461;netcoreapp3.1;net6.0;net6.0-windows</TargetFrameworks>
+		<Version>1.2.0.0</Version>
+		<AssemblyVersion>1.2.0.0</AssemblyVersion>
+		<Copyright>Copyright © Zoltan Juhasz, 2012-2022</Copyright>
+		<Description>Contains the interfaces of the Error Report Framework</Description>
+		<Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
+		<Company>Forge Project Contributor(s)</Company>
+		<PackageId>Forge.ErrorReport</PackageId>
+		<Authors>Zoltan Juhasz</Authors>
+		<Title>Error Report Framework</Title>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<ProjectGuid>{C7A8F803-2AF4-4211-8EF4-BB62A9EC0B34}</ProjectGuid>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<DocumentationFile>Forge.ErrorReport.xml</DocumentationFile>
+		<RepositoryUrl>https://github.com/JZO001/Forge.ErrorReport</RepositoryUrl>
+		<DefineConstants Condition="'$(TargetFramework)' == 'net6.0-windows'">IS_WINDOWS</DefineConstants>
+		<DefineConstants Condition="'$(TargetFramework)' == 'netcoreapp3.1'">IS_WINDOWS</DefineConstants>
+		<DefineConstants Condition="'$(TargetFramework)' == 'net40'">IS_WINDOWS</DefineConstants>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net461'">
+		<Reference Include="System.Configuration" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.1" Condition="'$(TargetFramework)' != 'net461'" />
+		<PackageReference Include="log4net" Version="2.0.15" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Forge.Net.Remoting\Forge.Net.Remoting.csproj" />
+	  <ProjectReference Include="..\Forge.ORM.NHibernateExtension\Forge.ORM.NHibernateExtension.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Remove="Forge.ErrorReport.xml" />
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
+	</Target>
+
 </Project>

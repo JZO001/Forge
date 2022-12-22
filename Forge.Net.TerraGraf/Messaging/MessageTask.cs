@@ -7,8 +7,10 @@
 using System;
 using System.Diagnostics;
 using System.Threading;
+using Forge.Legacy;
 using Forge.Net.TerraGraf.Contexts;
 using Forge.Net.TerraGraf.NetworkPeers;
+using Forge.Shared;
 
 namespace Forge.Net.TerraGraf.Messaging
 {
@@ -22,7 +24,7 @@ namespace Forge.Net.TerraGraf.Messaging
         #region Field(s)
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private TerraGrafMessageBase mMessage = null;
+        private readonly TerraGrafMessageBase mMessage = null;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private bool mSuccess = false;
@@ -48,7 +50,7 @@ namespace Forge.Net.TerraGraf.Messaging
             {
                 ThrowHelper.ThrowArgumentNullException("message");
             }
-            this.mMessage = message;
+            mMessage = message;
         }
 
         /// <summary>
@@ -59,10 +61,10 @@ namespace Forge.Net.TerraGraf.Messaging
         internal MessageTask(TerraGrafMessageBase message, EventWaitHandle sentEvent)
             : this(message)
         {
-            this.mSentEvent = sentEvent;
+            mSentEvent = sentEvent;
             if (!string.IsNullOrEmpty(message.TargetId) && NetworkManager.Instance.InternalLocalhost.Id.Equals(message.SenderId))
             {
-                // saját TCP és nem Broadcast UDP üzeneteknél azonnal indul az időmérés
+                // measuring time starts immediatelly at my own TCP and non-broadcast UDP messages
                 mWatch = Stopwatch.StartNew();
             }
         }
@@ -154,7 +156,7 @@ namespace Forge.Net.TerraGraf.Messaging
         {
             if (mMessage.MessageType == MessageTypeEnum.Tcp && NetworkManager.Instance.InternalLocalhost.Id.Equals(mMessage.SenderId))
             {
-                // csak a saját TCP üzeneteimre lehet várakozni
+                // I wait only for my own TCP messages
                 lock (mLockObject)
                 {
                     if (mWatch == null)
@@ -168,7 +170,7 @@ namespace Forge.Net.TerraGraf.Messaging
                 }
                 if (mSentEvent.WaitOne(timeout) && IsSuccess)
                 {
-                    // replytime feljegyzése
+                    // save replytime
                     NetworkPeerRemote networkPeer = (NetworkPeerRemote)NetworkPeerContext.GetNetworkPeerById(mMessage.TargetId);
                     networkPeer.Session.ReplyTime = ReplyTime;
                 }

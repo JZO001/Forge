@@ -1,7 +1,8 @@
 ﻿using System;
 using Forge.Collections;
 using Forge.Configuration.Shared;
-using Forge.Logging;
+using Forge.Formatters;
+using Forge.Logging.Abstraction;
 using Forge.Persistence.Formatters;
 using Forge.Persistence.Serialization;
 using Forge.Persistence.StorageProviders.ConfigSection;

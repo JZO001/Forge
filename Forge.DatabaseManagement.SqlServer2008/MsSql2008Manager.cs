@@ -8,9 +8,11 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
+using Forge.Configuration;
 using Forge.Configuration.Shared;
 using Forge.DatabaseManagement.SqlServer2008.Properties;
-using Forge.Logging;
+using Forge.Logging.Abstraction;
+using Forge.Shared;
 
 namespace Forge.DatabaseManagement.SqlServer2008
 {
@@ -24,7 +26,7 @@ namespace Forge.DatabaseManagement.SqlServer2008
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(MsSql2008Manager));
+        private static readonly ILog LOGGER = LogManager.GetLogger<MsSql2008Manager>();
 
         private const string CONNECTION_STRING_CONFIG_ID = "ConnectionStringForAdministration";
 
@@ -135,21 +137,22 @@ namespace Forge.DatabaseManagement.SqlServer2008
         /// </summary>
         /// <param name="configItem">The config item.</param>
         /// <exception cref="InitializationException">Administration connection string was not set.</exception>
-        /// <exception cref="Forge.InitializationException">Administration connection string was not set.</exception>
-        public void Initialize(CategoryPropertyItem configItem)
+        /// <exception cref="Forge.Shared.InitializationException">Administration connection string was not set.</exception>
+        public void Initialize(IPropertyItem configItem)
         {
             if (configItem == null)
             {
                 ThrowHelper.ThrowArgumentNullException("configItem");
             }
 
-            mConnectionStringForAdmin = ConfigurationAccessHelper.GetValueByPath(configItem.PropertyItems, CONNECTION_STRING_CONFIG_ID);
+            mConnectionStringForAdmin = ConfigurationAccessHelper.GetValueByPath(configItem, CONNECTION_STRING_CONFIG_ID);
+
             if (string.IsNullOrEmpty(mConnectionStringForAdmin))
             {
                 throw new InitializationException("Administration connection string was not set.");
             }
 
-            this.IsInitialized = true;
+            IsInitialized = true;
         }
 
         /// <summary>

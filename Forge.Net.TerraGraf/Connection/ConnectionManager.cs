@@ -12,15 +12,14 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Forge.Collections;
-using Forge.Logging;
+using Forge.Logging.Abstraction;
 using Forge.Net.Synapse;
-using Forge.Net.Synapse.NATUPnP;
 using Forge.Net.TerraGraf.Configuration;
 using Forge.Net.TerraGraf.Formatters;
 using Forge.Net.TerraGraf.Messaging;
 using Forge.Net.TerraGraf.NetworkPeers;
-#if NETCOREAPP3_1_OR_GREATER
-#else
+#if IS_WINDOWS
+using Forge.Net.Synapse.NATUPnP;
 using NATUPNPLib;
 #endif
 
@@ -36,7 +35,7 @@ namespace Forge.Net.TerraGraf.Connection
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(ConnectionManager));
+        private static readonly ILog LOGGER = LogManager.GetLogger<ConnectionManager>();
 
         private Forge.Threading.ThreadPool mThreadPool = new Forge.Threading.ThreadPool("TerraGraf_Network_Connection");
 
@@ -44,7 +43,7 @@ namespace Forge.Net.TerraGraf.Connection
 
         private Thread mDelayThread = null;
 
-        private Semaphore mSemaphore = new Semaphore(0, Int32.MaxValue);
+        private Semaphore mSemaphore = new Semaphore(0, int.MaxValue);
 
         private ListSpecialized<ConnectionTask> mDelayedConnectionTasks = new ListSpecialized<ConnectionTask>();
 
@@ -59,10 +58,10 @@ namespace Forge.Net.TerraGraf.Connection
         /// </summary>
         internal ConnectionManager()
         {
-            this.mDelayThread = new Thread(new ThreadStart(DelayThread));
-            this.mDelayThread.Name = "ConnectionManager_DelayThread";
-            this.mDelayThread.IsBackground = true;
-            this.mDelayThread.Start();
+            mDelayThread = new Thread(new ThreadStart(DelayThread));
+            mDelayThread.Name = "ConnectionManager_DelayThread";
+            mDelayThread.IsBackground = true;
+            mDelayThread.Start();
         }
 
         #endregion
@@ -78,7 +77,7 @@ namespace Forge.Net.TerraGraf.Connection
             servers.Clear();
             if (NetworkManager.Instance.InternalConfiguration.NetworkPeering.TCPServers.Auto)
             {
-                // automatikus felderítés
+                // automatic network peer detection
                 foreach (IPAddress a in Dns.GetHostAddresses(Dns.GetHostName()))
                 {
                     if (a.AddressFamily == AddressFamily.InterNetwork || (a.AddressFamily == AddressFamily.InterNetworkV6 &&
@@ -170,8 +169,8 @@ namespace Forge.Net.TerraGraf.Connection
             }
         }
 
-#if NETCOREAPP3_1_OR_GREATER
-#else
+        //#if NETCOREAPP3_1_OR_GREATER
+#if IS_WINDOWS
 
         /// <summary>
         /// Initializes the NATUPnP service.
@@ -251,7 +250,7 @@ namespace Forge.Net.TerraGraf.Connection
                                         if (!exist)
                                         {
                                             if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("CONNECTION_MANAGER, opening UPnP port {0} to local interface: {1}", selectedServer.EndPoint.Port, selectedServer.EndPoint.Host));
-                                            IStaticPortMapping mapping = manager.AddNATUPnPPortMapping(selectedServer.EndPoint.Port, ProtocolEnum.TCP, selectedServer.EndPoint.Port, defAddress, true, AppDomain.CurrentDomain.SetupInformation.ApplicationName);
+                                            IStaticPortMapping mapping = manager.AddNATUPnPPortMapping(selectedServer.EndPoint.Port, ProtocolEnum.TCP, selectedServer.EndPoint.Port, defAddress, true, NetworkManager.Configuration.Settings.ApplicationName);
                                             if (mapping == null)
                                             {
                                                 if (LOGGER.IsErrorEnabled) LOGGER.Error("CONNECTION_MANAGER, failed to add UPnP port. Is there any UPnP service exist?");
@@ -263,7 +262,7 @@ namespace Forge.Net.TerraGraf.Connection
                                                 {
                                                     if (gw.EndPoint.Host.Equals(mapping.ExternalIPAddress) && gw.EndPoint.Port.Equals(mapping.ExternalPort))
                                                     {
-                                                        // már van ilyen szerverem
+                                                        // I have a server like this
                                                         exist = true;
                                                         break;
                                                     }
@@ -338,7 +337,9 @@ namespace Forge.Net.TerraGraf.Connection
                                         udpClient.Client.Bind(broadcastEp);
                                         udpClient.EnableBroadcast = true;
                                         udpClient.MulticastLoopback = true;
+#if IS_WINDOWS
                                         udpClient.AllowNatTraversal(true);
+#endif
 
                                         udpClient.JoinMulticastGroup(multicastAddress);
 
@@ -377,7 +378,9 @@ namespace Forge.Net.TerraGraf.Connection
                                         broadcastEp = new IPEndPoint(a == AddressFamily.InterNetwork ? IPAddress.Any : IPAddress.IPv6Any, port);
                                         udpClient = new System.Net.Sockets.UdpClient(broadcastEp);
                                         udpClient.EnableBroadcast = true;
+#if IS_WINDOWS
                                         udpClient.AllowNatTraversal(true);
+#endif
                                         if (a == AddressFamily.InterNetwork) udpClient.DontFragment = true;
                                         if (LOGGER.IsInfoEnabled) LOGGER.Info(string.Format("CONNECTION_MANAGER, broadcast detector initialized on port {0} ({1}).", port, a.ToString()));
                                         break;

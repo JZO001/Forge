@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using Forge.Collections;
+using Forge.Shared;
 using log4net.Core;
 
 namespace Forge.ErrorReport
@@ -57,10 +58,10 @@ namespace Forge.ErrorReport
                 ThrowHelper.ThrowArgumentNullException("logEvents");
             }
 
-            this.mLogEvents = new ListSpecialized<LoggingEvent>(logEvents);
-            this.ApplicationId = mApplicationId;
-            this.ReportCreated = DateTime.UtcNow;
-            this.LoggingEvent = loggingEvent;
+            mLogEvents = new ListSpecialized<LoggingEvent>(logEvents);
+            ApplicationId = mApplicationId;
+            ReportCreated = DateTime.UtcNow;
+            LoggingEvent = loggingEvent;
         }
 
         #endregion

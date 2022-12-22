@@ -15,7 +15,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
-using Forge.Logging;
+using Forge.Logging.Abstraction;
 using Forge.Management;
 using Forge.Native;
 using Forge.Native.Helpers;
@@ -26,6 +26,7 @@ using Forge.Net.Services;
 using Forge.Net.Services.Services;
 using Forge.RemoteDesktop.Contracts;
 using Forge.RemoteDesktop.Service.Configuration;
+using Forge.Shared;
 
 namespace Forge.RemoteDesktop.Service
 {
@@ -106,9 +107,9 @@ namespace Forge.RemoteDesktop.Service
         /// </summary>
         public event EventHandler<AcceptClientEventArgs> EventAcceptClient;
 
-#endregion
+        #endregion
 
-#region Constructor(s)
+        #region Constructor(s)
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RemoteDesktopServiceManager"/> class.
@@ -124,9 +125,9 @@ namespace Forge.RemoteDesktop.Service
             mTimeoutWatchThread.Start();
         }
 
-#endregion
+        #endregion
 
-#region Public properties
+        #region Public properties
 
         /// <summary>
         /// Gets the connected clients.
@@ -162,9 +163,9 @@ namespace Forge.RemoteDesktop.Service
             }
         }
 
-#endregion
+        #endregion
 
-#region Public method(s)
+        #region Public method(s)
 
         /// <summary>
         /// Starts the service.
@@ -175,7 +176,7 @@ namespace Forge.RemoteDesktop.Service
         [MethodImpl(MethodImplOptions.Synchronized)]
         public override ManagerStateEnum Start(long priority, IServiceDescriptor serviceDescriptor)
         {
-            ManagerStateEnum state = this.ManagerState;
+            ManagerStateEnum state = ManagerState;
             if (state != ManagerStateEnum.Started)
             {
                 Cursor c = Cursor.Current; // ez csak azért kell, hogy az alkalmazás feliratkozzon az eseményekre
@@ -214,7 +215,7 @@ namespace Forge.RemoteDesktop.Service
         [MethodImpl(MethodImplOptions.Synchronized)]
         public override ManagerStateEnum Stop()
         {
-            if (this.ManagerState != ManagerStateEnum.Stopped)
+            if (ManagerState != ManagerStateEnum.Stopped)
             {
                 base.Stop();
                 lock (mLockObjectForClients)
@@ -226,7 +227,7 @@ namespace Forge.RemoteDesktop.Service
                 mMouseMoveEvent.Set();
             }
 
-            return this.ManagerState;
+            return ManagerState;
         }
 
         /// <summary>
@@ -243,9 +244,9 @@ namespace Forge.RemoteDesktop.Service
             ServiceContract_Disconnected(client, new DisconnectEventArgs(client.SessionId));
         }
 
-#endregion
+        #endregion
 
-#region Internal method(s)
+        #region Internal method(s)
 
         internal void RegisterNewContract(IRemoteDesktopInternalClient serviceContract)
         {
@@ -277,7 +278,7 @@ namespace Forge.RemoteDesktop.Service
 
             lock (mLockObjectForClients)
             {
-                if (this.ManagerState == ManagerStateEnum.Started && mClientsWatchForTimeout.ContainsKey(client.SessionId) && client.IsConnected && client.IsAuthenticated)
+                if (ManagerState == ManagerStateEnum.Started && mClientsWatchForTimeout.ContainsKey(client.SessionId) && client.IsConnected && client.IsAuthenticated)
                 {
                     mClientsWatchForTimeout.Remove(client.SessionId);
 
@@ -317,7 +318,7 @@ namespace Forge.RemoteDesktop.Service
         {
             DescriptionResponseArgs result = null;
 
-            if (this.ManagerState == ManagerStateEnum.Started && client.IsAuthenticated && client.IsAccepted)
+            if (ManagerState == ManagerStateEnum.Started && client.IsAuthenticated && client.IsAccepted)
             {
                 result = new DescriptionResponseArgs(GetDesktopSize(), new Size(mConfigDesktopImageClipWidth, mConfigDesktopImageClipHeight), GetCursors(), mConfigAcceptKeyboardAndMouseInputFromClients);
                 if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("REMOTE_DESKTOP_MANAGER, sending service configuration to the client. SessionId: {0}", client.SessionId));
@@ -333,7 +334,7 @@ namespace Forge.RemoteDesktop.Service
 
         internal void SubscribeForDesktop(IRemoteDesktopInternalClient client, Area area)
         {
-            bool allowToExecute = client.IsAuthenticated && this.ManagerState == ManagerStateEnum.Started;
+            bool allowToExecute = client.IsAuthenticated && ManagerState == ManagerStateEnum.Started;
 
             if (allowToExecute && mScreenClipsInitialized.WaitOne(5000))
             {
@@ -404,7 +405,7 @@ namespace Forge.RemoteDesktop.Service
         {
             MouseMoveServiceEventArgs result = null;
 
-            bool allowToExecute = client.IsAuthenticated && this.ManagerState == ManagerStateEnum.Started;
+            bool allowToExecute = client.IsAuthenticated && ManagerState == ManagerStateEnum.Started;
 
             if (allowToExecute && mScreenClipsInitialized.WaitOne(5000))
             {
@@ -428,7 +429,7 @@ namespace Forge.RemoteDesktop.Service
 
         internal void StopEventPump(IRemoteDesktopService client)
         {
-            bool allowToExecute = client.IsAuthenticated && this.ManagerState == ManagerStateEnum.Started;
+            bool allowToExecute = client.IsAuthenticated && ManagerState == ManagerStateEnum.Started;
 
             if (allowToExecute)
             {
@@ -444,7 +445,7 @@ namespace Forge.RemoteDesktop.Service
 
         internal void SetImageClipQuality(IRemoteDesktopInternalClient client, Forge.RemoteDesktop.Contracts.ImageClipQualityArgs e)
         {
-            bool allowToExecute = client.IsAuthenticated && this.ManagerState == ManagerStateEnum.Started;
+            bool allowToExecute = client.IsAuthenticated && ManagerState == ManagerStateEnum.Started;
 
             if (allowToExecute && mScreenClipsInitialized.WaitOne(5000))
             {
@@ -484,7 +485,7 @@ namespace Forge.RemoteDesktop.Service
 
         internal void RefreshDesktop(IRemoteDesktopInternalClient client)
         {
-            bool allowToExecute = client.IsAuthenticated && this.ManagerState == ManagerStateEnum.Started;
+            bool allowToExecute = client.IsAuthenticated && ManagerState == ManagerStateEnum.Started;
 
             if (allowToExecute && mScreenClipsInitialized.WaitOne(5000))
             {
@@ -512,7 +513,7 @@ namespace Forge.RemoteDesktop.Service
 
         internal void SendKeyEvent(IRemoteDesktopInternalClient client, KeyboardEventArgs e)
         {
-            bool allowToExecute = client.IsAuthenticated && this.ManagerState == ManagerStateEnum.Started;
+            bool allowToExecute = client.IsAuthenticated && ManagerState == ManagerStateEnum.Started;
 
             if (allowToExecute && mScreenClipsInitialized.WaitOne(5000))
             {
@@ -540,7 +541,7 @@ namespace Forge.RemoteDesktop.Service
 
         internal void SendMouseButtonEvent(IRemoteDesktopInternalClient client, MouseButtonEventArgs e)
         {
-            bool allowToExecute = client.IsAuthenticated && this.ManagerState == ManagerStateEnum.Started;
+            bool allowToExecute = client.IsAuthenticated && ManagerState == ManagerStateEnum.Started;
 
             if (allowToExecute && mScreenClipsInitialized.WaitOne(5000))
             {
@@ -569,7 +570,7 @@ namespace Forge.RemoteDesktop.Service
 
         internal void SendMouseWheelEvent(IRemoteDesktopInternalClient client, MouseWheelEventArgs e)
         {
-            bool allowToExecute = client.IsAuthenticated && this.ManagerState == ManagerStateEnum.Started;
+            bool allowToExecute = client.IsAuthenticated && ManagerState == ManagerStateEnum.Started;
 
             if (allowToExecute && mScreenClipsInitialized.WaitOne(5000))
             {
@@ -597,7 +598,7 @@ namespace Forge.RemoteDesktop.Service
 
         internal void SendMouseMoveEvent(IRemoteDesktopInternalClient client, MouseMoveEventArgs e)
         {
-            bool allowToExecute = client.IsAuthenticated && this.ManagerState == ManagerStateEnum.Started;
+            bool allowToExecute = client.IsAuthenticated && ManagerState == ManagerStateEnum.Started;
 
             if (allowToExecute && mScreenClipsInitialized.WaitOne(5000))
             {
@@ -616,7 +617,7 @@ namespace Forge.RemoteDesktop.Service
 
         internal void SendClipboardContent(IRemoteDesktopInternalClient client, Forge.RemoteDesktop.Contracts.ClipboardChangedEventArgs e)
         {
-            bool allowToExecute = client.IsAuthenticated && this.ManagerState == ManagerStateEnum.Started;
+            bool allowToExecute = client.IsAuthenticated && ManagerState == ManagerStateEnum.Started;
 
             if (allowToExecute && mScreenClipsInitialized.WaitOne(5000))
             {
@@ -648,7 +649,7 @@ namespace Forge.RemoteDesktop.Service
                 ThrowHelper.ThrowArgumentNullException("file");
             }
 
-            bool allowToExecute = client.IsAuthenticated && this.ManagerState == ManagerStateEnum.Started;
+            bool allowToExecute = client.IsAuthenticated && ManagerState == ManagerStateEnum.Started;
 
             if (allowToExecute && mScreenClipsInitialized.WaitOne(5000))
             {
@@ -665,9 +666,9 @@ namespace Forge.RemoteDesktop.Service
             }
         }
 
-#endregion
+        #endregion
 
-#region Protected method(s)
+        #region Protected method(s)
 
         /// <summary>
         /// Registers to peer context.
@@ -683,9 +684,9 @@ namespace Forge.RemoteDesktop.Service
             }
         }
 
-#endregion
+        #endregion
 
-#region Private method(s)
+        #region Private method(s)
 
         private void SetCursorPosOnService(IRemoteDesktopInternalClient client, Point mousePos)
         {
@@ -837,7 +838,7 @@ namespace Forge.RemoteDesktop.Service
 
                 mScreenClipsInitialized.Set(); // ha van várakozó kliens, most futhat tovább
             }
-            while (this.ManagerState == ManagerStateEnum.Started)
+            while (ManagerState == ManagerStateEnum.Started)
             {
                 bool subscribed = false;
                 while (mClientsAccepteds.Count > 0)
@@ -915,7 +916,7 @@ namespace Forge.RemoteDesktop.Service
         private void MouseMoveSenderThreadMain()
         {
             if (LOGGER.IsDebugEnabled) LOGGER.Debug("REMOTE_DESKTOP_MANAGER, mouse move sender thread started.");
-            while (this.ManagerState == ManagerStateEnum.Started)
+            while (ManagerState == ManagerStateEnum.Started)
             {
                 mMouseMoveEvent.WaitOne();
 
@@ -929,7 +930,7 @@ namespace Forge.RemoteDesktop.Service
                 foreach (IRemoteDesktopInternalClient client in GetAcceptedClients())
                 {
                     if (client.IsActive &&
-                        (client.LastMousePosX != pos.X || client.LastMousePosY != pos.Y || 
+                        (client.LastMousePosX != pos.X || client.LastMousePosY != pos.Y ||
                         (cursor != null && string.Compare(client.LastCursorId, mCursorWithIds[cursor]) != 0) ||
                         (cursor == null && !string.IsNullOrEmpty(client.LastCursorId))))
                     {
@@ -1315,9 +1316,9 @@ namespace Forge.RemoteDesktop.Service
             return container;
         }
 
-#endregion
+        #endregion
 
-#region Nested type(s)
+        #region Nested type(s)
 
         private class TimeoutWatch
         {
@@ -1328,8 +1329,8 @@ namespace Forge.RemoteDesktop.Service
             /// <param name="service">The service.</param>
             public TimeoutWatch(IRemoteDesktopInternalClient service)
             {
-                this.Service = service;
-                this.Connected = DateTime.Now;
+                Service = service;
+                Connected = DateTime.Now;
             }
 
             /// <summary>
@@ -1366,9 +1367,9 @@ namespace Forge.RemoteDesktop.Service
                     ThrowHelper.ThrowArgumentNullException("desktopClips");
                 }
 
-                this.MinValues = minValues;
-                this.ScreenSize = screenSize;
-                this.DesktopClips = desktopClips;
+                MinValues = minValues;
+                ScreenSize = screenSize;
+                DesktopClips = desktopClips;
             }
 
             /// <summary>
@@ -1406,9 +1407,9 @@ namespace Forge.RemoteDesktop.Service
             /// <param name="workerThread">The worker thread.</param>
             internal ThreadClientContext(Thread workerThread)
             {
-                this.Thread = workerThread;
-                this.WorkEvent = new AutoResetEvent(false);
-                this.Clients = new HashSet<IRemoteDesktopInternalClient>();
+                Thread = workerThread;
+                WorkEvent = new AutoResetEvent(false);
+                Clients = new HashSet<IRemoteDesktopInternalClient>();
             }
 
             /// <summary>
@@ -1447,7 +1448,7 @@ namespace Forge.RemoteDesktop.Service
             /// </summary>
             internal UIAccessorControl(ILog logger)
             {
-                this.LOGGER = logger;
+                LOGGER = logger;
             }
 
             /// <summary>
@@ -1456,7 +1457,7 @@ namespace Forge.RemoteDesktop.Service
             /// <param name="text">The text.</param>
             internal void SetClipboardContent(string text)
             {
-                if (this.InvokeRequired)
+                if (InvokeRequired)
                 {
                     SetClipboardContentHandler d = new SetClipboardContentHandler(SetClipboardContent);
                     ((UIAccessorControl)d.Target).Invoke(d, text);
@@ -1472,7 +1473,7 @@ namespace Forge.RemoteDesktop.Service
             /// <returns></returns>
             internal Cursor GetCurrentCursor()
             {
-                if (this.InvokeRequired)
+                if (InvokeRequired)
                 {
                     GetCurrentCursorHandler d = new GetCurrentCursorHandler(GetCurrentCursor);
                     return ((UIAccessorControl)d.Target).Invoke(d) as Cursor;
@@ -1508,7 +1509,7 @@ namespace Forge.RemoteDesktop.Service
 
             internal void SaveFile(string fileName, Stream file)
             {
-                if (this.InvokeRequired)
+                if (InvokeRequired)
                 {
                     SaveFileHandler d = new SaveFileHandler(SaveFile);
                     ((UIAccessorControl)d.Target).Invoke(d, fileName, file);
@@ -1545,7 +1546,7 @@ namespace Forge.RemoteDesktop.Service
 
         }
 
-#endregion
+        #endregion
 
     }
 

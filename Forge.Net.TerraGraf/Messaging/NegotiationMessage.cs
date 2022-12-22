@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Shared;
 using System;
 using System.Diagnostics;
 using System.Text;
@@ -50,8 +51,8 @@ namespace Forge.Net.TerraGraf.Messaging
             {
                 ThrowHelper.ThrowArgumentNullException("version");
             }
-            this.mNetworkContextName = networkContextName;
-            this.mVersion = version;
+            mNetworkContextName = networkContextName;
+            mVersion = version;
         }
 
         #endregion

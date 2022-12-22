@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using Forge.Net.TerraGraf.NetworkInfo;
+using Forge.Shared;
 
 namespace Forge.Net.TerraGraf.Messaging
 {
@@ -73,7 +74,7 @@ namespace Forge.Net.TerraGraf.Messaging
             {
                 ThrowHelper.ThrowArgumentNullException("networkInfo");
             }
-            this.mNetworkInfo = networkInfo;
+            mNetworkInfo = networkInfo;
         }
 
         /// <summary>
@@ -93,8 +94,8 @@ namespace Forge.Net.TerraGraf.Messaging
             {
                 ThrowHelper.ThrowArgumentNullException("targetHostRelation");
             }
-            this.mNetworkInfo = networkInfo;
-            this.mTargetHostRelation = targetHostRelation;
+            mNetworkInfo = networkInfo;
+            mTargetHostRelation = targetHostRelation;
         }
 
         /// <summary>
@@ -109,7 +110,7 @@ namespace Forge.Net.TerraGraf.Messaging
             {
                 ThrowHelper.ThrowArgumentNullException("targetHostRelation");
             }
-            this.mTargetHostRelation = targetHostRelation;
+            mTargetHostRelation = targetHostRelation;
         }
 
         /// <summary>
@@ -124,7 +125,7 @@ namespace Forge.Net.TerraGraf.Messaging
             {
                 ThrowHelper.ThrowArgumentNullException("blackHoleContainer");
             }
-            this.mBlackHoleContainer = blackHoleContainer;
+            mBlackHoleContainer = blackHoleContainer;
         }
 
         /// <summary>
@@ -140,7 +141,7 @@ namespace Forge.Net.TerraGraf.Messaging
             {
                 ThrowHelper.ThrowArgumentNullException("networkInfo");
             }
-            this.mNetworkInfo = networkInfo;
+            mNetworkInfo = networkInfo;
         }
 
         /// <summary>
@@ -158,9 +159,9 @@ namespace Forge.Net.TerraGraf.Messaging
             {
                 ThrowHelper.ThrowArgumentNullException("networkInfo");
             }
-            this.mNetworkInfo = networkInfo;
-            this.mTargetHostRelation = targetHostRelation;
-            this.mBlackHoleContainer = blackHoleContainer;
+            mNetworkInfo = networkInfo;
+            mTargetHostRelation = targetHostRelation;
+            mBlackHoleContainer = blackHoleContainer;
         }
 
         #endregion

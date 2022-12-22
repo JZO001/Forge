@@ -4,6 +4,8 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Legacy;
+using Forge.Shared;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
@@ -36,7 +38,7 @@ namespace Forge.Net.TerraGraf
             {
                 ThrowHelper.ThrowArgumentNullException("socket");
             }
-            this.mSocket = socket;
+            mSocket = socket;
         }
 
         #endregion

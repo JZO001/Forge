@@ -4,6 +4,8 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Legacy;
+using Forge.Shared;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,13 +23,13 @@ namespace Forge.Net.Remoting.Service
         #region Field(s)
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private Type mContractType = null;
+        private readonly Type mContractType = null;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private Type mDefaultImplementationType = null;
+        private readonly Type mDefaultImplementationType = null;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly Dictionary<String, Type> mImplementationPerChannel = new Dictionary<String, Type>();
+        private readonly Dictionary<string, Type> mImplementationPerChannel = new Dictionary<string, Type>();
 
         #endregion
 
@@ -44,8 +46,8 @@ namespace Forge.Net.Remoting.Service
             {
                 ThrowHelper.ThrowArgumentNullException("contractType");
             }
-            this.mContractType = contractType;
-            this.mDefaultImplementationType = defaultImplementationType;
+            mContractType = contractType;
+            mDefaultImplementationType = defaultImplementationType;
         } 
 
         #endregion
@@ -83,7 +85,7 @@ namespace Forge.Net.Remoting.Service
         /// The implementation per channel.
         /// </value>
         [DebuggerHidden]
-        public Dictionary<String, Type> ImplementationPerChannel
+        public Dictionary<string, Type> ImplementationPerChannel
         {
             get { return mImplementationPerChannel; }
         }  

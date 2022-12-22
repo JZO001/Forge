@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Shared;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -42,7 +43,7 @@ namespace Forge.Net.Remoting.Messaging
         /// </summary>
         /// <param name="correlationId">The correlation id.</param>
         /// <param name="returnValue">The return value.</param>
-        public ResponseMessage(String correlationId, MethodParameter returnValue)
+        public ResponseMessage(string correlationId, MethodParameter returnValue)
             : this(correlationId, returnValue, null)
         {
         }
@@ -53,7 +54,7 @@ namespace Forge.Net.Remoting.Messaging
         /// <param name="correlationId">The correlation id.</param>
         /// <param name="returnValue">The return value.</param>
         /// <param name="methodInvocationException">The method invocation exception.</param>
-        public ResponseMessage(String correlationId, MethodParameter returnValue, Exception methodInvocationException)
+        public ResponseMessage(string correlationId, MethodParameter returnValue, Exception methodInvocationException)
             : base(correlationId, MessageTypeEnum.Response)
         {
             if (string.IsNullOrEmpty(correlationId))
@@ -64,8 +65,8 @@ namespace Forge.Net.Remoting.Messaging
             {
                 ThrowHelper.ThrowArgumentNullException("returnValue");
             }
-            this.mReturnValue = returnValue;
-            this.mMethodInvocationException = methodInvocationException;
+            mReturnValue = returnValue;
+            mMethodInvocationException = methodInvocationException;
         }
 
         #endregion
@@ -105,7 +106,7 @@ namespace Forge.Net.Remoting.Messaging
         /// </summary>
         public void SetReturnValueToNull()
         {
-            this.mReturnValue.SetValueToNull();
+            mReturnValue.SetValueToNull();
         }
 
         /// <summary>
@@ -114,7 +115,7 @@ namespace Forge.Net.Remoting.Messaging
         /// <param name="stream">The stream.</param>
         public void SetReturnValueToStream(Stream stream)
         {
-            this.mReturnValue.SetValueToStream(stream);
+            mReturnValue.SetValueToStream(stream);
         }
 
         /// <summary>

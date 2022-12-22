@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using Forge.Legacy;
 using Forge.Net.Services.Locators;
 using Forge.UpdateFramework.Client.Configuration;
 

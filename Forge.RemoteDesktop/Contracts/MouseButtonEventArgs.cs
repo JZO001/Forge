@@ -28,9 +28,9 @@ namespace Forge.RemoteDesktop.Contracts
         /// <param name="point">The point.</param>
         public MouseButtonEventArgs(MouseButtonEventTypeEnum eventType, MouseButtons button, Point point)
         {
-            this.EventType = eventType;
-            this.Button = button;
-            this.Point = point;
+            EventType = eventType;
+            Button = button;
+            Point = point;
         }
 
         #endregion

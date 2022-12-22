@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Runtime.Serialization;
 using Forge.ORM.NHibernateExtension.Model;
 using Forge.Reflection;
+using Forge.Shared;
 using NHibernate.Criterion;
 
 namespace Forge.ORM.NHibernateExtension.Criterias
@@ -83,9 +84,9 @@ namespace Forge.ORM.NHibernateExtension.Criterias
             {
                 ThrowHelper.ThrowArgumentNullException("loValue");
             }
-            this.mHiValue = hiValue;
-            this.mLoValue = loValue;
-            this.Negation = disjunction;
+            mHiValue = hiValue;
+            mLoValue = loValue;
+            Negation = disjunction;
         }
 
         #endregion
@@ -107,7 +108,7 @@ namespace Forge.ORM.NHibernateExtension.Criterias
                 {
                     ThrowHelper.ThrowArgumentNullException("value");
                 }
-                this.mHiValue = value;
+                mHiValue = value;
                 Reset();
             }
         }
@@ -127,7 +128,7 @@ namespace Forge.ORM.NHibernateExtension.Criterias
                 {
                     ThrowHelper.ThrowArgumentNullException("value");
                 }
-                this.mLoValue = value;
+                mLoValue = value;
                 Reset();
             }
         }
@@ -168,8 +169,8 @@ namespace Forge.ORM.NHibernateExtension.Criterias
         public override object Clone()
         {
             BetweenCriteria cloned = (BetweenCriteria)base.Clone();
-            cloned.mHiValue = this.mHiValue;
-            cloned.mLoValue = this.mLoValue;
+            cloned.mHiValue = mHiValue;
+            cloned.mLoValue = mLoValue;
             return cloned;
         }
 

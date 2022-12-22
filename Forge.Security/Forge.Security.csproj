@@ -1,78 +1,60 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{94A61AE8-D345-40CD-A007-9CB050B8E0AA}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Forge.Security</RootNamespace>
-    <AssemblyName>Forge.Security</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\Forge.Security.xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\Forge.Security.xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>Forge.pfx</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="CertificateConfigurationSource.cs" />
-    <Compile Include="CertificateFactory.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Forge.pfx" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Forge.Base\Forge.Base.csproj">
-      <Project>{f3eed65e-c103-4ba8-af1d-37421d73a708}</Project>
-      <Name>Forge.Base</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Forge.Native\Forge.Native.csproj">
-      <Project>{b2b97f2d-eff3-4568-ae8a-10646114ab14}</Project>
-      <Name>Forge.Native</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>echo F|xcopy /r /y "$(TargetPath)" "$(SolutionDir).Output\$(TargetFileName)"
-echo F|xcopy /r /y "$(TargetDir)$(TargetName).pdb" "$(SolutionDir).Output\$(TargetName).pdb"
-echo F|xcopy /r /y "$(TargetDir)$(TargetName).xml" "$(SolutionDir).Output\$(TargetName).xml"
-</PostBuildEvent>
-  </PropertyGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup Label="Globals">
+	  <SccProjectName>SAK</SccProjectName>
+	  <SccProvider>SAK</SccProvider>
+	  <SccAuxPath>SAK</SccAuxPath>
+	  <SccLocalPath>SAK</SccLocalPath>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<TargetFrameworks>net40;netstandard2.1;netcoreapp3.1;net6.0;net6.0-windows</TargetFrameworks>
+		<Version>2.0.0.0</Version>
+		<AssemblyVersion>2.0.0.0</AssemblyVersion>
+		<Copyright>Copyright © Zoltan Juhasz, 2004-2022</Copyright>
+		<Description>Forge Security related implementations</Description>
+		<Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
+		<Company>Forge Project Contributor(s)</Company>
+		<PackageId>Forge.Security</PackageId>
+		<Authors>Zoltan Juhasz</Authors>
+		<Title>Forge Security</Title>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<ProjectGuid>{94A61AE8-D345-40CD-A007-9CB050B8E0AA}</ProjectGuid>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<DocumentationFile>Forge.Security.xml</DocumentationFile>
+		<RepositoryUrl>https://github.com/JZO001/Forge.Security</RepositoryUrl>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net40'">
+		<Reference Include="System.Configuration" />
+		<Reference Include="Forge.Native">
+			<HintPath>..\.Output\net40\Forge.Native.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+			<Name>Forge.Native</Name>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.1" Condition="'$(TargetFramework)' != 'net40'" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Remove="Forge.Security.xml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Forge.Configuration\Forge.Configuration.csproj" />
+	  <ProjectReference Include="..\Forge.Legacy\Forge.Legacy.csproj" />
+	  <ProjectReference Include="..\Forge.Shared\Forge.Shared.csproj" />
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
+	</Target>
+
 </Project>

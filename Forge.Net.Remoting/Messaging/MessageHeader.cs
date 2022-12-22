@@ -7,6 +7,7 @@
 using System;
 using System.Diagnostics;
 using Forge.Net.Remoting.Sinks;
+using Forge.Shared;
 
 namespace Forge.Net.Remoting.Messaging
 {
@@ -60,12 +61,12 @@ namespace Forge.Net.Remoting.Messaging
                 ThrowHelper.ThrowArgumentOutOfRangeException("messageLength");
             }
 
-            this.mMessageSinkId = messageSinkId;
-            this.mMessageLength = messageLength;
-            this.mMessageSinkConfiguration = messageSinkConfiguration;
+            mMessageSinkId = messageSinkId;
+            mMessageLength = messageLength;
+            mMessageSinkConfiguration = messageSinkConfiguration;
             if (messageSinkConfiguration != null)
             {
-                this.mMessageSinkConfigurationClassName = messageSinkConfiguration.GetType().FullName;
+                mMessageSinkConfigurationClassName = messageSinkConfiguration.GetType().FullName;
             }
         }
 

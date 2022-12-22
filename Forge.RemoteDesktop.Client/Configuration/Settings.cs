@@ -8,8 +8,9 @@ using System;
 using System.Configuration;
 using System.Runtime.CompilerServices;
 using Forge.Configuration.Shared;
-using Forge.EventRaiser;
+using Forge.Invoker;
 using Forge.RemoteDesktop.ConfigSection;
+using Forge.Shared;
 
 namespace Forge.RemoteDesktop.Client.Configuration
 {
@@ -58,7 +59,7 @@ namespace Forge.RemoteDesktop.Client.Configuration
         /// </value>
         public static int MouseMoveSendInterval
         {
-            get { return Settings.mMouseMoveSendInterval; }
+            get { return mMouseMoveSendInterval; }
             set
             {
                 if (value < 0)
@@ -119,7 +120,7 @@ namespace Forge.RemoteDesktop.Client.Configuration
 
             }
 
-            Raiser.CallDelegatorBySync(EventConfigurationChanged, new object[] { null, EventArgs.Empty });
+            Executor.Invoke(EventConfigurationChanged, null, EventArgs.Empty);
         }
 
         #endregion

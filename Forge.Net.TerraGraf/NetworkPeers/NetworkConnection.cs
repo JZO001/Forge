@@ -10,12 +10,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using Forge.EventRaiser;
-using Forge.Logging;
+using Forge.Invoker;
+using Forge.Legacy;
+using Forge.Logging.Abstraction;
 using Forge.Net.Synapse;
 using Forge.Net.TerraGraf.Connection;
 using Forge.Net.TerraGraf.Formatters;
 using Forge.Net.TerraGraf.Messaging;
+using Forge.Shared;
 
 namespace Forge.Net.TerraGraf.NetworkPeers
 {
@@ -29,7 +31,7 @@ namespace Forge.Net.TerraGraf.NetworkPeers
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(NetworkConnection));
+        private static readonly ILog LOGGER = LogManager.GetLogger<NetworkConnection>();
 
         private static readonly Forge.Threading.ThreadPool THREADPOOL = new Forge.Threading.ThreadPool("TerraGraf_Network_Send");
 
@@ -104,12 +106,12 @@ namespace Forge.Net.TerraGraf.NetworkPeers
             {
                 ThrowHelper.ThrowArgumentNullException("stream");
             }
-            this.mConnectionTask = connectionTask;
-            this.mNetworkStream = stream;
-            this.mReceiveBuffer = new byte[stream.ReceiveBufferSize];
-            this.mMessageQueues.Add(new Queue<MessageTask>()); // Priority 1 (acknowledges)
-            this.mMessageQueues.Add(new Queue<MessageTask>()); // Priority 2 (system messages)
-            this.mMessageQueues.Add(new Queue<MessageTask>()); // Priority 3 (user level messages)
+            mConnectionTask = connectionTask;
+            mNetworkStream = stream;
+            mReceiveBuffer = new byte[stream.ReceiveBufferSize];
+            mMessageQueues.Add(new Queue<MessageTask>()); // Priority 1 (acknowledges)
+            mMessageQueues.Add(new Queue<MessageTask>()); // Priority 2 (system messages)
+            mMessageQueues.Add(new Queue<MessageTask>()); // Priority 3 (user level messages)
         }
 
         #endregion
@@ -124,7 +126,7 @@ namespace Forge.Net.TerraGraf.NetworkPeers
         /// </value>
         public long Id
         {
-            get { return this.mNetworkStream.Id; }
+            get { return mNetworkStream.Id; }
         }
 
         /// <summary>
@@ -208,16 +210,16 @@ namespace Forge.Net.TerraGraf.NetworkPeers
             {
                 if (mSentTCPMessages.Count > 0)
                 {
-                    // elküldött, de meg nem erősített TCP üzenetek újraküldése
+                    // re-sending: sent, but not confirmed (ack) TCP messages
                     foreach (MessageTask task in mSentTCPMessages)
                     {
                         other.AddMessageTask(task);
                     }
                     mSentTCPMessages.Clear();
                 }
-                for (int i = 0; i < this.mMessageQueues.Count; i++)
+                for (int i = 0; i < mMessageQueues.Count; i++)
                 {
-                    Queue<MessageTask> queue = this.mMessageQueues[i];
+                    Queue<MessageTask> queue = mMessageQueues[i];
                     lock (queue)
                     {
                         while (queue.Count > 0)
@@ -239,9 +241,9 @@ namespace Forge.Net.TerraGraf.NetworkPeers
         /// <param name="messagesToAcknowledge">The messages to acknowledge.</param>
         internal void SetFinishedToTaskFailed(Dictionary<long, MessageTask> messagesToAcknowledge)
         {
-            for (int i = 0; i < this.mMessageQueues.Count; i++)
+            for (int i = 0; i < mMessageQueues.Count; i++)
             {
-                Queue<MessageTask> queue = this.mMessageQueues[i];
+                Queue<MessageTask> queue = mMessageQueues[i];
                 lock (queue)
                 {
                     while (queue.Count > 0)
@@ -249,7 +251,7 @@ namespace Forge.Net.TerraGraf.NetworkPeers
                         MessageTask task = queue.Dequeue();
                         lock (messagesToAcknowledge)
                         {
-                            // kipucolom a várakozók közül
+                            // removing from the waiting items
                             if (messagesToAcknowledge.ContainsKey(task.Message.MessageId))
                             {
                                 task.IsSuccess = false;
@@ -288,12 +290,12 @@ namespace Forge.Net.TerraGraf.NetworkPeers
 
             if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK_CONNECTION({0}), queuing a new message to send. {1}", mNetworkStream.Id, messageTask.Message.ToString()));
 
-            Queue<MessageTask> queue = this.mMessageQueues[(int)messageTask.Message.Priority];
+            Queue<MessageTask> queue = mMessageQueues[(int)messageTask.Message.Priority];
             lock (queue)
             {
                 queue.Enqueue(messageTask);
             }
-            Raiser.CallDelegatorBySync(MessageSendBefore, new object[] { this, new MessageSendEventArgs(messageTask, false) });
+            Executor.Invoke(MessageSendBefore, this, new MessageSendEventArgs(messageTask, false));
             lock (LOCK_OBJECT)
             {
                 mTotalMessagesToSend++;
@@ -309,8 +311,8 @@ namespace Forge.Net.TerraGraf.NetworkPeers
         /// </summary>
         internal void InternalClose()
         {
-            this.mConnected = false;
-            this.mNetworkStream.Close();
+            mConnected = false;
+            mNetworkStream.Close();
         }
 
         /// <summary>
@@ -318,7 +320,7 @@ namespace Forge.Net.TerraGraf.NetworkPeers
         /// </summary>
         public void Close()
         {
-            this.mNetworkStream.Close();
+            mNetworkStream.Close();
         }
 
         /// <summary>
@@ -335,7 +337,7 @@ namespace Forge.Net.TerraGraf.NetworkPeers
             if (!obj.GetType().Equals(GetType())) return false;
 
             NetworkConnection other = (NetworkConnection)obj;
-            return other.mNetworkStream.Equals(this.mNetworkStream);
+            return other.mNetworkStream.Equals(mNetworkStream);
         }
 
         /// <summary>
@@ -370,7 +372,7 @@ namespace Forge.Net.TerraGraf.NetworkPeers
             {
                 try
                 {
-                    mNetworkStream.BeginRead(this.mReceiveBuffer, 0, 1, new AsyncCallback(EndReceive), this);
+                    mNetworkStream.BeginRead(mReceiveBuffer, 0, 1, new AsyncCallback(EndReceive), this);
                 }
                 catch (Exception)
                 {
@@ -390,7 +392,7 @@ namespace Forge.Net.TerraGraf.NetworkPeers
             {
                 MessageTask task = null;
                 Queue<MessageTask> selectedQueue = null;
-                foreach (Queue<MessageTask> queue in this.mMessageQueues)
+                foreach (Queue<MessageTask> queue in mMessageQueues)
                 {
                     lock (queue)
                     {
@@ -410,30 +412,30 @@ namespace Forge.Net.TerraGraf.NetworkPeers
                     {
                         if (task.Message.MessageCode == MessageCodeEnum.LowLevelTcpAcknowledge)
                         {
-                            // alacsonyszintű visszajelzés
-                            this.mNetworkStream.Write(LOW_LEVEL_RESPONSE_BYTE, 0, LOW_LEVEL_RESPONSE_BYTE.Length);
+                            // low-level feedback
+                            mNetworkStream.Write(LOW_LEVEL_RESPONSE_BYTE, 0, LOW_LEVEL_RESPONSE_BYTE.Length);
                         }
                         else
                         {
                             if (task.Message.MessageType == MessageTypeEnum.Tcp)
                             {
-                                // a TCP üzenetekről kérek alacsony szintű visszajelzést
+                                // requests a low-level feedback about the TCP messages
                                 lock (mSentTCPMessages)
                                 {
                                     mSentTCPMessages.Add(task);
                                 }
                             }
-                            this.mMessageFormatter.Write(this.mNetworkStream, task.Message);
+                            mMessageFormatter.Write(mNetworkStream, task.Message);
                         }
                         watch.Stop();
-                        if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK_CONNNECTION, Id: {0}, Message sent. MessageId: {1}", this.mNetworkStream.Id.ToString(), task.Message.MessageId.ToString()));
+                        if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK_CONNNECTION, Id: {0}, Message sent. MessageId: {1}", mNetworkStream.Id.ToString(), task.Message.MessageId.ToString()));
                         mReplyTime = watch.ElapsedMilliseconds;
                         lock (selectedQueue)
                         {
                             selectedQueue.Dequeue();
                         }
-                        // sikeres küldés
-                        Raiser.CallDelegatorBySync(MessageSendAfter, new object[] { this, new MessageSendEventArgs(task, false) });
+                        // sending was successful
+                        Executor.Invoke(MessageSendAfter, this, new MessageSendEventArgs(task, false));
                         lock (LOCK_OBJECT)
                         {
                             mTotalMessagesToSend--;
@@ -445,33 +447,33 @@ namespace Forge.Net.TerraGraf.NetworkPeers
                     }
                     catch (ObjectDisposedException ex)
                     {
-                        // hálózati hiba (lezárt stream)
+                        // network error (closed stream)
                         if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format("Id: {0}, {1}, {2}", mNetworkStream.Id, ex.GetType().Name, ex.Message));
                         HandleDisconnection();
                     }
                     catch (IOException ex)
                     {
-                        // hálózati hiba
+                        // network error
                         if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format("Id: {0}, {1}, {2}", mNetworkStream.Id, ex.GetType().Name, ex.Message));
-                        this.mNetworkStream.Dispose();
+                        mNetworkStream.Dispose();
                         HandleDisconnection();
                     }
                     catch (InvalidOperationException ex)
                     {
-                        // hálózati hiba
+                        // network error
                         if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format("Id: {0}, {1}, {2}", mNetworkStream.Id, ex.GetType().Name, ex.Message));
-                        this.mNetworkStream.Dispose();
+                        mNetworkStream.Dispose();
                         HandleDisconnection();
                     }
                     catch (Exception ex)
                     {
-                        // ismeretlen hiba
+                        // unknown error
                         if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format("Id: {0}, {1}, {2}", mNetworkStream.Id, ex.GetType().Name, ex.Message));
                         lock (selectedQueue)
                         {
                             selectedQueue.Dequeue();
                         }
-                        this.mNetworkStream.Dispose();
+                        mNetworkStream.Dispose();
                         HandleDisconnection();
                     }
                     finally
@@ -490,12 +492,12 @@ namespace Forge.Net.TerraGraf.NetworkPeers
         {
             try
             {
-                int len = this.mNetworkStream.EndRead(result);
+                int len = mNetworkStream.EndRead(result);
                 if (len > 0)
                 {
                     if (mReceiveBuffer[0].Equals((byte)1))
                     {
-                        // alacsony szintű visszajelzés
+                        // low-level feedback
                         lock (mSentTCPMessages)
                         {
                             if (mSentTCPMessages.Count > 0)
@@ -507,10 +509,10 @@ namespace Forge.Net.TerraGraf.NetworkPeers
                     }
                     else if (mReceiveBuffer[0].Equals((byte)0))
                     {
-                        TerraGrafMessageBase message = this.mMessageFormatter.Read(this.mNetworkStream);
+                        TerraGrafMessageBase message = mMessageFormatter.Read(mNetworkStream);
                         if (message.MessageType == MessageTypeEnum.Tcp)
                         {
-                            // alacsony szintű visszajelzés küldése
+                            // sending low-level feedback
                             lock (mSentTCPMessages)
                             {
                                 if (mConnected)
@@ -520,13 +522,13 @@ namespace Forge.Net.TerraGraf.NetworkPeers
                                 }
                             }
                         }
-                        Raiser.CallDelegatorBySync(MessageArrived, new object[] { this, new MessageArrivedEventArgs(message) });
+                        Executor.Invoke(MessageArrived, this, new MessageArrivedEventArgs(message));
                         StartReceive();
                     }
                     else
                     {
-                        if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format("NETWORK_CONNECTION: invalid start code in network stream. StreamId: {0}", this.mNetworkStream.Id));
-                        this.mNetworkStream.Close();
+                        if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format("NETWORK_CONNECTION: invalid start code in network stream. StreamId: {0}", mNetworkStream.Id));
+                        mNetworkStream.Close();
                         HandleDisconnection();
                     }
                 }
@@ -546,10 +548,10 @@ namespace Forge.Net.TerraGraf.NetworkPeers
         [MethodImpl(MethodImplOptions.Synchronized)]
         private void HandleDisconnection()
         {
-            if (this.mConnected)
+            if (mConnected)
             {
-                this.mConnected = false;
-                Raiser.CallDelegatorBySync(Disconnect, new object[] { this, EventArgs.Empty });
+                mConnected = false;
+                Executor.Invoke(Disconnect, this, EventArgs.Empty);
             }
         }
 

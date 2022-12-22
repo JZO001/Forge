@@ -41,7 +41,7 @@ namespace Forge.Net.TerraGraf.Configuration
         /// <summary>
         /// Initializes a new instance of the <see cref="NetworkPeerSettings"/> class.
         /// </summary>
-        internal NetworkPeerSettings()
+        public NetworkPeerSettings()
         {
         }
 
@@ -135,6 +135,16 @@ namespace Forge.Net.TerraGraf.Configuration
             mTCPConnections.Initialize();
             mUDPDetection.Initialize();
             mNATUPnPSettings.Initialize();
+        }
+
+        /// <summary>Cleans up.</summary>
+        internal void CleanUp()
+        {
+            mNATGateways.CleanUp();
+            mTCPServerSettings.CleanUp();
+            mTCPConnections.CleanUp();
+            mUDPDetection.CleanUp();
+            mNATUPnPSettings.CleanUp();
         }
 
         #endregion

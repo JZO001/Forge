@@ -8,6 +8,7 @@ using System;
 using System.Diagnostics;
 using System.Runtime.Serialization;
 using Forge.ORM.NHibernateExtension.Model;
+using Forge.Shared;
 using NHibernate.Criterion;
 
 namespace Forge.ORM.NHibernateExtension
@@ -64,7 +65,7 @@ namespace Forge.ORM.NHibernateExtension
                 ThrowHelper.ThrowArgumentNullException("criteria");
             }
 
-            this.mCriteria = criteria;
+            mCriteria = criteria;
         }
 
         #endregion
@@ -113,7 +114,7 @@ namespace Forge.ORM.NHibernateExtension
         public override object Clone()
         {
             QueryDetachedParams clone = (QueryDetachedParams)base.Clone();
-            clone.Criteria = this.Criteria;
+            clone.Criteria = Criteria;
             return clone;
         }
 
@@ -141,7 +142,7 @@ namespace Forge.ORM.NHibernateExtension
             if (!obj.GetType().Equals(GetType())) return false;
 
             QueryDetachedParams other = (QueryDetachedParams)obj;
-            return base.Equals(obj) && other.mCriteria.Equals(this.mCriteria);
+            return base.Equals(obj) && other.mCriteria.Equals(mCriteria);
         }
 
         /// <summary>

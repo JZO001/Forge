@@ -4,6 +4,8 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Invoker;
+
 namespace Forge.RemoteDesktop.Service
 {
 
@@ -27,18 +29,18 @@ namespace Forge.RemoteDesktop.Service
         {
             channel.SessionStateChange += new System.EventHandler<Net.Remoting.Channels.SessionStateEventArgs>(Channel_SessionStateChange);
             Forge.Net.Remoting.Channels.ISessionInfo info = channel.GetSessionInfo(sessionId);
-            this.IsConnected = info == null ? false : true;
+            IsConnected = info == null ? false : true;
             if (info != null)
             {
-                this.RemoteHost = info.RemoteEndPoint.Host;
+                RemoteHost = info.RemoteEndPoint.Host;
             }
         }
 
         private void Channel_SessionStateChange(object sender, Net.Remoting.Channels.SessionStateEventArgs e)
         {
-            if (e.SessionId.Equals(this.SessionId) && !e.IsConnected)
+            if (e.SessionId.Equals(SessionId) && !e.IsConnected)
             {
-                OnDisconnected(new Contracts.DisconnectEventArgs(this.SessionId));
+                OnDisconnected(new Contracts.DisconnectEventArgs(SessionId));
             }
         }
 
@@ -50,9 +52,9 @@ namespace Forge.RemoteDesktop.Service
         /// <param name="e">The <see cref="Forge.RemoteDesktop.Contracts.DisconnectEventArgs"/> instance containing the event data.</param>
         protected virtual void OnDisconnected(Forge.RemoteDesktop.Contracts.DisconnectEventArgs e)
         {
-            this.IsActive = false;
-            this.IsConnected = false;
-            EventRaiser.Raiser.CallDelegatorBySync(Disconnected, new object[] { this, e });
+            IsActive = false;
+            IsConnected = false;
+            Executor.Invoke(Disconnected, this, e);
         }
 
         /// <summary>
@@ -64,11 +66,11 @@ namespace Forge.RemoteDesktop.Service
             base.Dispose(disposing);
             if (disposing)
             {
-                this.mChannel.SessionStateChange -= new System.EventHandler<Net.Remoting.Channels.SessionStateEventArgs>(Channel_SessionStateChange);
-                if (this.mChannel.IsSessionReusable)
+                mChannel.SessionStateChange -= new System.EventHandler<Net.Remoting.Channels.SessionStateEventArgs>(Channel_SessionStateChange);
+                if (mChannel.IsSessionReusable)
                 {
                     // release the connection anytime
-                    this.mChannel.Disconnect(mSessionId);
+                    mChannel.Disconnect(mSessionId);
                 }
             }
         }
@@ -229,7 +231,7 @@ namespace Forge.RemoteDesktop.Service
 
                 long _timeout = GetTimeoutByMethod(typeof(Forge.RemoteDesktop.Contracts.IRemoteDesktop), "ServiceSendMouseMoveEvent", _mps, Forge.Net.Remoting.Proxy.MethodTimeoutEnum.CallTimeout);
 
-                this.mChannel.SendMessage(this.mSessionId, _message, _timeout);
+                mChannel.SendMessage(mSessionId, _message, _timeout);
             }
             catch (System.Exception ex)
             {
@@ -264,7 +266,7 @@ namespace Forge.RemoteDesktop.Service
 
                 long _timeout = GetTimeoutByMethod(typeof(Forge.RemoteDesktop.Contracts.IRemoteDesktop), "ServiceSendDesktopImageClip", _mps, Forge.Net.Remoting.Proxy.MethodTimeoutEnum.CallTimeout);
 
-                this.mChannel.SendMessage(this.mSessionId, _message, _timeout);
+                mChannel.SendMessage(mSessionId, _message, _timeout);
             }
             catch (System.Exception ex)
             {
@@ -295,7 +297,7 @@ namespace Forge.RemoteDesktop.Service
 
                 long _timeout = GetTimeoutByMethod(typeof(Forge.RemoteDesktop.Contracts.IRemoteDesktop), "ServiceSendClipboardContent", _mps, Forge.Net.Remoting.Proxy.MethodTimeoutEnum.CallTimeout);
 
-                this.mChannel.SendMessage(this.mSessionId, _message, _timeout);
+                mChannel.SendMessage(mSessionId, _message, _timeout);
             }
             catch (System.Exception ex)
             {

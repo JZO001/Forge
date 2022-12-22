@@ -4,6 +4,8 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Legacy;
+using Forge.Shared;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -35,7 +37,7 @@ namespace Forge.Net.Remoting.Validators
             {
                 ThrowHelper.ThrowArgumentNullException("ei");
             }
-            this.mEventInfo = ei;
+            mEventInfo = ei;
         }
 
         #endregion

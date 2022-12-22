@@ -7,7 +7,7 @@
 using System;
 using System.Collections.Generic;
 using Forge.Collections;
-using Forge.Persistence.Formatters;
+using Forge.Formatters;
 
 namespace Forge.Persistence.StorageProviders
 {
@@ -26,7 +26,7 @@ namespace Forge.Persistence.StorageProviders
         /// The storage id.
         /// </value>
         /// <returns>Unique identifier</returns>
-        String StorageId { get; }
+        string StorageId { get; }
 
         /// <summary>
         /// Get the formatter which used by the provider to persist data

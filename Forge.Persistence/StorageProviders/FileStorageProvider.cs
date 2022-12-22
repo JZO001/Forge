@@ -9,11 +9,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters;
 using Forge.Collections;
-using Forge.Configuration.Shared;
-using Forge.Logging;
+using Forge.Configuration;
+using Forge.Formatters;
+using Forge.Logging.Abstraction;
 using Forge.Persistence.Formatters;
 using Forge.Persistence.Serialization;
+using Forge.Persistence.StorageProviders.Options;
 using Forge.Reflection;
+using Forge.Shared;
 
 namespace Forge.Persistence.StorageProviders
 {
@@ -28,12 +31,12 @@ namespace Forge.Persistence.StorageProviders
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(FileStorageProvider<T>));
+        private static readonly ILog LOGGER = LogManager.GetLogger<FileStorageProvider<T>>();
 
         /// <summary>
         /// Default storage folder
         /// </summary>
-        public static String DefaultBaseUrl = "FileStorageRoot";
+        public static string DefaultBaseUrl = "FileStorageRoot";
 
         /// <summary>
         /// Default assembly style
@@ -45,11 +48,11 @@ namespace Forge.Persistence.StorageProviders
         /// </summary>
         public static FormatterTypeStyle DefaultFormatterTypeStyle = FormatterTypeStyle.XsdString;
 
-        private String mBaseUrl = "";
+        private string mBaseUrl = "";
 
-        private String mStoragePath = "";
+        private string mStoragePath = "";
 
-        private String mTableFile = "Table.bin";
+        private string mTableFile = "Table.bin";
 
         private ItemAllocationTable mAllocationTable = null;
 
@@ -86,8 +89,8 @@ namespace Forge.Persistence.StorageProviders
         /// Initializes a new instance of the <see cref="FileStorageProvider&lt;T&gt;"/> class.
         /// </summary>
         /// <param name="storageId">The storage id.</param>
-        /// <param name="baseUrl">The base URL.</param>
-        public FileStorageProvider(String storageId, String baseUrl)
+        /// <param name="baseUrl">The base URL (file path).</param>
+        public FileStorageProvider(string storageId, string baseUrl)
             : this(storageId, new BinarySerializerFormatter<T>(BinarySerializerBehaviorEnum.DoNotThrowExceptionOnMissingField, TypeLookupModeEnum.AllowAll, true), baseUrl)
         {
         }
@@ -96,9 +99,9 @@ namespace Forge.Persistence.StorageProviders
         /// Initializes a new instance of the <see cref="FileStorageProvider&lt;T&gt;"/> class.
         /// </summary>
         /// <param name="storageId">The storage id.</param>
-        /// <param name="baseUrl">The base URL.</param>
+        /// <param name="baseUrl">The base URL (file path).</param>
         /// <param name="compressContent">if set to <c>true</c> [compress content].</param>
-        public FileStorageProvider(String storageId, String baseUrl, bool compressContent)
+        public FileStorageProvider(string storageId, string baseUrl, bool compressContent)
             : this(storageId, new BinarySerializerFormatter<T>(BinarySerializerBehaviorEnum.DoNotThrowExceptionOnMissingField, TypeLookupModeEnum.AllowAll, true), baseUrl, compressContent)
         {
         }
@@ -108,7 +111,7 @@ namespace Forge.Persistence.StorageProviders
         /// </summary>
         /// <param name="storageId">The storage id.</param>
         /// <param name="dataFormatter">The data formatter.</param>
-        public FileStorageProvider(String storageId, IDataFormatter<T> dataFormatter)
+        public FileStorageProvider(string storageId, IDataFormatter<T> dataFormatter)
             : this(storageId, dataFormatter, false)
         {
         }
@@ -119,7 +122,7 @@ namespace Forge.Persistence.StorageProviders
         /// <param name="storageId">The storage id.</param>
         /// <param name="dataFormatter">The data formatter.</param>
         /// <param name="compressContent">if set to <c>true</c> [compress content].</param>
-        public FileStorageProvider(String storageId, IDataFormatter<T> dataFormatter, bool compressContent)
+        public FileStorageProvider(string storageId, IDataFormatter<T> dataFormatter, bool compressContent)
             : this(storageId, dataFormatter, DefaultBaseUrl, compressContent)
         {
         }
@@ -130,7 +133,7 @@ namespace Forge.Persistence.StorageProviders
         /// <param name="storageId">The storage id.</param>
         /// <param name="dataFormatter">The data formatter.</param>
         /// <param name="baseUrl">The base URL.</param>
-        public FileStorageProvider(String storageId, IDataFormatter<T> dataFormatter, String baseUrl)
+        public FileStorageProvider(string storageId, IDataFormatter<T> dataFormatter, string baseUrl)
             : this(storageId, dataFormatter, baseUrl, false)
         {
         }
@@ -142,7 +145,7 @@ namespace Forge.Persistence.StorageProviders
         /// <param name="dataFormatter">The data formatter.</param>
         /// <param name="baseUrl">The base URL.</param>
         /// <param name="compressContent">if set to <c>true</c> [compress content].</param>
-        public FileStorageProvider(String storageId, IDataFormatter<T> dataFormatter, String baseUrl, bool compressContent)
+        public FileStorageProvider(string storageId, IDataFormatter<T> dataFormatter, string baseUrl, bool compressContent)
             : base(storageId)
         {
             if (dataFormatter == null)
@@ -154,9 +157,9 @@ namespace Forge.Persistence.StorageProviders
                 throw new ArgumentNullException("baseUrl");
             }
 
-            this.mDataFormatter = dataFormatter;
-            this.mBaseUrl = baseUrl;
-            this.mCompressContent = compressContent;
+            mDataFormatter = dataFormatter;
+            mBaseUrl = baseUrl;
+            mCompressContent = compressContent;
 
             Initialize();
         }
@@ -166,19 +169,73 @@ namespace Forge.Persistence.StorageProviders
         /// </summary>
         /// <param name="storageId">The storage id.</param>
         /// <param name="configItem">The config item.</param>
-        public FileStorageProvider(String storageId, CategoryPropertyItem configItem)
+        public FileStorageProvider(string storageId, IPropertyItem configItem)
             : base(storageId, configItem)
         {
-            String url = String.Empty;
-            CategoryPropertyItem item = configItem.PropertyItems == null ? null : configItem.PropertyItems["BaseUrl"];
+            string url = string.Empty;
+            IPropertyItem item = configItem.Items == null ? null : configItem.Items["BaseUrl"];
             if (item != null)
             {
-                url = item.EntryValue;
+                url = item.Value;
             }
-            this.mBaseUrl = url;
+            mBaseUrl = url;
+
+            bool compressContent = false;
+            item = configItem.Items == null ? null : configItem.Items["CompressContent"];
+            if (item != null)
+            {
+                if (bool.TryParse(item.Value, out compressContent))
+                {
+                    mCompressContent = compressContent;
+                }
+            }
 
             Initialize();
         }
+
+        /// <summary>Initializes a new instance of the <see cref="FileStorageProvider{T}" /> class.</summary>
+        /// <param name="propertyItem">The property item.</param>
+        public FileStorageProvider(IPropertyItem propertyItem) : base(propertyItem)
+        {
+            string url = string.Empty;
+            IPropertyItem item = propertyItem.Items == null ? null : propertyItem.Items["BaseUrl"];
+            if (item != null)
+            {
+                url = item.Value;
+            }
+            mBaseUrl = url;
+
+            bool compressContent = false;
+            item = propertyItem.Items == null ? null : propertyItem.Items["CompressContent"];
+            if (item != null)
+            {
+                if (bool.TryParse(item.Value, out compressContent))
+                {
+                    mCompressContent = compressContent;
+                }
+            }
+
+            Initialize();
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="FileStorageProvider{T}" /> class.</summary>
+        /// <param name="options">The options.</param>
+        public FileStorageProvider(FileStorageProviderOption options) : base(options)
+        {
+            if (!string.IsNullOrWhiteSpace(options.BaseUrl))
+            {
+                mBaseUrl = options.BaseUrl;
+            }
+            mCompressContent = options.CompressContent;
+        }
+
+#if NETSTANDARD2_0_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+        /// <summary>Initializes a new instance of the <see cref="FileStorageProvider{T}" /> class.</summary>
+        /// <param name="options">The options.</param>
+        public FileStorageProvider(Microsoft.Extensions.Options.IOptions<FileStorageProviderOption> options) : this(options.Value)
+        {
+        }
+#endif
 
         /// <summary>
         /// Releases unmanaged resources and performs other cleanup operations before the
@@ -200,7 +257,7 @@ namespace Forge.Persistence.StorageProviders
         public override void Add(T o)
         {
             DoDisposeCheck();
-            String itemFileName = String.Format("{0}.bin", GetNextFileUid());
+            string itemFileName = string.Format("{0}.bin", GetNextFileUid());
             mAllocationTable.FileItemNames.Add(itemFileName);
             SaveObject(itemFileName, o);
             SaveAllocationTable();
@@ -221,7 +278,7 @@ namespace Forge.Persistence.StorageProviders
             IEnumerator<T> myEnum = o.GetEnumerator();
             while (myEnum.MoveNext())
             {
-                String itemFileName = String.Format("{0}.bin", GetNextFileUid());
+                string itemFileName = string.Format("{0}.bin", GetNextFileUid());
                 mAllocationTable.FileItemNames.Add(itemFileName);
                 SaveObject(itemFileName, myEnum.Current);
             }
@@ -241,7 +298,7 @@ namespace Forge.Persistence.StorageProviders
             {
                 throw new ArgumentOutOfRangeException("index");
             }
-            String itemFileName = String.Format("{0}.bin", GetNextFileUid());
+            string itemFileName = string.Format("{0}.bin", GetNextFileUid());
             mAllocationTable.FileItemNames.Insert(index, itemFileName);
             SaveObject(itemFileName, o);
             SaveAllocationTable();
@@ -285,7 +342,7 @@ namespace Forge.Persistence.StorageProviders
             {
                 throw new ArgumentOutOfRangeException("index");
             }
-            String fileName = mAllocationTable.FileItemNames[index];
+            string fileName = mAllocationTable.FileItemNames[index];
             mAllocationTable.FileItemNames.RemoveAt(index);
             if (mAllocationTable.FileItemNames.Count == 0)
             {
@@ -405,14 +462,14 @@ namespace Forge.Persistence.StorageProviders
                         }
                         catch (Exception ex)
                         {
-                            if (LOGGER.IsErrorEnabled) LOGGER.Error(String.Format("Failed to delete a persistent file: {0}", f.FullName), ex);
+                            if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format("Failed to delete a persistent file: {0}", f.FullName), ex);
                         }
                     }
                     dir.Delete();
                 }
                 catch (Exception ex)
                 {
-                    if (LOGGER.IsErrorEnabled) LOGGER.Error(String.Format("Failed to delete a persistent folder: {0}", dir.FullName), ex);
+                    if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format("Failed to delete a persistent folder: {0}", dir.FullName), ex);
                 }
             }
             mAllocationTable = null;
@@ -443,7 +500,7 @@ namespace Forge.Persistence.StorageProviders
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception(String.Format("Unable to create path '{0}'.", mStoragePath), ex);
+                    throw new Exception(string.Format("Unable to create path '{0}'.", mStoragePath), ex);
                 }
             }
         }
@@ -451,7 +508,7 @@ namespace Forge.Persistence.StorageProviders
         private void PerformFolderSecurityTest()
         {
             CheckAndCreatePath();
-            FileInfo testFile = new FileInfo(Path.Combine(mStoragePath, String.Format("{0}.txt", Guid.NewGuid().ToString())));
+            FileInfo testFile = new FileInfo(Path.Combine(mStoragePath, string.Format("{0}.txt", Guid.NewGuid().ToString())));
             try
             {
                 if (testFile.Exists)
@@ -463,7 +520,7 @@ namespace Forge.Persistence.StorageProviders
             }
             catch (Exception ex)
             {
-                throw new Exception(String.Format("Security test failed on folder '{0}'. Grant read, write and delete rights to the current user.", mStoragePath), ex);
+                throw new Exception(string.Format("Security test failed on folder '{0}'. Grant read, write and delete rights to the current user.", mStoragePath), ex);
             }
         }
 
@@ -499,17 +556,17 @@ namespace Forge.Persistence.StorageProviders
             }
         }
 
-        private T LoadObject(String fileName)
+        private T LoadObject(string fileName)
         {
             T result = default(T);
 
-            String itemPath = Path.Combine(mStoragePath, fileName);
+            string itemPath = Path.Combine(mStoragePath, fileName);
             FileInfo file = new FileInfo(itemPath);
             if (file.Length > 0)
             {
                 try
                 {
-                    result = SerializationHelper.Read<T>(file, DataFormatter, CompressContent);
+                    result = SerializationHelper.Read<T>(file, DataFormatter, mCompressContent);
                 }
                 catch (Exception ex)
                 {
@@ -524,9 +581,9 @@ namespace Forge.Persistence.StorageProviders
             return result;
         }
 
-        private void SaveObject(String fileName, T o)
+        private void SaveObject(string fileName, T o)
         {
-            String itemPath = Path.Combine(mStoragePath, fileName);
+            string itemPath = Path.Combine(mStoragePath, fileName);
             FileInfo file = new FileInfo(itemPath);
             if (o == null)
             {
@@ -536,14 +593,14 @@ namespace Forge.Persistence.StorageProviders
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception(String.Format("Unable to create persistence file '{0}'.", itemPath), ex);
+                    throw new Exception(string.Format("Unable to create persistence file '{0}'.", itemPath), ex);
                 }
             }
             else
             {
                 try
                 {
-                    SerializationHelper.Write<T>(o, file, DataFormatter, CompressContent);
+                    SerializationHelper.Write<T>(o, file, DataFormatter, mCompressContent);
                 }
                 catch (Exception ex)
                 {
@@ -552,9 +609,9 @@ namespace Forge.Persistence.StorageProviders
             }
         }
 
-        private void RemoveObject(String fileName)
+        private void RemoveObject(string fileName)
         {
-            String itemPath = Path.Combine(mStoragePath, fileName);
+            string itemPath = Path.Combine(mStoragePath, fileName);
             new FileInfo(itemPath).Delete();
         }
 
@@ -562,7 +619,7 @@ namespace Forge.Persistence.StorageProviders
         {
             lock (LOCK_OBJECT_FOR_ID)
             {
-                if (Int32.MaxValue == mAllocationTable.FileUid)
+                if (int.MaxValue == mAllocationTable.FileUid)
                 {
                     mAllocationTable.FileUid = 0;
                 }

@@ -9,7 +9,9 @@ using System.IO;
 using System.Net.Security;
 using System.Security.Authentication;
 using System.Threading;
+using System.Threading.Tasks;
 using Forge.Net.Synapse.NetworkServices;
+using Forge.Shared;
 
 namespace Forge.Net.Synapse
 {
@@ -28,9 +30,9 @@ namespace Forge.Net.Synapse
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly long mId = 0;
-        private SslStream mSslStream = null;
-        private Stream mInnerStream = null;
-        private ISocket mSocket = null;
+        private readonly SslStream mSslStream = null;
+        private readonly Stream mInnerStream = null;
+        private readonly ISocket mSocket = null;
 
         #endregion
 
@@ -46,8 +48,8 @@ namespace Forge.Net.Synapse
             {
                 ThrowHelper.ThrowArgumentNullException("socket");
             }
-            this.mSocket = socket;
-            this.mId = Interlocked.Increment(ref mGlobalIdentifierCounter);
+            mSocket = socket;
+            mId = Interlocked.Increment(ref mGlobalIdentifierCounter);
         }
 
         /// <summary>
@@ -62,7 +64,7 @@ namespace Forge.Net.Synapse
             {
                 ThrowHelper.ThrowArgumentNullException("stream");
             }
-            this.mInnerStream = stream;
+            mInnerStream = stream;
         }
 
         /// <summary>
@@ -77,8 +79,8 @@ namespace Forge.Net.Synapse
             {
                 ThrowHelper.ThrowArgumentNullException("sslStream");
             }
-            this.mInnerStream = sslStream;
-            this.mSslStream = sslStream;
+            mInnerStream = sslStream;
+            mSslStream = sslStream;
         }
 
         /// <summary>
@@ -111,7 +113,7 @@ namespace Forge.Net.Synapse
         /// <returns>true if the stream supports reading; otherwise, false.</returns>
         public override bool CanRead
         {
-            get { return this.mInnerStream == null ? true : this.mInnerStream.CanRead; }
+            get { return mInnerStream == null ? true : mInnerStream.CanRead; }
         }
 
         /// <summary>
@@ -120,7 +122,7 @@ namespace Forge.Net.Synapse
         /// <returns>true if the stream supports seeking; otherwise, false.</returns>
         public override bool CanSeek
         {
-            get { return this.mInnerStream == null ? false : this.mInnerStream.CanSeek; }
+            get { return mInnerStream == null ? false : mInnerStream.CanSeek; }
         }
 
         /// <summary>
@@ -129,7 +131,7 @@ namespace Forge.Net.Synapse
         /// <returns>true if the stream supports writing; otherwise, false.</returns>
         public override bool CanWrite
         {
-            get { return this.mInnerStream == null ? true : this.mInnerStream.CanWrite; }
+            get { return mInnerStream == null ? true : mInnerStream.CanWrite; }
         }
 
         /// <summary>
@@ -138,9 +140,9 @@ namespace Forge.Net.Synapse
         /// <exception cref="T:System.IO.IOException">An I/O error occurs. </exception>
         public override void Flush()
         {
-            if (this.mInnerStream != null)
+            if (mInnerStream != null)
             {
-                this.mInnerStream.Flush();
+                mInnerStream.Flush();
             }
         }
 
@@ -152,7 +154,7 @@ namespace Forge.Net.Synapse
         /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
         public override long Length
         {
-            get { return this.mInnerStream != null ? this.mInnerStream.Length : this.mSocket.Available; }
+            get { return mInnerStream != null ? mInnerStream.Length : mSocket.Available; }
         }
 
         /// <summary>
@@ -164,12 +166,12 @@ namespace Forge.Net.Synapse
         /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
         public override long Position
         {
-            get { return this.mInnerStream != null ? this.mInnerStream.Position : 0; }
+            get { return mInnerStream != null ? mInnerStream.Position : 0; }
             set
             {
-                if (this.mInnerStream != null)
+                if (mInnerStream != null)
                 {
-                    this.mInnerStream.Position = value;
+                    mInnerStream.Position = value;
                 }
             }
         }
@@ -209,9 +211,9 @@ namespace Forge.Net.Synapse
             }
 
             int result = 0;
-            if (this.mInnerStream == null)
+            if (mInnerStream == null)
             {
-                result = this.mSocket.Receive(buffer, offset, count);
+                result = mSocket.Receive(buffer, offset, count);
                 //if (!(this.mSocket is Forge.Net.Synapse.NetworkFactory.SocketWrapper))
                 //{
                 //    LOGGER.Debug(string.Format("NETWORK_STREAM, {0} byte(s) read from socket {1}.", count.ToString(), mSocket.GetHashCode().ToString()));
@@ -219,7 +221,7 @@ namespace Forge.Net.Synapse
             }
             else
             {
-                result = this.mInnerStream.Read(buffer, offset, count);
+                result = mInnerStream.Read(buffer, offset, count);
             }
             return result;
         }
@@ -237,11 +239,11 @@ namespace Forge.Net.Synapse
         /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
         public override long Seek(long offset, SeekOrigin origin)
         {
-            if (this.mInnerStream == null)
+            if (mInnerStream == null)
             {
                 return 0;
             }
-            return this.mInnerStream.Seek(offset, origin);
+            return mInnerStream.Seek(offset, origin);
         }
 
         /// <summary>
@@ -253,9 +255,9 @@ namespace Forge.Net.Synapse
         /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
         public override void SetLength(long value)
         {
-            if (this.mInnerStream != null)
+            if (mInnerStream != null)
             {
-                this.mInnerStream.SetLength(value);
+                mInnerStream.SetLength(value);
             }
         }
 
@@ -290,13 +292,13 @@ namespace Forge.Net.Synapse
                 ThrowHelper.ThrowArgumentOutOfRangeException("size");
             }
 
-            if (this.mInnerStream == null)
+            if (mInnerStream == null)
             {
-                this.mSocket.Send(buffer, offset, count);
+                mSocket.Send(buffer, offset, count);
             }
             else
             {
-                this.mInnerStream.Write(buffer, offset, count);
+                mInnerStream.Write(buffer, offset, count);
             }
         }
 
@@ -308,8 +310,8 @@ namespace Forge.Net.Synapse
         /// </value>
         public int SendBufferSize
         {
-            get { return this.mSocket.SendBufferSize; }
-            set { this.mSocket.SendBufferSize = value; }
+            get { return mSocket.SendBufferSize; }
+            set { mSocket.SendBufferSize = value; }
         }
 
         /// <summary>
@@ -320,8 +322,8 @@ namespace Forge.Net.Synapse
         /// </value>
         public int ReceiveBufferSize
         {
-            get { return this.mSocket.ReceiveBufferSize; }
-            set { this.mSocket.ReceiveBufferSize = value; }
+            get { return mSocket.ReceiveBufferSize; }
+            set { mSocket.ReceiveBufferSize = value; }
         }
 
         /// <summary>
@@ -332,8 +334,8 @@ namespace Forge.Net.Synapse
         /// </value>
         public bool NoDelay
         {
-            get { return this.mSocket.NoDelay; }
-            set { this.mSocket.NoDelay = value; }
+            get { return mSocket.NoDelay; }
+            set { mSocket.NoDelay = value; }
         }
 
 #if IS_WINDOWS
@@ -347,7 +349,7 @@ namespace Forge.Net.Synapse
         /// <returns></returns>
         public int SetKeepAliveValues(bool state, int keepAliveTime, int keepAliveInterval)
         {
-            return this.mSocket.SetKeepAliveValues(state, keepAliveInterval, keepAliveInterval);
+            return mSocket.SetKeepAliveValues(state, keepAliveInterval, keepAliveInterval);
         }
 
 #endif
@@ -360,7 +362,7 @@ namespace Forge.Net.Synapse
         /// </value>
         public bool Connected
         {
-            get { return this.mSocket.Connected; }
+            get { return mSocket.Connected; }
         }
 
         /// <summary>
@@ -371,8 +373,8 @@ namespace Forge.Net.Synapse
         /// </value>
         public int ReceiveTimeout
         {
-            get { return this.mSocket.ReceiveTimeout; }
-            set { this.mSocket.ReceiveTimeout = value; }
+            get { return mSocket.ReceiveTimeout; }
+            set { mSocket.ReceiveTimeout = value; }
         }
 
         /// <summary>
@@ -383,8 +385,8 @@ namespace Forge.Net.Synapse
         /// </value>
         public int SendTimeout
         {
-            get { return this.mSocket.SendTimeout; }
-            set { this.mSocket.SendTimeout = value; }
+            get { return mSocket.SendTimeout; }
+            set { mSocket.SendTimeout = value; }
         }
 
         /// <summary>
@@ -395,7 +397,7 @@ namespace Forge.Net.Synapse
         /// </value>
         public AddressEndPoint LocalEndPoint
         {
-            get { return this.mSocket.LocalEndPoint; }
+            get { return mSocket.LocalEndPoint; }
         }
 
         /// <summary>
@@ -406,7 +408,7 @@ namespace Forge.Net.Synapse
         /// </value>
         public AddressEndPoint RemoteEndPoint
         {
-            get { return this.mSocket.RemoteEndPoint; }
+            get { return mSocket.RemoteEndPoint; }
         }
 
         /// <summary>
@@ -417,8 +419,8 @@ namespace Forge.Net.Synapse
         /// </value>
         public short Ttl
         {
-            get { return this.mSocket.Ttl; }
-            set { this.mSocket.Ttl = value; }
+            get { return mSocket.Ttl; }
+            set { mSocket.Ttl = value; }
         }
 
         /// <summary>
@@ -431,11 +433,11 @@ namespace Forge.Net.Synapse
         {
             get
             {
-                if (this.mSslStream == null)
+                if (mSslStream == null)
                 {
                     return CipherAlgorithmType.None;
                 }
-                return this.mSslStream.CipherAlgorithm;
+                return mSslStream.CipherAlgorithm;
             }
         }
 
@@ -449,11 +451,11 @@ namespace Forge.Net.Synapse
         {
             get
             {
-                if (this.mSslStream == null)
+                if (mSslStream == null)
                 {
                     return 0;
                 }
-                return this.mSslStream.CipherStrength;
+                return mSslStream.CipherStrength;
             }
         }
 
@@ -467,11 +469,11 @@ namespace Forge.Net.Synapse
         {
             get
             {
-                if (this.mSslStream == null)
+                if (mSslStream == null)
                 {
                     return HashAlgorithmType.None;
                 }
-                return this.mSslStream.HashAlgorithm;
+                return mSslStream.HashAlgorithm;
             }
         }
 
@@ -485,11 +487,11 @@ namespace Forge.Net.Synapse
         {
             get
             {
-                if (this.mSslStream == null)
+                if (mSslStream == null)
                 {
                     return 0;
                 }
-                return this.mSslStream.HashStrength;
+                return mSslStream.HashStrength;
             }
         }
 
@@ -503,11 +505,11 @@ namespace Forge.Net.Synapse
         {
             get
             {
-                if (this.mSslStream == null)
+                if (mSslStream == null)
                 {
                     return SslProtocols.None;
                 }
-                return this.mSslStream.SslProtocol;
+                return mSslStream.SslProtocol;
             }
         }
 
@@ -521,11 +523,11 @@ namespace Forge.Net.Synapse
         {
             get
             {
-                if (this.mSslStream == null)
+                if (mSslStream == null)
                 {
                     return false;
                 }
-                return this.mSslStream.IsAuthenticated;
+                return mSslStream.IsAuthenticated;
             }
         }
 
@@ -539,11 +541,11 @@ namespace Forge.Net.Synapse
         {
             get
             {
-                if (this.mSslStream == null)
+                if (mSslStream == null)
                 {
                     return false;
                 }
-                return this.mSslStream.IsEncrypted;
+                return mSslStream.IsEncrypted;
             }
         }
 
@@ -557,11 +559,11 @@ namespace Forge.Net.Synapse
         {
             get
             {
-                if (this.mSslStream == null)
+                if (mSslStream == null)
                 {
                     return false;
                 }
-                return this.mSslStream.IsMutuallyAuthenticated;
+                return mSslStream.IsMutuallyAuthenticated;
             }
         }
 
@@ -575,11 +577,11 @@ namespace Forge.Net.Synapse
         {
             get
             {
-                if (this.mSslStream == null)
+                if (mSslStream == null)
                 {
                     return false;
                 }
-                return this.mSslStream.IsSigned;
+                return mSslStream.IsSigned;
             }
         }
 
@@ -593,11 +595,11 @@ namespace Forge.Net.Synapse
         {
             get
             {
-                if (this.mSslStream == null)
+                if (mSslStream == null)
                 {
                     return null;
                 }
-                return this.mSslStream.LocalCertificate;
+                return mSslStream.LocalCertificate;
             }
         }
 
@@ -611,11 +613,11 @@ namespace Forge.Net.Synapse
         {
             get
             {
-                if (this.mSslStream == null)
+                if (mSslStream == null)
                 {
                     return null;
                 }
-                return this.mSslStream.RemoteCertificate;
+                return mSslStream.RemoteCertificate;
             }
         }
 
@@ -634,9 +636,9 @@ namespace Forge.Net.Synapse
             return mSocket.GetHashCode();
         }
 
-        #endregion
+#endregion
 
-        #region Protected method(s)
+#region Protected method(s)
 
         /// <summary>
         /// Releases the unmanaged resources used by the <see cref="T:System.IO.Stream"/> and optionally releases the managed resources.
@@ -647,18 +649,18 @@ namespace Forge.Net.Synapse
             base.Dispose(disposing);
             if (disposing)
             {
-                if (this.mInnerStream != null)
+                if (mInnerStream != null)
                 {
-                    this.mInnerStream.Dispose();
+                    mInnerStream.Dispose();
                 }
                 else
                 {
-                    this.mSocket.Dispose();
+                    mSocket.Dispose();
                 }
             }
         }
 
-        #endregion
+#endregion
 
     }
 

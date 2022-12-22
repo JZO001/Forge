@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Legacy;
 using System;
 using System.Diagnostics;
 
@@ -79,8 +80,8 @@ namespace Forge.Net.TerraGraf.NetworkPeers
         {
             NetworkInfo.BlackHoleContainer result = new NetworkInfo.BlackHoleContainer();
 
-            result.StateId = this.mStateId;
-            result.IsBlackHole = this.mBlackHole;
+            result.StateId = mStateId;
+            result.IsBlackHole = mBlackHole;
 
             return result;
         }

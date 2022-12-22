@@ -5,10 +5,12 @@
 ***********************************************************************/
 
 using System;
+using Forge.Configuration;
 using Forge.Configuration.Shared;
 using Forge.ErrorReport.Filter;
-using Forge.Logging;
+using Forge.Logging.Abstraction;
 using Forge.Reflection;
+using Forge.Shared;
 
 namespace Forge.ErrorReport.Sink
 {
@@ -22,7 +24,7 @@ namespace Forge.ErrorReport.Sink
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(SinkBase));
+        private static readonly ILog LOGGER = LogManager.GetLogger<SinkBase>();
 
         /// <summary>
         /// The configuration g_ filter
@@ -84,25 +86,25 @@ namespace Forge.ErrorReport.Sink
         /// Initializes the specified item.
         /// </summary>
         /// <param name="item">The item.</param>
-        public virtual void Initialize(CategoryPropertyItem item)
+        public virtual void Initialize(IPropertyItem item)
         {
-            this.Filter = null;
+            Filter = null;
             if (item != null)
             {
-                this.SinkId = item.Id;
-                CategoryPropertyItem rootItem = ConfigurationAccessHelper.GetCategoryPropertyByPath(item.PropertyItems, CONFIG_FILTER);
+                SinkId = item.Id;
+                IPropertyItem rootItem = ConfigurationAccessHelper.GetPropertyByPath(item, CONFIG_FILTER);
                 if (rootItem != null)
                 {
                     try
                     {
-                        Type filterType = TypeHelper.GetTypeFromString(rootItem.EntryValue, TypeLookupModeEnum.AllowAll, true, true, true);
-                        this.Filter = (IErrorReportFilter)filterType.GetConstructor(Type.EmptyTypes).Invoke(new object[] { });
-                        this.Filter.Initialize(rootItem);
+                        Type filterType = TypeHelper.GetTypeFromString(rootItem.Value, TypeLookupModeEnum.AllowAll, true, true, true);
+                        Filter = (IErrorReportFilter)filterType.GetConstructor(Type.EmptyTypes).Invoke(new object[] { });
+                        Filter.Initialize(rootItem);
                     }
                     catch (Exception ex)
                     {
-                        this.Filter = null;
-                        string message = string.Format("Failed to create error report filter. Type: '{0}'. Sink type: '{1}'", rootItem.EntryValue, this.GetType().AssemblyQualifiedName);
+                        Filter = null;
+                        string message = string.Format("Failed to create error report filter. Type: '{0}'. Sink type: '{1}'", rootItem.Value, GetType().AssemblyQualifiedName);
                         if (LOGGER.IsErrorEnabled) LOGGER.Error(message, ex);
                         throw new InitializationException(message, ex);
                     }

@@ -6,9 +6,11 @@
 
 using System;
 using System.IO;
+using Forge.Configuration;
 using Forge.Configuration.Shared;
+using Forge.Formatters;
 using Forge.Net.Remoting.Messaging;
-using Forge.Persistence.Formatters;
+using Forge.Shared;
 
 namespace Forge.Net.Remoting.Sinks
 {
@@ -16,6 +18,10 @@ namespace Forge.Net.Remoting.Sinks
     /// <summary>
     /// Binary message sink with compression feature
     /// </summary>
+#if NET40
+#else
+    [System.Obsolete("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.")]
+#endif
     public sealed class BinaryMessageSink : MessageSinkBase
     {
 
@@ -34,7 +40,7 @@ namespace Forge.Net.Remoting.Sinks
         /// </summary>
         public BinaryMessageSink()
         {
-            this.mMessageSinkId = BINARY_MESSAGE_SINK_ID;
+            mMessageSinkId = BINARY_MESSAGE_SINK_ID;
         }
 
         /// <summary>
@@ -45,7 +51,7 @@ namespace Forge.Net.Remoting.Sinks
         public BinaryMessageSink(bool compressData, int compressDataOverSize)
             : base(BINARY_MESSAGE_SINK_ID, compressData, compressDataOverSize)
         {
-            this.mInitialized = true;
+            mInitialized = true;
         }
 
         #endregion
@@ -56,12 +62,12 @@ namespace Forge.Net.Remoting.Sinks
         /// Initialize message sink from configuration
         /// </summary>
         /// <param name="pi">The pi.</param>
-        public override void Initialize(CategoryPropertyItem pi)
+        public override void Initialize(IPropertyItem pi)
         {
-            if (!this.mInitialized)
+            if (!mInitialized)
             {
                 base.Initialize(pi);
-                this.mInitialized = true;
+                mInitialized = true;
             }
         }
 
@@ -89,7 +95,7 @@ namespace Forge.Net.Remoting.Sinks
                     bool comp = false;
                     if (mCompressData)
                     {
-                        if (ms.Length > this.mCompressDataOverSize && this.mCompressDataOverSize >= 0)
+                        if (ms.Length > mCompressDataOverSize && mCompressDataOverSize >= 0)
                         {
                             comp = true;
                             finalData = Compress(ms.ToArray());

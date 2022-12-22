@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Shared;
 using System;
 using System.Diagnostics;
 
@@ -18,7 +19,7 @@ namespace Forge.Net.Remoting.Channels
     {
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private Channel mChannel = null;
+        private readonly Channel mChannel = null;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ChannelRegistrationEventArgs"/> class.
@@ -30,7 +31,7 @@ namespace Forge.Net.Remoting.Channels
             {
                 ThrowHelper.ThrowArgumentNullException("channel");
             }
-            this.mChannel = channel;
+            mChannel = channel;
         }
 
         /// <summary>

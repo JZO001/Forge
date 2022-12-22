@@ -14,6 +14,9 @@ using System.Security;
 using Forge.Configuration.Shared;
 using Forge.UpdateFramework.Client.Configuration;
 using Microsoft.Win32;
+using Forge.Legacy;
+using Forge.Shared;
+using Forge.Configuration;
 
 namespace Forge.UpdateFramework.Client
 {
@@ -62,8 +65,9 @@ namespace Forge.UpdateFramework.Client
         /// Initializes the specified configuration.
         /// </summary>
         /// <param name="configuration">The configuration.</param>
+        /// <param name="propertyItem">The configuration.</param>
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public void Initialize(CategoryPropertyItem configuration)
+        public void Initialize(IPropertyItem configuration)
         {
             if (configuration == null)
             {
@@ -72,13 +76,13 @@ namespace Forge.UpdateFramework.Client
 
             if (!IsInitialized)
             {
-                foreach (CategoryPropertyItem item in configuration.PropertyItems)
+                foreach (IPropertyItem item in configuration.Items.Values)
                 {
                     RegistryHive hive = RegistryHive.CurrentUser;
                     RegistryView view = RegistryView.Default;
 
-                    ConfigurationAccessHelper.ParseEnumValue<RegistryHive>(item.PropertyItems, REGISTRY_HIVE, ref hive);
-                    ConfigurationAccessHelper.ParseEnumValue<RegistryView>(item.PropertyItems, REGISTRY_VIEW, ref view);
+                    ConfigurationAccessHelper.ParseEnumValue<RegistryHive>(item, REGISTRY_HIVE, ref hive);
+                    ConfigurationAccessHelper.ParseEnumValue<RegistryView>(item, REGISTRY_VIEW, ref view);
 
                     mRegistryEntries[item.Id] = new RegistryEntry() { Path = item.Id, Hive = hive, View = view };
                 }

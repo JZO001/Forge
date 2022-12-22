@@ -8,6 +8,7 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using Forge.Logging.Abstraction;
 using Forge.Reflection;
 
 namespace Forge.Logging.Utils
@@ -228,7 +229,7 @@ namespace Forge.Logging.Utils
                         logMark = true;
                     }
                     LOGGER.Info(string.Format("LOGUTILS, Assembly, full name: {0}", a.FullName));
-#if NET5_0_OR_GREATER || NETCOREAPP3_1
+#if NET6_0_OR_GREATER || NETCOREAPP3_1
                     try
                     {
                         LOGGER.Info(string.Format("LOGUTILS, Assembly, code base: {0}", a.Location));
@@ -241,7 +242,7 @@ namespace Forge.Logging.Utils
                     }
                     catch (Exception) { }
 #endif
-#if NET5_0_OR_GREATER || NETCOREAPP3_1
+#if NET6_0_OR_GREATER || NETCOREAPP3_1
 #else
                     LOGGER.Info(string.Format("LOGUTILS, Assembly, global assembly cache: {0}", a.GlobalAssemblyCache.ToString()));
 #endif
@@ -275,7 +276,11 @@ namespace Forge.Logging.Utils
 
         #region Private method(s)
 
-        private static void CurrentDomain_AssemblyLoad(object sender, AssemblyLoadEventArgs args)
+        private static void CurrentDomain_AssemblyLoad(object
+#if NETCOREAPP3_1_OR_GREATER
+    ?
+#endif
+            sender, AssemblyLoadEventArgs args)
         {
             if (LOGGER.IsInfoEnabled)
             {
@@ -284,14 +289,14 @@ namespace Forge.Logging.Utils
                 LOGGER.Info(string.Format("LOGUTILS, Assembly, full name: {0}", a.FullName));
                 try
                 {
-#if NET5_0_OR_GREATER || NETCOREAPP3_1
+#if NET6_0_OR_GREATER || NETCOREAPP3_1
                     LOGGER.Info(string.Format("LOGUTILS, Assembly, code base: {0}", a.Location));
 #else
                     LOGGER.Info(string.Format("LOGUTILS, Assembly, code base: {0}", a.CodeBase));
 #endif
                 }
                 catch (Exception) { }
-#if NET5_0_OR_GREATER || NETCOREAPP3_1
+#if NET6_0_OR_GREATER || NETCOREAPP3_1
 #else
                 LOGGER.Info(string.Format("LOGUTILS, Assembly, global assembly cache: {0}", a.GlobalAssemblyCache.ToString()));
 #endif
@@ -308,7 +313,11 @@ namespace Forge.Logging.Utils
             }
         }
 
-        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        private static void CurrentDomain_UnhandledException(object
+#if NETCOREAPP3_1_OR_GREATER
+    ?
+#endif
+            sender, UnhandledExceptionEventArgs e)
         {
             if (LOGGER.IsFatalEnabled) LOGGER.Fatal(string.Format("LOGUTILS, unhandled exception detected in the application domain which will {0}terminate the current process.", e.IsTerminating ? string.Empty : "NOT "), e.ExceptionObject as Exception);
         }
@@ -354,7 +363,7 @@ namespace Forge.Logging.Utils
             }
         }
 
-        #endregion
+#endregion
 
     }
 

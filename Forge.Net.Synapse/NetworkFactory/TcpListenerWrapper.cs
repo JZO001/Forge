@@ -9,13 +9,20 @@ using System.Net;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
+using Forge.Legacy;
 using Forge.Net.Synapse.NetworkServices;
+using Forge.Shared;
+using Forge.Threading.Tasking;
+using Forge.Threading;
 
 namespace Forge.Net.Synapse.NetworkFactory
 {
 
+#if NET40
     internal delegate ISocket TcpListenerAcceptSocketDelegate();
     internal delegate ITcpClient TcpListenerAcceptTcpClientDelegate();
+#endif
 
     /// <summary>
     /// Wrapper for TcpListener
@@ -26,11 +33,17 @@ namespace Forge.Net.Synapse.NetworkFactory
 
         #region Field(s)
 
+#if NET40
         private TcpListenerAcceptSocketDelegate mAcceptSocketDelegate = null;
+#endif
+        private System.Func<ISocket> mAcceptSocketFuncDelegate = null;
         private int mAsyncActiveAcceptSocketCount = 0;
         private AutoResetEvent mAsyncActiveAcceptSocketEvent = null;
 
+#if NET40
         private TcpListenerAcceptTcpClientDelegate mAcceptTcpClientDelegate = null;
+#endif
+        private System.Func<ITcpClient> mAcceptTcpClientFuncDelegate = null;
         private int mAsyncActiveAcceptTcpClientCount = 0;
         private AutoResetEvent mAsyncActiveAcceptTcpClientEvent = null;
 
@@ -55,12 +68,32 @@ namespace Forge.Net.Synapse.NetworkFactory
             {
                 ThrowHelper.ThrowArgumentNullException("listener");
             }
-            this.mListener = listener;
+            mListener = listener;
         }
 
         #endregion
 
         #region Public method(s)
+
+#if NETCOREAPP3_1_OR_GREATER
+        /// <summary>
+        /// Accepts the socket.
+        /// </summary>
+        /// <returns>Socket instance</returns>
+        public async Task<ISocket> AcceptSocketAsync()
+        {
+            return new SocketWrapper(await mListener.AcceptSocketAsync());
+        }
+
+        /// <summary>
+        /// Accepts the TCP client.
+        /// </summary>
+        /// <returns>TcpClient implementation</returns>
+        public async Task<ITcpClient> AcceptTcpClientAsync()
+        {
+            return new TcpClientWrapper(await mListener.AcceptTcpClientAsync());
+        }
+#endif
 
         /// <summary>
         /// Accepts the socket.
@@ -80,6 +113,8 @@ namespace Forge.Net.Synapse.NetworkFactory
             return new TcpClientWrapper(mListener.AcceptTcpClient());
         }
 
+#if NET40
+
         /// <summary>
         /// Begins the accept socket.
         /// </summary>
@@ -89,19 +124,19 @@ namespace Forge.Net.Synapse.NetworkFactory
         public IAsyncResult BeginAcceptSocket(AsyncCallback callback, object state)
         {
             Interlocked.Increment(ref mAsyncActiveAcceptSocketCount);
-            TcpListenerAcceptSocketDelegate d = new TcpListenerAcceptSocketDelegate(this.AcceptSocket);
-            if (this.mAsyncActiveAcceptSocketEvent == null)
+            TcpListenerAcceptSocketDelegate d = new TcpListenerAcceptSocketDelegate(AcceptSocket);
+            if (mAsyncActiveAcceptSocketEvent == null)
             {
                 lock (LOCK_ACCEPTSOCKET)
                 {
-                    if (this.mAsyncActiveAcceptSocketEvent == null)
+                    if (mAsyncActiveAcceptSocketEvent == null)
                     {
-                        this.mAsyncActiveAcceptSocketEvent = new AutoResetEvent(true);
+                        mAsyncActiveAcceptSocketEvent = new AutoResetEvent(true);
                     }
                 }
             }
-            this.mAsyncActiveAcceptSocketEvent.WaitOne();
-            this.mAcceptSocketDelegate = d;
+            mAsyncActiveAcceptSocketEvent.WaitOne();
+            mAcceptSocketDelegate = d;
             return d.BeginInvoke(callback, state);
         }
 
@@ -114,19 +149,19 @@ namespace Forge.Net.Synapse.NetworkFactory
         public IAsyncResult BeginAcceptTcpClient(AsyncCallback callback, object state)
         {
             Interlocked.Increment(ref mAsyncActiveAcceptTcpClientCount);
-            TcpListenerAcceptTcpClientDelegate d = new TcpListenerAcceptTcpClientDelegate(this.AcceptTcpClient);
-            if (this.mAsyncActiveAcceptTcpClientEvent == null)
+            TcpListenerAcceptTcpClientDelegate d = new TcpListenerAcceptTcpClientDelegate(AcceptTcpClient);
+            if (mAsyncActiveAcceptTcpClientEvent == null)
             {
                 lock (LOCK_ACCEPTCLIENT)
                 {
-                    if (this.mAsyncActiveAcceptTcpClientEvent == null)
+                    if (mAsyncActiveAcceptTcpClientEvent == null)
                     {
-                        this.mAsyncActiveAcceptTcpClientEvent = new AutoResetEvent(true);
+                        mAsyncActiveAcceptTcpClientEvent = new AutoResetEvent(true);
                     }
                 }
             }
-            this.mAsyncActiveAcceptTcpClientEvent.WaitOne();
-            this.mAcceptTcpClientDelegate = d;
+            mAsyncActiveAcceptTcpClientEvent.WaitOne();
+            mAcceptTcpClientDelegate = d;
             return d.BeginInvoke(callback, state);
         }
 
@@ -141,18 +176,18 @@ namespace Forge.Net.Synapse.NetworkFactory
             {
                 ThrowHelper.ThrowArgumentNullException("asyncResult");
             }
-            if (this.mAcceptSocketDelegate == null)
+            if (mAcceptSocketDelegate == null)
             {
                 ThrowHelper.ThrowArgumentException("Wrong async result or EndAcceptSocket called multiple times.", "asyncResult");
             }
             try
             {
-                return this.mAcceptSocketDelegate.EndInvoke(asyncResult);
+                return mAcceptSocketDelegate.EndInvoke(asyncResult);
             }
             finally
             {
-                this.mAcceptSocketDelegate = null;
-                this.mAsyncActiveAcceptSocketEvent.Set();
+                mAcceptSocketDelegate = null;
+                mAsyncActiveAcceptSocketEvent.Set();
                 CloseAsyncActiveAcceptSocketEvent(Interlocked.Decrement(ref mAsyncActiveAcceptSocketCount));
             }
         }
@@ -168,18 +203,116 @@ namespace Forge.Net.Synapse.NetworkFactory
             {
                 ThrowHelper.ThrowArgumentNullException("asyncResult");
             }
-            if (this.mAcceptTcpClientDelegate == null)
+            if (mAcceptTcpClientDelegate == null)
             {
                 ThrowHelper.ThrowArgumentException("Wrong async result or EndAcceptTcpClient called multiple times.", "asyncResult");
             }
             try
             {
-                return this.mAcceptTcpClientDelegate.EndInvoke(asyncResult);
+                return mAcceptTcpClientDelegate.EndInvoke(asyncResult);
             }
             finally
             {
-                this.mAcceptTcpClientDelegate = null;
-                this.mAsyncActiveAcceptTcpClientEvent.Set();
+                mAcceptTcpClientDelegate = null;
+                mAsyncActiveAcceptTcpClientEvent.Set();
+                CloseAsyncActiveAcceptTcpClientEvent(Interlocked.Decrement(ref mAsyncActiveAcceptTcpClientCount));
+            }
+        }
+
+#endif
+
+        /// <summary>Begins the accept socket.</summary>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        public ITaskResult BeginAcceptSocket(ReturnCallback callback, object state)
+        {
+            Interlocked.Increment(ref mAsyncActiveAcceptSocketCount);
+            System.Func<ISocket> d = new System.Func<ISocket>(AcceptSocket);
+            if (mAsyncActiveAcceptSocketEvent == null)
+            {
+                lock (LOCK_ACCEPTSOCKET)
+                {
+                    if (mAsyncActiveAcceptSocketEvent == null)
+                    {
+                        mAsyncActiveAcceptSocketEvent = new AutoResetEvent(true);
+                    }
+                }
+            }
+            mAsyncActiveAcceptSocketEvent.WaitOne();
+            mAcceptSocketFuncDelegate = d;
+            return d.BeginInvoke(callback, state);
+        }
+
+        /// <summary>Begins the accept TCP client.</summary>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        public ITaskResult BeginAcceptTcpClient(ReturnCallback callback, object state)
+        {
+            Interlocked.Increment(ref mAsyncActiveAcceptTcpClientCount);
+            System.Func<ITcpClient> d = new System.Func<ITcpClient>(AcceptTcpClient);
+            if (mAsyncActiveAcceptTcpClientEvent == null)
+            {
+                lock (LOCK_ACCEPTCLIENT)
+                {
+                    if (mAsyncActiveAcceptTcpClientEvent == null)
+                    {
+                        mAsyncActiveAcceptTcpClientEvent = new AutoResetEvent(true);
+                    }
+                }
+            }
+            mAsyncActiveAcceptTcpClientEvent.WaitOne();
+            mAcceptTcpClientFuncDelegate = d;
+            return d.BeginInvoke(callback, state);
+        }
+
+        /// <summary>Ends the accept socket.</summary>
+        /// <param name="asyncResult">The async result.</param>
+        /// <returns>Socket implementation</returns>
+        public ISocket EndAcceptSocket(ITaskResult asyncResult)
+        {
+            if (asyncResult == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("asyncResult");
+            }
+            if (mAcceptSocketFuncDelegate == null)
+            {
+                ThrowHelper.ThrowArgumentException("Wrong async result or EndAcceptSocket called multiple times.", "asyncResult");
+            }
+            try
+            {
+                return mAcceptSocketFuncDelegate.EndInvoke(asyncResult);
+            }
+            finally
+            {
+                mAcceptSocketFuncDelegate = null;
+                mAsyncActiveAcceptSocketEvent.Set();
+                CloseAsyncActiveAcceptSocketEvent(Interlocked.Decrement(ref mAsyncActiveAcceptSocketCount));
+            }
+        }
+
+        /// <summary>Ends the accept TCP client.</summary>
+        /// <param name="asyncResult">The async result.</param>
+        /// <returns>TcpClient implementation</returns>
+        public ITcpClient EndAcceptTcpClient(ITaskResult asyncResult)
+        {
+            if (asyncResult == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("asyncResult");
+            }
+            if (mAcceptTcpClientFuncDelegate == null)
+            {
+                ThrowHelper.ThrowArgumentException("Wrong async result or EndAcceptTcpClient called multiple times.", "asyncResult");
+            }
+            try
+            {
+                return mAcceptTcpClientFuncDelegate.EndInvoke(asyncResult);
+            }
+            finally
+            {
+                mAcceptTcpClientFuncDelegate = null;
+                mAsyncActiveAcceptTcpClientEvent.Set();
                 CloseAsyncActiveAcceptTcpClientEvent(Interlocked.Decrement(ref mAsyncActiveAcceptTcpClientCount));
             }
         }
@@ -264,19 +397,19 @@ namespace Forge.Net.Synapse.NetworkFactory
 
         private void CloseAsyncActiveAcceptSocketEvent(int asyncActiveCount)
         {
-            if ((this.mAsyncActiveAcceptSocketEvent != null) && (asyncActiveCount == 0))
+            if ((mAsyncActiveAcceptSocketEvent != null) && (asyncActiveCount == 0))
             {
-                this.mAsyncActiveAcceptSocketEvent.Dispose();
-                this.mAsyncActiveAcceptSocketEvent = null;
+                mAsyncActiveAcceptSocketEvent.Dispose();
+                mAsyncActiveAcceptSocketEvent = null;
             }
         }
 
         private void CloseAsyncActiveAcceptTcpClientEvent(int asyncActiveCount)
         {
-            if ((this.mAsyncActiveAcceptTcpClientEvent != null) && (asyncActiveCount == 0))
+            if ((mAsyncActiveAcceptTcpClientEvent != null) && (asyncActiveCount == 0))
             {
-                this.mAsyncActiveAcceptTcpClientEvent.Dispose();
-                this.mAsyncActiveAcceptTcpClientEvent = null;
+                mAsyncActiveAcceptTcpClientEvent.Dispose();
+                mAsyncActiveAcceptTcpClientEvent = null;
             }
         }
 

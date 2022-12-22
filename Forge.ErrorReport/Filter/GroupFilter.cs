@@ -6,9 +6,11 @@
 
 using System;
 using System.Collections.Generic;
+using Forge.Configuration;
 using Forge.Configuration.Shared;
-using Forge.Logging;
+using Forge.Logging.Abstraction;
 using Forge.Reflection;
+using Forge.Shared;
 
 namespace Forge.ErrorReport.Filter
 {
@@ -22,7 +24,7 @@ namespace Forge.ErrorReport.Filter
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(GroupFilter));
+        private static readonly ILog LOGGER = LogManager.GetLogger<GroupFilter>();
 
         private const string CONFIG_FILTER_LOGIC = "FilterLogic";
 
@@ -39,7 +41,7 @@ namespace Forge.ErrorReport.Filter
         /// </summary>
         public GroupFilter()
         {
-            this.IsInitialized = true;
+            IsInitialized = true;
         }
 
         #endregion
@@ -73,40 +75,40 @@ namespace Forge.ErrorReport.Filter
         /// Initializes the specified item.
         /// </summary>
         /// <param name="item">The item.</param>
-        public override void Initialize(CategoryPropertyItem item)
+        /// <param name="propertyItem">The property item.</param>
+        public override void Initialize(IPropertyItem item)
         {
             base.Initialize(item);
 
-            this.FilterLogic = GroupFilterLoginEnum.And;
+            FilterLogic = GroupFilterLoginEnum.And;
             mFilters.Clear();
-            if (item.PropertyItems != null)
+            
+            GroupFilterLoginEnum logic = GroupFilterLoginEnum.And;
+            if (ConfigurationAccessHelper.ParseEnumValue<GroupFilterLoginEnum>(item, CONFIG_FILTER_LOGIC, ref logic))
             {
-                GroupFilterLoginEnum logic = GroupFilterLoginEnum.And;
-                if (ConfigurationAccessHelper.ParseEnumValue<GroupFilterLoginEnum>(item.PropertyItems, CONFIG_FILTER_LOGIC, ref logic))
-                {
-                    this.FilterLogic = logic;
-                }
+                FilterLogic = logic;
+            }
 
-                CategoryPropertyItem filterItems = ConfigurationAccessHelper.GetCategoryPropertyByPath(item.PropertyItems, CONFIG_FILTERS);
-                if (filterItems != null && filterItems.PropertyItems != null)
+            IPropertyItem filterItems = ConfigurationAccessHelper.GetPropertyByPath(item, CONFIG_FILTERS);
+            if (filterItems != null && filterItems.Items.Count > 0)
+            {
+                foreach (IPropertyItem filterItem in filterItems.Items.Values)
                 {
-                    foreach (CategoryPropertyItem filterItem in filterItems.PropertyItems)
+                    try
                     {
-                        try
-                        {
-                            Type filterType = TypeHelper.GetTypeFromString(filterItem.EntryValue, TypeLookupModeEnum.AllowAll, true, true, true);
-                            IErrorReportFilter filter = (IErrorReportFilter)filterType.GetConstructor(Type.EmptyTypes).Invoke(new object[] { });
-                            filter.Initialize(filterItem);
-                            mFilters.Add(filter);
-                        }
-                        catch (Exception ex)
-                        {
-                            if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format("GROUP_FILTER, failed to create error report filter. Type: '{0}'", filterItem.EntryValue), ex);
-                        }
+                        Type filterType = TypeHelper.GetTypeFromString(filterItem.Value, TypeLookupModeEnum.AllowAll, true, true, true);
+                        IErrorReportFilter filter = (IErrorReportFilter)filterType.GetConstructor(Type.EmptyTypes).Invoke(new object[] { });
+                        filter.Initialize(filterItem);
+                        mFilters.Add(filter);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format("GROUP_FILTER, failed to create error report filter. Type: '{0}'", filterItem.Value), ex);
                     }
                 }
             }
-            this.IsInitialized = true;
+
+            IsInitialized = true;
         }
 
         /// <summary>
@@ -122,7 +124,7 @@ namespace Forge.ErrorReport.Filter
 
             bool result = false;
 
-            if (this.FilterLogic == GroupFilterLoginEnum.And)
+            if (FilterLogic == GroupFilterLoginEnum.And)
             {
                 result = true;
                 foreach (IErrorReportFilter filter in mFilters)

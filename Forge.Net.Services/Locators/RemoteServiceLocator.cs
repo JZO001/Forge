@@ -10,7 +10,7 @@ using System.Runtime.CompilerServices;
 using Forge.Collections;
 using Forge.Configuration;
 using Forge.Configuration.Shared;
-using Forge.Logging;
+using Forge.Logging.Abstraction;
 using Forge.Management;
 using Forge.Net.Remoting;
 using Forge.Net.Remoting.Channels;
@@ -22,6 +22,7 @@ using Forge.Net.Synapse.NetworkFactory;
 using Forge.Net.TerraGraf;
 using Forge.Net.TerraGraf.Contexts;
 using Forge.Net.TerraGraf.NetworkPeers;
+using Forge.Shared;
 
 namespace Forge.Net.Services.Locators
 {
@@ -55,7 +56,7 @@ namespace Forge.Net.Services.Locators
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "LOGGER")]
-        protected static readonly ILog LOGGER = LogManager.GetLogger(typeof(TLocatorType));
+        protected static readonly ILog LOGGER = LogManager.GetLogger<TLocatorType>();
 
         /// <summary>
         /// Log prefix for log messages
@@ -95,9 +96,9 @@ namespace Forge.Net.Services.Locators
                 ThrowHelper.ThrowArgumentNullException("locatorId");
             }
 
-            this.Id = locatorId;
-            this.ServiceState = ServiceStateEnum.Unavailable;
-            this.ChannelId = string.Empty;
+            Id = locatorId;
+            ServiceState = ServiceStateEnum.Unavailable;
+            ChannelId = string.Empty;
         }
 
         #endregion
@@ -194,7 +195,7 @@ namespace Forge.Net.Services.Locators
         [MethodImpl(MethodImplOptions.Synchronized)]
         public override ManagerStateEnum Start()
         {
-            if (this.ManagerState != ManagerStateEnum.Started)
+            if (ManagerState != ManagerStateEnum.Started)
             {
                 if (LOGGER.IsInfoEnabled) LOGGER.Info(string.Format("{0}, initializing locator...", LOG_PREFIX));
 
@@ -207,10 +208,10 @@ namespace Forge.Net.Services.Locators
                     Forge.Net.Remoting.Proxy.ProxyServices.Initialize();
 
                     // check channel
-                    this.ChannelId = ConfigurationAccessHelper.GetValueByPath(NetworkServiceConfiguration.Settings.CategoryPropertyItems, string.Format("Locators/{0}", Id));
-                    if (string.IsNullOrEmpty(this.ChannelId))
+                    ChannelId = ConfigurationAccessHelper.GetValueByPath(NetworkServiceConfiguration.Settings.CategoryPropertyItems, string.Format("Locators/{0}", Id));
+                    if (string.IsNullOrEmpty(ChannelId))
                     {
-                        this.ChannelId = Id;
+                        ChannelId = Id;
                     }
 
                     Channel channel = LookUpChannel();
@@ -228,13 +229,13 @@ namespace Forge.Net.Services.Locators
 
                     FindService();
 
-                    this.ManagerState = ManagerStateEnum.Started;
+                    ManagerState = ManagerStateEnum.Started;
 
                     if (LOGGER.IsInfoEnabled) LOGGER.Info(string.Format("{0}, locator successfully initialized.", LOG_PREFIX));
                 }
                 catch (Exception)
                 {
-                    this.ManagerState = ManagerStateEnum.Fault;
+                    ManagerState = ManagerStateEnum.Fault;
                     throw;
                 }
                 finally
@@ -242,7 +243,7 @@ namespace Forge.Net.Services.Locators
                     OnStart(ManagerEventStateEnum.After);
                 }
             }
-            return this.ManagerState;
+            return ManagerState;
         }
 
         /// <summary>
@@ -255,39 +256,39 @@ namespace Forge.Net.Services.Locators
         [MethodImpl(MethodImplOptions.Synchronized)]
         public override ManagerStateEnum Stop()
         {
-            if (this.ManagerState == ManagerStateEnum.Started)
+            if (ManagerState == ManagerStateEnum.Started)
             {
                 OnStop(ManagerEventStateEnum.Before);
                 Forge.Net.TerraGraf.NetworkManager.Instance.NetworkPeerContextChanged -= new EventHandler<NetworkPeerContextEventArgs>(NetworkPeerContextChangedEventHandler);
                 Forge.Net.TerraGraf.NetworkManager.Instance.NetworkPeerDiscovered -= new EventHandler<NetworkPeerChangedEventArgs>(NetworkPeerDiscoveredEventHandler);
                 Forge.Net.TerraGraf.NetworkManager.Instance.NetworkPeerUnaccessible -= new EventHandler<NetworkPeerChangedEventArgs>(NetworkPeerUnaccessibleEventHandler);
                 Forge.Net.TerraGraf.NetworkManager.Instance.NetworkPeerContextChanged -= new EventHandler<NetworkPeerContextEventArgs>(NetworkPeerContextChangedEventHandler);
-                this.ManagerState = ManagerStateEnum.Stopped;
+                ManagerState = ManagerStateEnum.Stopped;
                 OnStop(ManagerEventStateEnum.After);
             }
-            return this.ManagerState;
+            return ManagerState;
         }
 
         /// <summary>
         /// Gets the proxy.
         /// </summary>
         /// <returns>Proxy instance</returns>
-        /// <exception cref="Forge.InitializationException"></exception>
+        /// <exception cref="Forge.Shared.InitializationException"></exception>
         /// <exception cref="ServiceNotAvailableException"></exception>
         public virtual TIProxyType GetProxy()
         {
-            if (this.ManagerState != ManagerStateEnum.Started)
+            if (ManagerState != ManagerStateEnum.Started)
             {
                 throw new InitializationException();
             }
 
-            ServiceProvider provider = this.PreferedServiceProvider;
+            ServiceProvider provider = PreferedServiceProvider;
             if (provider == null)
             {
                 throw new ServiceNotAvailableException();
             }
 
-            ProxyFactory<TIProxyType> factory = new ProxyFactory<TIProxyType>(this.ChannelId, provider.RemoteEndPoint);
+            ProxyFactory<TIProxyType> factory = new ProxyFactory<TIProxyType>(ChannelId, provider.RemoteEndPoint);
             return factory.CreateProxy();
         }
 
@@ -301,7 +302,7 @@ namespace Forge.Net.Services.Locators
         /// <param name="state">The state.</param>
         protected virtual void OnServiceStateChanged(ServiceStateEnum state)
         {
-            this.ServiceState = state;
+            ServiceState = state;
             RaiseEvent(EventServiceStateChanged, this, new ServiceStateChangedEventArgs(state));
         }
 
@@ -333,11 +334,11 @@ namespace Forge.Net.Services.Locators
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object,System.Object)")]
         protected virtual Channel LookUpChannel()
         {
-            Channel channel = ChannelServices.GetChannelById(this.ChannelId);
+            Channel channel = ChannelServices.GetChannelById(ChannelId);
             if (channel == null)
             {
                 // regisztrálás
-                if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format("{0}, locator cannot find channel with id '{1}'. Create default channel.", LOG_PREFIX, this.ChannelId));
+                if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format("{0}, locator cannot find channel with id '{1}'. Create default channel.", LOG_PREFIX, ChannelId));
                 BinaryMessageSink sink = new BinaryMessageSink(true, 1024);
                 List<IMessageSink> sinks = new List<IMessageSink>();
                 sinks.Add(sink);
@@ -347,7 +348,7 @@ namespace Forge.Net.Services.Locators
                 DefaultServerStreamFactory serverStreamFactory = new DefaultServerStreamFactory();
                 DefaultClientStreamFactory clientStreamFactory = new DefaultClientStreamFactory();
 
-                channel = new TCPChannel(this.ChannelId, sinks, sinks, networkFactory, serverStreamFactory, clientStreamFactory);
+                channel = new TCPChannel(ChannelId, sinks, sinks, networkFactory, serverStreamFactory, clientStreamFactory);
 
                 ChannelServices.RegisterChannel(channel);
             }
@@ -391,26 +392,26 @@ namespace Forge.Net.Services.Locators
                 // vannak kiszolgálók
                 providers.Sort();
                 ServiceProvider provider = providers[0];
-                if (this.PreferedServiceProvider == null || !provider.RemoteEndPoint.Equals(this.PreferedServiceProvider.RemoteEndPoint))
+                if (PreferedServiceProvider == null || !provider.RemoteEndPoint.Equals(PreferedServiceProvider.RemoteEndPoint))
                 {
                     if (LOGGER.IsInfoEnabled) LOGGER.Info(string.Format("{0}, selected service host is '{1}' on port {2}.", LOG_PREFIX, provider.RemoteEndPoint.Host, provider.RemoteEndPoint.Port.ToString()));
-                    this.PreferedServiceProvider = provider;
+                    PreferedServiceProvider = provider;
                 }
 
-                this.AvailableServiceProviders = providers;
+                AvailableServiceProviders = providers;
 
-                if (this.ServiceState == ServiceStateEnum.Unavailable)
+                if (ServiceState == ServiceStateEnum.Unavailable)
                 {
                     OnServiceStateChanged(ServiceStateEnum.Available);
                 }
             }
             else
             {
-                if (this.PreferedServiceProvider != null)
+                if (PreferedServiceProvider != null)
                 {
-                    this.PreferedServiceProvider = null;
+                    PreferedServiceProvider = null;
                 }
-                if (this.AvailableServiceProviders.Count == 0)
+                if (AvailableServiceProviders.Count == 0)
                 {
                     // eddig sem voltak kiszolgálók
                     if (LOGGER.IsInfoEnabled) LOGGER.Info(string.Format("{0}, service still unavailable.", LOG_PREFIX));
@@ -419,7 +420,7 @@ namespace Forge.Net.Services.Locators
                 {
                     // most már nincs kiszolgáló
                     if (LOGGER.IsInfoEnabled) LOGGER.Info(string.Format("{0}, service unavailable.", LOG_PREFIX));
-                    this.AvailableServiceProviders = providers;
+                    AvailableServiceProviders = providers;
                     OnServiceStateChanged(ServiceStateEnum.Unavailable);
                 }
             }
@@ -459,10 +460,10 @@ namespace Forge.Net.Services.Locators
                             {
                                 long.TryParse(values[1], out priority);
                             }
-                            Dictionary<string, PropertyItem> properties = null;
-                            if (root.PropertyItems.Count > 0)
+                            Dictionary<string, IPropertyItem> properties = null;
+                            if (root.Items.Count > 0)
                             {
-                                properties = new Dictionary<string, PropertyItem>(root.PropertyItems);
+                                properties = new Dictionary<string, IPropertyItem>(((IPropertyItem)root).Items);
                             }
                             if (mPeersVsProviders.ContainsKey(peer))
                             {
@@ -491,7 +492,7 @@ namespace Forge.Net.Services.Locators
         [MethodImpl(MethodImplOptions.Synchronized)]
         private void NetworkPeerContextChangedEventHandler(object sender, NetworkPeerContextEventArgs e)
         {
-            if (this.ManagerState == ManagerStateEnum.Started)
+            if (ManagerState == ManagerStateEnum.Started)
             {
                 FindService();
             }
@@ -500,7 +501,7 @@ namespace Forge.Net.Services.Locators
         [MethodImpl(MethodImplOptions.Synchronized)]
         private void NetworkPeerDiscoveredEventHandler(object sender, NetworkPeerChangedEventArgs e)
         {
-            if (this.ManagerState == ManagerStateEnum.Started)
+            if (ManagerState == ManagerStateEnum.Started)
             {
                 FindService();
             }
@@ -509,7 +510,7 @@ namespace Forge.Net.Services.Locators
         [MethodImpl(MethodImplOptions.Synchronized)]
         private void NetworkPeerUnaccessibleEventHandler(object sender, NetworkPeerChangedEventArgs e)
         {
-            if (this.ManagerState == ManagerStateEnum.Started)
+            if (ManagerState == ManagerStateEnum.Started)
             {
                 FindService();
             }

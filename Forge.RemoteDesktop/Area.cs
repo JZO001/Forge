@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Shared;
 using System;
 using System.Diagnostics;
 
@@ -46,10 +47,10 @@ namespace Forge.RemoteDesktop
                 ThrowHelper.ThrowArgumentOutOfRangeException("endY");
             }
 
-            this.StartX = startX;
-            this.StartY = startY;
-            this.EndX = endX;
-            this.EndY = endY;
+            StartX = startX;
+            StartY = startY;
+            EndX = endX;
+            EndY = endY;
         } 
 
         #endregion

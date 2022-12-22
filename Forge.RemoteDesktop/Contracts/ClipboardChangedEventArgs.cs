@@ -22,7 +22,7 @@ namespace Forge.RemoteDesktop.Contracts
         /// <param name="text">The text.</param>
         public ClipboardChangedEventArgs(string text)
         {
-            this.Text = text;
+            Text = text;
         }
 
         /// <summary>

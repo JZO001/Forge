@@ -4,6 +4,8 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Legacy;
+using Forge.Shared;
 using System;
 using System.Diagnostics;
 using System.Reflection;
@@ -36,7 +38,7 @@ namespace Forge.Net.Remoting.Validators
             {
                 ThrowHelper.ThrowArgumentNullException("method");
             }
-            this.mMethod = method;
+            mMethod = method;
         }
 
         #endregion
@@ -115,7 +117,7 @@ namespace Forge.Net.Remoting.Validators
         /// </returns>
         public override string ToString()
         {
-            return String.Format("{0}", mMethod.Name);
+            return string.Format("{0}", mMethod.Name);
         }
 
         #endregion

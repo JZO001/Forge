@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
 using Forge.ORM.NHibernateExtension.Model;
+using Forge.Shared;
 using NHibernate.Criterion;
 using NHibernate.SqlCommand;
 
@@ -77,8 +78,8 @@ namespace Forge.ORM.NHibernateExtension.Criterias
             {
                 ThrowHelper.ThrowArgumentNullException("fieldName");
             }
-            this.mFieldName = fieldName;
-            this.mNegation = negation;
+            mFieldName = fieldName;
+            mNegation = negation;
         }
 
         #endregion
@@ -116,7 +117,7 @@ namespace Forge.ORM.NHibernateExtension.Criterias
                 {
                     ThrowHelper.ThrowArgumentNullException("value");
                 }
-                this.mFieldName = value;
+                mFieldName = value;
                 Reset();
             }
         }
@@ -132,7 +133,7 @@ namespace Forge.ORM.NHibernateExtension.Criterias
             get { return mNegation; }
             set
             {
-                this.mNegation = value;
+                mNegation = value;
                 Reset();
             }
         }
@@ -225,7 +226,7 @@ namespace Forge.ORM.NHibernateExtension.Criterias
             if (!obj.GetType().Equals(GetType())) return false;
 
             Criteria other = (Criteria)obj;
-            return other.mFieldName == mFieldName && other.mNegation.Equals(this.mNegation);
+            return other.mFieldName == mFieldName && other.mNegation.Equals(mNegation);
         }
 
         /// <summary>
@@ -257,9 +258,9 @@ namespace Forge.ORM.NHibernateExtension.Criterias
         /// </returns>
         public virtual object Clone()
         {
-            Criteria cloned = (Criteria)this.GetType().GetConstructor(BindingFlags.NonPublic | BindingFlags.CreateInstance | BindingFlags.Instance, null, new Type[] { }, null).Invoke(new object[] { });
-            cloned.mFieldName = this.mFieldName;
-            cloned.mNegation = this.mNegation;
+            Criteria cloned = (Criteria)GetType().GetConstructor(BindingFlags.NonPublic | BindingFlags.CreateInstance | BindingFlags.Instance, null, new Type[] { }, null).Invoke(new object[] { });
+            cloned.mFieldName = mFieldName;
+            cloned.mNegation = mNegation;
             return cloned;
         }
 
@@ -296,7 +297,7 @@ namespace Forge.ORM.NHibernateExtension.Criterias
         {
             Dictionary<string, AssociationEntry> result = null;
 
-            if (this.Parent == null)
+            if (Parent == null)
             {
                 if (mAssociations == null)
                 {
@@ -306,7 +307,7 @@ namespace Forge.ORM.NHibernateExtension.Criterias
             }
             else
             {
-                result = this.Parent.GetAssociations();
+                result = Parent.GetAssociations();
             }
 
             return result;

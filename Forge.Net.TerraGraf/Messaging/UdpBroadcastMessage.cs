@@ -8,6 +8,7 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using Forge.Net.Synapse;
+using Forge.Shared;
 
 namespace Forge.Net.TerraGraf.Messaging
 {
@@ -48,9 +49,9 @@ namespace Forge.Net.TerraGraf.Messaging
             {
                 ThrowHelper.ThrowArgumentNullException("networkContextName");
             }
-            this.mNetworkContextName = networkContextName;
-            this.mNATGateways = natGateways;
-            this.mTCPServers = tcpServers;
+            mNetworkContextName = networkContextName;
+            mNATGateways = natGateways;
+            mTCPServers = tcpServers;
         }
 
         #endregion

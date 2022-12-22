@@ -4,7 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
-#if NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
+#if NETSTANDARD2_0_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 
 using Microsoft.AspNetCore.Http;
 using System;
@@ -19,15 +19,16 @@ namespace Forge.Net.WebSockets
     public class WebSocketManagerMiddleware
     {
 
-        private readonly RequestDelegate mNext;
+        private readonly RequestDelegate _next;
+        private readonly WebSocketHandler _webSocketHandler;
 
         /// <summary>Initializes a new instance of the <see cref="WebSocketManagerMiddleware"/> class.</summary>
         /// <param name="next">The next.</param>
         /// <param name="webSocketHandler">The web socket handler.</param>
         public WebSocketManagerMiddleware(RequestDelegate next, WebSocketHandler webSocketHandler)
         {
-            mNext = next;
-            WebSocketHandler = webSocketHandler;
+            _next = next;
+            _webSocketHandler = webSocketHandler;
         }
 
         /// <summary>Gets or sets the size of the receive buffer.</summary>
@@ -44,24 +45,22 @@ namespace Forge.Net.WebSockets
             if (!context.WebSockets.IsWebSocketRequest) return;
 
             var socket = await context.WebSockets.AcceptWebSocketAsync();
-            await WebSocketHandler.OnConnected(socket);
+            await _webSocketHandler.OnConnected(socket);
 
             await Receive(socket, async (result, buffer) =>
             {
                 if (result.MessageType == WebSocketMessageType.Close)
                 {
-                    await WebSocketHandler.OnDisconnected(socket);
+                    await _webSocketHandler.OnDisconnected(socket);
                     return;
                 }
                 else
                 {
-                    await WebSocketHandler.ReceiveAsync(socket, result, buffer);
+                    await _webSocketHandler.ReceiveAsync(socket, result, buffer);
                     return;
                 }
             });
         }
-
-        private WebSocketHandler WebSocketHandler { get; set; }
 
         private async Task Receive(WebSocket socket, Action<WebSocketReceiveResult, byte[]> handleMessage)
         {

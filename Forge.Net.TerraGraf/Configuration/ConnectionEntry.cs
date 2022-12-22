@@ -8,6 +8,7 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using Forge.Net.Synapse;
+using Forge.Shared;
 
 namespace Forge.Net.TerraGraf.Configuration
 {
@@ -37,6 +38,11 @@ namespace Forge.Net.TerraGraf.Configuration
 
         #region Constructor(s)
 
+        /// <summary>Initializes a new instance of the <see cref="ConnectionEntry" /> class.</summary>
+        public ConnectionEntry()
+        {
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ConnectionEntry"/> class.
         /// </summary>
@@ -47,7 +53,7 @@ namespace Forge.Net.TerraGraf.Configuration
             {
                 ThrowHelper.ThrowArgumentNullException("endPoint");
             }
-            this.mEndPoint = endPoint;
+            mEndPoint = endPoint;
         }
 
         /// <summary>
@@ -64,9 +70,9 @@ namespace Forge.Net.TerraGraf.Configuration
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException("delayBetweenAttemptsInMS");
             }
-            this.mReconnectOnFailure = reconnectOnFailure;
-            this.mDelayBetweenAttempsInMS = delayBetweenAttemptsInMS;
-            this.mConnectionTimeout = connectionTimeout;
+            mReconnectOnFailure = reconnectOnFailure;
+            mDelayBetweenAttempsInMS = delayBetweenAttemptsInMS;
+            mConnectionTimeout = connectionTimeout;
         }
 
         #endregion

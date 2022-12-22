@@ -5,7 +5,10 @@
 ***********************************************************************/
 
 using System;
+using System.Threading.Tasks;
+using Forge.Configuration;
 using Forge.Configuration.Shared;
+using Forge.Net.Synapse.Options;
 
 namespace Forge.Net.Synapse.NetworkServices
 {
@@ -13,7 +16,7 @@ namespace Forge.Net.Synapse.NetworkServices
     /// <summary>
     /// Common base for stream factory interface
     /// </summary>
-    public interface IStreamFactory : IDisposable
+    public interface IStreamFactory
     {
 
         #region Public properties
@@ -74,7 +77,13 @@ namespace Forge.Net.Synapse.NetworkServices
         /// Initializes the specified config item.
         /// </summary>
         /// <param name="configItem">The config item.</param>
-        void Initialize(CategoryPropertyItem configItem);
+        void Initialize(IPropertyItem configItem);
+
+        /// <summary>
+        /// Initializes the specified config item.
+        /// </summary>
+        /// <param name="options">The pptions.</param>
+        void Initialize(StreamFactoryOptions options);
 
         /// <summary>
         /// Creates the network stream.
@@ -82,6 +91,15 @@ namespace Forge.Net.Synapse.NetworkServices
         /// <param name="tcpClient">The TCP client.</param>
         /// <returns>Network Stream instance</returns>
         NetworkStream CreateNetworkStream(ITcpClient tcpClient);
+
+#if NETCOREAPP3_1_OR_GREATER
+        /// <summary>
+        /// Creates the network stream asynhronously.
+        /// </summary>
+        /// <param name="tcpClient">The TCP client.</param>
+        /// <returns>Network Stream instance</returns>
+        Task<NetworkStream> CreateNetworkStreamAsync(ITcpClient tcpClient);
+#endif
 
         #endregion
 

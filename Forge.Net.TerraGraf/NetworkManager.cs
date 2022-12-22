@@ -13,9 +13,8 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
 using Forge.Collections;
-using Forge.EventRaiser;
-using Forge.Logging;
 using Forge.Management;
 using Forge.Net.Synapse;
 using Forge.Net.Synapse.Firewall;
@@ -26,27 +25,37 @@ using Forge.Net.TerraGraf.Contexts;
 using Forge.Net.TerraGraf.Messaging;
 using Forge.Net.TerraGraf.NetworkInfo;
 using Forge.Net.TerraGraf.NetworkPeers;
+using Forge.Shared;
+using Forge.Threading.EventRaiser;
+using Forge.Threading;
+using Forge.Threading.Tasking;
+using Forge.Logging.Abstraction;
 
 namespace Forge.Net.TerraGraf
 {
 
+#if NET40
     internal delegate INetworkPeerRemote NetworkManagerConnectDelegate(AddressEndPoint endPoint, IClientStreamFactory clientStreamFactory, int timeoutInMS);
-    internal delegate bool NetworkManagerInternalConnectDelegate(NetworkPeerRemote networkPeer, bool localRequest, bool disconnectOnConnectionDuplication);
+#endif
 
     /// <summary>
     /// Represents and manages the terragraf network
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable")]
-    public sealed class NetworkManager : ManagerSingletonBase<NetworkManager>
+    public sealed class NetworkManager : ManagerSingletonBase<NetworkManager>, ITerraGrafNetworkManager
     {
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(NetworkManager));
+        private static readonly ILog LOGGER = LogManager.GetLogger<NetworkManager>();
 
         private static Mutex mMutex = null;
 
         private static string APPLICATION_ID = string.Empty;
+
+        private static TerraGrafOptions mConfiguration = null;
+
+        private static bool mInitialized = false;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private bool mShutdown = false;
@@ -56,9 +65,6 @@ namespace Forge.Net.TerraGraf
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private List<NetworkContext> mKnownNetworkContexts = null;
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private ConfigContainer mConfiguration = null;
 
         private NetworkContextRuleManager mNetworkContextRuleManager = null;
 
@@ -80,7 +86,10 @@ namespace Forge.Net.TerraGraf
 
         private int mAsyncActiveConnectCount = 0;
         private AutoResetEvent mAsyncActiveConnectEvent = null;
+#if NET40
         private NetworkManagerConnectDelegate mConnectDelegate = null;
+#endif
+        private System.Func<AddressEndPoint, IClientStreamFactory, int, INetworkPeerRemote> mConnectFuncDelegate = null;
 
         private static readonly object LOCK_CONNECT = new object();
 
@@ -119,20 +128,21 @@ namespace Forge.Net.TerraGraf
 
         #region Public properties
 
+        /// <summary>Gets where the configuration comes from.</summary>
+        /// <value>The configuration source.</value>
+        public static ConfigurationSourceEnum ConfigurationSource { get; set; } = ConfigurationSourceEnum.ConfigurationManager;
+
         /// <summary>
-        /// Gets the configuration.
+        /// Gets the configuration. The configuration can also be set, but only once.
         /// </summary>
         /// <value>
         /// The configuration.
         /// </value>
         [DebuggerHidden]
-        public ConfigContainer Configuration
+        public static TerraGrafOptions Configuration
         {
-            get
-            {
-                DoInitializationCheck();
-                return mConfiguration;
-            }
+            get { return mConfiguration; }
+            set { if (!mInitialized) mConfiguration = value; }
         }
 
         /// <summary>
@@ -223,9 +233,9 @@ namespace Forge.Net.TerraGraf
         /// <value>
         /// The internal configuration.
         /// </value>
-        /// <exception cref="Forge.InitializationException">Network has not been initialized.</exception>
+        /// <exception cref="Forge.Shared.InitializationException">Network has not been initialized.</exception>
         [DebuggerHidden]
-        internal ConfigContainer InternalConfiguration
+        internal TerraGrafOptions InternalConfiguration
         {
             get
             {
@@ -295,7 +305,7 @@ namespace Forge.Net.TerraGraf
         public override ManagerStateEnum Start()
         {
             Initialize(false);
-            return this.ManagerState;
+            return ManagerState;
         }
 
         /// <summary>
@@ -311,7 +321,7 @@ namespace Forge.Net.TerraGraf
                 mLockMessageProcessor.Lock();
                 try
                 {
-                    mNetworkManager.Dispose();
+                    mNetworkManager.StopServers();
                     mConnectionManager.Shutdown();
                     foreach (NetworkContext nc in new List<NetworkContext>(InternalKnownNetworkContexts))
                     {
@@ -323,17 +333,19 @@ namespace Forge.Net.TerraGraf
                             }
                         }
                     }
-                    mMutex.Dispose();
                 }
                 finally
                 {
+                    if (ConfigurationSource == ConfigurationSourceEnum.ConfigurationManager) Configuration.CleanUp();
+                    mMutex.Dispose();
+                    mInitialized = false;
                     mLockMessageProcessor.Unlock();
-                    this.ManagerState = ManagerStateEnum.Stopped;
+                    ManagerState = ManagerStateEnum.Stopped;
                     mShutdown = true;
                     OnStop(ManagerEventStateEnum.After);
                 }
             }
-            return this.ManagerState;
+            return ManagerState;
         }
 
         /// <summary>
@@ -400,10 +412,10 @@ namespace Forge.Net.TerraGraf
             DoShutdownCheck();
             bool result = false;
 
-            AddressEndPoint ep = this.mNetworkManager.GetServerEndPoint(serverId);
+            AddressEndPoint ep = mNetworkManager.GetServerEndPoint(serverId);
             if (ep != null)
             {
-                result = this.mNetworkManager.StopServer(serverId);
+                result = mNetworkManager.StopServer(serverId);
                 mLockMessageProcessor.Lock();
                 try
                 {
@@ -427,6 +439,8 @@ namespace Forge.Net.TerraGraf
 
             return result;
         }
+
+#if NET40
 
         /// <summary>
         /// Begins the connect.
@@ -477,22 +491,203 @@ namespace Forge.Net.TerraGraf
         /// <returns>Async property</returns>
         public IAsyncResult BeginConnect(AddressEndPoint endPoint, IClientStreamFactory clientStreamFactory, int timeoutInMS, AsyncCallback callback, object state)
         {
+            if (endPoint == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("endPoint");
+            }
+            if (clientStreamFactory == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("clientStreamFactory");
+            }
+
             Interlocked.Increment(ref mAsyncActiveConnectCount);
-            NetworkManagerConnectDelegate d = new NetworkManagerConnectDelegate(this.Connect);
-            if (this.mAsyncActiveConnectEvent == null)
+            NetworkManagerConnectDelegate d = new NetworkManagerConnectDelegate(Connect);
+            if (mAsyncActiveConnectEvent == null)
             {
                 lock (LOCK_CONNECT)
                 {
-                    if (this.mAsyncActiveConnectEvent == null)
+                    if (mAsyncActiveConnectEvent == null)
                     {
-                        this.mAsyncActiveConnectEvent = new AutoResetEvent(true);
+                        mAsyncActiveConnectEvent = new AutoResetEvent(true);
                     }
                 }
             }
-            this.mAsyncActiveConnectEvent.WaitOne();
-            this.mConnectDelegate = d;
+            mAsyncActiveConnectEvent.WaitOne();
+            mConnectDelegate = d;
             return d.BeginInvoke(endPoint, clientStreamFactory, timeoutInMS, callback, state);
         }
+
+        /// <summary>
+        /// Ends the connect.
+        /// </summary>
+        /// <param name="asyncResult">The async result.</param>
+        /// <returns>NetworkPeerRemote</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Forge.ThrowHelper.ThrowArgumentException(System.String,System.String)")]
+        public INetworkPeerRemote EndConnect(IAsyncResult asyncResult)
+        {
+            if (asyncResult == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("asyncResult");
+            }
+            if (mConnectDelegate == null)
+            {
+                ThrowHelper.ThrowArgumentException("Wrong async result or EndConnect called multiple times.", "asyncResult");
+            }
+            try
+            {
+                return mConnectDelegate.EndInvoke(asyncResult);
+            }
+            finally
+            {
+                mConnectDelegate = null;
+                mAsyncActiveConnectEvent.Set();
+                CloseAsyncActiveConnectEvent(Interlocked.Decrement(ref mAsyncActiveConnectCount));
+            }
+        }
+
+#endif
+
+        /// <summary>Begins the connect.</summary>
+        /// <param name="endPoint">The end point.</param>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        public ITaskResult BeginConnect(AddressEndPoint endPoint, ReturnCallback callback, object state)
+        {
+            return BeginConnect(endPoint, mNetworkManager.ClientStreamFactory, Timeout.Infinite, callback, state);
+        }
+
+        /// <summary>Begins the connect.</summary>
+        /// <param name="endPoint">The end point.</param>
+        /// <param name="clientStreamFactory">The client stream factory.</param>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        public ITaskResult BeginConnect(AddressEndPoint endPoint, IClientStreamFactory clientStreamFactory, ReturnCallback callback, object state)
+        {
+            return BeginConnect(endPoint, clientStreamFactory, Timeout.Infinite, callback, state);
+        }
+
+        /// <summary>Begins the connect.</summary>
+        /// <param name="endPoint">The end point.</param>
+        /// <param name="timeoutInMS">The timeout in ms.</param>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>
+        ///   <br />
+        /// </returns>
+        public ITaskResult BeginConnect(AddressEndPoint endPoint, int timeoutInMS, ReturnCallback callback, object state)
+        {
+            return BeginConnect(endPoint, mNetworkManager.ClientStreamFactory, timeoutInMS, callback, state);
+        }
+
+        /// <summary>Begins the connect.</summary>
+        /// <param name="endPoint">The end point.</param>
+        /// <param name="clientStreamFactory">The client stream factory.</param>
+        /// <param name="timeoutInMS">The timeout in ms.</param>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        public ITaskResult BeginConnect(AddressEndPoint endPoint, IClientStreamFactory clientStreamFactory, int timeoutInMS, ReturnCallback callback, object state)
+        {
+            if (endPoint == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("endPoint");
+            }
+            if (clientStreamFactory == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("clientStreamFactory");
+            }
+
+            Interlocked.Increment(ref mAsyncActiveConnectCount);
+            System.Func<AddressEndPoint, IClientStreamFactory, int, INetworkPeerRemote> d = new System.Func<AddressEndPoint, IClientStreamFactory, int, INetworkPeerRemote>(Connect);
+            if (mAsyncActiveConnectEvent == null)
+            {
+                lock (LOCK_CONNECT)
+                {
+                    if (mAsyncActiveConnectEvent == null)
+                    {
+                        mAsyncActiveConnectEvent = new AutoResetEvent(true);
+                    }
+                }
+            }
+            mAsyncActiveConnectEvent.WaitOne();
+            mConnectFuncDelegate = d;
+            return d.BeginInvoke(endPoint, clientStreamFactory, timeoutInMS, callback, state);
+        }
+
+        /// <summary>Ends the connect.</summary>
+        /// <param name="asyncResult">The async result.</param>
+        /// <returns>Network Stream instance</returns>
+        public INetworkPeerRemote EndConnect(ITaskResult asyncResult)
+        {
+            if (asyncResult == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("asyncResult");
+            }
+            if (mConnectFuncDelegate == null)
+            {
+                ThrowHelper.ThrowArgumentException("Wrong async result or EndConnect called multiple times.", "asyncResult");
+            }
+            try
+            {
+                return mConnectFuncDelegate.EndInvoke(asyncResult);
+            }
+            finally
+            {
+                mConnectFuncDelegate = null;
+                mAsyncActiveConnectEvent.Set();
+                CloseAsyncActiveConnectEvent(Interlocked.Decrement(ref mAsyncActiveConnectCount));
+            }
+        }
+
+#if NETCOREAPP3_1_OR_GREATER
+
+        /// <summary>
+        /// Connects the specified end point.
+        /// </summary>
+        /// <param name="endPoint">The end point.</param>
+        /// <returns>NetworkPeerRemote</returns>
+        public async Task<INetworkPeerRemote> ConnectAsync(AddressEndPoint endPoint)
+        {
+            return await Task.Run(() => Connect(endPoint));
+        }
+
+        /// <summary>
+        /// Connects the specified end point.
+        /// </summary>
+        /// <param name="endPoint">The end point.</param>
+        /// <param name="clientStreamFactory">The client stream factory.</param>
+        /// <returns>NetworkPeerRemote</returns>
+        public async Task<INetworkPeerRemote> ConnectAsync(AddressEndPoint endPoint, IClientStreamFactory clientStreamFactory)
+        {
+            return await Task.Run(() => Connect(endPoint, clientStreamFactory));
+        }
+
+        /// <summary>
+        /// Connects the specified end point.
+        /// </summary>
+        /// <param name="endPoint">The end point.</param>
+        /// <param name="timeoutInMS">The timeout in MS.</param>
+        /// <returns>NetworkPeerRemote</returns>
+        public async Task<INetworkPeerRemote> ConnectAsync(AddressEndPoint endPoint, int timeoutInMS)
+        {
+            return await Task.Run(() => Connect(endPoint, timeoutInMS));
+        }
+
+        /// <summary>
+        /// Connects the specified end point.
+        /// </summary>
+        /// <param name="endPoint">The end point.</param>
+        /// <param name="clientStreamFactory">The client stream factory.</param>
+        /// <param name="timeoutInMS">The timeout in MS.</param>
+        /// <returns>NetworkPeerRemote</returns>
+        public async Task<INetworkPeerRemote> ConnectAsync(AddressEndPoint endPoint, IClientStreamFactory clientStreamFactory, int timeoutInMS)
+        {
+            return await Task.Run(() => Connect(endPoint, clientStreamFactory, timeoutInMS));
+        }
+
+#endif
 
         /// <summary>
         /// Connects the specified end point.
@@ -549,34 +744,6 @@ namespace Forge.Net.TerraGraf
         }
 
         /// <summary>
-        /// Ends the connect.
-        /// </summary>
-        /// <param name="asyncResult">The async result.</param>
-        /// <returns>NetworkPeerRemote</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Forge.ThrowHelper.ThrowArgumentException(System.String,System.String)")]
-        public INetworkPeerRemote EndConnect(IAsyncResult asyncResult)
-        {
-            if (asyncResult == null)
-            {
-                ThrowHelper.ThrowArgumentNullException("asyncResult");
-            }
-            if (this.mConnectDelegate == null)
-            {
-                ThrowHelper.ThrowArgumentException("Wrong async result or EndConnect called multiple times.", "asyncResult");
-            }
-            try
-            {
-                return this.mConnectDelegate.EndInvoke(asyncResult);
-            }
-            finally
-            {
-                this.mConnectDelegate = null;
-                this.mAsyncActiveConnectEvent.Set();
-                CloseAsyncActiveConnectEvent(Interlocked.Decrement(ref mAsyncActiveConnectCount));
-            }
-        }
-
-        /// <summary>
         /// Creates the socket TCP.
         /// </summary>
         /// <returns>Socket</returns>
@@ -610,8 +777,8 @@ namespace Forge.Net.TerraGraf
         /// <param name="disconnectOnConnectionDuplication">if set to <c>true</c> [disconnect on connection duplication].</param>
         internal void InternalConnectAsync(NetworkPeerRemote networkPeer, bool localRequest, bool disconnectOnConnectionDuplication)
         {
-            NetworkManagerInternalConnectDelegate d = new NetworkManagerInternalConnectDelegate(InternalConnect);
-            d.BeginInvoke(networkPeer, localRequest, disconnectOnConnectionDuplication, new AsyncCallback(InternalConnectAsyncEnd), d);
+            System.Func<NetworkPeerRemote, bool, bool, bool> dlg = new Func<NetworkPeerRemote, bool, bool, bool>(InternalConnect);
+            dlg.BeginInvoke(networkPeer, localRequest, disconnectOnConnectionDuplication, new ReturnCallback(InternalConnectAsyncEnd), dlg);
         }
 
         /// <summary>
@@ -757,8 +924,6 @@ namespace Forge.Net.TerraGraf
                     MessageTask messageTask = new MessageTask(message);
                     networkConnection.AddMessageTask(messageTask);
                 }
-
-                //TODO-DONE: ellenőrizni, hogy kapcsolat szakadáskor nem blokkolódik-e tovább
 
                 networkConnection.Initialize(); // kezdődik az adatfogadás
                 // várakozás a kapcsolódásra
@@ -990,7 +1155,7 @@ namespace Forge.Net.TerraGraf
         /// </value>
         internal NetworkContext InternalCurrentNetworkContext
         {
-            get { return this.mLocalHost.NetworkContext; }
+            get { return mLocalHost.NetworkContext; }
         }
 
         /// <summary>
@@ -1147,7 +1312,7 @@ namespace Forge.Net.TerraGraf
         [DebuggerHidden]
         internal void DoInitializationCheck()
         {
-            if (this.ManagerState != ManagerStateEnum.Started)
+            if (ManagerState != ManagerStateEnum.Started)
             {
                 throw new InitializationException("Network has not been initialized.");
             }
@@ -1189,190 +1354,38 @@ namespace Forge.Net.TerraGraf
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times"), MethodImpl(MethodImplOptions.Synchronized)]
         private void Initialize(bool debug)
         {
-            if (this.ManagerState != ManagerStateEnum.Started)
+            if (ManagerState != ManagerStateEnum.Started)
             {
                 OnStart(ManagerEventStateEnum.Before);
                 try
                 {
-                    //{
-                    //    #region License check
+                    if (mConfiguration == null) mConfiguration = new TerraGrafOptions();
+                    mConfiguration.Initialize(); // this can crash, if the config is invalid
 
-                    //    Uri uri = new Uri(GetType().Assembly.CodeBase);
-                    //    string localPath = string.Format("{0}.cer", uri.LocalPath);
-                    //    if (new FileInfo(localPath).Exists)
-                    //    {
-                    //        try
-                    //        {
-                    //            X509Certificate2 certificate = new X509Certificate2(new X509Certificate(localPath));
-
-                    //            // dátum ellenőrzés
-                    //            if (certificate.NotBefore.Ticks > DateTime.Now.Ticks || certificate.NotAfter.Ticks < DateTime.Now.Ticks)
-                    //            {
-                    //                throw new SecurityException();
-                    //            }
-
-                    //            if (!"2CC660BF".Equals(certificate.SerialNumber) || !"CN=JZO.TerraGraf".Equals(certificate.SubjectName.Name))
-                    //            {
-                    //                throw new SecurityException();
-                    //            }
-
-                    //            byte[] sample = new byte[] { 65, 181, 228, 63, 153, 91, 146, 90, 252, 107, 206, 196, 86, 54, 248, 249, 
-                    //            216, 164, 211, 68, 170, 249, 66, 186, 108, 86, 152, 187, 91, 17, 154, 166, 160, 96, 129, 90, 14, 85, 
-                    //            27, 40, 113, 224, 25, 242, 155, 227, 233, 186, 12, 102, 30, 201, 221, 121, 51, 211, 187, 30, 191, 169, 
-                    //            119, 126, 95, 138, 239, 211, 0, 156, 216, 176, 100, 254, 124, 100, 254, 74, 169, 26, 178, 125, 204, 
-                    //            101, 28, 235, 220, 29, 191, 71, 0, 165, 8, 219, 42, 64, 92, 154, 140, 127, 191, 243, 204, 93, 170, 
-                    //            243, 214, 214, 130, 168, 221, 164, 79, 226, 248, 195, 20, 71, 85, 247, 189, 23, 119, 146, 143, 241, 
-                    //            70, 98, 113, 196, 101, 221, 89, 169, 167, 226, 201, 157, 202, 143, 30, 168, 167, 182, 155, 113, 247, 
-                    //            199, 57, 216, 124, 2, 176, 179, 6, 95, 180, 247, 101, 185, 132, 203, 193, 89, 127, 58, 175, 104, 251, 
-                    //            104, 195, 229, 174, 133, 15, 39, 64, 175, 249, 138, 155, 209, 165, 236, 167, 193, 247, 239, 5, 158, 
-                    //            250, 19, 104, 215, 9, 55, 54, 175, 157, 48, 48, 249, 184, 209, 146, 108, 138, 70, 185, 25, 18, 1, 176, 
-                    //            219, 140, 172, 105, 253, 142, 146, 122, 189, 187, 106, 2, 255, 59, 189, 57, 37, 25, 170, 136, 197, 167, 
-                    //            202, 251, 232, 254, 169, 253, 111, 91, 128, 123, 171, 123, 196, 245, 253, 157, 35, 17, 224, 203, 175, 
-                    //            230, 118 };
-                    //            byte[] expected = new byte[] { 22, 218, 92, 35, 246, 115, 194, 155, 107, 254, 51, 150, 208, 248, 116, 236, 
-                    //            64, 106, 49, 2, 77, 59, 236, 241, 142, 135, 125, 142, 163, 209, 36, 62, 142, 164, 125, 148, 186, 245, 
-                    //            55, 228, 31, 241, 222, 69, 85, 98, 70, 13, 129, 34, 33, 117, 79, 163, 114, 201, 229, 222, 236, 56, 75, 
-                    //            100, 224, 114, 169, 250, 5, 57, 79, 221, 71, 64, 207, 160, 109, 14, 241, 137, 23, 118, 53, 46, 149, 43, 
-                    //            117, 49, 42, 251, 36, 10, 131, 81, 71, 88, 148, 155, 238, 197, 138, 22, 178, 207, 26, 127, 219, 51, 56, 
-                    //            185, 79, 163, 75, 108, 245, 53, 97, 19, 147, 53, 96, 78, 229, 41, 237, 38, 180, 77, 210, 38, 138, 115, 
-                    //            7, 4, 118, 206, 253, 20, 254, 226, 179, 109, 119, 7, 125, 249, 215, 153, 227, 199, 108, 182, 181, 94, 
-                    //            132, 111, 74, 99, 45, 69, 201, 221, 58, 58, 27, 84, 89, 93, 203, 203, 56, 70, 133, 134, 15, 97, 246, 89, 
-                    //            149, 71, 147, 203, 197, 101, 102, 242, 173, 178, 5, 223, 170, 46, 74, 181, 246, 123, 42, 23, 57, 84, 240, 
-                    //            226, 224, 96, 8, 94, 11, 244, 113, 237, 12, 52, 248, 78, 26, 153, 229, 146, 101, 227, 71, 158, 191, 140, 
-                    //            104, 173, 151, 62, 77, 8, 13, 16, 173, 179, 247, 107, 177, 51, 29, 222, 242, 243, 81, 196, 108, 255, 47, 
-                    //            116, 113, 54, 13, 185, 123, 226, 227, 4, 198, 84, 73, 115, 95, 167, 251, 55, 94, 200, 96, 32, 102, 111, 
-                    //            9, 188, 13, 69 };
-                    //            byte[] encryptedData = null;
-                    //            byte[] IV = new byte[16];
-                    //            byte[] Key = new byte[32];
-
-                    //            Buffer.BlockCopy(certificate.PublicKey.EncodedKeyValue.RawData, 0, IV, 0, IV.Length);
-                    //            Buffer.BlockCopy(certificate.PublicKey.EncodedKeyValue.RawData, certificate.PublicKey.EncodedKeyValue.RawData.Length - Key.Length, Key, 0, Key.Length);
-
-                    //            using (RijndaelManaged r = new RijndaelManaged())
-                    //            {
-                    //                r.IV = IV;
-                    //                r.Key = Key;
-                    //                using (ICryptoTransform encryptor = r.CreateEncryptor())
-                    //                {
-                    //                    using (MemoryStream ms = new MemoryStream())
-                    //                    {
-                    //                        using (CryptoStream csEncrypt = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
-                    //                        {
-                    //                            csEncrypt.Write(sample, 0, sample.Length);
-                    //                            csEncrypt.FlushFinalBlock();
-                    //                            encryptedData = ms.ToArray();
-                    //                        }
-                    //                    }
-                    //                }
-                    //            }
-
-                    //            if (expected.Length == encryptedData.Length)
-                    //            {
-                    //                for (int i = 0; i < expected.Length; i++)
-                    //                {
-                    //                    if (!expected[i].Equals(encryptedData[i]))
-                    //                    {
-                    //                        throw new SecurityException();
-                    //                    }
-                    //                }
-                    //            }
-
-                    //            #region Expected generator
-                    //            //using (FileStream fs = File.Create("output.txt"))
-                    //            //{
-                    //            //    System.Text.StringBuilder sb = new System.Text.StringBuilder("byte[] expected = new byte[] {");
-                    //            //    bool writeMark = false;
-                    //            //    foreach (byte b in encryptedData)
-                    //            //    {
-                    //            //        if (writeMark)
-                    //            //        {
-                    //            //            sb.Append(", ");
-                    //            //        }
-                    //            //        else
-                    //            //        {
-                    //            //            sb.Append(" ");
-                    //            //            writeMark = true;
-                    //            //        }
-                    //            //        sb.Append(((int)b).ToString());
-                    //            //    }
-                    //            //    sb.Append("};");
-                    //            //    byte[] data = System.Text.Encoding.UTF8.GetBytes(sb.ToString());
-                    //            //    fs.Write(data, 0, data.Length);
-                    //            //}
-                    //            #endregion
-                    //        }
-                    //        catch (Exception)
-                    //        {
-                    //            throw new SecurityException("License file is not valid.");
-                    //        }
-                    //    }
-                    //    else
-                    //    {
-                    //        throw new SecurityException(string.Format("License file not found: '{0}'.", localPath));
-                    //    }
-
-                    //    #endregion
-                    //}
                     {
-                        string appIdValue = ApplicationHelper.ApplicationId;
                         if (debug)
                         {
                             APPLICATION_ID = DateTime.Now.Millisecond.ToString();
                         }
                         else
                         {
-                            APPLICATION_ID = appIdValue.Trim();
+                            APPLICATION_ID = mConfiguration.Settings.ApplicationId;
                         }
 
                         bool isMutexNew = false;
                         mMutex = new Mutex(true, string.Format("TerraGraf_{0}", APPLICATION_ID), out isMutexNew);
                         if (!isMutexNew)
                         {
-                            throw new InitializationException(string.Format("An other application with this id is running: '{0}'", appIdValue));
+                            throw new InitializationException(string.Format("An other application with this id is running: '{0}'", APPLICATION_ID));
                         }
                     }
 
+#if IS_WINDOWS
+                    if (mConfiguration.Settings.AddWindowsFirewallException)
                     {
-                        int workerThreads = 0;
-                        int completionPortThreads = 0;
-                        ThreadPool.GetMaxThreads(out workerThreads, out completionPortThreads);
-                        if (workerThreads < Environment.ProcessorCount * 25)
-                        {
-                            workerThreads = Environment.ProcessorCount * 25;
-                            completionPortThreads = workerThreads;
-                            ThreadPool.SetMaxThreads(workerThreads, completionPortThreads);
-                        }
-
-                        ThreadPool.GetMinThreads(out workerThreads, out completionPortThreads);
-                        if (workerThreads < Environment.ProcessorCount * 25)
-                        {
-                            workerThreads = Environment.ProcessorCount * 25;
-                            completionPortThreads = workerThreads;
-                            ThreadPool.SetMinThreads(workerThreads, completionPortThreads);
-                        }
-                    }
-
-                    this.mConfiguration = new ConfigContainer(); // ez jól elhasalhat, ha szar a config.
-                    this.mConfiguration.Initialize();
-
-                    if (this.mConfiguration.Settings.AddWindowsFirewallException)
-                    {
-#if NETCOREAPP3_1_OR_GREATER
-#else
-
                         try
                         {
-                            string appFile = string.Empty;
-                            if (Assembly.GetEntryAssembly() == null)
-                            {
-                                appFile = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, AppDomain.CurrentDomain.SetupInformation.ApplicationName);
-                            }
-                            else
-                            {
-                                appFile = new Uri(Assembly.GetEntryAssembly().CodeBase).AbsolutePath;
-                            }
-                            appFile = appFile.Replace('/', '\\');
+                            string appFile = Configuration.Settings.ApplicationPathWithName;
                             if (appFile.ToLower().EndsWith(".exe"))
                             {
                                 if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK, add exception to Windows Firewall: {0}", appFile));
@@ -1382,66 +1395,74 @@ namespace Forge.Net.TerraGraf
                                     FileInfo fi = new FileInfo(appFile);
                                     if (!manager.IsApplicationEnabled(appFile.ToLower()))
                                     {
-                                        manager.AddApplication(appFile.ToLower(), AppDomain.CurrentDomain.SetupInformation.ApplicationName);
+                                        manager.AddApplication(appFile.ToLower(), Configuration.Settings.ApplicationName);
                                     }
                                 }
+                            }
+                            else
+                            {
+                                if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK, failed to add exception to the Windows Firewall. Configuration.Settings.ApplicationPath: '{0}' is not an executable file.", Configuration.Settings.ApplicationPathWithName));
                             }
                         }
                         catch (Exception ex)
                         {
                             if (LOGGER.IsErrorEnabled) LOGGER.Error("NETWORK, failed to add exception to the Windows Firewall.", ex);
                         }
-#endif
                     }
+#endif
 
-                    this.mKnownNetworkContexts = new List<NetworkContext>();
-                    this.mNetworkContextRuleManager = new NetworkContextRuleManager();
+                    mKnownNetworkContexts = new List<NetworkContext>();
+                    mNetworkContextRuleManager = new NetworkContextRuleManager();
 
                     // localhost and network context init
-                    this.mLocalHost = new NetworkPeerLocal();
-                    this.mLocalHost.Id = string.Format("{0}_{1}_{2}", APPLICATION_ID, mConfiguration.NetworkContext.Name, System.Net.Dns.GetHostName().Trim());
-                    this.mLocalHost.HostName = System.Net.Dns.GetHostName();
-                    this.mLocalHost.BlackHoleContainer.IsBlackHole = mConfiguration.Settings.BlackHole;
-                    this.mLocalHost.BlackHoleContainer.StateId = DateTime.UtcNow.Ticks;
-                    this.mLocalHost.NATGatewayCollection.StateId = DateTime.UtcNow.Ticks;
+                    mLocalHost = new NetworkPeerLocal();
+                    mLocalHost.Id = string.Format("{0}_{1}_{2}", APPLICATION_ID, mConfiguration.NetworkContext.Name, System.Net.Dns.GetHostName().Trim());
+                    mLocalHost.HostName = System.Net.Dns.GetHostName();
+                    mLocalHost.BlackHoleContainer.IsBlackHole = mConfiguration.Settings.BlackHole;
+                    mLocalHost.BlackHoleContainer.StateId = DateTime.UtcNow.Ticks;
+                    mLocalHost.NATGatewayCollection.StateId = DateTime.UtcNow.Ticks;
                     foreach (AddressEndPoint ep in mConfiguration.NetworkPeering.NATGateways.EndPoints)
                     {
-                        this.mLocalHost.NATGatewayCollection.NATGateways.Add(new NATGateway(ep));
+                        mLocalHost.NATGatewayCollection.NATGateways.Add(new NATGateway(ep));
                     }
-                    this.mLocalHost.NetworkContext = NetworkContext.CreateNetworkContext(mConfiguration.NetworkContext.Name);
+                    mLocalHost.NetworkContext = NetworkContext.CreateNetworkContext(mConfiguration.NetworkContext.Name);
                     //this.mLocalHost.NetworkContext.InternalNetworkPeers.Add(this.mLocalHost); // nem kell lockolni a listát
-                    this.mLocalHost.PeerType = PeerTypeEnum.Local;
-                    this.mLocalHost.TCPServerCollection.StateId = DateTime.UtcNow.Ticks;
-                    this.mLocalHost.Initialize();
-                    this.mLocalHost.Version = typeof(NetworkManager).Assembly.GetName().Version;
-                    this.mLocalHost.Session = new NetworkPeerSession(this.mLocalHost);
+                    mLocalHost.PeerType = PeerTypeEnum.Local;
+                    mLocalHost.TCPServerCollection.StateId = DateTime.UtcNow.Ticks;
+                    mLocalHost.Initialize();
+                    mLocalHost.Version = typeof(NetworkManager).Assembly.GetName().Version;
+                    mLocalHost.Session = new NetworkPeerSession(mLocalHost);
 
                     // ezt ki kell tölteni, amikor indítom a szervereket!
                     //this.mLocalHost.TCPServers.Servers;
 
-                    this.mNetworkManager = new Synapse.NetworkManager();
-                    this.mNetworkManager.NetworkPeerConnected += new EventHandler<ConnectionEventArgs>(NetworkManager_NetworkPeerConnectedOnServer);
-                    this.mNetworkManager.SocketKeepAliveTime = mConfiguration.Settings.DefaultLowLevelSocketKeepAliveTime;
-                    this.mNetworkManager.SocketKeepAliveTimeInterval = mConfiguration.Settings.DefaultLowLevelSocketKeepAliveTimeInterval;
+                    if (mNetworkManager != null)
+                    {
+                        mNetworkManager = new Synapse.NetworkManager();
+                        mNetworkManager.NetworkPeerConnected += new EventHandler<ConnectionEventArgs>(NetworkManager_NetworkPeerConnectedOnServer);
+                        mNetworkManager.SocketKeepAliveTime = mConfiguration.Settings.DefaultLowLevelSocketKeepAliveTime;
+                        mNetworkManager.SocketKeepAliveTimeInterval = mConfiguration.Settings.DefaultLowLevelSocketKeepAliveTimeInterval;
+                    }
 
-                    this.mConnectionManager = new ConnectionManager();
+                    mConnectionManager = new ConnectionManager();
 
                     if (LOGGER.IsInfoEnabled) LOGGER.Info(string.Format("NETWORK, localhost id: [{0}], network context name: [{1}].", mLocalHost.Id, mLocalHost.NetworkContext.Name));
 
-                    this.ManagerState = ManagerStateEnum.Started;
+                    ManagerState = ManagerStateEnum.Started;
 
-                    //ezután szabad indítani a hálózatot
-                    this.mConnectionManager.InitializeTCPServers();
-#if NETCOREAPP3_1_OR_GREATER
-#else
-                    this.mConnectionManager.InitializeNATUPnPService();
+                    // ezután szabad indítani a hálózatot
+                    mConnectionManager.InitializeTCPServers();
+#if IS_WINDOWS
+                    mConnectionManager.InitializeNATUPnPService();
 #endif
-                    this.mConnectionManager.InitializeTCPConnections();
-                    this.mConnectionManager.InitializeUDPDetector();
+                    mConnectionManager.InitializeTCPConnections();
+                    mConnectionManager.InitializeUDPDetector();
+
+                    mInitialized = true;
                 }
                 catch (Exception)
                 {
-                    this.ManagerState = ManagerStateEnum.Fault;
+                    ManagerState = ManagerStateEnum.Fault;
                     throw;
                 }
                 finally
@@ -2443,7 +2464,7 @@ namespace Forge.Net.TerraGraf
                     }
                 }
             }
-            if (this.mActiveNetworkConnections.Count > 0)
+            if (mActiveNetworkConnections.Count > 0)
             {
                 HashSet<NetworkPeerRemote> neighbors = new HashSet<NetworkPeerRemote>();
                 foreach (NetworkConnection c in mActiveNetworkConnections)
@@ -2984,7 +3005,7 @@ namespace Forge.Net.TerraGraf
                     mLockMessageProcessor.Unlock();
                 }
                 // értesítem a csatlakozási manager-t, hogy leszakadt egy hálózati kapcsolat
-                this.mConnectionManager.NetworkConnection_Disconnect(connection.NetworkStream);
+                mConnectionManager.NetworkConnection_Disconnect(connection.NetworkStream);
             }
             else
             {
@@ -3100,16 +3121,16 @@ namespace Forge.Net.TerraGraf
 
         private void CloseAsyncActiveConnectEvent(int asyncActiveCount)
         {
-            if ((this.mAsyncActiveConnectEvent != null) && (asyncActiveCount == 0))
+            if ((mAsyncActiveConnectEvent != null) && (asyncActiveCount == 0))
             {
-                this.mAsyncActiveConnectEvent.Close();
-                this.mAsyncActiveConnectEvent = null;
+                mAsyncActiveConnectEvent.Close();
+                mAsyncActiveConnectEvent = null;
             }
         }
 
-        private void InternalConnectAsyncEnd(IAsyncResult result)
+        private void InternalConnectAsyncEnd(ITaskResult result)
         {
-            NetworkManagerInternalConnectDelegate d = (NetworkManagerInternalConnectDelegate)result.AsyncState;
+            System.Func<NetworkPeerRemote, bool, bool, bool> d = (System.Func<NetworkPeerRemote, bool, bool, bool>)result.AsyncState;
             d.EndInvoke(result);
         }
 

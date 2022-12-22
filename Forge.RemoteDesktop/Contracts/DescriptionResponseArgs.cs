@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Shared;
 using System;
 using System.Drawing;
 
@@ -41,10 +42,10 @@ namespace Forge.RemoteDesktop.Contracts
                 ThrowHelper.ThrowArgumentNullException("cursors");
             }
 
-            this.DesktopSize = desktopSize;
-            this.ClipSize = clipSize;
-            this.Cursors = cursors;
-            this.AcceptKeyboardAndMouseInputs = acceptKeyboardAndMouseInputs;
+            DesktopSize = desktopSize;
+            ClipSize = clipSize;
+            Cursors = cursors;
+            AcceptKeyboardAndMouseInputs = acceptKeyboardAndMouseInputs;
         }
 
         #endregion

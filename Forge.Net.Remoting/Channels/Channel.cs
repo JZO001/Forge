@@ -8,18 +8,25 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using Forge.Collections;
 using Forge.Configuration;
 using Forge.Configuration.Shared;
-using Forge.EventRaiser;
-using Forge.Logging;
+using Forge.Invoker;
+using Forge.Legacy;
+using Forge.Logging.Abstraction;
 using Forge.Net.Remoting.Messaging;
 using Forge.Net.Remoting.Sinks;
 using Forge.Net.Synapse;
 using Forge.Reflection;
+using Forge.Shared;
+using Forge.Threading;
+using Forge.Threading.Tasking;
 
 namespace Forge.Net.Remoting.Channels
 {
+
+#if NET40
 
     /// <summary>
     /// Represents channel connection restoration
@@ -34,17 +41,17 @@ namespace Forge.Net.Remoting.Channels
     /// <returns></returns>
     public delegate string ChannelConnectDelegate(AddressEndPoint remoteEp);
 
-    internal delegate void InternalReceiveRequestMessageDelegate(Channel channel, ReceiveMessageEventArgs e);
+#endif
 
     /// <summary>
     /// Channel base implementation
     /// </summary>
-    public abstract class Channel : MBRBase, IInitializable, IDisposable
+    public abstract class Channel : MBRBase, IChannel
     {
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(Channel));
+        private static readonly ILog LOGGER = LogManager.GetLogger<Channel>();
 
         /// <summary>
         /// Default method call timeout
@@ -55,7 +62,7 @@ namespace Forge.Net.Remoting.Channels
         /// Channel identifier
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        protected String mChannelId = Guid.NewGuid().ToString();
+        protected string mChannelId = Guid.NewGuid().ToString();
 
         /// <summary>
         /// Send message sinks
@@ -101,10 +108,14 @@ namespace Forge.Net.Remoting.Channels
 
         private readonly SerializedEventForSession mSerializedEvents = null;
 
+        private System.Func<string> mConnectDelegate = null;
+        private System.Func<AddressEndPoint, string> mConnectToDelegate = null;
         private int mAsyncActiveConnectCount = 0;
         private AutoResetEvent mAsyncActiveConnectEvent = null;
-        private ChannelConnectAgainDelegate mConnectAgainDelegate = null;
-        private ChannelConnectDelegate mConnectDelegate = null;
+#if NET40
+        private ChannelConnectAgainDelegate mConnectDelegateOld = null;
+        private ChannelConnectDelegate mConnectToDelegateOld = null;
+#endif
 
         private long mDefaultErrorResponseTimeout = 60000;
 
@@ -139,7 +150,7 @@ namespace Forge.Net.Remoting.Channels
         /// <param name="channelId">The channel unique id.</param>
         /// <param name="sendMessageSinks">The send message sinks.</param>
         /// <param name="receiveMessageSinks">The receive message sinks.</param>
-        protected Channel(String channelId, ICollection<IMessageSink> sendMessageSinks, ICollection<IMessageSink> receiveMessageSinks)
+        protected Channel(string channelId, ICollection<IMessageSink> sendMessageSinks, ICollection<IMessageSink> receiveMessageSinks)
             : this()
         {
             if (string.IsNullOrEmpty(channelId))
@@ -166,9 +177,9 @@ namespace Forge.Net.Remoting.Channels
             {
                 ThrowHelper.ThrowArgumentException(string.Format("An other channel instance with this id '{0}' has already registered.", channelId));
             }
-            this.mChannelId = channelId;
-            this.mSendMessageSinks.AddRange(sendMessageSinks);
-            this.mReceiveMessageSinks.AddRange(receiveMessageSinks);
+            mChannelId = channelId;
+            mSendMessageSinks.AddRange(sendMessageSinks);
+            mReceiveMessageSinks.AddRange(receiveMessageSinks);
         }
 
         /// <summary>
@@ -191,7 +202,7 @@ namespace Forge.Net.Remoting.Channels
         /// The channel id.
         /// </value>
         [DebuggerHidden]
-        public String ChannelId
+        public string ChannelId
         {
             get { return mChannelId; }
         }
@@ -299,7 +310,7 @@ namespace Forge.Net.Remoting.Channels
         /// Initializes the channel.
         /// </summary>
         /// <param name="pi">The pi.</param>
-        public virtual void Initialize(CategoryPropertyItem pi)
+        public virtual void Initialize(IPropertyItem pi)
         {
             DoDisposeCheck();
             if (pi == null)
@@ -309,36 +320,40 @@ namespace Forge.Net.Remoting.Channels
 
             if (!mInitialized)
             {
+                if (string.IsNullOrEmpty(pi.Id))
                 {
-                    this.mConnectionData = null;
-                    CategoryPropertyItem item = ConfigurationAccessHelper.GetCategoryPropertyByPath(pi.PropertyItems, "RemoteAddress");
+                    throw new InvalidConfigurationException("Channel id has not been definied.");
+                }
+                mChannelId = pi.Id;
+                {
+                    mConnectionData = null;
+                    IPropertyItem item = ConfigurationAccessHelper.GetPropertyByPath(pi, "RemoteAddress");
                     if (item != null)
                     {
-                        this.mConnectionData = AddressEndPoint.Parse(item.EntryValue);
+                        mConnectionData = AddressEndPoint.Parse(item.Value);
                     }
-                    if (item != null)
-                    {
-                        ConfigurationAccessHelper.ParseLongValue(pi.PropertyItems, "DefaultErrorResponseTimeout", Timeout.Infinite, long.MaxValue, ref mDefaultErrorResponseTimeout);
-                    }
+                    ConfigurationAccessHelper.ParseLongValue(pi, "DefaultErrorResponseTimeout", Timeout.Infinite, long.MaxValue, ref mDefaultErrorResponseTimeout);
                 }
                 {
                     mServerEndpoints.Clear();
-                    CategoryPropertyItem baseAddressesItems = ConfigurationAccessHelper.GetCategoryPropertyByPath(pi.PropertyItems, "BaseAddresses");
+                    IPropertyItem baseAddressesItems = ConfigurationAccessHelper.GetPropertyByPath(pi, "BaseAddresses");
                     if (baseAddressesItems != null)
                     {
-                        IEnumerator<CategoryPropertyItem> iterator = baseAddressesItems.GetEnumerator();
+                        IEnumerator<IPropertyItem> iterator = baseAddressesItems.Items.Values.GetEnumerator();
                         while (iterator.MoveNext())
                         {
-                            mServerEndpoints.Add(AddressEndPoint.Parse(iterator.Current.EntryValue));
+                            mServerEndpoints.Add(AddressEndPoint.Parse(iterator.Current.Value));
                         }
                     }
                 }
                 {
                     mSessionReusable = true;
-                    ConfigurationAccessHelper.ParseBooleanValue(pi.PropertyItems, "SessionReusable", ref mSessionReusable);
+                    ConfigurationAccessHelper.ParseBooleanValue(pi, "SessionReusable", ref mSessionReusable);
                 }
             }
         }
+
+#if NET40
 
         /// <summary>
         /// Begins the connect.
@@ -346,23 +361,210 @@ namespace Forge.Net.Remoting.Channels
         /// <param name="callback">The callback.</param>
         /// <param name="state">The state.</param>
         /// <returns>Async property</returns>
-        public virtual IAsyncResult BeginConnect(AsyncCallback callback, object state)
+        public IAsyncResult BeginConnect(AsyncCallback callback, object state)
         {
             Interlocked.Increment(ref mAsyncActiveConnectCount);
-            ChannelConnectAgainDelegate d = new ChannelConnectAgainDelegate(this.Connect);
-            if (this.mAsyncActiveConnectEvent == null)
+            ChannelConnectAgainDelegate d = new ChannelConnectAgainDelegate(Connect);
+            if (mAsyncActiveConnectEvent == null)
             {
                 lock (this)
                 {
-                    if (this.mAsyncActiveConnectEvent == null)
+                    if (mAsyncActiveConnectEvent == null)
                     {
-                        this.mAsyncActiveConnectEvent = new AutoResetEvent(true);
+                        mAsyncActiveConnectEvent = new AutoResetEvent(true);
                     }
                 }
             }
-            this.mAsyncActiveConnectEvent.WaitOne();
-            this.mConnectAgainDelegate = d;
+            mAsyncActiveConnectEvent.WaitOne();
+            mConnectDelegateOld = d;
             return d.BeginInvoke(callback, state);
+        }
+
+        /// <summary>
+        /// Begins the connect.
+        /// </summary>
+        /// <param name="remoteEp">The remote ep.</param>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        public IAsyncResult BeginConnectTo(AddressEndPoint remoteEp, AsyncCallback callback, object state)
+        {
+            Interlocked.Increment(ref mAsyncActiveConnectCount);
+            ChannelConnectDelegate d = new ChannelConnectDelegate(ConnectTo);
+            if (mAsyncActiveConnectEvent == null)
+            {
+                lock (this)
+                {
+                    if (mAsyncActiveConnectEvent == null)
+                    {
+                        mAsyncActiveConnectEvent = new AutoResetEvent(true);
+                    }
+                }
+            }
+            mAsyncActiveConnectEvent.WaitOne();
+            mConnectToDelegateOld = d;
+            return d.BeginInvoke(remoteEp, callback, state);
+        }
+
+        /// <summary>
+        /// Ends the connect.
+        /// </summary>
+        /// <param name="asyncResult">The async result.</param>
+        /// <returns>SessionId</returns>
+        public string EndConnect(IAsyncResult asyncResult)
+        {
+            if (asyncResult == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("asyncResult");
+            }
+            if (mConnectDelegateOld == null)
+            {
+                ThrowHelper.ThrowArgumentException("Wrong async result or EndConnect called multiple times.", "asyncResult");
+            }
+            try
+            {
+                return mConnectDelegateOld.EndInvoke(asyncResult);
+            }
+            finally
+            {
+                mConnectDelegateOld = null;
+                mAsyncActiveConnectEvent.Set();
+                CloseAsyncActiveConnectEvent(Interlocked.Decrement(ref mAsyncActiveConnectCount));
+            }
+        }
+
+        /// <summary>
+        /// Ends the connect.
+        /// </summary>
+        /// <param name="asyncResult">The async result.</param>
+        /// <returns>SessionId</returns>
+        public string EndConnectTo(IAsyncResult asyncResult)
+        {
+            if (asyncResult == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("asyncResult");
+            }
+            if (mConnectToDelegateOld == null)
+            {
+                ThrowHelper.ThrowArgumentException("Wrong async result or EndConnectTo called multiple times.", "asyncResult");
+            }
+            try
+            {
+                return mConnectToDelegateOld.EndInvoke(asyncResult);
+            }
+            finally
+            {
+                mConnectToDelegateOld = null;
+                mAsyncActiveConnectEvent.Set();
+                CloseAsyncActiveConnectEvent(Interlocked.Decrement(ref mAsyncActiveConnectCount));
+            }
+        }
+
+#endif
+
+        /// <summary>
+        /// Begins the connect.
+        /// </summary>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        public ITaskResult BeginConnect(ReturnCallback callback, object state)
+        {
+            Interlocked.Increment(ref mAsyncActiveConnectCount);
+            System.Func<string> d = new System.Func<string>(Connect);
+            if (mAsyncActiveConnectEvent == null)
+            {
+                lock (this)
+                {
+                    if (mAsyncActiveConnectEvent == null)
+                    {
+                        mAsyncActiveConnectEvent = new AutoResetEvent(true);
+                    }
+                }
+            }
+            mAsyncActiveConnectEvent.WaitOne();
+            mConnectDelegate = d;
+            return d.BeginInvoke(callback, state);
+        }
+
+        /// <summary>
+        /// Begins the connect.
+        /// </summary>
+        /// <param name="remoteEp">The remote ep.</param>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        public ITaskResult BeginConnectTo(AddressEndPoint remoteEp, ReturnCallback callback, object state)
+        {
+            Interlocked.Increment(ref mAsyncActiveConnectCount);
+            System.Func<AddressEndPoint, string> d = new System.Func<AddressEndPoint, string>(ConnectTo);
+            if (mAsyncActiveConnectEvent == null)
+            {
+                lock (this)
+                {
+                    if (mAsyncActiveConnectEvent == null)
+                    {
+                        mAsyncActiveConnectEvent = new AutoResetEvent(true);
+                    }
+                }
+            }
+            mAsyncActiveConnectEvent.WaitOne();
+            mConnectToDelegate = d;
+            return d.BeginInvoke(remoteEp, callback, state);
+        }
+
+        /// <summary>
+        /// Ends the connect.
+        /// </summary>
+        /// <param name="asyncResult">The async result.</param>
+        /// <returns>SessionId</returns>
+        public string EndConnect(ITaskResult asyncResult)
+        {
+            if (asyncResult == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("asyncResult");
+            }
+            if (mConnectDelegate == null)
+            {
+                ThrowHelper.ThrowArgumentException("Wrong async result or EndConnect called multiple times.", "asyncResult");
+            }
+            try
+            {
+                return mConnectDelegate.EndInvoke(asyncResult);
+            }
+            finally
+            {
+                mConnectDelegate = null;
+                mAsyncActiveConnectEvent.Set();
+                CloseAsyncActiveConnectEvent(Interlocked.Decrement(ref mAsyncActiveConnectCount));
+            }
+        }
+
+        /// <summary>
+        /// Ends the connect.
+        /// </summary>
+        /// <param name="asyncResult">The async result.</param>
+        /// <returns>SessionId</returns>
+        public string EndConnectTo(ITaskResult asyncResult)
+        {
+            if (asyncResult == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("asyncResult");
+            }
+            if (mConnectToDelegate == null)
+            {
+                ThrowHelper.ThrowArgumentException("Wrong async result or EndConnectTo called multiple times.", "asyncResult");
+            }
+            try
+            {
+                return mConnectToDelegate.EndInvoke(asyncResult);
+            }
+            finally
+            {
+                mConnectToDelegate = null;
+                mAsyncActiveConnectEvent.Set();
+                CloseAsyncActiveConnectEvent(Interlocked.Decrement(ref mAsyncActiveConnectCount));
+            }
         }
 
         /// <summary>
@@ -372,99 +574,31 @@ namespace Forge.Net.Remoting.Channels
         public abstract string Connect();
 
         /// <summary>
-        /// Begins the connect.
-        /// </summary>
-        /// <param name="remoteEp">The remote ep.</param>
-        /// <param name="callback">The callback.</param>
-        /// <param name="state">The state.</param>
-        /// <returns>Async property</returns>
-        public virtual IAsyncResult BeginConnect(AddressEndPoint remoteEp, AsyncCallback callback, object state)
-        {
-            Interlocked.Increment(ref mAsyncActiveConnectCount);
-            ChannelConnectDelegate d = new ChannelConnectDelegate(this.Connect);
-            if (this.mAsyncActiveConnectEvent == null)
-            {
-                lock (this)
-                {
-                    if (this.mAsyncActiveConnectEvent == null)
-                    {
-                        this.mAsyncActiveConnectEvent = new AutoResetEvent(true);
-                    }
-                }
-            }
-            this.mAsyncActiveConnectEvent.WaitOne();
-            this.mConnectDelegate = d;
-            return d.BeginInvoke(remoteEp, callback, state);
-        }
-
-        /// <summary>
-        /// Connects the specified remote ep.
+        /// Connects to the specified remote ep.
         /// </summary>
         /// <param name="remoteEp">The remote ep.</param>
         /// <returns></returns>
-        public abstract string Connect(AddressEndPoint remoteEp);
-
-        /// <summary>
-        /// Ends the connect.
-        /// </summary>
-        /// <param name="asyncResult">The async result.</param>
-        /// <returns>SessionId</returns>
-        public virtual string EndConnect(IAsyncResult asyncResult)
-        {
-            if (asyncResult == null)
-            {
-                ThrowHelper.ThrowArgumentNullException("asyncResult");
-            }
-            if (this.mConnectAgainDelegate == null)
-            {
-                ThrowHelper.ThrowArgumentException("Wrong async result or EndConnect called multiple times.", "asyncResult");
-            }
-            try
-            {
-                return this.mConnectAgainDelegate.EndInvoke(asyncResult);
-            }
-            finally
-            {
-                this.mConnectAgainDelegate = null;
-                this.mAsyncActiveConnectEvent.Set();
-                CloseAsyncActiveConnectEvent(Interlocked.Decrement(ref mAsyncActiveConnectCount));
-            }
-        }
-
-        /// <summary>
-        /// Ends the connect.
-        /// </summary>
-        /// <param name="asyncResult">The async result.</param>
-        /// <param name="remoteEp">The remote ep.</param>
-        /// <returns>SessionId</returns>
-        public virtual string EndConnect(IAsyncResult asyncResult, AddressEndPoint remoteEp)
-        {
-            if (asyncResult == null)
-            {
-                ThrowHelper.ThrowArgumentNullException("asyncResult");
-            }
-            if (this.mConnectDelegate == null)
-            {
-                ThrowHelper.ThrowArgumentException("Wrong async result or EndConnect called multiple times.", "asyncResult");
-            }
-            try
-            {
-                return this.mConnectDelegate.EndInvoke(asyncResult);
-            }
-            finally
-            {
-                this.mConnectDelegate = null;
-                this.mAsyncActiveConnectEvent.Set();
-                CloseAsyncActiveConnectEvent(Interlocked.Decrement(ref mAsyncActiveConnectCount));
-            }
-        }
+        public abstract string ConnectTo(AddressEndPoint remoteEp);
 
         /// <summary>
         /// Disconnects the specified session id.
         /// </summary>
         /// <param name="sessionId">The session id.</param>
         /// <returns>True, if the connection found and closed, otherwise False.</returns>
-        public abstract bool Disconnect(String sessionId);
+        public abstract bool Disconnect(string sessionId);
+
+#if NETCOREAPP3_1_OR_GREATER
+        /// <summary>
+        /// Sends the message.
+        /// </summary>
+        /// <param name="sessionId">The session id.</param>
+        /// <param name="message">The message.</param>
+        /// <returns>Response message or null</returns>
+        public async Task<IMessage> SendMessageAsync(string sessionId, IMessage message)
+        {
+            return await Task.Run(() => SendMessage(sessionId, message, DEFAULT_TIMEOUT));
+        }
+#endif
 
         /// <summary>
         /// Sends the message.
@@ -476,6 +610,20 @@ namespace Forge.Net.Remoting.Channels
         {
             return SendMessage(sessionId, message, DEFAULT_TIMEOUT);
         }
+
+#if NETCOREAPP3_1_OR_GREATER
+        /// <summary>
+        /// Sends the message.
+        /// </summary>
+        /// <param name="sessionId">The session id.</param>
+        /// <param name="message">The message.</param>
+        /// <param name="timeout">The timeout.</param>
+        /// <returns>Response message or null</returns>
+        public async Task<IMessage> SendMessageAsync(string sessionId, IMessage message, long timeout)
+        {
+            return await Task.Run(() => SendMessage(sessionId, message, timeout));
+        }
+#endif
 
         /// <summary>
         /// Sends the message.
@@ -533,6 +681,12 @@ namespace Forge.Net.Remoting.Channels
         /// <returns></returns>
         public abstract ISessionInfo GetSessionInfo(string sessionId);
 
+        /// <summary>Determines whether the specified session identifier is connected.</summary>
+        /// <param name="sessionId">The session identifier.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified session identifier is connected; otherwise, <c>false</c>.</returns>
+        public abstract bool IsConnected(string sessionId);
+
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
@@ -582,7 +736,7 @@ namespace Forge.Net.Remoting.Channels
         /// <param name="e">The <see cref="Forge.Net.Remoting.Channels.SessionStateEventArgs"/> instance containing the event data.</param>
         protected void OnSessionStateChange(SessionStateEventArgs e)
         {
-            Raiser.CallDelegatorBySync(SessionStateChange, new object[] { this, e });
+            Executor.Invoke(SessionStateChange, this, e);
         }
 
         /// <summary>
@@ -590,7 +744,7 @@ namespace Forge.Net.Remoting.Channels
         /// </summary>
         /// <param name="sessionId">The session id.</param>
         /// <param name="message">The message.</param>
-        protected void OnReceiveRequestMessage(String sessionId, IMessage message)
+        protected void OnReceiveRequestMessage(string sessionId, IMessage message)
         {
             mSerializedEvents.AddMessage(sessionId, message);
         }
@@ -602,9 +756,9 @@ namespace Forge.Net.Remoting.Channels
         /// <param name="e">The <see cref="Forge.Net.Remoting.Channels.ReceiveMessageEventArgs"/> instance containing the event data.</param>
         protected void InternalOnReceiveRequestMessage(Channel channel, ReceiveMessageEventArgs e)
         {
-            if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("{0}-Event, raise event ReceiveMessage (BEGIN). SessionId: '{1}', {2}", this.GetType().Name, e.SessionId, e.Message.ToString()));
-            Raiser.CallDelegatorBySync(ReceiveMessage, new object[] { channel, e });
-            if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("{0}-Event, raise event ReceiveMessage (END). SessionId: '{1}', {2}", this.GetType().Name, e.SessionId, e.Message.ToString()));
+            if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("{0}-Event, raise event ReceiveMessage (BEGIN). SessionId: '{1}', {2}", GetType().Name, e.SessionId, e.Message.ToString()));
+            Executor.Invoke(ReceiveMessage, channel, e);
+            if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("{0}-Event, raise event ReceiveMessage (END). SessionId: '{1}', {2}", GetType().Name, e.SessionId, e.Message.ToString()));
         }
 
         /// <summary>
@@ -612,9 +766,9 @@ namespace Forge.Net.Remoting.Channels
         /// </summary>
         /// <param name="pi">The pi.</param>
         /// <returns></returns>
-        protected IMessageSink CreateMessageSink(CategoryPropertyItem pi)
+        protected IMessageSink CreateMessageSink(IPropertyItem pi)
         {
-            if (string.IsNullOrEmpty(pi.EntryValue))
+            if (string.IsNullOrEmpty(pi.Value))
             {
                 throw new InvalidConfigurationException("No message sink class definied in a message sink configuration entry.");
             }
@@ -622,14 +776,14 @@ namespace Forge.Net.Remoting.Channels
             IMessageSink result = null;
             try
             {
-                if (LOGGER.IsInfoEnabled) LOGGER.Info(string.Format("Channel, create message sink from type '{0}'. ChannelId: '{1}'.", pi.EntryValue, this.ChannelId));
-                Type type = TypeHelper.GetTypeFromString(pi.EntryValue);
+                if (LOGGER.IsInfoEnabled) LOGGER.Info(string.Format("Channel, create message sink from type '{0}'. ChannelId: '{1}'.", pi.Value, ChannelId));
+                Type type = TypeHelper.GetTypeFromString(pi.Value);
                 result = (IMessageSink)type.GetConstructor(new Type[] { }).Invoke(null);
                 result.Initialize(pi);
             }
             catch (Exception ex)
             {
-                throw new InvalidConfigurationException(String.Format("Unable to instantiate message sink '{0}' specified in configuration.", pi.EntryValue), ex);
+                throw new InvalidConfigurationException(string.Format("Unable to instantiate message sink '{0}' specified in configuration.", pi.Value), ex);
             }
             return result;
         }
@@ -639,9 +793,9 @@ namespace Forge.Net.Remoting.Channels
         /// </summary>
         protected void DoDisposeCheck()
         {
-            if (this.mDisposed)
+            if (mDisposed)
             {
-                throw new ObjectDisposedException(this.GetType().FullName);
+                throw new ObjectDisposedException(GetType().FullName);
             }
         }
 
@@ -653,12 +807,12 @@ namespace Forge.Net.Remoting.Channels
         {
             if (disposing)
             {
-                this.mSendMessageSinks.ForEach(i => i.Dispose());
-                this.mReceiveMessageSinks.ForEach(i => i.Dispose());
-                this.mSendMessageSinks.Clear();
-                this.mReceiveMessageSinks.Clear();
+                mSendMessageSinks.ForEach(i => i.Dispose());
+                mReceiveMessageSinks.ForEach(i => i.Dispose());
+                mSendMessageSinks.Clear();
+                mReceiveMessageSinks.Clear();
             }
-            this.mDisposed = true;
+            mDisposed = true;
         }
 
         #endregion
@@ -667,10 +821,10 @@ namespace Forge.Net.Remoting.Channels
 
         private void CloseAsyncActiveConnectEvent(int asyncActiveCount)
         {
-            if ((this.mAsyncActiveConnectEvent != null) && (asyncActiveCount == 0))
+            if ((mAsyncActiveConnectEvent != null) && (asyncActiveCount == 0))
             {
-                this.mAsyncActiveConnectEvent.Close();
-                this.mAsyncActiveConnectEvent = null;
+                mAsyncActiveConnectEvent.Close();
+                mAsyncActiveConnectEvent = null;
             }
         }
 
@@ -699,7 +853,7 @@ namespace Forge.Net.Remoting.Channels
             /// <param name="channel">The channel.</param>
             internal SerializedEventForSession(Channel channel)
             {
-                this.mChannel = channel;
+                mChannel = channel;
             }
 
             #endregion
@@ -762,7 +916,7 @@ namespace Forge.Net.Remoting.Channels
 
             private readonly SerializedEventForSession mContainer = null;
 
-            private String mSessionId = string.Empty;
+            private readonly string mSessionId = string.Empty;
 
             private readonly ManualResetEvent mResetEvent = new ManualResetEvent(false);
 
@@ -781,14 +935,14 @@ namespace Forge.Net.Remoting.Channels
             /// </summary>
             /// <param name="container">The container.</param>
             /// <param name="sessionId">The session id.</param>
-            internal EventContainer(SerializedEventForSession container, String sessionId)
+            internal EventContainer(SerializedEventForSession container, string sessionId)
             {
-                this.mContainer = container;
-                this.mSessionId = sessionId;
-                this.mThread = new Thread(new ThreadStart(ThreadMain));
-                this.mThread.IsBackground = true;
-                this.mThread.Name = String.Format("ChannelEvent_{0}", sessionId);
-                this.mThread.Start();
+                mContainer = container;
+                mSessionId = sessionId;
+                mThread = new Thread(new ThreadStart(ThreadMain));
+                mThread.IsBackground = true;
+                mThread.Name = string.Format("ChannelEvent_{0}", sessionId);
+                mThread.Start();
             }
 
             #endregion
@@ -804,8 +958,8 @@ namespace Forge.Net.Remoting.Channels
                 if (message.AllowParallelExecution)
                 {
                     if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("TCPChannel-Receive, forwarding message in parallel mode. {0}", message.ToString()));
-                    InternalReceiveRequestMessageDelegate d = new InternalReceiveRequestMessageDelegate(mContainer.Channel.InternalOnReceiveRequestMessage);
-                    d.BeginInvoke(mContainer.Channel, new ReceiveMessageEventArgs(mSessionId, message), new AsyncCallback(CallBack), d);
+                    System.Action<Channel, ReceiveMessageEventArgs> d = new System.Action<Channel, ReceiveMessageEventArgs>(mContainer.Channel.InternalOnReceiveRequestMessage);
+                    d.BeginInvoke(mContainer.Channel, new ReceiveMessageEventArgs(mSessionId, message), new ReturnCallback(CallBack), d);
                 }
                 else
                 {
@@ -819,9 +973,9 @@ namespace Forge.Net.Remoting.Channels
 
             #region Private method(s)
 
-            private void CallBack(IAsyncResult asyncResult)
+            private void CallBack(ITaskResult asyncResult)
             {
-                InternalReceiveRequestMessageDelegate d = asyncResult.AsyncState as InternalReceiveRequestMessageDelegate;
+                System.Action<Channel, ReceiveMessageEventArgs> d = asyncResult.AsyncState as System.Action<Channel, ReceiveMessageEventArgs>;
                 d.EndInvoke(asyncResult);
             }
 
@@ -840,9 +994,9 @@ namespace Forge.Net.Remoting.Channels
                         else
                         {
                             mDisposed = true;
-                            mContainer.Containers.Remove(this.mSessionId);
+                            mContainer.Containers.Remove(mSessionId);
                             mResetEvent.Dispose();
-                            if (LOGGER.IsDebugEnabled) LOGGER.Debug(String.Format("EVENT_CONTAINER, auto-shutdown for connection event handler, sessionId: '{0}'.", this.mSessionId));
+                            if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("EVENT_CONTAINER, auto-shutdown for connection event handler, sessionId: '{0}'.", mSessionId));
                         }
                     }
                     if (message != null)

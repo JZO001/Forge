@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Shared;
 using System;
 
 namespace Forge.RemoteDesktop.Contracts
@@ -27,7 +28,7 @@ namespace Forge.RemoteDesktop.Contracts
                 ThrowHelper.ThrowArgumentOutOfRangeException("qualityPercent");
             }
 
-            this.QualityPercent = qualityPercent;
+            QualityPercent = qualityPercent;
         }
 
         /// <summary>

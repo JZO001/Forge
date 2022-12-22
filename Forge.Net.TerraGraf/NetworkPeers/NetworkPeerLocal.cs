@@ -35,7 +35,7 @@ namespace Forge.Net.TerraGraf.NetworkPeers
         /// </summary>
         internal NetworkPeerLocal()
         {
-            this.PeerType = PeerTypeEnum.Local;
+            PeerType = PeerTypeEnum.Local;
         }
 
         #endregion

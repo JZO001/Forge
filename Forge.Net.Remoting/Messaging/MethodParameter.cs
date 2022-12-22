@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Shared;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -49,21 +50,21 @@ namespace Forge.Net.Remoting.Messaging
         /// <param name="id">The id.</param>
         /// <param name="className">Name of the class.</param>
         /// <param name="value">The value.</param>
-        public MethodParameter(int id, String className, Object value)
+        public MethodParameter(int id, string className, object value)
         {
             if (string.IsNullOrEmpty(className))
             {
                 ThrowHelper.ThrowArgumentNullException("className");
             }
-            this.mId = id;
-            this.mClassName = className;
-            this.mValue = value;
+            mId = id;
+            mClassName = className;
+            mValue = value;
             if (value != null && (value as Stream) != null)
             {
                 try
                 {
                     Stream stream = (Stream)value;
-                    this.mSize = Convert.ToInt32(stream.Length - stream.Position);
+                    mSize = Convert.ToInt32(stream.Length - stream.Position);
                 }
                 catch (Exception ex)
                 {
@@ -133,7 +134,7 @@ namespace Forge.Net.Remoting.Messaging
         /// </summary>
         public void SetValueToNull()
         {
-            this.mValue = null;
+            mValue = null;
         }
 
         /// <summary>
@@ -143,11 +144,11 @@ namespace Forge.Net.Remoting.Messaging
         /// <exception cref="System.ArgumentException">Stream parameter not allowed. Original value was not a stream.;stream</exception>
         public void SetValueToStream(Stream stream)
         {
-            if (this.mSize < 0)
+            if (mSize < 0)
             {
                 throw new ArgumentException("Stream parameter not allowed. Original value was not a stream.", "stream");
             }
-            this.mValue = stream;
+            mValue = stream;
         }
 
         /// <summary>

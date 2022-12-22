@@ -8,6 +8,7 @@ using System;
 using System.Diagnostics;
 using System.Runtime.Serialization;
 using Forge.ORM.NHibernateExtension.Model;
+using Forge.Shared;
 using NHibernate.Criterion;
 
 namespace Forge.ORM.NHibernateExtension.Criterias
@@ -75,8 +76,8 @@ namespace Forge.ORM.NHibernateExtension.Criterias
             {
                 ThrowHelper.ThrowArgumentNullException("criterias");
             }
-            this.mLogic = logic;
-            this.Criterias = criterias;
+            mLogic = logic;
+            Criterias = criterias;
         }
 
         #endregion
@@ -117,7 +118,7 @@ namespace Forge.ORM.NHibernateExtension.Criterias
                 {
                     ThrowHelper.ThrowArgumentNullException("value");
                 }
-                this.mCriterias = value;
+                mCriterias = value;
                 Reset();
                 foreach (Criteria c in value)
                 {
@@ -137,7 +138,7 @@ namespace Forge.ORM.NHibernateExtension.Criterias
             get { return mLogic; }
             set
             {
-                this.mLogic = value;
+                mLogic = value;
                 Reset();
             }
         }
@@ -163,8 +164,8 @@ namespace Forge.ORM.NHibernateExtension.Criterias
             {
                 result = false;
             }
-            // rövidzár kiértékelések
-            foreach (Criteria c in this.Criterias)
+            // shortcuts calculations
+            foreach (Criteria c in Criterias)
             {
                 if (Logic == GroupCriteriaLogicEnum.And)
                 {
@@ -204,9 +205,9 @@ namespace Forge.ORM.NHibernateExtension.Criterias
                 ThrowHelper.ThrowArgumentNullException("criteria");
             }
 
-            if (this.Criterias.Length == 1)
+            if (Criterias.Length == 1)
             {
-                this.Criterias[0].BuildCriteria(criteria, dependencyCriterion);
+                Criterias[0].BuildCriteria(criteria, dependencyCriterion);
             }
             else
             {
@@ -230,7 +231,7 @@ namespace Forge.ORM.NHibernateExtension.Criterias
                     criteria.Add(localCriterion);
                 }
 
-                foreach (Criteria c in this.Criterias)
+                foreach (Criteria c in Criterias)
                 {
                     c.BuildCriteria(criteria, (Junction)mCriterion);
                 }
@@ -246,13 +247,13 @@ namespace Forge.ORM.NHibernateExtension.Criterias
         public override object Clone()
         {
             GroupCriteria cloned = (GroupCriteria)base.Clone();
-            cloned.mLogic = this.mLogic;
-            if (this.mCriterias != null)
+            cloned.mLogic = mLogic;
+            if (mCriterias != null)
             {
-                Criteria[] clonedCriterias = new Criteria[this.mCriterias.Length];
-                for (int i = 0; i < this.mCriterias.Length; i++)
+                Criteria[] clonedCriterias = new Criteria[mCriterias.Length];
+                for (int i = 0; i < mCriterias.Length; i++)
                 {
-                    clonedCriterias[i] = this.mCriterias[i].Clone() as Criteria;
+                    clonedCriterias[i] = mCriterias[i].Clone() as Criteria;
                     clonedCriterias[i].Parent = cloned;
                 }
                 cloned.mCriterias = clonedCriterias;
@@ -273,7 +274,7 @@ namespace Forge.ORM.NHibernateExtension.Criterias
         {
             ICriterion result = null;
 
-            if (this.Logic == GroupCriteriaLogicEnum.And)
+            if (Logic == GroupCriteriaLogicEnum.And)
             {
                 result = Restrictions.Conjunction();
             }

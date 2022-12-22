@@ -8,6 +8,7 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using Forge.Net.Synapse;
+using Forge.Shared;
 
 namespace Forge.Net.TerraGraf.NetworkPeers
 {
@@ -44,7 +45,7 @@ namespace Forge.Net.TerraGraf.NetworkPeers
             {
                 ThrowHelper.ThrowArgumentNullException("endPoint");
             }
-            this.mEndPoint = endPoint;
+            mEndPoint = endPoint;
         }
 
         #endregion

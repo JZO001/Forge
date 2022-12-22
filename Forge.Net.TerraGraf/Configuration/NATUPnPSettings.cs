@@ -7,8 +7,9 @@
 using System;
 using System.Diagnostics;
 using Forge.Configuration.Shared;
-using Forge.Logging;
+using Forge.Logging.Abstraction;
 using Forge.Net.TerraGraf.ConfigSection;
+using Forge.Shared;
 
 namespace Forge.Net.TerraGraf.Configuration
 {
@@ -22,13 +23,15 @@ namespace Forge.Net.TerraGraf.Configuration
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(NATUPnPSettings));
+        private static readonly ILog LOGGER = LogManager.GetLogger<NATUPnPSettings>();
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private bool mEnabled = true;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private string mProbeAddress = string.Empty;
+        private string mProbeAddress = "microsoft.com";
+
+        private bool mInitialized = false;
 
         #endregion
 
@@ -37,7 +40,7 @@ namespace Forge.Net.TerraGraf.Configuration
         /// <summary>
         /// Initializes a new instance of the <see cref="NATUPnPSettings"/> class.
         /// </summary>
-        internal NATUPnPSettings()
+        public NATUPnPSettings()
         {
         }
 
@@ -55,7 +58,10 @@ namespace Forge.Net.TerraGraf.Configuration
         public bool IsEnabled
         {
             get { return mEnabled; }
-            set { mEnabled = value; }
+            set 
+            { 
+                if (!mInitialized) mEnabled = value; 
+            }
         }
 
         /// <summary>
@@ -70,7 +76,7 @@ namespace Forge.Net.TerraGraf.Configuration
             get { return mProbeAddress; }
             set
             {
-                if (value == null)
+                if (string.IsNullOrWhiteSpace(value))
                 {
                     ThrowHelper.ThrowArgumentNullException("value");
                 }
@@ -99,8 +105,22 @@ namespace Forge.Net.TerraGraf.Configuration
         /// </summary>
         internal void Initialize()
         {
-            TerraGrafConfiguration.SectionHandler.OnConfigurationChanged += new EventHandler<EventArgs>(SectionHandler_OnConfigurationChanged);
-            SectionHandler_OnConfigurationChanged(null, null);
+            if (NetworkManager.ConfigurationSource == ConfigurationSourceEnum.ConfigurationManager)
+            {
+                TerraGrafConfiguration.SectionHandler.OnConfigurationChanged += new EventHandler<EventArgs>(SectionHandler_OnConfigurationChanged);
+                SectionHandler_OnConfigurationChanged(null, null);
+            }
+            mInitialized = true;
+        }
+
+        /// <summary>Cleans up.</summary>
+        internal void CleanUp()
+        {
+            if (mInitialized && NetworkManager.ConfigurationSource == ConfigurationSourceEnum.ConfigurationManager)
+            {
+                TerraGrafConfiguration.SectionHandler.OnConfigurationChanged -= new EventHandler<EventArgs>(SectionHandler_OnConfigurationChanged);
+            }
+            mInitialized = false;
         }
 
         #endregion

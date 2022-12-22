@@ -4,9 +4,11 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Threading.Tasking;
 using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace Forge.Net.Synapse.NetworkServices
 {
@@ -19,6 +21,8 @@ namespace Forge.Net.Synapse.NetworkServices
 
         #region Public method(s)
 
+#if NET40
+
         /// <summary>
         /// Begins the accept.
         /// </summary>
@@ -26,12 +30,6 @@ namespace Forge.Net.Synapse.NetworkServices
         /// <param name="state">The state.</param>
         /// <returns>Async property</returns>
         IAsyncResult BeginAccept(AsyncCallback callback, object state);
-
-        /// <summary>
-        /// Accepts a new incoming connection.
-        /// </summary>
-        /// <returns>Socket implementation</returns>
-        ISocket Accept();
 
         /// <summary>
         /// Ends the accept.
@@ -60,42 +58,10 @@ namespace Forge.Net.Synapse.NetworkServices
         IAsyncResult BeginConnect(string host, int port, AsyncCallback callBack, object state);
 
         /// <summary>
-        /// Binds the specified end point.
-        /// </summary>
-        /// <param name="endPoint">The end point.</param>
-        void Bind(EndPoint endPoint);
-
-        /// <summary>
-        /// Connects the specified end point.
-        /// </summary>
-        /// <param name="endPoint">The end point.</param>
-        void Connect(EndPoint endPoint);
-
-        /// <summary>
-        /// Connects the specified host.
-        /// </summary>
-        /// <param name="host">The host.</param>
-        /// <param name="port">The port.</param>
-        void Connect(string host, int port);
-
-        /// <summary>
         /// Ends the connect.
         /// </summary>
         /// <param name="asyncResult">The async result.</param>
         void EndConnect(IAsyncResult asyncResult);
-
-#if IS_WINDOWS
-
-        /// <summary>
-        /// Sets the keep alive values.
-        /// </summary>
-        /// <param name="state">if set to <c>true</c> [state].</param>
-        /// <param name="keepAliveTime">The keep alive time.</param>
-        /// <param name="keepAliveInterval">The keep alive interval.</param>
-        /// <returns>value</returns>
-        int SetKeepAliveValues(bool state, int keepAliveTime, int keepAliveInterval);
-
-#endif
 
         /// <summary>
         /// Begins the receive.
@@ -144,74 +110,6 @@ namespace Forge.Net.Synapse.NetworkServices
         IAsyncResult BeginSendTo(byte[] buffer, int offset, int size, EndPoint remoteEp, AsyncCallback callBack, object state);
 
         /// <summary>
-        /// Receives the specified buffer.
-        /// </summary>
-        /// <param name="buffer">The buffer.</param>
-        /// <returns>Number of received bytes</returns>
-        int Receive(byte[] buffer);
-
-        /// <summary>
-        /// Receives the specified buffer.
-        /// </summary>
-        /// <param name="buffer">The buffer.</param>
-        /// <param name="offset">The offset.</param>
-        /// <param name="size">The size.</param>
-        /// <returns>Number of received bytes</returns>
-        int Receive(byte[] buffer, int offset, int size);
-
-        /// <summary>
-        /// Receives from.
-        /// </summary>
-        /// <param name="buffer">The buffer.</param>
-        /// <param name="remoteEp">The remote ep.</param>
-        /// <returns>Number of received bytes</returns>
-        int ReceiveFrom(byte[] buffer, ref EndPoint remoteEp);
-
-        /// <summary>
-        /// Receives from.
-        /// </summary>
-        /// <param name="buffer">The buffer.</param>
-        /// <param name="offset">The offset.</param>
-        /// <param name="size">The size.</param>
-        /// <param name="remoteEp">The remote ep.</param>
-        /// <returns>Number of received bytes</returns>
-        int ReceiveFrom(byte[] buffer, int offset, int size, ref EndPoint remoteEp);
-
-        /// <summary>
-        /// Sends the specified buffer.
-        /// </summary>
-        /// <param name="buffer">The buffer.</param>
-        /// <returns>Number of sent bytes</returns>
-        int Send(byte[] buffer);
-
-        /// <summary>
-        /// Sends the specified buffer.
-        /// </summary>
-        /// <param name="buffer">The buffer.</param>
-        /// <param name="offset">The offset.</param>
-        /// <param name="size">The size.</param>
-        /// <returns>Number of sent bytes</returns>
-        int Send(byte[] buffer, int offset, int size);
-
-        /// <summary>
-        /// Sends to.
-        /// </summary>
-        /// <param name="buffer">The buffer.</param>
-        /// <param name="remoteEp">The remote ep.</param>
-        /// <returns>Number of sent bytes</returns>
-        int SendTo(byte[] buffer, EndPoint remoteEp);
-
-        /// <summary>
-        /// Sends to.
-        /// </summary>
-        /// <param name="buffer">The buffer.</param>
-        /// <param name="offset">The offset.</param>
-        /// <param name="size">The size.</param>
-        /// <param name="remoteEp">The remote ep.</param>
-        /// <returns>Number of sent bytes</returns>
-        int SendTo(byte[] buffer, int offset, int size, EndPoint remoteEp);
-
-        /// <summary>
         /// Ends the receive.
         /// </summary>
         /// <param name="asyncResult">The async result.</param>
@@ -239,6 +137,340 @@ namespace Forge.Net.Synapse.NetworkServices
         /// <param name="asyncResult">The async result.</param>
         /// <returns>Number of sent bytes</returns>
         int EndSendTo(IAsyncResult asyncResult);
+
+#endif
+
+        /// <summary>
+        /// Begins the accept.
+        /// </summary>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        ITaskResult BeginAccept(ReturnCallback callback, object state);
+
+        /// <summary>
+        /// Ends the accept.
+        /// </summary>
+        /// <param name="asyncResult">The async result.</param>
+        /// <returns>Socket implementation</returns>
+        ISocket EndAccept(ITaskResult asyncResult);
+
+        /// <summary>
+        /// Begins the connect.
+        /// </summary>
+        /// <param name="endPoint">The end point.</param>
+        /// <param name="callback">The call back.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        ITaskResult BeginConnect(EndPoint endPoint, ReturnCallback callback, object state);
+
+        /// <summary>
+        /// Begins the connect.
+        /// </summary>
+        /// <param name="host">The host.</param>
+        /// <param name="port">The port.</param>
+        /// <param name="callback">The call back.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        ITaskResult BeginConnect(string host, int port, ReturnCallback callback, object state);
+
+        /// <summary>
+        /// Ends the connect.
+        /// </summary>
+        /// <param name="asyncResult">The async result.</param>
+        void EndConnect(ITaskResult asyncResult);
+
+        /// <summary>
+        /// Begins the receive.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="callback">The call back.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        ITaskResult BeginReceive(byte[] buffer, int offset, int size, ReturnCallback callback, object state);
+
+        /// <summary>
+        /// Receives from.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="remoteEp">The remote ep.</param>
+        /// <param name="callback">The call back.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        ITaskResult BeginReceiveFrom(byte[] buffer, int offset, int size, ref EndPoint remoteEp, ReturnCallback callback, object state);
+
+        /// <summary>
+        /// Begins the send.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="callback">The call back.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        ITaskResult BeginSend(byte[] buffer, int offset, int size, ReturnCallback callback, object state);
+
+        /// <summary>
+        /// Begins the send to.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="remoteEp">The remote ep.</param>
+        /// <param name="callback">The call back.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        ITaskResult BeginSendTo(byte[] buffer, int offset, int size, EndPoint remoteEp, ReturnCallback callback, object state);
+
+        /// <summary>
+        /// Ends the receive.
+        /// </summary>
+        /// <param name="asyncResult">The async result.</param>
+        /// <returns>Number of received bytes</returns>
+        int EndReceive(ITaskResult asyncResult);
+
+        /// <summary>
+        /// Ends the receive from.
+        /// </summary>
+        /// <param name="asyncResult">The async result.</param>
+        /// <param name="remoteEp">The remote ep.</param>
+        /// <returns>Number of received bytes</returns>
+        int EndReceiveFrom(ITaskResult asyncResult, ref EndPoint remoteEp);
+
+        /// <summary>
+        /// Ends the send.
+        /// </summary>
+        /// <param name="asyncResult">The async result.</param>
+        /// <returns>Number of sent bytes</returns>
+        int EndSend(ITaskResult asyncResult);
+
+        /// <summary>
+        /// Ends the send to.
+        /// </summary>
+        /// <param name="asyncResult">The async result.</param>
+        /// <returns>Number of sent bytes</returns>
+        int EndSendTo(ITaskResult asyncResult);
+
+#if NETCOREAPP3_1_OR_GREATER
+
+        /// <summary>
+        /// Accepts a new incoming connection.
+        /// </summary>
+        /// <returns>Socket implementation</returns>
+        Task<ISocket> AcceptAsync();
+
+#endif
+
+        /// <summary>
+        /// Accepts a new incoming connection.
+        /// </summary>
+        /// <returns>Socket implementation</returns>
+        ISocket Accept();
+
+        /// <summary>
+        /// Binds the specified end point.
+        /// </summary>
+        /// <param name="endPoint">The end point.</param>
+        void Bind(EndPoint endPoint);
+
+#if NETCOREAPP3_1_OR_GREATER
+
+        /// <summary>
+        /// Connects the specified end point.
+        /// </summary>
+        /// <param name="endPoint">The end point.</param>
+        Task ConnectAsync(EndPoint endPoint);
+
+        /// <summary>
+        /// Connects the specified host.
+        /// </summary>
+        /// <param name="host">The host.</param>
+        /// <param name="port">The port.</param>
+        Task ConnectAsync(string host, int port);
+
+#endif
+
+        /// <summary>
+        /// Connects the specified end point.
+        /// </summary>
+        /// <param name="endPoint">The end point.</param>
+        void Connect(EndPoint endPoint);
+
+        /// <summary>
+        /// Connects the specified host.
+        /// </summary>
+        /// <param name="host">The host.</param>
+        /// <param name="port">The port.</param>
+        void Connect(string host, int port);
+
+#if IS_WINDOWS
+
+        /// <summary>
+        /// Sets the keep alive values.
+        /// </summary>
+        /// <param name="state">if set to <c>true</c> [state].</param>
+        /// <param name="keepAliveTime">The keep alive time.</param>
+        /// <param name="keepAliveInterval">The keep alive interval.</param>
+        /// <returns>value</returns>
+        int SetKeepAliveValues(bool state, int keepAliveTime, int keepAliveInterval);
+
+#endif
+
+#if NETCOREAPP3_1_OR_GREATER
+
+        /// <summary>
+        /// Receives the specified buffer.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <returns>Number of received bytes</returns>
+        Task<int> ReceiveAsync(byte[] buffer);
+
+        /// <summary>
+        /// Receives the specified buffer.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="size">The size.</param>
+        /// <returns>Number of received bytes</returns>
+        Task<int> ReceiveAsync(byte[] buffer, int offset, int size);
+
+#endif
+
+        /// <summary>
+        /// Receives the specified buffer.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <returns>Number of received bytes</returns>
+        int Receive(byte[] buffer);
+
+        /// <summary>
+        /// Receives the specified buffer.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="size">The size.</param>
+        /// <returns>Number of received bytes</returns>
+        int Receive(byte[] buffer, int offset, int size);
+
+#if NETCOREAPP3_1_OR_GREATER
+
+        /// <summary>
+        /// Receives from.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="remoteEp">The remote ep.</param>
+        /// <returns>Number of received bytes</returns>
+        Task<(int, System.Net.EndPoint)> ReceiveFromAsync(byte[] buffer, System.Net.EndPoint remoteEp);
+
+        /// <summary>
+        /// Receives from.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="remoteEp">The remote ep.</param>
+        /// <returns>Number of received bytes</returns>
+        Task<(int, System.Net.EndPoint)> ReceiveFromAsync(byte[] buffer, int offset, int size, System.Net.EndPoint remoteEp);
+
+#endif
+
+        /// <summary>
+        /// Receives from.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="remoteEp">The remote ep.</param>
+        /// <returns>Number of received bytes</returns>
+        int ReceiveFrom(byte[] buffer, ref EndPoint remoteEp);
+
+        /// <summary>
+        /// Receives from.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="remoteEp">The remote ep.</param>
+        /// <returns>Number of received bytes</returns>
+        int ReceiveFrom(byte[] buffer, int offset, int size, ref EndPoint remoteEp);
+
+#if NETCOREAPP3_1_OR_GREATER
+
+        /// <summary>
+        /// Sends the specified buffer.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <returns>Number of sent bytes</returns>
+        Task<int> SendAsync(byte[] buffer);
+
+        /// <summary>
+        /// Sends the specified buffer.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="size">The size.</param>
+        /// <returns>Number of sent bytes</returns>
+        Task<int> SendAsync(byte[] buffer, int offset, int size);
+
+#endif
+
+        /// <summary>
+        /// Sends the specified buffer.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <returns>Number of sent bytes</returns>
+        int Send(byte[] buffer);
+
+        /// <summary>
+        /// Sends the specified buffer.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="size">The size.</param>
+        /// <returns>Number of sent bytes</returns>
+        int Send(byte[] buffer, int offset, int size);
+
+#if NETCOREAPP3_1_OR_GREATER
+
+        /// <summary>
+        /// Sends to.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="remoteEp">The remote ep.</param>
+        /// <returns>Number of sent bytes</returns>
+        Task<int> SendToAsync(byte[] buffer, System.Net.EndPoint remoteEp);
+
+        /// <summary>
+        /// Sends to.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="remoteEp">The remote ep.</param>
+        /// <returns>Number of sent bytes</returns>
+        Task<int> SendToAsync(byte[] buffer, int offset, int size, System.Net.EndPoint remoteEp);
+
+#endif
+
+        /// <summary>
+        /// Sends to.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="remoteEp">The remote ep.</param>
+        /// <returns>Number of sent bytes</returns>
+        int SendTo(byte[] buffer, EndPoint remoteEp);
+
+        /// <summary>
+        /// Sends to.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="remoteEp">The remote ep.</param>
+        /// <returns>Number of sent bytes</returns>
+        int SendTo(byte[] buffer, int offset, int size, EndPoint remoteEp);
 
         /// <summary>
         /// Listens the specified backlog.

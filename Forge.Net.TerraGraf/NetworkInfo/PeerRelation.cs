@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Legacy;
 using System;
 using System.Diagnostics;
 
@@ -29,10 +30,10 @@ namespace Forge.Net.TerraGraf.NetworkInfo
         /// <param name="status">if set to <c>true</c> [status].</param>
         internal PeerRelation(long stateId, string peerA, string peerB, bool status)
         {
-            this.StateId = stateId;
-            this.PeerA = peerA;
-            this.PeerB = peerB;
-            this.Connected = status;
+            StateId = stateId;
+            PeerA = peerA;
+            PeerB = peerB;
+            Connected = status;
         }
 
         #endregion

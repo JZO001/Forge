@@ -26,8 +26,8 @@ namespace Forge.Persistence.Collections
         /// </summary>
         /// <param name="queueId">The queue id.</param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        public PersistentQueue(String queueId) :
-            base(queueId, CacheStrategyEnum.CacheForQueue, Int32.MaxValue)
+        public PersistentQueue(string queueId) :
+            base(queueId, CacheStrategyEnum.CacheForQueue, int.MaxValue)
         {
             SetStorageProvider(new FileStorageProvider<T>(queueId), true);
             FillCache();
@@ -38,8 +38,8 @@ namespace Forge.Persistence.Collections
         /// </summary>
         /// <param name="queueId">The queue id.</param>
         /// <param name="provider">The provider.</param>
-        public PersistentQueue(String queueId, IStorageProvider<T> provider) :
-            base(queueId, CacheStrategyEnum.CacheForQueue, Int32.MaxValue)
+        public PersistentQueue(string queueId, IStorageProvider<T> provider) :
+            base(queueId, CacheStrategyEnum.CacheForQueue, int.MaxValue)
         {
             SetStorageProvider(provider, false);
             FillCache();
@@ -51,7 +51,7 @@ namespace Forge.Persistence.Collections
         /// <param name="queueId">The queue id.</param>
         /// <param name="provider">The provider.</param>
         /// <param name="cacheSize">Size of the cache.</param>
-        public PersistentQueue(String queueId, IStorageProvider<T> provider, int cacheSize) :
+        public PersistentQueue(string queueId, IStorageProvider<T> provider, int cacheSize) :
             base(queueId, CacheStrategyEnum.CacheForQueue, cacheSize)
         {
             SetStorageProvider(provider, false);
@@ -64,7 +64,7 @@ namespace Forge.Persistence.Collections
         /// <param name="queueId">The queue id.</param>
         /// <param name="cacheSize">Size of the cache.</param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        public PersistentQueue(String queueId, int cacheSize) :
+        public PersistentQueue(string queueId, int cacheSize) :
             base(queueId, CacheStrategyEnum.CacheForQueue, cacheSize)
         {
             SetStorageProvider(new FileStorageProvider<T>(queueId), true);
@@ -76,7 +76,7 @@ namespace Forge.Persistence.Collections
         /// </summary>
         /// <param name="queueId">The queue id.</param>
         /// <param name="configurationName">Name of the configuration.</param>
-        public PersistentQueue(String queueId, String configurationName) :
+        public PersistentQueue(string queueId, string configurationName) :
             base(queueId, CacheStrategyEnum.CacheForQueue, configurationName)
         {
         }

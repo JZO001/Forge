@@ -27,7 +27,7 @@ namespace Forge.RemoteDesktop.Service
         {
             InitializeComponent();
 
-            this.Text = Resources.AuthenticationFormTitle;
+            Text = Resources.AuthenticationFormTitle;
             lCurrentAuthMode.Text = Resources.CurrentAuthMode;
             btSaveAuthMode.Text = Resources.Button_Save;
             btSaveGlobalPassword.Text = Resources.Button_Save;

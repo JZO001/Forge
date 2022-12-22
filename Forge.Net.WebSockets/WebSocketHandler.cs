@@ -13,23 +13,32 @@ using System.Threading.Tasks;
 namespace Forge.Net.WebSockets
 {
 
+    /// <summary>WebSocket handler</summary>
     public abstract class WebSocketHandler
     {
 
+        /// <summary>Gets or sets the web socket connection manager.</summary>
+        /// <value>The web socket connection manager.</value>
         protected WebSocketManager WebSocketConnectionManager { get; set; }
 
+        /// <summary>Initializes a new instance of the <see cref="WebSocketHandler" /> class.</summary>
+        /// <param name="webSocketConnectionManager">The web socket connection manager.</param>
         protected WebSocketHandler(WebSocketManager webSocketConnectionManager)
         {
             WebSocketConnectionManager = webSocketConnectionManager;
         }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+        /// <summary>Called when a socket connected.</summary>
+        /// <param name="socket">The socket.</param>
         public virtual async Task OnConnected(WebSocket socket)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             WebSocketConnectionManager.AddSocket(socket);
         }
 
+        /// <summary>Called when socket disconnected.</summary>
+        /// <param name="socket">The socket.</param>
         public virtual async Task OnDisconnected(WebSocket socket)
         {
             await WebSocketConnectionManager.RemoveSocket(WebSocketConnectionManager.GetIdBySocket(socket));
@@ -56,6 +65,7 @@ namespace Forge.Net.WebSockets
 
         /// <summary>Broadcasts the message to all connected clients asynchronously, except the specified one This is useful, if you would like to skip a sender, which this message originally arrived.</summary>
         /// <param name="message">The message.</param>
+        /// <param name="skipThisWebSocketId">Skip the specified connection.</param>
         /// <param name="isEndOfMessage">  Set to <c>true at the end of the message</c></param>
         public virtual async Task BroadcastMessageToAllAsync(string message, string skipThisWebSocketId, bool isEndOfMessage = true)
         {
@@ -67,7 +77,7 @@ namespace Forge.Net.WebSockets
         }
 
         /// <summary>Broadcasts the message to all connected clients asynchronously.</summary>
-        /// <param name="message">The message in byte array format.</param>
+        /// <param name="data">The message in byte array format.</param>
         /// <param name="isEndOfMessage">  Set to <c>true at the end of the message</c></param>
         public virtual async Task BroadcastMessageToAllAsync(byte[] data, bool isEndOfMessage = true)
         {
@@ -79,7 +89,8 @@ namespace Forge.Net.WebSockets
         }
 
         /// <summary>Broadcasts the message to all connected clients asynchronously, except the specified one This is useful, if you would like to skip a sender, which this message originally arrived.</summary>
-        /// <param name="message">The message is byte array.</param>
+        /// <param name="data">The message is byte array.</param>
+        /// <param name="skipThisWebSocketId">Skip the specified connection.</param>
         /// <param name="isEndOfMessage">Set to <c>true at the end of the message</c></param>
         public virtual async Task BroadcastMessageToAllAsync(byte[] data, string skipThisWebSocketId, bool isEndOfMessage = true)
         {

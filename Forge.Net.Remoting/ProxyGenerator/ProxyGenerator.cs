@@ -13,6 +13,7 @@ using Forge.Collections;
 using Forge.Net.Remoting.Proxy;
 using Forge.Net.Remoting.Validators;
 using Forge.Reflection;
+using Forge.Shared;
 
 namespace Forge.Net.Remoting.ProxyGenerator
 {
@@ -116,7 +117,7 @@ namespace Forge.Net.Remoting.ProxyGenerator
                 if (mWellKnownObjectMode == WellKnownObjectModeEnum.PerSession && mClientMethods.Count > 0)
                 {
                     // write abstract class
-                    FileInfo abstractFile = new FileInfo(Path.Combine(outputDir, String.Format("{0}.cs", descriptor.TypeNameServiceAbstract)));
+                    FileInfo abstractFile = new FileInfo(Path.Combine(outputDir, string.Format("{0}.cs", descriptor.TypeNameServiceAbstract)));
                     using (fs = new FileStream(abstractFile.FullName, FileMode.Create, FileAccess.Write, FileShare.Read))
                     {
                         GeneratorBase.WriteAbstractProxyClassHeader(ContractType, true, fs);
@@ -136,10 +137,10 @@ namespace Forge.Net.Remoting.ProxyGenerator
                     writeOverride = true;
                 }
                 {
-                    FileInfo implFile = new FileInfo(Path.Combine(outputDir, String.Format("{0}.cs", descriptor.TypeNameServiceImpl)));
+                    FileInfo implFile = new FileInfo(Path.Combine(outputDir, string.Format("{0}.cs", descriptor.TypeNameServiceImpl)));
                     using (fs = new FileStream(implFile.FullName, FileMode.Create, FileAccess.Write, FileShare.Read))
                     {
-                        String baseType = string.Empty;
+                        string baseType = string.Empty;
                         if (mWellKnownObjectMode == WellKnownObjectModeEnum.PerSession)
                         {
                             if (mClientMethods.Count > 0)

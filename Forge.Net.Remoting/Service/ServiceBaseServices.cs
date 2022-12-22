@@ -10,15 +10,17 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Forge.Collections;
+using Forge.Configuration;
 using Forge.Configuration.Shared;
-using Forge.EventRaiser;
-using Forge.Logging;
+using Forge.Invoker;
+using Forge.Logging.Abstraction;
 using Forge.Net.Remoting.Channels;
 using Forge.Net.Remoting.ConfigSection;
 using Forge.Net.Remoting.Messaging;
 using Forge.Net.Remoting.Proxy;
 using Forge.Net.Remoting.Validators;
 using Forge.Reflection;
+using Forge.Shared;
 
 namespace Forge.Net.Remoting.Service
 {
@@ -31,11 +33,11 @@ namespace Forge.Net.Remoting.Service
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(ServiceBaseServices));
+        private static readonly ILog LOGGER = LogManager.GetLogger<ServiceBaseServices>();
 
         private static readonly Dictionary<Type, ContractServiceSideDescriptor> mContractDescriptors = new Dictionary<Type, ContractServiceSideDescriptor>();
 
-        private static readonly Dictionary<Type, WellKnownObjectModeEnum> mContractObjectModesCache = new Dictionary<Type, WellKnownObjectModeEnum>();
+        //private static readonly Dictionary<Type, WellKnownObjectModeEnum> mContractObjectModesCache = new Dictionary<Type, WellKnownObjectModeEnum>();
 
         private static readonly ServiceBaseServices mSingletonInstance = new ServiceBaseServices();
 
@@ -82,7 +84,7 @@ namespace Forge.Net.Remoting.Service
         #region Public static method(s)
 
         /// <summary>
-        /// Initialize ServiceBase services. It also initialize channel services too.
+        /// Initialize ServiceBase services with the XML based configuration, if it is exist. It also initialize channel services too.
         /// </summary>
         /// <exception cref="Forge.Configuration.Shared.InvalidConfigurationException">
         /// Contract type not definied. Empty item found in configuration.
@@ -96,16 +98,30 @@ namespace Forge.Net.Remoting.Service
         [MethodImpl(MethodImplOptions.Synchronized)]
         public static void Initialize()
         {
+            if (RemotingConfiguration.Settings.CategoryPropertyItems.Count > 0)
+            {
+                Initialize(RemotingConfiguration.Settings.CategoryPropertyItems);
+            }
+        }
+
+        /// <summary>Initializes the specified configuration root.</summary>
+        /// <param name="configurationRoot">The configuration root.</param>
+        /// <exception cref="Forge.Configuration.Shared.InvalidConfigurationException">Contract type not definied. Empty item found in configuration.
+        /// or</exception>
+        /// <exception cref="Forge.Configuration.Shared.InvalidConfigurationValueException"></exception>
+        /// <exception cref="Forge.Net.Remoting.InvalidProxyImplementationException"></exception>
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public static void Initialize(IPropertyItem configurationRoot)
+        {
             if (!mInitialized)
             {
-                Raiser.CallDelegatorBySync(EventInitialization, new object[] { null, new ServiceInitializationStateEventArgs(ServiceInitializationStateEnum.Before) });
-                ChannelServices.Initialize();
+                Executor.Invoke(EventInitialization, null, new ServiceInitializationStateEventArgs(ServiceInitializationStateEnum.Before));
                 if (LOGGER.IsInfoEnabled) LOGGER.Info("Initializing ServiceBase services.");
 
-                CategoryPropertyItem pi = ConfigurationAccessHelper.GetCategoryPropertyByPath(RemotingConfiguration.Settings.CategoryPropertyItems, "Services");
+                IPropertyItem pi = ConfigurationAccessHelper.GetPropertyByPath(configurationRoot, "Services");
                 if (pi != null)
                 {
-                    IEnumerator<CategoryPropertyItem> iterator = pi.GetEnumerator();
+                    IEnumerator<IPropertyItem> iterator = pi.Items.Values.GetEnumerator();
                     try
                     {
                         while (iterator.MoveNext())
@@ -123,67 +139,67 @@ namespace Forge.Net.Remoting.Service
                                 contractType = TypeHelper.GetTypeFromString(pi.Id);
                                 if (ContractDescriptors.ContainsKey(contractType))
                                 {
-                                    throw new InvalidConfigurationException(String.Format("Duplicated contract type configuration found in services. Contract: {0}", contractType.FullName));
+                                    throw new InvalidConfigurationException(string.Format("Duplicated contract type configuration found in services. Contract: {0}", contractType.FullName));
                                 }
                                 ContractValidator.ValidateContractIntegrity(contractType);
                             }
                             catch (Exception ex)
                             {
-                                throw new InvalidConfigurationValueException(String.Format("Unable to resolve contract type: {0}", pi.Id), ex);
+                                throw new InvalidConfigurationValueException(string.Format("Unable to resolve contract type: {0}", pi.Id), ex);
                             }
 
-                            if (!string.IsNullOrEmpty(pi.EntryValue))
+                            if (!string.IsNullOrEmpty(pi.Value))
                             {
                                 try
                                 {
-                                    defaultImplementationType = TypeHelper.GetTypeFromString(pi.EntryValue);
+                                    defaultImplementationType = TypeHelper.GetTypeFromString(pi.Value);
                                     if (!contractType.IsAssignableFrom(defaultImplementationType))
                                     {
-                                        throw new InvalidProxyImplementationException(String.Format("Provided default implementation type '{0}' does not implement contract interface '{1}'.", defaultImplementationType.FullName, contractType.FullName));
+                                        throw new InvalidProxyImplementationException(string.Format("Provided default implementation type '{0}' does not implement contract interface '{1}'.", defaultImplementationType.FullName, contractType.FullName));
                                     }
                                     ImplementationValidator.ValidateImplementationIntegrity(defaultImplementationType);
                                 }
                                 catch (Exception ex)
                                 {
-                                    throw new InvalidConfigurationValueException(String.Format("Unable to resolve implementation type: {0}", pi.EntryValue), ex);
+                                    throw new InvalidConfigurationValueException(string.Format("Unable to resolve implementation type: {0}", pi.Value), ex);
                                 }
                             }
 
                             ContractServiceSideDescriptor descriptor = new ContractServiceSideDescriptor(contractType, defaultImplementationType);
 
-                            IEnumerator<CategoryPropertyItem> channelIterator = pi.GetEnumerator();
+                            IEnumerator<IPropertyItem> channelIterator = pi.Items.Values.GetEnumerator();
                             while (channelIterator.MoveNext())
                             {
-                                CategoryPropertyItem channelImplementationItem = channelIterator.Current;
+                                IPropertyItem channelImplementationItem = channelIterator.Current;
                                 if (string.IsNullOrEmpty(channelImplementationItem.Id))
                                 {
-                                    throw new InvalidConfigurationValueException(String.Format("Channel identifier is missing from a configuration item of the contract '{0}'", pi.Id));
+                                    throw new InvalidConfigurationValueException(string.Format("Channel identifier is missing from a configuration item of the contract '{0}'", pi.Id));
                                 }
-                                if (string.IsNullOrEmpty(channelImplementationItem.EntryValue))
+                                if (string.IsNullOrEmpty(channelImplementationItem.Value))
                                 {
-                                    throw new InvalidConfigurationValueException(String.Format("Implementation type is missing from a configuration item of the contract '{0}'", pi.Id));
+                                    throw new InvalidConfigurationValueException(string.Format("Implementation type is missing from a configuration item of the contract '{0}'", pi.Id));
                                 }
                                 if (!ChannelServices.IsChannelRegistered(channelImplementationItem.Id))
                                 {
-                                    throw new InvalidConfigurationValueException(String.Format("Unregistered channel provided '{0}' in configuration section of the contract: {1}.", channelImplementationItem.Id, pi.Id));
+                                    throw new InvalidConfigurationValueException(string.Format("Unknown channel provided '{0}' in configuration section of the contract: {1}.", channelImplementationItem.Id, pi.Id));
                                 }
                                 Type type = null;
                                 try
                                 {
-                                    type = TypeHelper.GetTypeFromString(channelImplementationItem.EntryValue);
+                                    type = TypeHelper.GetTypeFromString(channelImplementationItem.Value);
                                     if (!contractType.IsAssignableFrom(type))
                                     {
-                                        throw new InvalidProxyImplementationException(String.Format("Provided implementation type '{0}' does not implement contract interface '{1}'.", type.FullName, contractType.FullName));
+                                        throw new InvalidProxyImplementationException(string.Format("Provided implementation type '{0}' does not implement contract interface '{1}'.", type.FullName, contractType.FullName));
                                     }
                                     ImplementationValidator.ValidateImplementationIntegrity(type);
                                 }
                                 catch (Exception ex)
                                 {
-                                    throw new InvalidConfigurationValueException(String.Format("Unable to resolve non-default implementation type: {0} for contract: {1} for the channel: {2}", channelImplementationItem.EntryValue, pi.Id, channelImplementationItem.Id), ex);
+                                    throw new InvalidConfigurationValueException(string.Format("Unable to resolve non-default implementation type: {0} for contract: {1} for the channel: {2}", channelImplementationItem.Value, pi.Id, channelImplementationItem.Id), ex);
                                 }
                                 if (descriptor.ImplementationPerChannel.ContainsKey(channelImplementationItem.Id))
                                 {
-                                    throw new InvalidConfigurationException(String.Format("Duplicated channel identifier at contract '{0}'.", pi.Id));
+                                    throw new InvalidConfigurationException(string.Format("Duplicated channel identifier at contract '{0}'.", pi.Id));
                                 }
                                 descriptor.ImplementationPerChannel.Add(channelImplementationItem.Id, type);
                             }
@@ -201,7 +217,7 @@ namespace Forge.Net.Remoting.Service
 
                 mInitialized = true;
                 if (LOGGER.IsInfoEnabled) LOGGER.Info("ServiceBase services successfully initialized.");
-                Raiser.CallDelegatorBySync(EventInitialization, new object[] { null, new ServiceInitializationStateEventArgs(ServiceInitializationStateEnum.After) });
+                Executor.Invoke(EventInitialization, null, new ServiceInitializationStateEventArgs(ServiceInitializationStateEnum.After));
             }
         }
 
@@ -481,7 +497,7 @@ namespace Forge.Net.Remoting.Service
             if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("Executing service method. SessionId: '{0}', {1}", e.SessionId, e.Message.ToString()));
 
             Channel channel = (Channel)sender;
-            String sessionId = e.SessionId;
+            string sessionId = e.SessionId;
             IMessage message = e.Message;
 
             // Request és response message type jöhet
@@ -491,7 +507,7 @@ namespace Forge.Net.Remoting.Service
             if (message.MessageType == MessageTypeEnum.Acknowledge || message.MessageType == MessageTypeEnum.Response)
             {
                 // HIBA: nem megfelelő üzenet típus (implementációs hiba?)
-                String errorMsg = String.Format("Invalid message type received: {0}. This may be an implementation error in the client proxy.", message.MessageType);
+                string errorMsg = string.Format("Invalid message type received: {0}. This may be an implementation error in the client proxy.", message.MessageType);
                 if (LOGGER.IsErrorEnabled) LOGGER.Error(errorMsg);
             }
             else
@@ -503,7 +519,7 @@ namespace Forge.Net.Remoting.Service
                     return;
                 }
 
-                String contractName = rm.ContractName;
+                string contractName = rm.ContractName;
                 Type contractType = null;
                 try
                 {
@@ -514,12 +530,12 @@ namespace Forge.Net.Remoting.Service
                     // HIBA: ez a típus nem szerepel a ClassPath-ban
                     try
                     {
-                        SendResponse(channel, sessionId, rm, typeof(void), null, new MethodInvocationException(String.Format("Unable to resolve this type of contract '{0}'. Type has not found.", rm.ContractName), ex), channel.DefaultErrorResponseTimeout);
+                        SendResponse(channel, sessionId, rm, typeof(void), null, new MethodInvocationException(string.Format("Unable to resolve this type of contract '{0}'. Type has not found.", rm.ContractName), ex), channel.DefaultErrorResponseTimeout);
                     }
                     catch (Exception innerEx)
                     {
                         // válaszüzenet küldése sikertelen
-                        if (LOGGER.IsErrorEnabled) LOGGER.Error(String.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
+                        if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
                     }
                     return;
                 }
@@ -535,12 +551,12 @@ namespace Forge.Net.Remoting.Service
                         // HIBA: ez a contract nincs nyilvántartva
                         try
                         {
-                            SendResponse(channel, sessionId, rm, typeof(void), null, new MethodInvocationException(String.Format("This type of contract '{0}' has not been registered.", contractType.FullName)), channel.DefaultErrorResponseTimeout);
+                            SendResponse(channel, sessionId, rm, typeof(void), null, new MethodInvocationException(string.Format("This type of contract '{0}' has not been registered.", contractType.FullName)), channel.DefaultErrorResponseTimeout);
                         }
                         catch (Exception innerEx)
                         {
                             // válaszüzenet küldése sikertelen
-                            if (LOGGER.IsErrorEnabled) LOGGER.Error(String.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
+                            if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
                         }
                         return;
                     }
@@ -561,17 +577,17 @@ namespace Forge.Net.Remoting.Service
                         // HIBA: a contract a megadott channel-hez nem definiált implementációs típust
                         try
                         {
-                            SendResponse(channel, sessionId, rm, typeof(void), null, new MethodInvocationException(String.Format("Unable to find implementation for this type of contract '{0}' and channel id: '{1}'.", contractType.FullName, channel.ChannelId)), channel.DefaultErrorResponseTimeout);
+                            SendResponse(channel, sessionId, rm, typeof(void), null, new MethodInvocationException(string.Format("Unable to find implementation for this type of contract '{0}' and channel id: '{1}'.", contractType.FullName, channel.ChannelId)), channel.DefaultErrorResponseTimeout);
                         }
                         catch (Exception innerEx)
                         {
                             // válaszüzenet küldése sikertelen
-                            if (LOGGER.IsErrorEnabled) LOGGER.Error(String.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
+                            if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
                         }
                         return;
                     }
                 }
-                Object instance = null;
+                object instance = null;
                 WellKnownObjectModeEnum objectMode = WellKnownObjectModeEnum.PerSession;
                 ContractValidator.GetWellKnownObjectMode(contractType, out objectMode);
                 if (objectMode == WellKnownObjectModeEnum.PerSession)
@@ -592,7 +608,7 @@ namespace Forge.Net.Remoting.Service
                         catch (Exception innerEx)
                         {
                             // válaszüzenet küldése sikertelen
-                            if (LOGGER.IsErrorEnabled) LOGGER.Error(String.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
+                            if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
                         }
                         return;
                     }
@@ -620,12 +636,12 @@ namespace Forge.Net.Remoting.Service
                                 // HIBA: sikertelen az instance létrehozása
                                 try
                                 {
-                                    SendResponse(channel, sessionId, rm, typeof(void), null, new MethodInvocationException(String.Format("Unable to instantiate type '{0}'. Public constructor is not accessible/found with parameter types: '{1}' and '{2}'.", implType.FullName, typeof(Channel).FullName, typeof(String).FullName), ex), channel.DefaultErrorResponseTimeout);
+                                    SendResponse(channel, sessionId, rm, typeof(void), null, new MethodInvocationException(string.Format("Unable to instantiate type '{0}'. Public constructor is not accessible/found with parameter types: '{1}' and '{2}'.", implType.FullName, typeof(Channel).FullName, typeof(String).FullName), ex), channel.DefaultErrorResponseTimeout);
                                 }
                                 catch (Exception innerEx)
                                 {
                                     // válaszüzenet küldése sikertelen
-                                    if (LOGGER.IsErrorEnabled) LOGGER.Error(String.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
+                                    if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
                                 }
                                 return;
                             }
@@ -654,12 +670,12 @@ namespace Forge.Net.Remoting.Service
                                 // HIBA: sikertelen az instance létrehozása
                                 try
                                 {
-                                    SendResponse(channel, sessionId, rm, typeof(void), null, new MethodInvocationException(String.Format("Unable to instantiate type '{0}'. Public empty constructor is not accessible/found.", implType.FullName), ex), channel.DefaultErrorResponseTimeout);
+                                    SendResponse(channel, sessionId, rm, typeof(void), null, new MethodInvocationException(string.Format("Unable to instantiate type '{0}'. Public empty constructor is not accessible/found.", implType.FullName), ex), channel.DefaultErrorResponseTimeout);
                                 }
                                 catch (Exception innerEx)
                                 {
                                     // válaszüzenet küldése sikertelen
-                                    if (LOGGER.IsErrorEnabled) LOGGER.Error(String.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
+                                    if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
                                 }
                                 return;
                             }
@@ -679,12 +695,12 @@ namespace Forge.Net.Remoting.Service
                         // HIBA: sikertelen az instance létrehozása
                         try
                         {
-                            SendResponse(channel, sessionId, rm, typeof(void), null, new MethodInvocationException(String.Format("Unable to instantiate type '{0}'. Public empty constructor is not accessible/found.", implType.FullName), ex), channel.DefaultErrorResponseTimeout);
+                            SendResponse(channel, sessionId, rm, typeof(void), null, new MethodInvocationException(string.Format("Unable to instantiate type '{0}'. Public empty constructor is not accessible/found.", implType.FullName), ex), channel.DefaultErrorResponseTimeout);
                         }
                         catch (Exception innerEx)
                         {
                             // válaszüzenet küldése sikertelen
-                            if (LOGGER.IsErrorEnabled) LOGGER.Error(String.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
+                            if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
                         }
                         return;
                     }
@@ -692,11 +708,11 @@ namespace Forge.Net.Remoting.Service
 
                 // meg van az instance, lehet reflection-nel hívni a metódusára
                 Type[] methodParamTypes = null;
-                Object[] paramValues = null;
+                object[] paramValues = null;
                 if (rm.MethodParameters != null)
                 {
                     methodParamTypes = new Type[rm.MethodParameters.Length];
-                    paramValues = new Object[rm.MethodParameters.Length];
+                    paramValues = new object[rm.MethodParameters.Length];
                     for (int i = 0; i < rm.MethodParameters.Length; i++)
                     {
                         try
@@ -708,12 +724,12 @@ namespace Forge.Net.Remoting.Service
                             // HIBA: a paraméter egy típusa nem szerepel a Domainben, így nem feloldható, ismeretlen
                             try
                             {
-                                SendResponse(channel, sessionId, rm, typeof(void), null, new MethodInvocationException(String.Format("Unable to resolve parameter type '{0}'. Type has not found.", rm.MethodParameters[i].ClassName), ex), channel.DefaultErrorResponseTimeout);
+                                SendResponse(channel, sessionId, rm, typeof(void), null, new MethodInvocationException(string.Format("Unable to resolve parameter type '{0}'. Type has not found.", rm.MethodParameters[i].ClassName), ex), channel.DefaultErrorResponseTimeout);
                             }
                             catch (Exception innerEx)
                             {
                                 // válaszüzenet küldése sikertelen
-                                if (LOGGER.IsErrorEnabled) LOGGER.Error(String.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
+                                if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
                             }
                             return;
                         }
@@ -721,22 +737,22 @@ namespace Forge.Net.Remoting.Service
                     }
                 }
 
-                MethodInfo m = null;
+                MethodInfo methodInfo = null;
                 try
                 {
-                    m = FindMethod(implType, rm.MethodName, methodParamTypes);
+                    methodInfo = FindMethod(implType, rm.MethodName, methodParamTypes);
                 }
                 catch (Exception ex)
                 {
                     // HIBA: a metódus név és paraméterlista alapján nem található
                     try
                     {
-                        SendResponse(channel, sessionId, rm, typeof(void), null, new MethodInvocationException(String.Format("Unable to find method '{0}' with parameter list: '{1}'.", rm.MethodName, methodParamTypes), ex), channel.DefaultErrorResponseTimeout);
+                        SendResponse(channel, sessionId, rm, typeof(void), null, new MethodInvocationException(string.Format("Unable to find method '{0}' with parameter list: '{1}'.", rm.MethodName, methodParamTypes), ex), channel.DefaultErrorResponseTimeout);
                     }
                     catch (Exception innerEx)
                     {
                         // válaszüzenet küldése sikertelen
-                        if (LOGGER.IsErrorEnabled) LOGGER.Error(String.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
+                        if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
                     }
                     return;
                 }
@@ -744,28 +760,28 @@ namespace Forge.Net.Remoting.Service
                 if (rm.MessageType == MessageTypeEnum.Request)
                 {
                     MethodParameter[] mps = null;
-                    if (m.GetParameters().Length > 0)
+                    if (methodInfo.GetParameters().Length > 0)
                     {
-                        mps = new MethodParameter[m.GetParameters().Length];
-                        for (int i = 0; i < m.GetParameters().Length; i++)
+                        mps = new MethodParameter[methodInfo.GetParameters().Length];
+                        for (int i = 0; i < methodInfo.GetParameters().Length; i++)
                         {
-                            ParameterInfo pi = m.GetParameters()[i];
+                            ParameterInfo pi = methodInfo.GetParameters()[i];
                             mps[i] = new MethodParameter(i, string.Format("{0}, {1}", pi.ParameterType.FullName, new AssemblyName(pi.ParameterType.Assembly.FullName).Name), null);
                         }
                     }
-                    returnTimeout = ServiceBase.GetTimeoutByMethod(contractType, m.Name, mps, MethodTimeoutEnum.ReturnTimeout);
+                    returnTimeout = GetTimeoutByMethod(contractType, methodInfo.Name, mps, MethodTimeoutEnum.ReturnTimeout);
                     lock (mCallContextForReply)
                     {
-                        mCallContextForReply.Add(Thread.CurrentThread, new CallContextForReply(channel, sessionId, rm, m.ReturnType, returnTimeout));
+                        mCallContextForReply.Add(Thread.CurrentThread, new CallContextForReply(channel, sessionId, rm, methodInfo.ReturnType, returnTimeout));
                     }
                 }
 
                 // visszatérési értéket fogadni
                 Exception methodException = null;
-                Object result = null;
+                object result = null;
                 try
                 {
-                    result = m.Invoke(instance, paramValues);
+                    result = methodInfo.Invoke(instance, paramValues);
                 }
                 catch (Exception ex)
                 {
@@ -796,7 +812,7 @@ namespace Forge.Net.Remoting.Service
                     catch (Exception ex)
                     {
                         // válaszüzenet küldése sikertelen
-                        if (LOGGER.IsErrorEnabled) LOGGER.Error(String.Format(AUTO_SEND_REPLY_ERROR_MSG, ex.Message));
+                        if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format(AUTO_SEND_REPLY_ERROR_MSG, ex.Message));
                     }
                     finally
                     {

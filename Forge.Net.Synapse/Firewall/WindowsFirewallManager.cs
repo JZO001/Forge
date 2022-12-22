@@ -10,6 +10,8 @@ using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Forge.Legacy;
+using Forge.Shared;
 using NetFwTypeLib;
 
 namespace Forge.Net.Synapse.Firewall
@@ -86,11 +88,6 @@ namespace Forge.Net.Synapse.Firewall
         /// <summary>
         /// Initializes this instance.
         /// </summary>
-        /// <exception cref="Forge.InitializationException">Failed to create Settings Manager instance.
-        /// or
-        /// Failed to get local policy.
-        /// or
-        /// Failed to get firewall profile.</exception>
         [MethodImpl(MethodImplOptions.Synchronized)]
         public void Initialize()
         {

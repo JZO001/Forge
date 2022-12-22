@@ -25,7 +25,7 @@ namespace Forge.RemoteDesktop.Client
         /// <param name="key">The key.</param>
         public KeysSubscription(Keys key)
         {
-            this.Key = key;
+            Key = key;
         }
 
         /// <summary>
@@ -38,9 +38,9 @@ namespace Forge.RemoteDesktop.Client
         public KeysSubscription(Keys key, bool alt, bool control, bool shift)
             : this(key)
         {
-            this.Alt = alt;
-            this.Control = control;
-            this.Shift = shift;
+            Alt = alt;
+            Control = control;
+            Shift = shift;
         }
 
         #endregion
@@ -94,11 +94,11 @@ namespace Forge.RemoteDesktop.Client
         {
             if (obj == null) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (!this.GetType().Equals(obj.GetType())) return false;
+            if (!GetType().Equals(obj.GetType())) return false;
 
             KeysSubscription s = (KeysSubscription)obj;
 
-            return this.Key.Equals(s.Key) && this.Alt.Equals(s.Alt) && this.Control.Equals(s.Control) && this.Shift.Equals(s.Shift);
+            return Key.Equals(s.Key) && Alt.Equals(s.Alt) && Control.Equals(s.Control) && Shift.Equals(s.Shift);
         }
 
         /// <summary>

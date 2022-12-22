@@ -8,6 +8,7 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using Forge.Net.Synapse;
+using Forge.Shared;
 
 namespace Forge.Net.TerraGraf.NetworkPeers
 {
@@ -51,7 +52,7 @@ namespace Forge.Net.TerraGraf.NetworkPeers
             {
                 ThrowHelper.ThrowArgumentNullException("endPoint");
             }
-            this.mEndPoint = endPoint;
+            mEndPoint = endPoint;
         }
 
         /// <summary>
@@ -63,8 +64,8 @@ namespace Forge.Net.TerraGraf.NetworkPeers
         internal TCPServer(long serverId, AddressEndPoint endPoint, bool manuallyStarted)
             : this(endPoint)
         {
-            this.mServerId = serverId;
-            this.mManuallyStarted = manuallyStarted;
+            mServerId = serverId;
+            mManuallyStarted = manuallyStarted;
         }
 
         #endregion
@@ -92,7 +93,7 @@ namespace Forge.Net.TerraGraf.NetworkPeers
         [DebuggerHidden]
         public AddressEndPoint EndPoint
         {
-            get { return this.mEndPoint; }
+            get { return mEndPoint; }
         }
 
         /// <summary>

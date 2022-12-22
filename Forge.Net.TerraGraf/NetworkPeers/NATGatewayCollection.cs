@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Forge.Legacy;
 using Forge.Net.Synapse;
 using Forge.Net.TerraGraf.NetworkInfo;
 
@@ -102,15 +103,15 @@ namespace Forge.Net.TerraGraf.NetworkPeers
             {
                 if (mNATGateways.Count > 0)
                 {
-                    // először megnézzük, melyik servert nem próbáltuk még
+                    // first I check, which server has not been tried
                     result = GetNeverTriedServer();
                     if (result == null)
                     {
-                        // megkeressük azt a szervert, amin már volt sikeres kapcsolódás
+                        // search the server, which has already a successfully connection to
                         result = GetGoodServer();
                         if (result == null)
                         {
-                            // visszaadja azt a szervert, amit a legkevesebbszer próbáltunk eddig
+                            // return the server which has been tried the less number
                             result = GetLeastTriedServer();
                         }
                     }
@@ -124,9 +125,11 @@ namespace Forge.Net.TerraGraf.NetworkPeers
         #region Private methods
 
         /// <summary>
-        /// Visszaadja az első olyan gateway-t, amit még sosem próbáltunk
+        /// Return the first gateway from the list, which has been never been tried
         /// </summary>
-        /// <returns>Kiválasztott szerver vagy null, ha már mindent próbáltunk legalább 1x</returns>
+        /// <returns>
+        /// The selected gateway, or null, in the case, if I has already tried all of them at least once
+        /// </returns>
         private NATGateway GetNeverTriedServer()
         {
             NATGateway result = null;
@@ -142,9 +145,11 @@ namespace Forge.Net.TerraGraf.NetworkPeers
         }
 
         /// <summary>
-        /// Visszaad egy gateway-t, amin már volt sikeres csatlakoztatás
+        /// Returns a getaway, which already has a successfully connection to
         /// </summary>
-        /// <returns>Kiválasztott gateway vagy null, ha nem talált sikeresen csatlakozott gateway-t</returns>
+        /// <returns>
+        /// The selected gateway, or null, if it does not find an instance with a previously successful connection
+        /// </returns>
         private NATGateway GetGoodServer()
         {
             NATGateway result = null;
@@ -160,28 +165,30 @@ namespace Forge.Net.TerraGraf.NetworkPeers
         }
 
         /// <summary>
-        /// Visszaadja azt a gateway-t, amit eddig a legkevesebbet próbáltunk.
-        /// Ha mindegyiket egyforma mennyiségben próbáltuk, akkor null-t ad vissza.
+        /// Returns the gateway which has been tried less times.
+        /// If each one has been tried on the same numbers/times, the result will be null.
         /// </summary>
-        /// <returns>Kiválasztott gateway vagy null</returns>
+        /// <returns>
+        /// Selected gateway or null
+        /// </returns>
         private NATGateway GetLeastTriedServer()
         {
             NATGateway result = null;
-            // először megnézzük, hogy mindegyik gateway-t azonos mennyiségben próbáltuk e már
+            // first check, if every gateway has been checked at the same numbers/times
             bool allEqv = true;
             int tried = mNATGateways[0].Attempts;
             foreach (NATGateway sc in mNATGateways)
             {
                 if (tried != sc.Attempts)
                 {
-                    // nem egyformán próbálkoztunk eddig
+                    // they have been tried not the same numbers/times
                     allEqv = false;
                     break;
                 }
             }
             if (!allEqv)
             {
-                // ha nem, akkor kikeressük azt, amelyiket a legkevesebbszer próbáltuk
+                // no, so lets find that, which has been tried less numbers/times
                 tried = mNATGateways[0].Attempts;
                 result = mNATGateways[0];
                 mNATGateways.RemoveAt(0);
@@ -189,7 +196,7 @@ namespace Forge.Net.TerraGraf.NetworkPeers
                 {
                     if (tried < sc.Attempts)
                     {
-                        // ezt kevesebbszer próbáltuk
+                        // it has been used less numbers/times
                         result = sc;
                         tried = sc.Attempts;
                     }

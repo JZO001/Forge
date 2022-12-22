@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Shared;
 using System;
 using System.Diagnostics;
 using System.Threading;
@@ -40,7 +41,7 @@ namespace Forge.Net.TerraGraf.Messaging
             {
                 ThrowHelper.ThrowArgumentNullException("targetId");
             }
-            this.mMessageIdToAck = messageIdToAck;
+            mMessageIdToAck = messageIdToAck;
         }
 
         #endregion

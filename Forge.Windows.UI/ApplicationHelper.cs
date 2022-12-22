@@ -29,7 +29,8 @@ namespace Forge.Windows.UI
             return System.Windows.Forms.Application.MessageLoop ||
                 System.Windows.Threading.Dispatcher.FromThread(Thread.CurrentThread) != null;
         }
-#else
+#endif
+#if NET40
         public static bool IsUIThread()
         {
             return System.Windows.Forms.Application.MessageLoop ||

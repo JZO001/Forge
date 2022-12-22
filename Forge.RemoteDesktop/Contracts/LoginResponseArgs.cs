@@ -22,7 +22,7 @@ namespace Forge.RemoteDesktop.Contracts
         /// <param name="state">The state.</param>
         public LoginResponseArgs(LoginResponseStateEnum state)
         {
-            this.ResponseState = state;
+            ResponseState = state;
         }
 
         /// <summary>

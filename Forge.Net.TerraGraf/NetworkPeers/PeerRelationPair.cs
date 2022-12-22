@@ -7,6 +7,7 @@
 using System;
 using System.Diagnostics;
 using Forge.Net.TerraGraf.NetworkInfo;
+using Forge.Shared;
 
 namespace Forge.Net.TerraGraf.NetworkPeers
 {
@@ -52,8 +53,8 @@ namespace Forge.Net.TerraGraf.NetworkPeers
             {
                 ThrowHelper.ThrowArgumentNullException("peerB");
             }
-            this.mPeerA = peerA;
-            this.mPeerB = peerB;
+            mPeerA = peerA;
+            mPeerB = peerB;
         }
 
         #endregion

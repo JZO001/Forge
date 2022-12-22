@@ -6,6 +6,7 @@
 
 using System;
 using Forge.RemoteDesktop.Contracts;
+using Forge.Shared;
 
 namespace Forge.RemoteDesktop.Service
 {
@@ -28,8 +29,8 @@ namespace Forge.RemoteDesktop.Service
             {
                 ThrowHelper.ThrowArgumentNullException("client");
             }
-            this.Client = client;
-            this.IsConnected = connected;
+            Client = client;
+            IsConnected = connected;
         }
 
         /// <summary>

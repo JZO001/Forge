@@ -9,7 +9,9 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlServerCe;
 using System.IO;
+using Forge.Configuration;
 using Forge.Configuration.Shared;
+using Forge.Shared;
 
 namespace Forge.DatabaseManagement.SqlServerCe40
 {
@@ -102,9 +104,9 @@ namespace Forge.DatabaseManagement.SqlServerCe40
         /// Initializes the specified config item.
         /// </summary>
         /// <param name="configItem">The config item.</param>
-        public virtual void Initialize(CategoryPropertyItem configItem)
+        public virtual void Initialize(IPropertyItem configItem)
         {
-            this.IsInitialized = true;
+            IsInitialized = true;
         }
 
         /// <summary>

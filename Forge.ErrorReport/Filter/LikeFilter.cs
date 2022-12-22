@@ -5,6 +5,7 @@
 ***********************************************************************/
 
 using System;
+using Forge.Configuration;
 using Forge.Configuration.Shared;
 using Forge.Reflection;
 
@@ -53,21 +54,21 @@ namespace Forge.ErrorReport.Filter
         /// Initializes the specified item.
         /// </summary>
         /// <param name="item">The item.</param>
-        public override void Initialize(CategoryPropertyItem item)
+        public override void Initialize(IPropertyItem item)
         {
             base.Initialize(item);
 
-            this.MatchMode = LikeMatchModeFilterEnum.Exact;
-            if (item.PropertyItems != null)
+            MatchMode = LikeMatchModeFilterEnum.Exact;
+            if (item.Items.Count > 0)
             {
                 LikeMatchModeFilterEnum matchMode = LikeMatchModeFilterEnum.Exact;
-                if (ConfigurationAccessHelper.ParseEnumValue<LikeMatchModeFilterEnum>(item.PropertyItems, CONFIG_MATCHMODE, ref matchMode))
+                if (ConfigurationAccessHelper.ParseEnumValue<LikeMatchModeFilterEnum>(item, CONFIG_MATCHMODE, ref matchMode))
                 {
-                    this.MatchMode = matchMode;
+                    MatchMode = matchMode;
                 }
             }
 
-            this.IsInitialized = true;
+            IsInitialized = true;
         }
 
         /// <summary>

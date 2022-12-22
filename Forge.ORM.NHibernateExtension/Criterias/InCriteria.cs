@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Runtime.Serialization;
 using Forge.ORM.NHibernateExtension.Model;
 using Forge.Reflection;
+using Forge.Shared;
 using NHibernate.Criterion;
 
 namespace Forge.ORM.NHibernateExtension.Criterias
@@ -63,8 +64,8 @@ namespace Forge.ORM.NHibernateExtension.Criterias
             {
                 ThrowHelper.ThrowArgumentNullException("values");
             }
-            this.mValues = values;
-            this.Negation = disjunction;
+            mValues = values;
+            Negation = disjunction;
         }
 
         #endregion
@@ -86,7 +87,7 @@ namespace Forge.ORM.NHibernateExtension.Criterias
                 {
                     ThrowHelper.ThrowArgumentNullException("value");
                 }
-                this.mValues = value;
+                mValues = value;
                 Reset();
             }
         }
@@ -111,7 +112,7 @@ namespace Forge.ORM.NHibernateExtension.Criterias
 
             ExtractObjectData of = ExtractObjectData.Create(FieldName);
             object entityValue = of.GetValue(entity);
-            foreach (object o in this.Values)
+            foreach (object o in Values)
             {
                 if (o == null && entityValue == null)
                 {
@@ -145,7 +146,7 @@ namespace Forge.ORM.NHibernateExtension.Criterias
         public override object Clone()
         {
             InCriteria cloned = (InCriteria)base.Clone();
-            cloned.mValues = this.mValues;
+            cloned.mValues = mValues;
             return cloned;
         }
 
@@ -160,7 +161,7 @@ namespace Forge.ORM.NHibernateExtension.Criterias
         /// <returns></returns>
         protected override ICriterion BuildCriterion(string fieldName)
         {
-            ICriterion result = Restrictions.In(fieldName, this.Values);
+            ICriterion result = Restrictions.In(fieldName, Values);
             if (Negation)
             {
                 result = Restrictions.Not(result);

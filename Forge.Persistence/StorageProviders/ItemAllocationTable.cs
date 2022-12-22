@@ -20,7 +20,7 @@ namespace Forge.Persistence.StorageProviders
         {
         }
 
-        internal List<String> FileItemNames { get { return mFileItemNames; } }
+        internal List<string> FileItemNames { get { return mFileItemNames; } }
 
         internal int FileUid { get; set; }
 

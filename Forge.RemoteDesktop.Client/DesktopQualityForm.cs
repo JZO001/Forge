@@ -24,7 +24,7 @@ namespace Forge.RemoteDesktop.Client
         {
             InitializeComponent();
 
-            this.Text = Resources.lDesktopQuality;
+            Text = Resources.lDesktopQuality;
             lInfo.Text = Resources.lDesktopQuality;
             cbAuto.Text = Resources.cbAuto;
             btOk.Text = Resources.Button_OK;
@@ -52,7 +52,7 @@ namespace Forge.RemoteDesktop.Client
 
         private void btOk_Click(object sender, EventArgs e)
         {
-            this.DialogResult = System.Windows.Forms.DialogResult.OK;
+            DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
     }

@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Shared;
 using System;
 using System.Diagnostics;
 
@@ -40,7 +41,7 @@ namespace Forge.Net.Remoting.Channels
             {
                 ThrowHelper.ThrowArgumentNullException("sessionId");
             }
-            this.mSessionId = sessionId;
+            mSessionId = sessionId;
         }
 
         #endregion

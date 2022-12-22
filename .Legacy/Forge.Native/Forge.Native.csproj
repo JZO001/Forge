@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B2B97F2D-EFF3-4568-AE8A-10646114AB14}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Forge.Native</RootNamespace>
+    <AssemblyName>Forge.Native</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Forge.Native.xml</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;IS_WINDOWS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Forge.Native.xml</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Forge.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Helpers\KeyboardOperations.cs" />
+    <Compile Include="Helpers\MouseOperations.cs" />
+    <Compile Include="Hooks\ClipboardChangedEventArgs.cs" />
+    <Compile Include="Hooks\ClipboardEventManager.cs" />
+    <Compile Include="Hooks\HookEventEnum.cs" />
+    <Compile Include="Hooks\KeyboardEventHookManager.cs" />
+    <Compile Include="Hooks\KeyboardInputNotificationEnum.cs" />
+    <Compile Include="Hooks\MouseEventExtendedArgs.cs" />
+    <Compile Include="Hooks\MouseEventHookManager.cs" />
+    <Compile Include="Hooks\MouseInputNotificationEnum.cs" />
+    <Compile Include="InputDeviceTypeEnum.cs" />
+    <Compile Include="KeyboardKeyEventEnum.cs" />
+    <Compile Include="MouseEventEnum.cs" />
+    <Compile Include="MouseXButtonEnum.cs" />
+    <Compile Include="NativeMethods.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Structures\CursorInfo.cs" />
+    <Compile Include="Structures\HardwareInput.cs" />
+    <Compile Include="Structures\KeyboardInput.cs" />
+    <Compile Include="Structures\MouseInput.cs" />
+    <Compile Include="Structures\MouseKeyboardHardwareUnion.cs" />
+    <Compile Include="Structures\SendInputInfo.cs" />
+    <Compile Include="Structures\SystemTime.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Forge.pfx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Forge.Base\Forge.Base.csproj">
+      <Project>{f3eed65e-c103-4ba8-af1d-37421d73a708}</Project>
+      <Name>Forge.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Forge.Windows.UI\Forge.Windows.UI.csproj">
+      <Project>{036563af-a18a-4821-b915-5aa1e8b80445}</Project>
+      <Name>Forge.Windows.UI</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>echo F|xcopy /r /y "$(TargetPath)" "$(SolutionDir).Output\$(TargetFileName)"
+echo F|xcopy /r /y "$(TargetDir)$(TargetName).pdb" "$(SolutionDir).Output\$(TargetName).pdb"
+echo F|xcopy /r /y "$(TargetDir)$(TargetName).xml" "$(SolutionDir).Output\$(TargetName).xml"
+</PostBuildEvent>
+  </PropertyGroup>
+</Project>

@@ -8,8 +8,9 @@ using System;
 using System.Collections;
 using System.Reflection;
 using Forge.Collections;
-using Forge.Logging;
+using Forge.Logging.Abstraction;
 using Forge.ORM.NHibernateExtension.Model;
+using Forge.Shared;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Proxy;
@@ -161,8 +162,8 @@ namespace Forge.ORM.NHibernateExtension
         {
             if (logQuery)
             {
-                if (LOGGER.IsDebugEnabled) LOGGER.Debug(String.Format("<--- QUERY (ID: {0}) BEGIN --->", queryData.Id));
-                if (LOGGER.IsDebugEnabled) LOGGER.Debug(String.Format("(ID: {0}) {1}: {2}", queryData.Id, queryData.EntityType.FullName, criteria.ToString()));
+                if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("<--- QUERY (ID: {0}) BEGIN --->", queryData.Id));
+                if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("(ID: {0}) {1}: {2}", queryData.Id, queryData.EntityType.FullName, criteria.ToString()));
             }
 
             ListSpecialized<TEntity> result = null;
@@ -171,14 +172,14 @@ namespace Forge.ORM.NHibernateExtension
                 result = new ListSpecialized<TEntity>(criteria.List<TEntity>());
                 if (logQuery)
                 {
-                    if (LOGGER.IsDebugEnabled) LOGGER.Debug(String.Format("<--- QUERY (ID: {0}) END, SIZE OF THE RESULT SET: {1} --->", queryData.Id, result == null ? "0" : result.Count.ToString()));
+                    if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("<--- QUERY (ID: {0}) END, SIZE OF THE RESULT SET: {1} --->", queryData.Id, result == null ? "0" : result.Count.ToString()));
                 }
             }
             catch (Exception ex)
             {
                 if (logQuery)
                 {
-                    if (LOGGER.IsDebugEnabled) LOGGER.Debug(String.Format("<--- QUERY (ID: {0}) END, FAILED --->", queryData.Id));
+                    if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("<--- QUERY (ID: {0}) END, FAILED --->", queryData.Id));
                 }
                 throw new QueryException(ex.Message, ex);
             }

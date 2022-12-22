@@ -25,7 +25,7 @@ namespace Forge.Net.Services.Locators
         /// <param name="serviceProviders">The service providers.</param>
         public ServiceProvidersChangedEventArgs(ListSpecialized<ServiceProvider> serviceProviders)
         {
-            this.mServiceProviders.AddRange(serviceProviders);
+            mServiceProviders.AddRange(serviceProviders);
         }
 
         /// <summary>

@@ -7,10 +7,12 @@
 using System;
 using System.IO;
 using System.Text;
+using Forge.Formatters;
 using Forge.Net.TerraGraf.Messaging;
 using Forge.Persistence.Formatters;
 using Forge.Persistence.Serialization;
 using Forge.Reflection;
+using Forge.Shared;
 
 namespace Forge.Net.TerraGraf.Formatters
 {
@@ -82,7 +84,7 @@ namespace Forge.Net.TerraGraf.Formatters
             int b = stream.ReadByte();
             if (b == 0)
             {
-                b = stream.ReadByte(); // kihagyjuk a jelző byte-ot ha van
+                b = stream.ReadByte(); // skip maker byte, if I have one
             }
             if (b == 0)
             {
@@ -109,7 +111,7 @@ namespace Forge.Net.TerraGraf.Formatters
                 }
                 ms.SetLength(0);
 
-                // előírt adatmennyiség kiolvasása
+                // reading predicted data length
                 byte[] buffer = new byte[messageLength];
                 int readBytes = 0;
                 while (readBytes < buffer.Length)
@@ -143,17 +145,17 @@ namespace Forge.Net.TerraGraf.Formatters
             }
             using (MemoryStream dataStream = new MemoryStream())
             {
-                mFormatter.Write(dataStream, data); // ez dobhat egy FormatException-t
+                mFormatter.Write(dataStream, data); // it can throw an FormatException
                 using (MemoryStream headerStream = new MemoryStream())
                 {
                     byte[] lenBytes = Encoding.UTF8.GetBytes(dataStream.Length.ToString());
-                    headerStream.WriteByte((byte)0); // jelző byte
-                    headerStream.Write(lenBytes, 0, lenBytes.Length); // üzenet hossza
-                    headerStream.WriteByte((byte)0); // elválasztó
+                    headerStream.WriteByte((byte)0); // maker byte
+                    headerStream.Write(lenBytes, 0, lenBytes.Length); // length of the message
+                    headerStream.WriteByte((byte)0); // maker / split
                     headerStream.Position = 0;
-                    headerStream.CopyTo(stream); // header írása
+                    headerStream.CopyTo(stream); // writing header
                     dataStream.Position = 0;
-                    dataStream.CopyTo(stream); // adat írása
+                    dataStream.CopyTo(stream); // writing data
                 }
             }
         }

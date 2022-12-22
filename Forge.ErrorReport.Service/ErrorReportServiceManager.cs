@@ -14,6 +14,7 @@ using Forge.Net.Remoting.Service;
 using Forge.Net.Services;
 using Forge.Net.Services.ConfigSection;
 using Forge.Net.Services.Services;
+using Forge.Shared;
 
 namespace Forge.ErrorReport.Service
 {
@@ -66,7 +67,7 @@ namespace Forge.ErrorReport.Service
                     ChannelId = ConfigurationAccessHelper.GetValueByPath(NetworkServiceConfiguration.Settings.CategoryPropertyItems, string.Format("Services/{0}", Id));
                     if (string.IsNullOrEmpty(this.ChannelId))
                     {
-                        this.ChannelId = Id;
+                        ChannelId = Id;
                     }
 
                     Channel channel = LookUpChannel();
@@ -82,24 +83,24 @@ namespace Forge.ErrorReport.Service
                         ServiceBaseServices.RegisterContract(typeof(IErrorReportSendContract), typeof(ErrorReportServiceImpl));
                     }
 
-                    this.mPriority = priority;
-                    this.mServiceDescriptor = serviceDescriptor;
+                    mPriority = priority;
+                    mServiceDescriptor = serviceDescriptor;
 
                     RegisterToPeerContext(channel, priority, serviceDescriptor);
 
-                    this.ManagerState = ManagerStateEnum.Started;
+                    ManagerState = ManagerStateEnum.Started;
 
                     if (LOGGER.IsInfoEnabled) LOGGER.Info(string.Format("{0}, service successfully initialized.", LOG_PREFIX));
                 }
                 catch (Exception)
                 {
-                    this.ManagerState = ManagerStateEnum.Fault;
+                    ManagerState = ManagerStateEnum.Fault;
                     throw;
                 }
 
                 OnStart(ManagerEventStateEnum.After);
             }
-            return this.ManagerState;
+            return ManagerState;
         }
 
         #endregion

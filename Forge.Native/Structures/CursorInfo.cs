@@ -23,8 +23,7 @@ namespace Forge.Native.Structures
         /// <summary>
         /// Specifies the size, in bytes, of the structure.
         /// </summary>
-        public Int32 cbSize;
-
+        public int cbSize;
 
         /// <summary>
         /// The caller must set this to Marshal.SizeOf(typeof(CursorInfo)).
@@ -33,7 +32,7 @@ namespace Forge.Native.Structures
         /// 0 - The cursor is hidden.
         /// 1 - The cursor is showing.
         /// </summary>
-        public Int32 flags;
+        public int flags;
 
         /// <summary>
         /// Handle to the cursor.

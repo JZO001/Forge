@@ -16,7 +16,7 @@ namespace Forge.Net.TerraGraf
     public interface ISocketSafeHandle
     {
 
-        #region Public method(s)
+        #region Method(s)
 
         /// <summary>
         /// Detect the status of the socket
@@ -39,7 +39,7 @@ namespace Forge.Net.TerraGraf
 
         #endregion
 
-        #region Public properties
+        #region Properties
 
         /// <summary>
         /// Gets the address family.

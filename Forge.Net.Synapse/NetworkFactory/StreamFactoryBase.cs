@@ -7,7 +7,13 @@
 using System;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
+using Forge.Configuration;
 using Forge.Configuration.Shared;
+using Forge.Legacy;
+using Forge.Net.Synapse.NetworkServices;
+using Forge.Net.Synapse.Options;
+using Forge.Shared;
 
 namespace Forge.Net.Synapse.NetworkFactory
 {
@@ -15,7 +21,7 @@ namespace Forge.Net.Synapse.NetworkFactory
     /// <summary>
     /// Base class for stream factories. Contains helper methods for cofiguration parsing.
     /// </summary>
-    public abstract class StreamFactoryBase : MBRBase
+    public abstract class StreamFactoryBase : MBRBase, IStreamFactory
     {
 
         #region Field(s)
@@ -52,11 +58,11 @@ namespace Forge.Net.Synapse.NetworkFactory
         {
             if (receiveBufferSize >= 1024)
             {
-                this.mReceiveBufferSize = receiveBufferSize;
+                mReceiveBufferSize = receiveBufferSize;
             }
             if (sendBufferSize >= 1024)
             {
-                this.mSendBufferSize = sendBufferSize;
+                mSendBufferSize = sendBufferSize;
             }
         }
 
@@ -70,14 +76,6 @@ namespace Forge.Net.Synapse.NetworkFactory
             : this(receiveBufferSize, sendBufferSize)
         {
             NoDelay = noDelay;
-        }
-
-        /// <summary>
-        /// Finalizes an instance of the <see cref="StreamFactoryBase"/> class.
-        /// </summary>
-        ~StreamFactoryBase()
-        {
-            Dispose(false);
         }
 
         #endregion
@@ -188,13 +186,33 @@ namespace Forge.Net.Synapse.NetworkFactory
 
         #endregion
 
-        #region Public method(s)
+#region Public method(s)
+
+#if NETCOREAPP3_1_OR_GREATER
+        /// <summary>
+        /// Creates the network stream asynhronously.
+        /// </summary>
+        /// <param name="tcpClient">The TCP client.</param>
+        /// <returns>Network Stream instance</returns>
+        public async Task<NetworkStream> CreateNetworkStreamAsync(ITcpClient tcpClient)
+        {
+            if (tcpClient == null) ThrowHelper.ThrowArgumentNullException("tcpClient");
+            return await Task.Run(() => CreateNetworkStream(tcpClient));
+        }
+#endif
+
+        /// <summary>
+        /// Creates the network stream.
+        /// </summary>
+        /// <param name="tcpClient">The TCP client.</param>
+        /// <returns>Network Stream instance</returns>
+        public abstract NetworkStream CreateNetworkStream(ITcpClient tcpClient);
 
         /// <summary>
         /// Initializes the specified config item.
         /// </summary>
         /// <param name="configItem">The config item.</param>
-        public virtual void Initialize(CategoryPropertyItem configItem)
+        public virtual void Initialize(IPropertyItem configItem)
         {
             if (configItem == null)
             {
@@ -204,37 +222,46 @@ namespace Forge.Net.Synapse.NetworkFactory
             int value = 8192;
             if (ParseIntValue(configItem, "ReceiveBufferSize", 1024, 65536, ref value))
             {
-                this.mReceiveBufferSize = value;
+                mReceiveBufferSize = value;
             }
 
             value = 8192;
             if (ParseIntValue(configItem, "SendBufferSize", 1024, 65536, ref value))
             {
-                this.mSendBufferSize = value;
+                mSendBufferSize = value;
             }
 
             value = Timeout.Infinite;
             if (ParseIntValue(configItem, "ReceiveTimeout", Timeout.Infinite, int.MaxValue, ref value))
             {
-                this.mReceiveTimeout = value;
+                mReceiveTimeout = value;
             }
 
-            value = Timeout.Infinite;
+            value = 120000;
             if (ParseIntValue(configItem, "SendTimeout", Timeout.Infinite, int.MaxValue, ref value))
             {
-                this.mSendTimeout = value;
+                mSendTimeout = value;
             }
 
             NoDelay = ParseBooleanValue(configItem, "NoDelay");
         }
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Initializes the specified config item.
         /// </summary>
-        public void Dispose()
+        /// <param name="options">The pptions.</param>
+        public virtual void Initialize(StreamFactoryOptions options)
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            if (options == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("configItem");
+            }
+
+            mReceiveBufferSize = options.ReceiveBufferSize;
+            mSendBufferSize = options.SendBufferSize;
+            mReceiveTimeout = options.ReceiveTimeout;
+            mSendTimeout = options.SendTimeout;
+            NoDelay = options.NoDelay;
         }
 
         #endregion
@@ -253,14 +280,6 @@ namespace Forge.Net.Synapse.NetworkFactory
         }
 
         /// <summary>
-        /// Releases unmanaged and - optionally - managed resources
-        /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        protected virtual void Dispose(bool disposing)
-        {
-        }
-
-        /// <summary>
         /// Parses the int value.
         /// </summary>
         /// <param name="root">The root.</param>
@@ -269,28 +288,28 @@ namespace Forge.Net.Synapse.NetworkFactory
         /// <param name="maxValue">The max value.</param>
         /// <param name="value">The value.</param>
         /// <returns>True, if the parse method was succeeded, otherwise False.</returns>
-        protected static bool ParseIntValue(CategoryPropertyItem root, String entryId, int minValue, int maxValue, ref int value)
+        protected static bool ParseIntValue(IPropertyItem root, string entryId, int minValue, int maxValue, ref int value)
         {
             bool result = false;
-            CategoryPropertyItem pi = ConfigurationAccessHelper.GetCategoryPropertyByPath(root.PropertyItems, entryId);
+            IPropertyItem pi = ConfigurationAccessHelper.GetPropertyByPath(root, entryId);
             if (pi != null)
             {
                 try
                 {
-                    value = int.Parse(pi.EntryValue);
+                    value = int.Parse(pi.Value);
                     result = true;
                 }
                 catch (FormatException ex)
                 {
-                    throw new InvalidConfigurationException(String.Format("Invalid value for item: {0}", entryId), ex);
+                    throw new InvalidConfigurationException(string.Format("Invalid value for item: {0}", entryId), ex);
                 }
                 if (value < minValue)
                 {
-                    throw new InvalidConfigurationException(String.Format("Minimum value ({0}) is out of range ({1}) for item: {2}", minValue, result, entryId));
+                    throw new InvalidConfigurationException(string.Format("Minimum value ({0}) is out of range ({1}) for item: {2}", minValue, result, entryId));
                 }
                 if (value > maxValue)
                 {
-                    throw new InvalidConfigurationException(String.Format("Maximum value ({0}) is out of range ({1}) for item: {2}", maxValue, result, entryId));
+                    throw new InvalidConfigurationException(string.Format("Maximum value ({0}) is out of range ({1}) for item: {2}", maxValue, result, entryId));
                 }
             }
             return result;
@@ -302,19 +321,13 @@ namespace Forge.Net.Synapse.NetworkFactory
         /// <param name="root">The root.</param>
         /// <param name="entryId">The entry id.</param>
         /// <returns>True, if the parse method was succeeded, otherwise False.</returns>
-        protected static bool ParseBooleanValue(CategoryPropertyItem root, String entryId)
+        protected static bool ParseBooleanValue(IPropertyItem root, string entryId)
         {
             bool result = false;
-            CategoryPropertyItem pi = ConfigurationAccessHelper.GetCategoryPropertyByPath(root.PropertyItems, entryId);
+            IPropertyItem pi = ConfigurationAccessHelper.GetPropertyByPath(root, entryId);
             if (pi != null)
             {
-                try
-                {
-                    result = bool.Parse(pi.EntryValue);
-                }
-                catch (Exception)
-                {
-                }
+                bool.TryParse(pi.Value, out result);
             }
             return result;
         }
@@ -326,13 +339,13 @@ namespace Forge.Net.Synapse.NetworkFactory
         /// <param name="entryId">The entry id.</param>
         /// <param name="defaultValue">The default value.</param>
         /// <returns>True, if the parse method was succeeded, otherwise False.</returns>
-        protected static String ParseStringValue(CategoryPropertyItem root, String entryId, String defaultValue)
+        protected static string ParseStringValue(IPropertyItem root, string entryId, string defaultValue)
         {
-            String result = defaultValue;
-            CategoryPropertyItem pi = ConfigurationAccessHelper.GetCategoryPropertyByPath(root.PropertyItems, entryId);
+            string result = defaultValue;
+            IPropertyItem pi = ConfigurationAccessHelper.GetPropertyByPath(root, entryId);
             if (pi != null)
             {
-                result = pi.EntryValue;
+                result = pi.Value;
             }
             return result;
         }
@@ -344,15 +357,15 @@ namespace Forge.Net.Synapse.NetworkFactory
         /// <param name="root">The root.</param>
         /// <param name="entryId">The entry unique identifier.</param>
         /// <returns></returns>
-        protected static TEnum ParseEnumValue<TEnum>(CategoryPropertyItem root, String entryId) where TEnum : struct
+        protected static TEnum ParseEnumValue<TEnum>(IPropertyItem root, string entryId) where TEnum : struct
         {
             TEnum result = default(TEnum);
-            CategoryPropertyItem pi = ConfigurationAccessHelper.GetCategoryPropertyByPath(root.PropertyItems, entryId);
+            IPropertyItem pi = ConfigurationAccessHelper.GetPropertyByPath(root, entryId);
             if (pi != null)
             {
                 try
                 {
-                    result = (TEnum)Enum.Parse(typeof(TEnum), pi.EntryValue, true);
+                    result = (TEnum)Enum.Parse(typeof(TEnum), pi.Value, true);
                 }
                 catch (Exception)
                 {
@@ -361,7 +374,7 @@ namespace Forge.Net.Synapse.NetworkFactory
             return result;
         }
 
-        #endregion
+#endregion
 
     }
 

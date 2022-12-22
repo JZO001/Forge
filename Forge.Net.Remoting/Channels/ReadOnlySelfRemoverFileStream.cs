@@ -4,7 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
-using Forge.Logging;
+using Forge.Logging.Abstraction;
 using System;
 using System.IO;
 
@@ -19,7 +19,7 @@ namespace Forge.Net.Remoting.Channels
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(ReadOnlySelfRemoverFileStream));
+        private static readonly ILog LOGGER = LogManager.GetLogger<ReadOnlySelfRemoverFileStream>();
 
         private string mFileName = string.Empty;
 
@@ -35,7 +35,7 @@ namespace Forge.Net.Remoting.Channels
         internal ReadOnlySelfRemoverFileStream(string fileName, FileMode fileMode)
             : base(fileName, fileMode, fileMode == FileMode.Open ? FileAccess.Read : FileAccess.Write, FileShare.Read)
         {
-            this.mFileName = fileName;
+            mFileName = fileName;
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace Forge.Net.Remoting.Channels
         internal ReadOnlySelfRemoverFileStream(FileInfo fileInfo, FileMode fileMode)
             : base(fileInfo.FullName, fileMode, fileMode == FileMode.Open ? FileAccess.Read : FileAccess.Write, FileShare.Read)
         {
-            this.mFileName = fileInfo.FullName;
+            mFileName = fileInfo.FullName;
         }
 
         #endregion

@@ -7,18 +7,16 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Reflection;
-using System.Security;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using Forge.Collections;
+using Forge.Legacy;
 using Forge.Net.Remoting.Channels;
 using Forge.Net.Remoting.Messaging;
 using Forge.Net.Remoting.Proxy;
 using Forge.Reflection;
+using Forge.Shared;
 
 namespace Forge.Net.Remoting
 {
@@ -41,12 +39,12 @@ namespace Forge.Net.Remoting
         /// <summary>
         /// Reply error message template
         /// </summary>
-        protected static readonly String AUTO_SEND_REPLY_ERROR_MSG = "Unable to send response automatically. Reason: {0}";
+        protected static readonly string AUTO_SEND_REPLY_ERROR_MSG = "Unable to send response automatically. Reason: {0}";
 
         /// <summary>
         /// Singleton container
         /// </summary>
-        protected static readonly Dictionary<Type, Object> mSingletonContainer = new Dictionary<Type, Object>(); // implType and instance
+        protected static readonly Dictionary<Type, object> mSingletonContainer = new Dictionary<Type, object>(); // implType and instance
 
         /// <summary>
         /// Contrant and instances storage
@@ -84,7 +82,7 @@ namespace Forge.Net.Remoting
         /// </summary>
         /// <param name="value">The value.</param>
         /// <exception cref="System.InvalidOperationException">There is no waiting response context found.</exception>
-        public static void SendResponseManually(Object value)
+        public static void SendResponseManually(object value)
         {
             CallContextForReply cc = null;
             lock (mCallContextForReply)
@@ -118,7 +116,7 @@ namespace Forge.Net.Remoting
         /// <param name="value">The value.</param>
         /// <param name="timeout">The timeout.</param>
         /// <exception cref="System.InvalidOperationException">There is no waiting response context found.</exception>
-        public static void SendResponseManually(Object value, long timeout)
+        public static void SendResponseManually(object value, long timeout)
         {
             CallContextForReply cc = null;
             lock (mCallContextForReply)
@@ -222,7 +220,7 @@ namespace Forge.Net.Remoting
         /// <returns>MedhotInfo</returns>
         /// <exception cref="System.MissingMethodException">
         /// </exception>
-        public static MethodInfo FindMethod(Type type, String methodName, Type[] methodParams)
+        public static MethodInfo FindMethod(Type type, string methodName, Type[] methodParams)
         {
             if (type == null)
             {
@@ -253,7 +251,7 @@ namespace Forge.Net.Remoting
         /// <returns>Timeout value</returns>
         /// <exception cref="Forge.Net.Remoting.InvalidProxyImplementationException">
         /// </exception>
-        public static long GetTimeoutByMethod(Type serviceContract, String methodName, MethodParameter[] parameterTypes, MethodTimeoutEnum timeoutType)
+        public static long GetTimeoutByMethod(Type serviceContract, string methodName, MethodParameter[] parameterTypes, MethodTimeoutEnum timeoutType)
         {
             long result = 0;
             Type[] pts = null;
@@ -268,7 +266,7 @@ namespace Forge.Net.Remoting
                     }
                     catch (Exception ex)
                     {
-                        throw new InvalidProxyImplementationException(String.Format("Provided parameter type '{0}' not resolved. This may be a proxy implementation error.", parameterTypes[i].ClassName), ex);
+                        throw new InvalidProxyImplementationException(string.Format("Provided parameter type '{0}' not resolved. This may be a proxy implementation error.", parameterTypes[i].ClassName), ex);
                     }
                 }
             }
@@ -279,7 +277,7 @@ namespace Forge.Net.Remoting
                 if (oc == null)
                 {
                     // ez a metódus nem tartalmaz annotációt, ami csak akkor lehetséges, ha a proxy hibásan van generálva
-                    throw new InvalidProxyImplementationException(String.Format("Provided method '{0}' found, but it has not got {1} annotation definition. This may be a proxy implementation error.", methodName, typeof(OperationContractAttribute).FullName));
+                    throw new InvalidProxyImplementationException(string.Format("Provided method '{0}' found, but it has not got {1} annotation definition. This may be a proxy implementation error.", methodName, typeof(OperationContractAttribute).FullName));
                 }
                 else
                 {
@@ -299,9 +297,9 @@ namespace Forge.Net.Remoting
                         }
                         sb.Append(c.Name);
                     }
-                    sb.Insert(0, String.Format(" Parameter types: ", pts.ToString()));
+                    sb.Insert(0, string.Format(" Parameter types: ", pts.ToString()));
                 }
-                throw new InvalidProxyImplementationException(String.Format("Unable to find method name '{0}' with parameter types.{1}", methodName, sb.ToString()), ex);
+                throw new InvalidProxyImplementationException(string.Format("Unable to find method name '{0}' with parameter types.{1}", methodName, sb.ToString()), ex);
             }
 
             return result;
@@ -320,7 +318,7 @@ namespace Forge.Net.Remoting
         /// <param name="sessionId">The session id.</param>
         /// <param name="proxyId">The proxy id.</param>
         /// <param name="instance">The instance.</param>
-        internal static void RegisterProxy(Channel channel, Type contractType, Type implType, String sessionId, long proxyId, ProxyBase instance)
+        internal static void RegisterProxy(Channel channel, Type contractType, Type implType, string sessionId, long proxyId, ProxyBase instance)
         {
             lock (mContractAndInstancePerSessionAndChannel)
             {
@@ -353,7 +351,7 @@ namespace Forge.Net.Remoting
             }
         }
 
-        private static MethodInfo FindMethodInner(Type type, String methodName, Type[] methodParams)
+        private static MethodInfo FindMethodInner(Type type, string methodName, Type[] methodParams)
         {
             MethodInfo m = null;
 
@@ -381,7 +379,7 @@ namespace Forge.Net.Remoting
                         }
                     }
                 }
-                else if (type.BaseType == null || type.BaseType.Equals(typeof(Object)))
+                else if (type.BaseType == null || type.BaseType.Equals(typeof(object)))
                 {
                     //throw new MissingMethodException();
                 }
@@ -408,7 +406,7 @@ namespace Forge.Net.Remoting
         /// <param name="result">The result.</param>
         /// <param name="methodException">The method exception.</param>
         /// <param name="timeout">The timeout.</param>
-        protected static void SendResponse(Channel channel, String sessionId, RequestMessage rm, Type returnType, Object result, Exception methodException, long timeout)
+        protected static void SendResponse(Channel channel, string sessionId, RequestMessage rm, Type returnType, object result, Exception methodException, long timeout)
         {
             if (rm.MessageType == MessageTypeEnum.Request)
             {
@@ -460,16 +458,16 @@ namespace Forge.Net.Remoting
             #region Field(s)
 
             [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-            private Channel mChannel = null;
+            private readonly Channel mChannel = null;
 
             [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-            private Type mContractType = null;
+            private readonly Type mContractType = null;
 
             [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-            private Type mImplType = null;
+            private readonly Type mImplType = null;
 
             [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-            private String mSessionId = string.Empty;
+            private readonly string mSessionId = string.Empty;
 
             /*
              * Szerver oldalon azt mondja meg, hogy a kliens proxy-nak mi az azonosítója, akinek a hívására létrejött.
@@ -494,7 +492,7 @@ namespace Forge.Net.Remoting
             /// <param name="sessionId">The session id.</param>
             /// <param name="proxyId">The proxy id.</param>
             /// <param name="instance">The instance.</param>
-            public ContractAndInstanceStruct(Channel channel, Type contractType, Type implType, String sessionId, long proxyId,
+            public ContractAndInstanceStruct(Channel channel, Type contractType, Type implType, string sessionId, long proxyId,
                 ProxyBase instance)
             {
                 if (channel == null)
@@ -522,12 +520,12 @@ namespace Forge.Net.Remoting
                     ThrowHelper.ThrowArgumentException("Type of implementation is not assignable from ProxyBase.");
                 }
 
-                this.mChannel = channel;
-                this.mContractType = contractType;
-                this.mImplType = implType;
-                this.mSessionId = sessionId;
-                this.mProxyId = proxyId;
-                this.mInstance = instance;
+                mChannel = channel;
+                mContractType = contractType;
+                mImplType = implType;
+                mSessionId = sessionId;
+                mProxyId = proxyId;
+                mInstance = instance;
             }
 
             #endregion
@@ -571,7 +569,7 @@ namespace Forge.Net.Remoting
             /// Gets the session id.
             /// </summary>
             [DebuggerHidden]
-            public String SessionId
+            public string SessionId
             {
                 get { return mSessionId; }
             }
@@ -607,19 +605,19 @@ namespace Forge.Net.Remoting
             #region Field(s)
 
             [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-            private Channel mChannel = null;
+            private readonly Channel mChannel = null;
 
             [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-            private String mSessionId = string.Empty;
+            private readonly string mSessionId = string.Empty;
 
             [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-            private RequestMessage mMessage = null;
+            private readonly RequestMessage mMessage = null;
 
             [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-            private Type mReturnType = null;
+            private readonly Type mReturnType = null;
 
             [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-            private long mReturnTimeout = OperationContractAttribute.DEFAULT_METHOD_TIMEOUT;
+            private readonly long mReturnTimeout = OperationContractAttribute.DEFAULT_METHOD_TIMEOUT;
 
             #endregion
 
@@ -633,7 +631,7 @@ namespace Forge.Net.Remoting
             /// <param name="message">The message.</param>
             /// <param name="returnType">Type of the return.</param>
             /// <param name="returnTimeout">The return timeout.</param>
-            public CallContextForReply(Channel channel, String sessionId, RequestMessage message, Type returnType, long returnTimeout)
+            public CallContextForReply(Channel channel, string sessionId, RequestMessage message, Type returnType, long returnTimeout)
             {
                 if (channel == null)
                 {
@@ -651,11 +649,11 @@ namespace Forge.Net.Remoting
                 {
                     ThrowHelper.ThrowArgumentNullException("returnType");
                 }
-                this.mChannel = channel;
-                this.mSessionId = sessionId;
-                this.mMessage = message;
-                this.mReturnType = returnType;
-                this.mReturnTimeout = returnTimeout;
+                mChannel = channel;
+                mSessionId = sessionId;
+                mMessage = message;
+                mReturnType = returnType;
+                mReturnTimeout = returnTimeout;
             }
 
             #endregion
@@ -675,7 +673,7 @@ namespace Forge.Net.Remoting
             /// Gets the session id.
             /// </summary>
             [DebuggerHidden]
-            public String SessionId
+            public string SessionId
             {
                 get { return mSessionId; }
             }

@@ -6,8 +6,9 @@
 
 using System;
 using System.IO;
+using Forge.Configuration;
 using Forge.Configuration.Shared;
-using Forge.IO;
+using Forge.Shared;
 
 namespace Forge.UpdateFramework.Client.Configuration
 {
@@ -48,7 +49,7 @@ namespace Forge.UpdateFramework.Client.Configuration
         /// </summary>
         /// <param name="codeBaseFolder">The code base folder.</param>
         /// <param name="item">The item.</param>
-        public DirectoryEntry(string codeBaseFolder, CategoryPropertyItem item)
+        public DirectoryEntry(string codeBaseFolder, IPropertyItem item)
         {
             if (string.IsNullOrEmpty(codeBaseFolder))
             {
@@ -73,7 +74,7 @@ namespace Forge.UpdateFramework.Client.Configuration
             }
 
             bool subFolder = true;
-            ConfigurationAccessHelper.ParseBooleanValue(item.PropertyItems, EXCLUDE_SUBFOLDERS, ref subFolder);
+            ConfigurationAccessHelper.ParseBooleanValue(item, EXCLUDE_SUBFOLDERS, ref subFolder);
             this.IncludeSubFolders = subFolder;
         }
 

@@ -56,8 +56,8 @@ namespace Forge.Net.Remoting.Messaging
         /// <param name="messageType">Type of the message.</param>
         protected Message(string correlationId, MessageTypeEnum messageType)
         {
-            this.mCorrelationId = correlationId;
-            this.mMessageType = messageType;
+            mCorrelationId = correlationId;
+            mMessageType = messageType;
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace Forge.Net.Remoting.Messaging
         protected Message(string correlationId, MessageTypeEnum messageType, bool allowParallelExecution)
             : this(correlationId, messageType)
         {
-            this.AllowParallelExecution = allowParallelExecution;
+            AllowParallelExecution = allowParallelExecution;
         }
 
         #endregion
@@ -167,7 +167,7 @@ namespace Forge.Net.Remoting.Messaging
         /// </returns>
         public override string ToString()
         {
-            return string.Format("{0}, CorId: {1}, MessageType: {2}", this.GetType().Name, mCorrelationId == null ? "<none>" : mCorrelationId, mMessageType.ToString());
+            return string.Format("{0}, CorId: {1}, MessageType: {2}", GetType().Name, mCorrelationId == null ? "<none>" : mCorrelationId, mMessageType.ToString());
         }
 
         #endregion
@@ -178,7 +178,7 @@ namespace Forge.Net.Remoting.Messaging
         /// Creates the new correlation id.
         /// </summary>
         /// <returns></returns>
-        protected static String CreateNewCorrelationId()
+        protected static string CreateNewCorrelationId()
         {
             return Guid.NewGuid().ToString();
         }

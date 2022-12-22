@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using Forge.Net.TerraGraf.NetworkInfo;
+using Forge.Shared;
 
 namespace Forge.Net.TerraGraf.Messaging
 {
@@ -48,7 +49,7 @@ namespace Forge.Net.TerraGraf.Messaging
             {
                 ThrowHelper.ThrowArgumentNullException("natGatewayContainer");
             }
-            this.mNATGatewayContainer = natGatewayContainer;
+            mNATGatewayContainer = natGatewayContainer;
         }
 
         /// <summary>
@@ -64,7 +65,7 @@ namespace Forge.Net.TerraGraf.Messaging
             {
                 ThrowHelper.ThrowArgumentNullException("peerContextContainer");
             }
-            this.mPeerContextContainer = peerContextContainer;
+            mPeerContextContainer = peerContextContainer;
         }
 
         /// <summary>
@@ -80,7 +81,7 @@ namespace Forge.Net.TerraGraf.Messaging
             {
                 ThrowHelper.ThrowArgumentNullException("serverContainer");
             }
-            this.mServerContainer = serverContainer;
+            mServerContainer = serverContainer;
         }
 
         #endregion

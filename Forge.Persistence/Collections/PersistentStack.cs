@@ -26,8 +26,8 @@ namespace Forge.Persistence.Collections
         /// </summary>
         /// <param name="stackId">The stack id.</param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        public PersistentStack(String stackId) :
-            base(stackId, CacheStrategyEnum.CacheForStack, Int32.MaxValue)
+        public PersistentStack(string stackId) :
+            base(stackId, CacheStrategyEnum.CacheForStack, int.MaxValue)
         {
             SetStorageProvider(new FileStorageProvider<T>(stackId), true);
             FillCache();
@@ -38,8 +38,8 @@ namespace Forge.Persistence.Collections
         /// </summary>
         /// <param name="stackId">The stack id.</param>
         /// <param name="provider">The provider.</param>
-        public PersistentStack(String stackId, IStorageProvider<T> provider) :
-            base(stackId, CacheStrategyEnum.CacheForStack, Int32.MaxValue)
+        public PersistentStack(string stackId, IStorageProvider<T> provider) :
+            base(stackId, CacheStrategyEnum.CacheForStack, int.MaxValue)
         {
             SetStorageProvider(provider, false);
             FillCache();
@@ -51,7 +51,7 @@ namespace Forge.Persistence.Collections
         /// <param name="stackId">The stack id.</param>
         /// <param name="provider">The provider.</param>
         /// <param name="cacheSize">Size of the cache.</param>
-        public PersistentStack(String stackId, IStorageProvider<T> provider, int cacheSize) :
+        public PersistentStack(string stackId, IStorageProvider<T> provider, int cacheSize) :
             base(stackId, CacheStrategyEnum.CacheForStack, cacheSize)
         {
             SetStorageProvider(provider, false);
@@ -64,7 +64,7 @@ namespace Forge.Persistence.Collections
         /// <param name="stackId">The stack id.</param>
         /// <param name="cacheSize">Size of the cache.</param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        public PersistentStack(String stackId, int cacheSize) :
+        public PersistentStack(string stackId, int cacheSize) :
             base(stackId, CacheStrategyEnum.CacheForStack, cacheSize)
         {
             SetStorageProvider(new FileStorageProvider<T>(stackId), true);
@@ -76,7 +76,7 @@ namespace Forge.Persistence.Collections
         /// </summary>
         /// <param name="stackId">The stack id.</param>
         /// <param name="configurationName">Name of the configuration.</param>
-        public PersistentStack(String stackId, String configurationName) :
+        public PersistentStack(string stackId, string configurationName) :
             base(stackId, CacheStrategyEnum.CacheForStack, configurationName)
         {
         }

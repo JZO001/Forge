@@ -1,0 +1,176 @@
+﻿<Project>
+
+	<Sdk Name="Microsoft.NET.Sdk" />
+
+	<PropertyGroup Label="Globals">
+	  <SccProjectName>SAK</SccProjectName>
+	  <SccProvider>SAK</SccProvider>
+	  <SccAuxPath>SAK</SccAuxPath>
+	  <SccLocalPath>SAK</SccLocalPath>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<TargetFrameworks>net40;netstandard2.0;net5.0;net5.0-windows;net6.0;net6.0-windows</TargetFrameworks>
+		<Version>1.1.0.0</Version>
+		<Copyright>Copyright © Zoltan Juhasz, 2004-2022</Copyright>
+		<Description>Forge Patterns and Practices</Description>
+		<Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
+		<Company>Forge Project Contributor(s)</Company>
+		<PackageId>Forge.Base</PackageId>
+		<Authors>Zoltan Juhasz</Authors>
+		<AssemblyVersion>1.1.0.1</AssemblyVersion>
+		<Title>Forge Base</Title>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<ProjectGuid>{68525113-BEE6-453C-A845-9CE9F57A6EFE}</ProjectGuid>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<DocumentationFile>Forge.Base.xml</DocumentationFile>
+		<RepositoryUrl>https://github.com/JZO001/Forge</RepositoryUrl>
+		<DefineConstants Condition="'$(TargetFramework)' == 'net6.0-windows'">IS_WINDOWS</DefineConstants>
+		<DefineConstants Condition="'$(TargetFramework)' == 'net5.0-windows'">IS_WINDOWS</DefineConstants>
+		<DefineConstants Condition="'$(TargetFramework)' == 'net40'">IS_WINDOWS</DefineConstants>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-windows'">
+		<PackageReference Include="System.Diagnostics.EventLog" Version="6.0.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net5.0-windows'">
+		<PackageReference Include="System.Diagnostics.EventLog" Version="6.0.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+		<PackageReference Include="System.Diagnostics.Debug">
+			<Version>4.3.0</Version>
+		</PackageReference>
+		<PackageReference Include="System.IO.FileSystem">
+			<Version>4.3.0</Version>
+		</PackageReference>
+		<PackageReference Include="System.Net.NameResolution">
+			<Version>4.3.0</Version>
+		</PackageReference>
+		<PackageReference Include="System.Net.Primitives">
+			<Version>4.3.1</Version>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net40'">
+		<Reference Include="System.Configuration" />
+		<Reference Include="System.Web" />
+		<Reference Include="System.Runtime.Serialization.Formatters.Soap" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Collections\" />
+		<Folder Include="Configuration\Check\" />
+		<Folder Include="Configuration\Shared\Interfaces\" />
+		<Folder Include="EventRaiser\" />
+		<Compile Include="..\..\Forge.Base\Consts.cs" Link="Consts.cs" />
+		<Compile Include="..\..\Forge.Base\IO\PathHelper.cs" Link="IO\PathHelper.cs" />
+		<Compile Include="..\..\Forge.Base\Logging\ILog.cs" Link="Logging\ILog.cs" />
+		<Compile Include="..\..\Forge.Base\Logging\ILoggerWrapper.cs" Link="Logging\ILoggerWrapper.cs" />
+		<Compile Include="..\..\Forge.Base\Logging\LogManager.cs" Link="Logging\LogManager.cs" />
+		<Compile Include="..\..\Forge.Base\Logging\NullLog.cs" Link="Logging\NullLog.cs" />
+		<Compile Include="..\..\Forge.Base\Logging\NullLogger.cs" Link="Logging\NullLogger.cs" />
+		<Compile Include="..\..\Forge.Base\Management\IManager.cs" Link="Management\IManager.cs" />
+		<Compile Include="..\..\Forge.Base\Management\ManagerBase.cs" Link="Management\ManagerBase.cs" />
+		<Compile Include="..\..\Forge.Base\Management\ManagerEventStateEnum.cs" Link="Management\ManagerEventStateEnum.cs" />
+		<Compile Include="..\..\Forge.Base\Management\ManagerEventStateEventArgs.cs" Link="Management\ManagerEventStateEventArgs.cs" />
+		<Compile Include="..\..\Forge.Base\Management\ManagerSingletonBase.cs" Link="Management\ManagerSingletonBase.cs" />
+		<Compile Include="..\..\Forge.Base\Management\ManagerStateEnum.cs" Link="Management\ManagerStateEnum.cs" />
+		<Compile Include="..\..\Forge.Base\MBRBase.cs" />
+		<Compile Include="..\..\Forge.Base\ApplicationHelper.cs" Link="ApplicationHelper.cs" />
+		<Compile Include="..\..\Forge.Base\Arrays.cs" Link="Arrays.cs" />
+		<Compile Include="..\..\Forge.Base\ClientUtils.cs" Link="ClientUtils.cs" />
+		<Compile Include="..\..\Forge.Base\Collections\AbstractList.cs" Link="Collections\AbstractList.cs" />
+		<Compile Include="..\..\Forge.Base\Collections\AbstractSubList.cs" Link="Collections\AbstractSubList.cs" />
+		<Compile Include="..\..\Forge.Base\Collections\DictionaryHelper.cs" Link="Collections\DictionaryHelper.cs" />
+		<Compile Include="..\..\Forge.Base\Collections\Enumerator.cs" Link="Collections\Enumerator.cs" />
+		<Compile Include="..\..\Forge.Base\Collections\IEnumerableSpecialized.cs" Link="Collections\IEnumerableSpecialized.cs" />
+		<Compile Include="..\..\Forge.Base\Collections\IEnumeratorSpecialized.cs" Link="Collections\IEnumeratorSpecialized.cs" />
+		<Compile Include="..\..\Forge.Base\Collections\IListSpecialized.cs" Link="Collections\IListSpecialized.cs" />
+		<Compile Include="..\..\Forge.Base\Collections\ISubList.cs" Link="Collections\ISubList.cs" />
+		<Compile Include="..\..\Forge.Base\Collections\ListSpecialized.cs" Link="Collections\ListSpecialized.cs" />
+		<Compile Include="..\..\Forge.Base\Collections\SubListImpl.cs" Link="Collections\SubListImpl.cs" />
+		<Compile Include="..\..\Forge.Base\Configuration\Check\ConfigurationValidator.cs" Link="Configuration\Check\ConfigurationValidator.cs" />
+		<Compile Include="..\..\Forge.Base\Configuration\IInitializable.cs" Link="Configuration\IInitializable.cs" />
+		<Compile Include="..\..\Forge.Base\Configuration\IPropertyItem.cs" Link="Configuration\IPropertyItem.cs" />
+		<Compile Include="..\..\Forge.Base\Configuration\PropertyItem.cs" Link="Configuration\PropertyItem.cs" />
+		<Compile Include="..\..\Forge.Base\Configuration\Shared\CategoryProperties.cs" Link="Configuration\Shared\CategoryProperties.cs" />
+		<Compile Include="..\..\Forge.Base\Configuration\Shared\ConfigSettingsBase.cs" Link="Configuration\Shared\ConfigSettingsBase.cs" />
+		<Compile Include="..\..\Forge.Base\Configuration\Shared\ConfigurationAccessHelper.cs" Link="Configuration\Shared\ConfigurationAccessHelper.cs" />
+		<Compile Include="..\..\Forge.Base\Configuration\Shared\ConfigurationCenter.cs" Link="Configuration\Shared\ConfigurationCenter.cs" />
+		<Compile Include="..\..\Forge.Base\Configuration\Shared\ConfigurationSectionBase.cs" Link="Configuration\Shared\ConfigurationSectionBase.cs" />
+		<Compile Include="..\..\Forge.Base\Configuration\Shared\ConfigurationSectionStandard.cs" Link="Configuration\Shared\ConfigurationSectionStandard.cs" />
+		<Compile Include="..\..\Forge.Base\Configuration\Shared\Interfaces\IConfigurationCategoryContainer.cs" Link="Configuration\Shared\Interfaces\IConfigurationCategoryContainer.cs" />
+		<Compile Include="..\..\Forge.Base\Configuration\Shared\Interfaces\IConfigurationSectionHandler.cs" Link="Configuration\Shared\Interfaces\IConfigurationSectionHandler.cs" />
+		<Compile Include="..\..\Forge.Base\Configuration\Shared\Interfaces\IConfigurationSettingsBase.cs" Link="Configuration\Shared\Interfaces\IConfigurationSettingsBase.cs" />
+		<Compile Include="..\..\Forge.Base\Configuration\Shared\Interfaces\IConfigurationSettingsHandler.cs" Link="Configuration\Shared\Interfaces\IConfigurationSettingsHandler.cs" />
+		<Compile Include="..\..\Forge.Base\Configuration\Shared\InvalidConfigurationException.cs" Link="Configuration\Shared\InvalidConfigurationException.cs" />
+		<Compile Include="..\..\Forge.Base\Configuration\Shared\InvalidConfigurationValueException.cs" Link="Configuration\Shared\InvalidConfigurationValueException.cs" />
+		<Compile Include="..\..\Forge.Base\Configuration\Shared\SharedConfigSettings.cs" Link="Configuration\Shared\SharedConfigSettings.cs" />
+		<Compile Include="..\..\Forge.Base\Configuration\Shared\Validators.cs" Link="Configuration\Shared\Validators.cs" />
+		<Compile Include="..\..\Forge.Base\Delegates.cs" Link="Delegates.cs" />
+		<Compile Include="..\..\Forge.Base\EventRaiser\DelegateInvokeResult.cs" Link="EventRaiser\DelegateInvokeResult.cs" />
+		<Compile Include="..\..\Forge.Base\EventRaiser\Raiser.cs" Link="EventRaiser\Raiser.cs" />
+		<Compile Include="..\..\Forge.Base\EventRaiser\TypeNameResolver.cs" Link="EventRaiser\TypeNameResolver.cs" />
+		<Compile Include="..\..\Forge.Base\HashGeneratorHelper.cs" Link="HashGeneratorHelper.cs" />
+		<Compile Include="..\..\Forge.Base\InitializationException.cs" Link="InitializationException.cs" />
+		<Compile Include="..\..\Forge.Base\Persistence\Formatters\AesByteArrayFormatter.cs" Link="Persistence\Formatters\AesByteArrayFormatter.cs" />
+		<Compile Include="..\..\Forge.Base\Persistence\Formatters\AesFormatter.cs" Link="Persistence\Formatters\AesFormatter.cs" />
+		<Compile Include="..\..\Forge.Base\Persistence\Formatters\BinaryFormatter.cs" Link="Persistence\Formatters\BinaryFormatter.cs" />
+		<Compile Include="..\..\Forge.Base\Persistence\Formatters\GZipFormatter.cs" Link="Persistence\Formatters\GZipFormatter.cs" />
+		<Compile Include="..\..\Forge.Base\Persistence\Formatters\IDataFormatter.cs" Link="Persistence\Formatters\IDataFormatter.cs" />
+		<Compile Include="..\..\Forge.Base\Persistence\Formatters\RijndaelByteArrayFormatter.cs" Link="Persistence\Formatters\RijndaelByteArrayFormatter.cs" />
+		<Compile Include="..\..\Forge.Base\Persistence\Formatters\RijndaelFormatter.cs" Link="Persistence\Formatters\RijndaelFormatter.cs" />
+		<Compile Include="..\..\Forge.Base\Persistence\Formatters\XmlDataFormatter.cs" Link="Persistence\Formatters\XmlDataFormatter.cs" />
+		<Compile Include="..\..\Forge.Base\Persistence\Formatters\XmlSoapFormatter.cs" Link="Persistence\Formatters\XmlSoapFormatter.cs" />
+		<Compile Include="..\..\Forge.Base\Reflection\ExtractObjectData.cs" Link="Reflection\ExtractObjectData.cs" />
+		<Compile Include="..\..\Forge.Base\Reflection\TypeHelper.cs" Link="Reflection\TypeHelper.cs" />
+		<Compile Include="..\..\Forge.Base\Reflection\TypeLookupModeEnum.cs" Link="Reflection\TypeLookupModeEnum.cs" />
+		<Compile Include="..\..\Forge.Base\Reflection\UIReflectionHelper.cs" Link="Reflection\UIReflectionHelper.cs" />
+		<Compile Include="..\..\Forge.Base\Threading\AtomicByte.cs" Link="Threading\AtomicByte.cs" />
+		<Compile Include="..\..\Forge.Base\Threading\AtomicDecimal.cs" Link="Threading\AtomicDecimal.cs" />
+		<Compile Include="..\..\Forge.Base\Threading\AtomicDouble.cs" Link="Threading\AtomicDouble.cs" />
+		<Compile Include="..\..\Forge.Base\Threading\AtomicFloat.cs" Link="Threading\AtomicFloat.cs" />
+		<Compile Include="..\..\Forge.Base\Threading\AtomicInt.cs" Link="Threading\AtomicInt.cs" />
+		<Compile Include="..\..\Forge.Base\Threading\AtomicLong.cs" Link="Threading\AtomicLong.cs" />
+		<Compile Include="..\..\Forge.Base\Threading\AtomicSByte.cs" Link="Threading\AtomicSByte.cs" />
+		<Compile Include="..\..\Forge.Base\Threading\AtomicShort.cs" Link="Threading\AtomicShort.cs" />
+		<Compile Include="..\..\Forge.Base\Threading\AtomicUInt.cs" Link="Threading\AtomicUInt.cs" />
+		<Compile Include="..\..\Forge.Base\Threading\AtomicULong.cs" Link="Threading\AtomicULong.cs" />
+		<Compile Include="..\..\Forge.Base\Threading\AtomicUShort.cs" Link="Threading\AtomicUShort.cs" />
+		<Compile Include="..\..\Forge.Base\Threading\ConfigSection\ThreadPoolConfiguration.cs" Link="Threading\ConfigSection\ThreadPoolConfiguration.cs" />
+		<Compile Include="..\..\Forge.Base\Threading\ConfigSection\ThreadPoolSection.cs" Link="Threading\ConfigSection\ThreadPoolSection.cs" />
+		<Compile Include="..\..\Forge.Base\Threading\DeadlockException.cs" Link="Threading\DeadlockException.cs" />
+		<Compile Include="..\..\Forge.Base\Threading\DeadlockSafeLock.cs" Link="Threading\DeadlockSafeLock.cs" />
+		<Compile Include="..\..\Forge.Base\Threading\ILock.cs" Link="Threading\ILock.cs" />
+		<Compile Include="..\..\Forge.Base\Threading\LockHandle.cs" Link="Threading\LockHandle.cs" />
+		<Compile Include="..\..\Forge.Base\Threading\SynchronizedValue.cs" Link="Threading\SynchronizedValue.cs" />
+		<Compile Include="..\..\Forge.Base\Threading\Tasking\ChaosTheoryEnum.cs" Link="Threading\Tasking\ChaosTheoryEnum.cs" />
+		<Compile Include="..\..\Forge.Base\Threading\Tasking\Delegates.cs" Link="Threading\Tasking\Delegates.cs" />
+		<Compile Include="..\..\Forge.Base\Threading\Tasking\TaskManager.cs" Link="Threading\Tasking\TaskManager.cs" />
+		<Compile Include="..\..\Forge.Base\Threading\Tasking\TaskResult.cs" Link="Threading\Tasking\TaskResult.cs" />
+		<Compile Include="..\..\Forge.Base\Threading\ThreadPool.cs" Link="Threading\ThreadPool.cs" />
+		<Compile Include="..\..\Forge.Base\ThrowHelper.cs" Link="ThrowHelper.cs" />
+		<Folder Include="IO\" />
+		<Folder Include="Logging\" />
+		<Folder Include="Management\" />
+		<Folder Include="Persistence\Formatters\" />
+		<Folder Include="Threading\ConfigSection\" />
+		<Folder Include="Threading\Tasking\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.1" Condition="'$(TargetFramework)' != 'net40'" />
+		<PackageReference Include="SoapFormatter" Version="1.1.9" Condition="'$(TargetFramework)' != 'net40'" />
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
+	</Target>
+
+</Project>

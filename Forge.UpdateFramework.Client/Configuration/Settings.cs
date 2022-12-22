@@ -10,9 +10,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using Forge.Configuration;
 using Forge.Configuration.Shared;
-using Forge.IO;
+using Forge.Legacy;
 using Forge.Reflection;
+using Forge.Shared;
 using Forge.UpdateFramework.ConfigSection;
 
 namespace Forge.UpdateFramework.Client.Configuration
@@ -148,10 +150,10 @@ namespace Forge.UpdateFramework.Client.Configuration
         /// </summary>
         internal void Initialize()
         {
-            CategoryPropertyItem piCollectors = ConfigurationAccessHelper.GetCategoryPropertyByPath(UpdateFrameworkConfiguration.Settings.CategoryPropertyItems, COLLECTORS);
+            IPropertyItem piCollectors = ConfigurationAccessHelper.GetPropertyByPath(UpdateFrameworkConfiguration.Settings.CategoryPropertyItems, COLLECTORS);
             if (piCollectors != null)
             {
-                foreach (CategoryPropertyItem piCol in piCollectors.PropertyItems)
+                foreach (IPropertyItem piCol in piCollectors.Items.Values)
                 {
                     Type collectorType = TypeHelper.GetTypeFromString(piCol.Id);
                     IDataCollector collector = (IDataCollector)collectorType.GetConstructor(Type.EmptyTypes).Invoke(null);

@@ -28,7 +28,7 @@ namespace Forge.ErrorReport.Client
         /// <summary>
         /// The logger
         /// </summary>
-        protected static readonly Forge.Logging.ILog LOGGER = Forge.Logging.LogManager.GetLogger(typeof(ErrorReportAppender));
+        protected static readonly Logging.Abstraction.ILog LOGGER = Logging.Abstraction.LogManager.GetLogger<ErrorReportAppender>();
 
         private static bool mInitialized = false;
 

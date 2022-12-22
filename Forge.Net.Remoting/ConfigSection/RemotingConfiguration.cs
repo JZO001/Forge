@@ -18,7 +18,7 @@ namespace Forge.Net.Remoting.ConfigSection
     public class RemotingConfiguration : Forge.Configuration.Shared.SharedConfigSettings<RemotingSection, RemotingConfiguration>
     {
 
-#region Constructor(s)
+        #region Constructor(s)
 
         /// <summary>
         /// Initializes the <see cref="RemotingConfiguration"/> class.
@@ -36,7 +36,7 @@ namespace Forge.Net.Remoting.ConfigSection
         {
         }
 
-#endregion
+        #endregion
 
     }
 

@@ -6,9 +6,10 @@
 
 using System;
 using System.Collections.Generic;
-using Forge.Logging;
+using Forge.Logging.Abstraction;
 using Forge.RemoteDesktop.Contracts;
 using Forge.RemoteDesktop.Service.Configuration;
+using Forge.Shared;
 
 namespace Forge.RemoteDesktop.Service
 {
@@ -21,7 +22,7 @@ namespace Forge.RemoteDesktop.Service
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(RemoteDesktopServiceImpl));
+        private static readonly ILog LOGGER = LogManager.GetLogger<RemoteDesktopServiceImpl>();
 
         private int mImageQuality = Settings.DefaultImageClipQuality;
 
@@ -41,8 +42,8 @@ namespace Forge.RemoteDesktop.Service
         public RemoteDesktopServiceImpl(Forge.Net.Remoting.Channels.Channel channel, System.String sessionId)
             : base(channel, sessionId)
         {
-            this.SubscribedClips = new HashSet<DesktopClip>();
-            this.LastCursorId = string.Empty;
+            SubscribedClips = new HashSet<DesktopClip>();
+            LastCursorId = string.Empty;
             RemoteDesktopServiceManager.Instance.RegisterNewContract(this);
         }
 
@@ -183,17 +184,17 @@ namespace Forge.RemoteDesktop.Service
 
             lock (mBlackList)
             {
-                if (mBlackList.ContainsKey(this.RemoteHost))
+                if (mBlackList.ContainsKey(RemoteHost))
                 {
-                    DateTime blacklistedTime = mBlackList[this.RemoteHost];
+                    DateTime blacklistedTime = mBlackList[RemoteHost];
                     if (blacklistedTime.AddMinutes(Settings.BlackListTimeout) < DateTime.Now)
                     {
-                        mBlackList.Remove(this.RemoteHost);
+                        mBlackList.Remove(RemoteHost);
                     }
                     else
                     {
-                        if (LOGGER.IsInfoEnabled) LOGGER.Info(string.Format("REMOTE_DESKTOP_SERVICE_CONTRACT, client blacklisted. SessionId: {0}", this.SessionId));
-                        this.mChannel.Disconnect(mSessionId);
+                        if (LOGGER.IsInfoEnabled) LOGGER.Info(string.Format("REMOTE_DESKTOP_SERVICE_CONTRACT, client blacklisted. SessionId: {0}", SessionId));
+                        mChannel.Disconnect(mSessionId);
                         return null;
                     }
                 }
@@ -204,38 +205,38 @@ namespace Forge.RemoteDesktop.Service
                 if (AuthenticationHandlerModule.CheckAuthenticationInfo(request.UserName, request.Password))
                 {
                     // sikeres az auth
-                    this.IsAuthenticated = true;
+                    IsAuthenticated = true;
                     mLoginFailedCounter = 0;
                     if (RemoteDesktopServiceManager.Instance.AcceptUser(this))
                     {
-                        if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("REMOTE_DESKTOP_SERVICE_CONTRACT, login succeeded. SessionId: {0}", this.SessionId));
+                        if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("REMOTE_DESKTOP_SERVICE_CONTRACT, login succeeded. SessionId: {0}", SessionId));
                         response = new LoginResponseArgs(LoginResponseStateEnum.AccessGranted);
                     }
                     else
                     {
-                        if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("REMOTE_DESKTOP_SERVICE_CONTRACT, login succeeded, but service did not accept new client to serve. Service inactive. SessionId: {0}", this.SessionId));
+                        if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("REMOTE_DESKTOP_SERVICE_CONTRACT, login succeeded, but service did not accept new client to serve. Service inactive. SessionId: {0}", SessionId));
                         response = new LoginResponseArgs(LoginResponseStateEnum.ServiceBusy);
                     }
                 }
                 else
                 {
-                    if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("REMOTE_DESKTOP_SERVICE_CONTRACT, authentication failed. SessionId: {0}", this.SessionId));
+                    if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("REMOTE_DESKTOP_SERVICE_CONTRACT, authentication failed. SessionId: {0}", SessionId));
                     response = new LoginResponseArgs(LoginResponseStateEnum.AccessDenied);
                     mLoginFailedCounter++;
                 }
             }
             else
             {
-                if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("REMOTE_DESKTOP_SERVICE_CONTRACT, login failed. Service inactive. SessionId: {0}", this.SessionId));
+                if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("REMOTE_DESKTOP_SERVICE_CONTRACT, login failed. Service inactive. SessionId: {0}", SessionId));
                 response = new LoginResponseArgs(LoginResponseStateEnum.ServiceInactive);
                 mLoginFailedCounter++;
             }
 
             if (Settings.MaximumFailedLoginAttempt < mLoginFailedCounter)
             {
-                mBlackList[this.RemoteHost] = DateTime.Now;
-                if (LOGGER.IsInfoEnabled) LOGGER.Info(string.Format("REMOTE_DESKTOP_SERVICE_CONTRACT, client blacklisted. SessionId: {0}", this.SessionId));
-                this.mChannel.Disconnect(mSessionId);
+                mBlackList[RemoteHost] = DateTime.Now;
+                if (LOGGER.IsInfoEnabled) LOGGER.Info(string.Format("REMOTE_DESKTOP_SERVICE_CONTRACT, client blacklisted. SessionId: {0}", SessionId));
+                mChannel.Disconnect(mSessionId);
             }
 
             return response;

@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Shared;
 using System;
 
 namespace Forge.RemoteDesktop.Contracts
@@ -23,9 +24,9 @@ namespace Forge.RemoteDesktop.Contracts
         /// <param name="password">The password.</param>
         public LoginRequestArgs(string userName, string password)
         {
-            this.DeviceId = ApplicationHelper.ApplicationId;
-            this.UserName = userName;
-            this.Password = password;
+            DeviceId = ApplicationHelper.ApplicationId;
+            UserName = userName;
+            Password = password;
         }
 
         /// <summary>

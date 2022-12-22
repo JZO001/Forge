@@ -9,14 +9,17 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using Forge.Configuration;
 using Forge.Configuration.Shared;
-using Forge.EventRaiser;
-using Forge.Logging;
+using Forge.Invoker;
+//using Forge.EventRaiser;
+using Forge.Logging.Abstraction;
 using Forge.Net.Remoting.Channels;
 using Forge.Net.Remoting.ConfigSection;
 using Forge.Net.Remoting.Messaging;
 using Forge.Net.Remoting.Validators;
 using Forge.Reflection;
+using Forge.Shared;
 
 namespace Forge.Net.Remoting.Proxy
 {
@@ -29,7 +32,7 @@ namespace Forge.Net.Remoting.Proxy
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(ProxyServices));
+        private static readonly ILog LOGGER = LogManager.GetLogger<ProxyServices>();
 
         private static readonly Dictionary<Type, ContractClientSideDescriptor> mContractDescriptors = new Dictionary<Type, ContractClientSideDescriptor>();
 
@@ -73,6 +76,16 @@ namespace Forge.Net.Remoting.Proxy
 
         #region Public static method(s)
 
+        /// <summary>Initializes this instance with the XML based configuration, if it is exist.</summary>
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public static void Initialize()
+        {
+            if (RemotingConfiguration.Settings.CategoryPropertyItems.Count > 0)
+            {
+                Initialize(RemotingConfiguration.Settings.CategoryPropertyItems);
+            }
+        }
+
         /// <summary>
         /// Initializes this instance.
         /// </summary>
@@ -87,20 +100,19 @@ namespace Forge.Net.Remoting.Proxy
         /// <exception cref="InvalidProxyImplementationException">
         /// </exception>
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public static void Initialize()
+        public static void Initialize(IPropertyItem configurationRoot)
         {
             if (!mInitialized)
             {
-                Raiser.CallDelegatorBySync(EventInitialization, new object[] { null, new ServiceInitializationStateEventArgs(ServiceInitializationStateEnum.Before) });
-                ChannelServices.Initialize();
+                Executor.Invoke(EventInitialization, null, new ServiceInitializationStateEventArgs(ServiceInitializationStateEnum.Before));
                 if (LOGGER.IsInfoEnabled) LOGGER.Info("Initializing client proxy services.");
 
-                CategoryPropertyItem pi = ConfigurationAccessHelper.GetCategoryPropertyByPath(RemotingConfiguration.Settings.CategoryPropertyItems, "Clients");
+                IPropertyItem pi = ConfigurationAccessHelper.GetPropertyByPath(configurationRoot, "Clients");
                 if (pi != null)
                 {
                     try
                     {
-                        IEnumerator<CategoryPropertyItem> iterator = pi.GetEnumerator();
+                        IEnumerator<IPropertyItem> iterator = pi.Items.Values.GetEnumerator();
                         while (iterator.MoveNext())
                         {
                             pi = iterator.Current;
@@ -109,7 +121,7 @@ namespace Forge.Net.Remoting.Proxy
                                 throw new InvalidConfigurationException("Contract type not definied. Empty item found in configuration.");
                             }
                             Type contractType = null;
-                            String defaultChannelId = null;
+                            string defaultChannelId = null;
                             Type defaultProxyType = null;
 
                             try
@@ -117,20 +129,20 @@ namespace Forge.Net.Remoting.Proxy
                                 contractType = TypeHelper.GetTypeFromString(pi.Id);
                                 if (mContractDescriptors.ContainsKey(contractType))
                                 {
-                                    throw new InvalidConfigurationException(String.Format("Duplicated contract type configuration found in clients. Contract: {0}", contractType.FullName));
+                                    throw new InvalidConfigurationException(string.Format("Duplicated contract type configuration found in clients. Contract: {0}", contractType.FullName));
                                 }
                                 ContractValidator.ValidateContractIntegrity(contractType);
                             }
                             catch (Exception ex)
                             {
-                                throw new InvalidConfigurationValueException(String.Format("Unable to resolve contract type: {0}", pi.Id), ex);
+                                throw new InvalidConfigurationValueException(string.Format("Unable to resolve contract type: {0}", pi.Id), ex);
                             }
 
                             {
-                                CategoryPropertyItem defaultChannelIdPropertyItem = ConfigurationAccessHelper.GetCategoryPropertyByPath(RemotingConfiguration.Settings.CategoryPropertyItems, String.Format("Clients/{0}/Defaults/DefaultChannelId", pi.Id));
+                                IPropertyItem defaultChannelIdPropertyItem = ConfigurationAccessHelper.GetPropertyByPath(configurationRoot, string.Format("Clients/{0}/Defaults/DefaultChannelId", pi.Id));
                                 if (defaultChannelIdPropertyItem != null)
                                 {
-                                    defaultChannelId = defaultChannelIdPropertyItem.EntryValue;
+                                    defaultChannelId = defaultChannelIdPropertyItem.Value;
                                     if (string.Empty.Equals(defaultChannelId))
                                     {
                                         defaultChannelId = null;
@@ -139,19 +151,19 @@ namespace Forge.Net.Remoting.Proxy
                             }
 
                             {
-                                CategoryPropertyItem defaultProxyTypePropertyItem = ConfigurationAccessHelper.GetCategoryPropertyByPath(RemotingConfiguration.Settings.CategoryPropertyItems, String.Format("Clients/{0}/Defaults/DefaultProxyType", pi.Id));
+                                IPropertyItem defaultProxyTypePropertyItem = ConfigurationAccessHelper.GetPropertyByPath(configurationRoot, string.Format("Clients/{0}/Defaults/DefaultProxyType", pi.Id));
                                 if (defaultProxyTypePropertyItem != null)
                                 {
-                                    if (defaultProxyTypePropertyItem.EntryValue != null && !string.Empty.Equals(defaultProxyTypePropertyItem.EntryValue))
+                                    if (defaultProxyTypePropertyItem.Value != null && !string.Empty.Equals(defaultProxyTypePropertyItem.Value))
                                     {
                                         try
                                         {
-                                            defaultProxyType = TypeHelper.GetTypeFromString(defaultProxyTypePropertyItem.EntryValue);
+                                            defaultProxyType = TypeHelper.GetTypeFromString(defaultProxyTypePropertyItem.Value);
                                             ImplementationValidator.ValidateProxyIntegration(defaultProxyType);
                                         }
                                         catch (Exception ex)
                                         {
-                                            throw new InvalidConfigurationValueException(String.Format("Unable to resolve proxy type: {0} for contract: {1}", defaultProxyTypePropertyItem.EntryValue, pi.Id), ex);
+                                            throw new InvalidConfigurationValueException(string.Format("Unable to resolve proxy type: {0} for contract: {1}", defaultProxyTypePropertyItem.Value, pi.Id), ex);
                                         }
                                     }
                                 }
@@ -160,53 +172,53 @@ namespace Forge.Net.Remoting.Proxy
                             {
                                 if (defaultChannelId == null || defaultProxyType == null)
                                 {
-                                    throw new InvalidConfigurationException(String.Format("Both of 'DefaultChannelId' and 'DefaultProxyType' values are must be filled in configuration. Contract type: {0}", pi.Id));
+                                    throw new InvalidConfigurationException(string.Format("Both of 'DefaultChannelId' and 'DefaultProxyType' values are must be filled in configuration. Contract type: {0}", pi.Id));
                                 }
                                 if (!contractType.IsAssignableFrom(defaultProxyType))
                                 {
-                                    throw new InvalidProxyImplementationException(String.Format("Provided default proxy type '{0}' does not implement contract interface '{1}'.", defaultProxyType.FullName, contractType.FullName));
+                                    throw new InvalidProxyImplementationException(string.Format("Provided default proxy type '{0}' does not implement contract interface '{1}'.", defaultProxyType.FullName, contractType.FullName));
                                 }
                             }
 
                             ContractClientSideDescriptor descriptor = new ContractClientSideDescriptor(contractType, defaultChannelId, defaultProxyType);
 
                             {
-                                CategoryPropertyItem customDefinitionsPropertyItem = ConfigurationAccessHelper.GetCategoryPropertyByPath(RemotingConfiguration.Settings.CategoryPropertyItems, String.Format("Clients/{0}/CustomDefinitions", pi.Id));
+                                IPropertyItem customDefinitionsPropertyItem = ConfigurationAccessHelper.GetPropertyByPath(configurationRoot, string.Format("Clients/{0}/CustomDefinitions", pi.Id));
                                 if (customDefinitionsPropertyItem != null)
                                 {
-                                    IEnumerator<CategoryPropertyItem> customDefinitionsIterator = customDefinitionsPropertyItem.GetEnumerator();
+                                    IEnumerator<IPropertyItem> customDefinitionsIterator = customDefinitionsPropertyItem.Items.Values.GetEnumerator();
                                     while (customDefinitionsIterator.MoveNext())
                                     {
-                                        CategoryPropertyItem channelProxyItem = customDefinitionsIterator.Current;
+                                        IPropertyItem channelProxyItem = customDefinitionsIterator.Current;
                                         if (string.IsNullOrEmpty(channelProxyItem.Id))
                                         {
-                                            throw new InvalidConfigurationValueException(String.Format("Channel identifier is missing from a configuration item at the CustomDefinitions of the contract '{0}'", pi.Id));
+                                            throw new InvalidConfigurationValueException(string.Format("Channel identifier is missing from a configuration item at the CustomDefinitions of the contract '{0}'", pi.Id));
                                         }
-                                        if (string.IsNullOrEmpty(channelProxyItem.EntryValue))
+                                        if (string.IsNullOrEmpty(channelProxyItem.Value))
                                         {
-                                            throw new InvalidConfigurationValueException(String.Format("Proxy type is missing from a configuration item at the CustomDefinitions of the contract '{0}'", pi.Id));
+                                            throw new InvalidConfigurationValueException(string.Format("Proxy type is missing from a configuration item at the CustomDefinitions of the contract '{0}'", pi.Id));
                                         }
                                         if (!ChannelServices.IsChannelRegistered(channelProxyItem.Id))
                                         {
-                                            throw new InvalidConfigurationValueException(String.Format("Unregistered channel provided '{0}' in CustomDefinitions configuration section of the contract: {1}.", channelProxyItem.Id, pi.Id));
+                                            throw new InvalidConfigurationValueException(string.Format("Unknown channel provided '{0}' in CustomDefinitions configuration section of the contract: {1}.", channelProxyItem.Id, pi.Id));
                                         }
                                         Type type = null;
                                         try
                                         {
-                                            type = TypeHelper.GetTypeFromString(channelProxyItem.EntryValue);
+                                            type = TypeHelper.GetTypeFromString(channelProxyItem.Value);
                                             if (!contractType.IsAssignableFrom(type))
                                             {
-                                                throw new InvalidProxyImplementationException(String.Format("Provided proxy type '{0}' does not implement contract interface '{1}'.", type.FullName, contractType.FullName));
+                                                throw new InvalidProxyImplementationException(string.Format("Provided proxy type '{0}' does not implement contract interface '{1}'.", type.FullName, contractType.FullName));
                                             }
                                             ImplementationValidator.ValidateProxyIntegration(type);
                                         }
                                         catch (Exception ex)
                                         {
-                                            throw new InvalidConfigurationValueException(String.Format("Unable to resolve non-default proxy type: {0} for contract: {1} for the channel: {2}", channelProxyItem.EntryValue, pi.Id, channelProxyItem.Id), ex);
+                                            throw new InvalidConfigurationValueException(string.Format("Unable to resolve non-default proxy type: {0} for contract: {1} for the channel: {2}", channelProxyItem.Value, pi.Id, channelProxyItem.Id), ex);
                                         }
                                         if (descriptor.ImplementationPerChannel.ContainsKey(channelProxyItem.Id))
                                         {
-                                            throw new InvalidConfigurationException(String.Format("Duplicated channel identifier in CustomDefinitions section at contract '{0}'.", pi.Id));
+                                            throw new InvalidConfigurationException(string.Format("Duplicated channel identifier in CustomDefinitions section at contract '{0}'.", pi.Id));
                                         }
                                         descriptor.ImplementationPerChannel.Add(channelProxyItem.Id, type);
                                     }
@@ -230,7 +242,7 @@ namespace Forge.Net.Remoting.Proxy
 
                 mInitialized = true;
                 if (LOGGER.IsInfoEnabled) LOGGER.Info("Client proxy services successfully initialized.");
-                Raiser.CallDelegatorBySync(EventInitialization, new object[] { null, new ServiceInitializationStateEventArgs(ServiceInitializationStateEnum.After) });
+                Executor.Invoke(EventInitialization, null, new ServiceInitializationStateEventArgs(ServiceInitializationStateEnum.After));
             }
         }
 
@@ -419,11 +431,11 @@ namespace Forge.Net.Remoting.Proxy
         {
             Channel channel = (Channel)sender;
             IMessage message = e.Message;
-            String sessionId = e.SessionId;
+            string sessionId = e.SessionId;
             if (message.MessageType == MessageTypeEnum.Acknowledge || message.MessageType == MessageTypeEnum.Response)
             {
                 // HIBA: nem megfelelő üzenet típus (implementációs hiba?)
-                String errorMsg = String.Format("Invalid message type received: {0}. This may be an implementation error in the client proxy.", message.MessageType.ToString());
+                string errorMsg = string.Format("Invalid message type received: {0}. This may be an implementation error in the client proxy.", message.MessageType.ToString());
                 if (LOGGER.IsErrorEnabled) LOGGER.Error(errorMsg);
             }
             else
@@ -435,7 +447,7 @@ namespace Forge.Net.Remoting.Proxy
                     return;
                 }
 
-                String contractName = rm.ContractName;
+                string contractName = rm.ContractName;
                 Type contractType = null;
                 try
                 {
@@ -446,12 +458,12 @@ namespace Forge.Net.Remoting.Proxy
                     // HIBA: ez a típus nem szerepel a ClassPath-ban
                     try
                     {
-                        SendResponse(channel, sessionId, rm, typeof(void), null, new MethodInvocationException(String.Format("Unable to resolve this type of contract '{0}'. Type has not found.", rm.ContractName), ex), channel.DefaultErrorResponseTimeout);
+                        SendResponse(channel, sessionId, rm, typeof(void), null, new MethodInvocationException(string.Format("Unable to resolve this type of contract '{0}'. Type has not found.", rm.ContractName), ex), channel.DefaultErrorResponseTimeout);
                     }
                     catch (Exception innerEx)
                     {
                         // válaszüzenet küldése sikertelen
-                        if (LOGGER.IsErrorEnabled) LOGGER.Error(String.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
+                        if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
                     }
                     return;
                 }
@@ -462,12 +474,12 @@ namespace Forge.Net.Remoting.Proxy
                         // HIBA: nem PerSession a contract, amit meghívnak
                         try
                         {
-                            SendResponse(channel, sessionId, rm, typeof(void), null, new MethodInvocationException(String.Format("Contract {0} must be configured to {1}.", typeof(WellKnownObjectModeEnum).Name, WellKnownObjectModeEnum.PerSession.ToString())), channel.DefaultErrorResponseTimeout);
+                            SendResponse(channel, sessionId, rm, typeof(void), null, new MethodInvocationException(string.Format("Contract {0} must be configured to {1}.", typeof(WellKnownObjectModeEnum).Name, WellKnownObjectModeEnum.PerSession.ToString())), channel.DefaultErrorResponseTimeout);
                         }
                         catch (Exception innerEx)
                         {
                             // válaszüzenet küldése sikertelen
-                            if (LOGGER.IsErrorEnabled) LOGGER.Error(String.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
+                            if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
                         }
                         return;
                     }
@@ -479,12 +491,12 @@ namespace Forge.Net.Remoting.Proxy
                         // HIBA: ez a contract nincs nyilvántartva
                         try
                         {
-                            SendResponse(channel, sessionId, rm, typeof(void), null, new MethodInvocationException(String.Format("This type of contract '{0}' has not been registered.", contractType.Name)), channel.DefaultErrorResponseTimeout);
+                            SendResponse(channel, sessionId, rm, typeof(void), null, new MethodInvocationException(string.Format("This type of contract '{0}' has not been registered.", contractType.Name)), channel.DefaultErrorResponseTimeout);
                         }
                         catch (Exception innerEx)
                         {
                             // válaszüzenet küldése sikertelen
-                            if (LOGGER.IsErrorEnabled) LOGGER.Error(String.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
+                            if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
                         }
                         return;
                     }
@@ -504,7 +516,7 @@ namespace Forge.Net.Remoting.Proxy
                     catch (Exception innerEx)
                     {
                         // válaszüzenet küldése sikertelen
-                        if (LOGGER.IsErrorEnabled) LOGGER.Error(String.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
+                        if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
                     }
                     return;
                 }
@@ -524,19 +536,19 @@ namespace Forge.Net.Remoting.Proxy
                         // HIBA: nem létezik a hivatkozott proxy példány
                         try
                         {
-                            SendResponse(channel, sessionId, rm, typeof(void), null, new MethodInvocationException(String.Format("Unable to find proxy on client side with ID: {0}", proxyId)), channel.DefaultErrorResponseTimeout);
+                            SendResponse(channel, sessionId, rm, typeof(void), null, new MethodInvocationException(string.Format("Unable to find proxy on client side with ID: {0}", proxyId)), channel.DefaultErrorResponseTimeout);
                         }
                         catch (Exception innerEx)
                         {
                             // válaszüzenet küldése sikertelen
-                            if (LOGGER.IsErrorEnabled) LOGGER.Error(String.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
+                            if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
                         }
                         return;
                     }
                 }
                 // meg van az instance, lehet reflection-nel hívni a metódusára
                 Type[] methodParamTypes = null;
-                Object[] paramValues = null;
+                object[] paramValues = null;
                 if (rm.MethodParameters != null)
                 {
                     methodParamTypes = new Type[rm.MethodParameters.Length];
@@ -552,12 +564,12 @@ namespace Forge.Net.Remoting.Proxy
                             // HIBA: a paraméter egy típusa nem szerepel a CLASSPATH-ban, így nem feloldható, ismeretlen
                             try
                             {
-                                SendResponse(channel, sessionId, rm, typeof(void), null, new MethodInvocationException(String.Format("Unable to resolve parameter type '{0}'. Type has not found.", rm.MethodParameters[i].ClassName), ex), channel.DefaultErrorResponseTimeout);
+                                SendResponse(channel, sessionId, rm, typeof(void), null, new MethodInvocationException(string.Format("Unable to resolve parameter type '{0}'. Type has not found.", rm.MethodParameters[i].ClassName), ex), channel.DefaultErrorResponseTimeout);
                             }
                             catch (Exception innerEx)
                             {
                                 // válaszüzenet küldése sikertelen
-                                if (LOGGER.IsErrorEnabled) LOGGER.Error(String.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
+                                if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
                             }
                             return;
                         }
@@ -575,12 +587,12 @@ namespace Forge.Net.Remoting.Proxy
                     // HIBA: a metódus név és paraméterlista alapján nem található
                     try
                     {
-                        SendResponse(channel, sessionId, rm, typeof(void), null, new MethodInvocationException(String.Format("Unable to find method '{0}' with parameter list: '{1}'.", rm.MethodName, methodParamTypes), ex), channel.DefaultErrorResponseTimeout);
+                        SendResponse(channel, sessionId, rm, typeof(void), null, new MethodInvocationException(string.Format("Unable to find method '{0}' with parameter list: '{1}'.", rm.MethodName, methodParamTypes), ex), channel.DefaultErrorResponseTimeout);
                     }
                     catch (Exception innerEx)
                     {
                         // válaszüzenet küldése sikertelen
-                        if (LOGGER.IsErrorEnabled) LOGGER.Error(String.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
+                        if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format(AUTO_SEND_REPLY_ERROR_MSG, innerEx.Message));
                     }
                     return;
                 }
@@ -639,7 +651,7 @@ namespace Forge.Net.Remoting.Proxy
                     catch (Exception ex)
                     {
                         // válaszüzenet küldése sikertelen
-                        if (LOGGER.IsErrorEnabled) LOGGER.Error(String.Format(AUTO_SEND_REPLY_ERROR_MSG, ex.Message));
+                        if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format(AUTO_SEND_REPLY_ERROR_MSG, ex.Message));
                     }
                     finally
                     {

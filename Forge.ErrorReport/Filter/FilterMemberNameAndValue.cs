@@ -5,7 +5,9 @@
 ***********************************************************************/
 
 using System;
+using Forge.Configuration;
 using Forge.Configuration.Shared;
+using Forge.Shared;
 
 namespace Forge.ErrorReport.Filter
 {
@@ -68,28 +70,26 @@ namespace Forge.ErrorReport.Filter
         /// Initializes the specified item.
         /// </summary>
         /// <param name="item">The item.</param>
-        public override void Initialize(CategoryPropertyItem item)
+        public override void Initialize(IPropertyItem item)
         {
             base.Initialize(item);
 
-            this.MemberName = null;
-            this.Value = null;
-            if (item.PropertyItems != null)
-            {
-                string memberName = string.Empty;
-                if (ConfigurationAccessHelper.ParseStringValue(item.PropertyItems, CONFIG_MEMBERNAME, ref memberName))
-                {
-                    this.MemberName = memberName;
-                }
+            MemberName = null;
+            Value = null;
 
-                string value = string.Empty;
-                if (ConfigurationAccessHelper.ParseStringValue(item.PropertyItems, CONFIG_VALUE, ref value))
-                {
-                    this.Value = value;
-                }
+            string memberName = string.Empty;
+            if (ConfigurationAccessHelper.ParseStringValue(item, CONFIG_MEMBERNAME, ref memberName))
+            {
+                MemberName = memberName;
             }
 
-            if (string.IsNullOrEmpty(this.MemberName))
+            string value = string.Empty;
+            if (ConfigurationAccessHelper.ParseStringValue(item, CONFIG_VALUE, ref value))
+            {
+                Value = value;
+            }
+
+            if (string.IsNullOrEmpty(MemberName))
             {
                 throw new InitializationException("Member name has not been definied.");
             }

@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Shared;
 using System;
 using System.Windows.Forms;
 
@@ -35,8 +36,8 @@ namespace Forge.RemoteDesktop
                 ThrowHelper.ThrowArgumentNullException("cursor");
             }
 
-            this.CursorId = cursorId;
-            this.Cursor = cursor;
+            CursorId = cursorId;
+            Cursor = cursor;
         }
 
         #endregion

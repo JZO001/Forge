@@ -9,6 +9,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using Forge.Reflection;
+using Forge.Shared;
 
 namespace Forge.Net.Remoting.ProxyGenerator
 {
@@ -73,12 +74,25 @@ namespace Forge.Net.Remoting.ProxyGenerator
                         Write(stream, COMMA);
                         Write(stream, SPACE);
                     }
-                    // paraméter typusa
-                    Write(stream, method.GetParameters()[paramIndex].ParameterType.FullName);
+                    // paraméter típusa
+                    Type pType = method.GetParameters()[paramIndex].ParameterType;
+                    if (IsTypeFromNullable(ref pType))
+                    {
+                        Write(stream, string.Format("{0}?", pType.FullName));
+                    }
+                    else
+                    {
+                        Write(stream, pType.FullName);
+                    }
                     Write(stream, SPACE);
                     // paraméter neve
-                    string pName = string.Format("{0}{1}", method.GetParameters()[paramIndex].ParameterType.Name.Substring(0, 1).ToLower(), method.GetParameters()[paramIndex].ParameterType.Name.Substring(1));
-                    Write(stream, String.Format("{0}{1}", pName, paramIndex));
+                    //string pName = string.Format("{0}{1}", method.GetParameters()[paramIndex].ParameterType.Name.Substring(0, 1).ToLower(), method.GetParameters()[paramIndex].ParameterType.Name.Substring(1));
+                    //Write(stream, string.Format("{0}{1}", pName, paramIndex));
+#if NET40
+                    Write(stream, string.Format("_p{0}", paramIndex));
+#else
+                    Write(stream, method.GetParameters()[paramIndex].Name);
+#endif
                 }
             }
             Write(stream, BRACKET_RIGHT);
@@ -103,7 +117,23 @@ namespace Forge.Net.Remoting.ProxyGenerator
                 // paraméterek átadása
                 for (int i = 0; i < method.GetParameters().Length; i++)
                 {
-                    Write(stream, String.Format(CODE_METHOD_PARAMETER_ITEM, i, i, method.GetParameters()[i].ParameterType.FullName, i)); // declaration
+                    Type pType = method.GetParameters()[i].ParameterType;
+                    if (IsTypeFromNullable(ref pType))
+                    {
+#if NET40
+                        Write(stream, string.Format(CODE_METHOD_PARAMETER_ITEM, i, i, string.Format("{0}?", pType.FullName), string.Format("_p{0}", i))); // declaration
+#else
+                        Write(stream, string.Format(CODE_METHOD_PARAMETER_ITEM, i, i, string.Format("{0}?", pType.FullName), method.GetParameters()[i].Name)); // declaration
+#endif
+                    }
+                    else
+                    {
+#if NET40
+                        Write(stream, string.Format(CODE_METHOD_PARAMETER_ITEM, i, i, pType.FullName, string.Format("_p{0}", i))); // declaration
+#else
+                        Write(stream, string.Format(CODE_METHOD_PARAMETER_ITEM, i, i, pType.FullName, method.GetParameters()[i].Name)); // declaration
+#endif
+                    }
                 }
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < method.GetParameters().Length; i++)
@@ -115,17 +145,17 @@ namespace Forge.Net.Remoting.ProxyGenerator
                     sb.Append("_mp");
                     sb.Append(i);
                 }
-                Write(stream, String.Format(CODE_METHOD_PARAMETER_ARRAY, sb.ToString()).Replace("<REPLACELEFT>", "{").Replace("<REPLACERIGHT>", "}"));
+                Write(stream, string.Format(CODE_METHOD_PARAMETER_ARRAY, sb.ToString()).Replace("<REPLACELEFT>", "{").Replace("<REPLACERIGHT>", "}"));
                 Write(stream, NEW_LINE_BYTES);
             }
 
             // message declaration
-            Write(stream, String.Format(CODE_MESSAGE_DECLARATION, ocAnnotation.IsOneWay ? (ocAnnotation.IsReliable ? MessageTypeEnum.Datagram.ToString() : MessageTypeEnum.DatagramOneway.ToString()) : MessageTypeEnum.Request.ToString(), MessageInvokeModeEnum.RequestService.ToString(), contractType.FullName, method.Name, ocAnnotation.AllowParallelExecution.ToString().ToLower()));
+            Write(stream, string.Format(CODE_MESSAGE_DECLARATION, ocAnnotation.IsOneWay ? (ocAnnotation.IsReliable ? MessageTypeEnum.Datagram.ToString() : MessageTypeEnum.DatagramOneway.ToString()) : MessageTypeEnum.Request.ToString(), MessageInvokeModeEnum.RequestService.ToString(), contractType.FullName, method.Name, ocAnnotation.AllowParallelExecution.ToString().ToLower()));
             Write(stream, CODE_CONTEXT_FILL_PROXYSIDE); // fill proxyid
             Write(stream, NEW_LINE_BYTES);
 
             // timeout
-            Write(stream, String.Format(CODE_TIMEOUT, contractType.FullName, method.Name));
+            Write(stream, string.Format(CODE_TIMEOUT, contractType.FullName, method.Name));
             Write(stream, NEW_LINE_BYTES);
 
             // send message and optionally receive response

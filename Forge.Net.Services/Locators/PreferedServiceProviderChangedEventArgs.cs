@@ -22,7 +22,7 @@ namespace Forge.Net.Services.Locators
         /// <param name="serviceProvider">The service provider.</param>
         public PreferedServiceProviderChangedEventArgs(ServiceProvider serviceProvider)
         {
-            this.PreferedServiceProvider = serviceProvider;
+            PreferedServiceProvider = serviceProvider;
         }
 
         /// <summary>

@@ -10,6 +10,7 @@ using System.IO;
 using System.Reflection;
 using Forge.Net.Remoting.Proxy;
 using Forge.Reflection;
+using Forge.Shared;
 
 namespace Forge.Net.Remoting.Validators
 {

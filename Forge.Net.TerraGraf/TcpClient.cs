@@ -7,8 +7,14 @@
 using System;
 using System.Diagnostics;
 using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
+using Forge.Legacy;
 using Forge.Net.Synapse;
 using Forge.Net.Synapse.NetworkServices;
+using Forge.Shared;
+using Forge.Threading.Tasking;
+using Forge.Threading;
 
 namespace Forge.Net.TerraGraf
 {
@@ -25,6 +31,11 @@ namespace Forge.Net.TerraGraf
         private Socket mClient = null;
 
         private Synapse.NetworkStream mStream = null;
+
+        private System.Action<string, int> mConnectDelegate = null;
+        private int mAsyncActiveConnectCount = 0;
+        private AutoResetEvent mAsyncActiveConnectEvent = null;
+        private readonly object LOCK_CONNECT = new object();
 
         private bool mDisposed = false;
 
@@ -51,8 +62,8 @@ namespace Forge.Net.TerraGraf
                 ThrowHelper.ThrowArgumentOutOfRangeException("port");
             }
 
-            this.CreateClientSocket();
-            this.mClient.Bind(new AddressEndPoint(AddressEndPoint.Any, port));
+            CreateClientSocket();
+            mClient.Bind(new AddressEndPoint(AddressEndPoint.Any, port));
         }
 
         /// <summary>
@@ -65,7 +76,7 @@ namespace Forge.Net.TerraGraf
             {
                 ThrowHelper.ThrowArgumentNullException("acceptedSocket");
             }
-            this.mClient = acceptedSocket;
+            mClient = acceptedSocket;
         }
 
         #endregion
@@ -116,11 +127,11 @@ namespace Forge.Net.TerraGraf
         {
             get
             {
-                return this.mClient.ExclusiveAddressUse;
+                return mClient.ExclusiveAddressUse;
             }
             set
             {
-                this.mClient.ExclusiveAddressUse = value;
+                mClient.ExclusiveAddressUse = value;
             }
         }
 
@@ -188,6 +199,8 @@ namespace Forge.Net.TerraGraf
 
         #region Public method(s)
 
+#if NET40
+
         /// <summary>
         /// Begins the connect.
         /// </summary>
@@ -220,16 +233,6 @@ namespace Forge.Net.TerraGraf
         }
 
         /// <summary>
-        /// Connects the specified host.
-        /// </summary>
-        /// <param name="host">The host.</param>
-        /// <param name="port">The port.</param>
-        public void Connect(string host, int port)
-        {
-            Connect(new AddressEndPoint(host, port));
-        }
-
-        /// <summary>
         /// Ends the connect.
         /// </summary>
         /// <param name="asyncResult">The async result.</param>
@@ -243,6 +246,108 @@ namespace Forge.Net.TerraGraf
             mClient.EndConnect(asyncResult);
         }
 
+#endif
+
+        /// <summary>Begins the connect.</summary>
+        /// <param name="host">The host.</param>
+        /// <param name="port">The port.</param>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        public ITaskResult BeginConnect(string host, int port, ReturnCallback callback, object state)
+        {
+            Interlocked.Increment(ref mAsyncActiveConnectCount);
+            System.Action<string, int> d = new System.Action<string, int>(Connect);
+            if (mAsyncActiveConnectEvent == null)
+            {
+                lock (LOCK_CONNECT)
+                {
+                    if (mAsyncActiveConnectEvent == null)
+                    {
+                        mAsyncActiveConnectEvent = new AutoResetEvent(true);
+                    }
+                }
+            }
+            mAsyncActiveConnectEvent.WaitOne();
+            mConnectDelegate = d;
+            return d.BeginInvoke(host, port, callback, state);
+        }
+
+        /// <summary>Begins the connect.</summary>
+        /// <param name="localEp">The local ep.</param>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        public ITaskResult BeginConnect(AddressEndPoint localEp, ReturnCallback callback, object state)
+        {
+            if (localEp == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("localEp");
+            }
+            return BeginConnect(localEp.Host, localEp.Port, callback, state);
+        }
+
+        /// <summary>Ends the connect.</summary>
+        /// <param name="asyncResult">The asynchronous result.</param>
+        public void EndConnect(ITaskResult asyncResult)
+        {
+            if (asyncResult == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("asyncResult");
+            }
+            if (mConnectDelegate == null)
+            {
+                ThrowHelper.ThrowArgumentException("Wrong async result or EndConnect called multiple times.", "asyncResult");
+            }
+            try
+            {
+                mConnectDelegate.EndInvoke(asyncResult);
+            }
+            finally
+            {
+                mConnectDelegate = null;
+                mAsyncActiveConnectEvent.Set();
+                CloseAsyncActiveConnectEvent(Interlocked.Decrement(ref mAsyncActiveConnectCount));
+            }
+        }
+
+#if NETCOREAPP3_1_OR_GREATER
+
+        /// <summary>
+        /// Connects the specified host.
+        /// </summary>
+        /// <param name="host">The host.</param>
+        /// <param name="port">The port.</param>
+        public async Task ConnectAsync(string host, int port)
+        {
+            await Task.Run(() => Connect(new AddressEndPoint(host, port)));
+        }
+
+        /// <summary>
+        /// Connects the specified local ep.
+        /// </summary>
+        /// <param name="localEp">The local ep.</param>
+        public async Task ConnectAsync(AddressEndPoint localEp)
+        {
+            if (localEp == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("localEp");
+            }
+            await Task.Run(() => Connect(localEp));
+        }
+
+#endif
+
+        /// <summary>
+        /// Connects the specified host.
+        /// </summary>
+        /// <param name="host">The host.</param>
+        /// <param name="port">The port.</param>
+        public void Connect(string host, int port)
+        {
+            Connect(new AddressEndPoint(host, port));
+        }
+
         /// <summary>
         /// Connects the specified local ep.
         /// </summary>
@@ -250,7 +355,7 @@ namespace Forge.Net.TerraGraf
         public void Connect(AddressEndPoint localEp)
         {
             DoDisposeCheck();
-            this.mClient.Connect(localEp);
+            mClient.Connect(localEp);
         }
 
         /// <summary>
@@ -271,7 +376,7 @@ namespace Forge.Net.TerraGraf
         public Synapse.NetworkStream GetStream()
         {
             DoDisposeCheck();
-            if (!this.mClient.Connected)
+            if (!mClient.Connected)
             {
                 throw new InvalidOperationException("Socket not connected.");
             }
@@ -304,13 +409,22 @@ namespace Forge.Net.TerraGraf
         {
             if (mDisposed)
             {
-                throw new ObjectDisposedException(this.GetType().FullName);
+                throw new ObjectDisposedException(GetType().FullName);
             }
         }
 
         private void CreateClientSocket()
         {
-            this.mClient = new TerraGraf.Socket(SocketType.Stream, ProtocolType.Tcp);
+            mClient = new TerraGraf.Socket(SocketType.Stream, ProtocolType.Tcp);
+        }
+
+        private void CloseAsyncActiveConnectEvent(int asyncActiveCount)
+        {
+            if ((mAsyncActiveConnectEvent != null) && (asyncActiveCount == 0))
+            {
+                mAsyncActiveConnectEvent.Dispose();
+                mAsyncActiveConnectEvent = null;
+            }
         }
 
         #endregion

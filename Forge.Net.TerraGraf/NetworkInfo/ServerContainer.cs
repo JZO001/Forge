@@ -6,6 +6,7 @@
 
 using System;
 using System.Diagnostics;
+using Forge.Legacy;
 using Forge.Net.Synapse;
 
 namespace Forge.Net.TerraGraf.NetworkInfo

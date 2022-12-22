@@ -11,7 +11,8 @@ using Forge.Configuration.Shared;
 using Forge.ErrorReport.ConfigSection;
 using Forge.ErrorReport.Filter;
 using Forge.ErrorReport.Sink;
-using Forge.Logging;
+using Forge.Legacy;
+using Forge.Logging.Abstraction;
 using Forge.Reflection;
 
 namespace Forge.ErrorReport.Service
@@ -20,12 +21,12 @@ namespace Forge.ErrorReport.Service
     /// <summary>
     /// The error report service
     /// </summary>
-    public class ErrorReportServiceImpl : Forge.MBRBase, Forge.ErrorReport.Contracts.IErrorReportSendContract
+    public class ErrorReportServiceImpl : MBRBase, Forge.ErrorReport.Contracts.IErrorReportSendContract
     {
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(ErrorReportServiceImpl));
+        private static readonly ILog LOGGER = LogManager.GetLogger<ErrorReportServiceImpl>();
 
         private const string CONFIG_SINKS = "Service/Sinks";
 

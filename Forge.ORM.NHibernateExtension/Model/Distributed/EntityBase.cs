@@ -11,9 +11,10 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
-using Forge.Logging;
+using Forge.Logging.Abstraction;
 using Forge.ORM.NHibernateExtension.Model.Distributed.Serialization;
 using Forge.Reflection;
+using Forge.Shared;
 using NHibernate;
 using NHibernate.Engine;
 using NHibernate.Mapping.Attributes;
@@ -33,7 +34,7 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(EntityBase));
+        private static readonly ILog LOGGER = LogManager.GetLogger<EntityBase>();
 
         [EntityFieldDescription("Represents the identifier of an entity")]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -72,21 +73,21 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed
         [DebuggerHidden]
         public override EntityId Id
         {
-            get { return this.id; }
+            get { return id; }
             set
             {
                 if (value == null)
                 {
                     ThrowHelper.ThrowArgumentNullException("value");
                 }
-                if (this.id != null && this.IsSaved)
+                if (id != null && IsSaved)
                 {
                     ThrowHelper.ThrowArgumentException("Unable to replace identifier of an existing entity.", "value");
                 }
 
                 OnPropertyChanging("Id");
-                this.id = value;
-                this.IsSaved = false; // ha beállítok id-t, az azt jelenti, hogy most lesz először mentve
+                id = value;
+                IsSaved = false; // ha beállítok id-t, az azt jelenti, hogy most lesz először mentve
                 OnPropertyChanged("Id");
             }
         }
@@ -109,8 +110,8 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed
                 }
 
                 OnPropertyChanging("Version");
-                this.version = value;
-                this.IsSaved = false;
+                version = value;
+                IsSaved = false;
                 OnPropertyChanged("Version");
             }
         }
@@ -133,7 +134,7 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed
                 ThrowHelper.ThrowArgumentNullException("entity");
             }
 
-            Dictionary<String, Object> fields = new Dictionary<String, Object>();
+            Dictionary<string, object> fields = new Dictionary<string, object>();
             try
             {
                 Type entityType = entity.GetType();
@@ -163,7 +164,7 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed
                                     {
                                         if (context == null)
                                         {
-                                            throw new EntityCloneException(String.Format("Field '{0}' contains an NHibernate entity proxy type. Unsaved entity type: '{1}'. Parent entity type: '{2}'.", field.Name, fieldValue.GetType().Name, entity.GetType().Name));
+                                            throw new EntityCloneException(string.Format("Field '{0}' contains an NHibernate entity proxy type. Unsaved entity type: '{1}'. Parent entity type: '{2}'.", field.Name, fieldValue.GetType().Name, entity.GetType().Name));
                                         }
                                         item = (EntityBase)context.Unproxy(item);
                                     }
@@ -185,7 +186,7 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed
                                     {
                                         if (context == null)
                                         {
-                                            throw new EntityCloneException(String.Format("Field '{0}' contains an NHibernate entity proxy type. Unsaved entity type: '{1}'. Parent entity type: '{2}'.", field.Name, fieldValue.GetType().Name, entity.GetType().Name));
+                                            throw new EntityCloneException(string.Format("Field '{0}' contains an NHibernate entity proxy type. Unsaved entity type: '{1}'. Parent entity type: '{2}'.", field.Name, fieldValue.GetType().Name, entity.GetType().Name));
                                         }
                                         item = (EntityBase)context.Unproxy(item);
                                     }
@@ -197,14 +198,14 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed
                             {
                                 if (fieldValue != null && ((EntityBase)fieldValue).Id == null)
                                 {
-                                    throw new EntityCloneException(String.Format("Field '{0}' contains an unsaved entity. Unsaved entity type: '{1}'. Parent entity type: '{2}'.", field.Name, fieldValue.GetType().Name, entity.GetType().Name));
+                                    throw new EntityCloneException(string.Format("Field '{0}' contains an unsaved entity. Unsaved entity type: '{1}'. Parent entity type: '{2}'.", field.Name, fieldValue.GetType().Name, entity.GetType().Name));
                                 }
                                 EntityBase item = (EntityBase)fieldValue;
                                 if (item is INHibernateProxy)
                                 {
                                     if (context == null)
                                     {
-                                        throw new EntityCloneException(String.Format("Field '{0}' contains an NHibernate entity proxy type. Unsaved entity type: '{1}'. Parent entity type: '{2}'.", field.Name, fieldValue.GetType().Name, entity.GetType().Name));
+                                        throw new EntityCloneException(string.Format("Field '{0}' contains an NHibernate entity proxy type. Unsaved entity type: '{1}'. Parent entity type: '{2}'.", field.Name, fieldValue.GetType().Name, entity.GetType().Name));
                                     }
                                     item = (EntityBase)context.Unproxy(item);
                                 }
@@ -229,7 +230,7 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed
             }
             catch (Exception ex)
             {
-                throw new EntityCloneException(String.Format("Unable to clone entity '{0}'.", entity.GetType().FullName), ex);
+                throw new EntityCloneException(string.Format("Unable to clone entity '{0}'.", entity.GetType().FullName), ex);
             }
 
             return new EntityClone(entity.GetType(), entity.Id, fields, entity.GetType().Assembly.GetName().Version);
@@ -328,7 +329,7 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed
                             }
                             if (setItem == null)
                             {
-                                String message = String.Format("Unable to find entity (Type: '{0}', Id: '{1}') which is an element of a Set. Parent entity type: '{2}', Field name of the set: '{3}'", item.EntityType.FullName, item.EntityId, entity.GetType().FullName, field.Name);
+                                string message = string.Format("Unable to find entity (Type: '{0}', Id: '{1}') which is an element of a Set. Parent entity type: '{2}', Field name of the set: '{3}'", item.EntityType.FullName, item.EntityId, entity.GetType().FullName, field.Name);
                                 if (throwsExceptionOnAnyFailure)
                                 {
                                     throw new EntityRestoreException(message);
@@ -360,7 +361,7 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed
                         }
                         if (associatedEntity == null)
                         {
-                            String message = String.Format("Unable to find an entity (Type: '{0}', Id: '{1}') which associated to its parent entity (Type: '{2}', Id: '{3}').", item.EntityType.FullName, item.EntityId, entity.GetType().FullName, entity.Id);
+                            string message = string.Format("Unable to find an entity (Type: '{0}', Id: '{1}') which associated to its parent entity (Type: '{2}', Id: '{3}').", item.EntityType.FullName, item.EntityId, entity.GetType().FullName, entity.Id);
                             if (throwsExceptionOnAnyFailure)
                             {
                                 throw new EntityRestoreException(message);
@@ -391,11 +392,11 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed
                     if (clone.EntityTypeVersion >= entity.GetType().Assembly.GetName().Version)
                     {
                         // azonos vagy újabb verzió
-                        throw new EntityRestoreException(String.Format("Failed to restore entity. Entity restoration data belongs to version '{0}' which is newer than the current type version '{1}'. {2}", clone.EntityTypeVersion == null ? "<unknown>" : clone.EntityTypeVersion.ToString(), typeVersion.ToString(), clone.ToString()), ex);
+                        throw new EntityRestoreException(string.Format("Failed to restore entity. Entity restoration data belongs to version '{0}' which is newer than the current type version '{1}'. {2}", clone.EntityTypeVersion == null ? "<unknown>" : clone.EntityTypeVersion.ToString(), typeVersion.ToString(), clone.ToString()), ex);
                     }
                     else
                     {
-                        if (LOGGER.IsErrorEnabled) LOGGER.Error(String.Format("Entity cannot be restored fully, field '{0}' not found. Entity restoration data belongs to version '{1}' which is newer than the current type version '{2}'.", entry.Key, clone.EntityTypeVersion == null ? "<unknown>" : clone.EntityTypeVersion.ToString(), typeVersion.ToString(), clone.ToString()));
+                        if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format("Entity cannot be restored fully, field '{0}' not found. Entity restoration data belongs to version '{1}' which is newer than the current type version '{2}'.", entry.Key, clone.EntityTypeVersion == null ? "<unknown>" : clone.EntityTypeVersion.ToString(), typeVersion.ToString(), clone.ToString()));
                     }
                 }
                 catch (EntityRestoreException)
@@ -404,7 +405,7 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed
                 }
                 catch (Exception ex)
                 {
-                    throw new EntityRestoreException(String.Format("Failed to restore entity. {0}", clone.ToString()), ex);
+                    throw new EntityRestoreException(string.Format("Failed to restore entity. {0}", clone.ToString()), ex);
                 }
             }
 
@@ -419,7 +420,7 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed
         /// </returns>
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder(this.GetType().Name);
+            StringBuilder sb = new StringBuilder(GetType().Name);
             //sb.Append("@");
             //sb.Append(GetHashCode().ToString());
             sb.Append(", Id: ");
@@ -437,11 +438,11 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed
                 sb.Append(version.ToString());
             }
             sb.Append(", Created: ");
-            sb.Append(this.EntityCreationTime.ToString());
+            sb.Append(EntityCreationTime.ToString());
             sb.Append(", Modified: ");
-            sb.Append(this.EntityModificationTime.ToString());
+            sb.Append(EntityModificationTime.ToString());
             sb.Append(", Deleted: ");
-            sb.Append(this.Deleted.ToString());
+            sb.Append(Deleted.ToString());
             return sb.ToString();
         }
 
@@ -460,23 +461,23 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed
 
             EntityBase obj = (EntityBase)o;
             int result = 0;
-            if (this.id == null)
+            if (id == null)
             {
-                result = this.EntityCreationTime.CompareTo(obj.EntityCreationTime);
+                result = EntityCreationTime.CompareTo(obj.EntityCreationTime);
             }
             else
             {
-                if (!this.id.SystemId.Equals(obj.Id.SystemId))
+                if (!id.SystemId.Equals(obj.Id.SystemId))
                 {
-                    result = this.id.SystemId.CompareTo(obj.Id.SystemId);
+                    result = id.SystemId.CompareTo(obj.Id.SystemId);
                 }
-                else if (!this.id.Id.Equals(obj.Id.Id))
+                else if (!id.Id.Equals(obj.Id.Id))
                 {
-                    result = this.id.Id.CompareTo(obj.Id.Id);
+                    result = id.Id.CompareTo(obj.Id.Id);
                 }
                 else
                 {
-                    result = this.id.DeviceId.CompareTo(obj.Id.DeviceId);
+                    result = id.DeviceId.CompareTo(obj.Id.DeviceId);
                 }
             }
             return result; // default is equals. This provides the functionality as keep the original order of the treesets
@@ -583,7 +584,7 @@ namespace Forge.ORM.NHibernateExtension.Model.Distributed
         {
             if (item.Id == null)
             {
-                throw new EntityCloneException(String.Format("Unsaved entity found in a set or list. Field name of the set '{0}'. Unsaved entity type: '{1}'. Parent entity type: '{2}'.", fieldName, item.GetType().FullName, parentEntityName));
+                throw new EntityCloneException(string.Format("Unsaved entity found in a set or list. Field name of the set '{0}'. Unsaved entity type: '{1}'. Parent entity type: '{2}'.", fieldName, item.GetType().FullName, parentEntityName));
             }
         }
 

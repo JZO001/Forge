@@ -5,8 +5,10 @@
 ***********************************************************************/
 
 using System.IO;
+using Forge.Formatters;
 using Forge.Persistence.Formatters;
 using Forge.Reflection;
+using Forge.Shared;
 
 namespace Forge.Persistence.Serialization
 {

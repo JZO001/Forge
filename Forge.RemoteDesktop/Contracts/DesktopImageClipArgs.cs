@@ -26,8 +26,8 @@ namespace Forge.RemoteDesktop.Contracts
         /// <param name="imageData">The image data.</param>
         public DesktopImageClipArgs(Point location, byte[] imageData)
         {
-            this.Location = location;
-            this.ImageData = imageData;
+            Location = location;
+            ImageData = imageData;
         }
 
         #endregion

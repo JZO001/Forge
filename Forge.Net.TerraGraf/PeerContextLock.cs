@@ -5,6 +5,8 @@
 ***********************************************************************/
 
 using System;
+using Forge.Legacy;
+using Forge.Shared;
 using Forge.Threading;
 
 namespace Forge.Net.TerraGraf

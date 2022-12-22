@@ -4,7 +4,9 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Legacy;
 using Forge.Net.Synapse.NetworkServices;
+using Forge.Shared;
 
 namespace Forge.Net.TerraGraf
 {
@@ -12,7 +14,7 @@ namespace Forge.Net.TerraGraf
     /// <summary>
     /// Represents the synapse network factory for TerraGraf
     /// </summary>
-    public class TerraGrafNetworkFactory : MBRBase, INetworkFactory
+    public class TerraGrafNetworkFactory : MBRBase, ITerraGrafNetworkFactory
     {
 
         /// <summary>

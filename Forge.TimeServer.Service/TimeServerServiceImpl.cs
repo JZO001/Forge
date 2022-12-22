@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Legacy;
 using System;
 
 namespace Forge.TimeServer.Service
@@ -12,7 +13,7 @@ namespace Forge.TimeServer.Service
     /// <summary>
     /// Time Server singleton implementation
     /// </summary>
-    public class TimeServerServiceImpl : Forge.MBRBase, Forge.TimeServer.Contracts.ITimeServer
+    public class TimeServerServiceImpl : MBRBase, Forge.TimeServer.Contracts.ITimeServer
     {
 
         /// <summary>

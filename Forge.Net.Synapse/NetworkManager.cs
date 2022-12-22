@@ -7,32 +7,44 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using Forge.EventRaiser;
-using Forge.Logging;
+using System.Threading.Tasks;
+using Forge.Invoker;
+using Forge.Legacy;
 using Forge.Net.Synapse.NetworkFactory;
 using Forge.Net.Synapse.NetworkServices;
+using Forge.Net.Synapse.NetworkServices.Defaults;
+using Forge.Net.Synapse.Options;
+using Forge.Shared;
+using Forge.Threading.Tasking;
+using Forge.Threading;
+using Forge.Logging.Abstraction;
 
 namespace Forge.Net.Synapse
 {
 
+#if NET40
+
     internal delegate NetworkStream NetworkManagerConnectDelegate(AddressEndPoint endPoint, int bufferSize, IClientStreamFactory clientStreamFactory);
+
+#endif
 
     /// <summary>
     /// Network manager
     /// </summary>
-    public sealed class NetworkManager : MBRBase, IDisposable
+    public sealed class NetworkManager : MBRBase, IDefaultNetworkManager, IDisposable
     {
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(NetworkManager));
+        private static readonly ILog LOGGER = LogManager.GetLogger<NetworkManager>();
 
-        private static readonly IServerStreamFactory mDefaultServerStreamFactory = new DefaultServerStreamFactory();
+        private static IServerStreamFactory mDefaultServerStreamFactory = new DefaultServerStreamFactory();
 
-        private static readonly IClientStreamFactory mDefaultClientStreamFactory = new DefaultClientStreamFactory();
+        private static IClientStreamFactory mDefaultClientStreamFactory = new DefaultClientStreamFactory();
 
         private static readonly int mDefaultSocketReceiveBufferSize = 8192;
 
@@ -46,7 +58,7 @@ namespace Forge.Net.Synapse
 
         private static long mServerGlobalId = 0;
 
-        private INetworkFactory mNetworkFactory = null;
+        private INetworkFactoryBase mNetworkFactory = null;
 
         private IServerStreamFactory mServerStreamFactory = DefaultServerStreamFactory;
 
@@ -68,7 +80,10 @@ namespace Forge.Net.Synapse
 
         private int mAsyncActiveConnectCount = 0;
         private AutoResetEvent mAsyncActiveConnectEvent = null;
+#if NET40
         private NetworkManagerConnectDelegate mConnectDelegate = null;
+#endif
+        private System.Func<AddressEndPoint, int, IClientStreamFactory, NetworkStream> mConnectFuncDelegate = null;
 
         private readonly object LOCK_CONNECT = new object();
 
@@ -95,13 +110,13 @@ namespace Forge.Net.Synapse
         /// Initializes a new instance of the <see cref="NetworkManager"/> class.
         /// </summary>
         /// <param name="networkFactory">The network factory.</param>
-        public NetworkManager(INetworkFactory networkFactory)
+        public NetworkManager(INetworkFactoryBase networkFactory)
         {
             if (networkFactory == null)
             {
                 ThrowHelper.ThrowArgumentNullException("networkFactory");
             }
-            this.mNetworkFactory = networkFactory;
+            mNetworkFactory = networkFactory;
         }
 
         #endregion
@@ -117,6 +132,11 @@ namespace Forge.Net.Synapse
         public static IServerStreamFactory DefaultServerStreamFactory
         {
             get { return mDefaultServerStreamFactory; }
+            internal set 
+            {
+                if (value == null) ThrowHelper.ThrowArgumentNullException("value");
+                mDefaultServerStreamFactory = value; 
+            }
         }
 
         /// <summary>
@@ -128,6 +148,11 @@ namespace Forge.Net.Synapse
         public static IClientStreamFactory DefaultClientStreamFactory
         {
             get { return mDefaultClientStreamFactory; }
+            internal set
+            {
+                if (value == null) ThrowHelper.ThrowArgumentNullException("value");
+                mDefaultClientStreamFactory = value;
+            }
         }
 
         /// <summary>
@@ -139,7 +164,7 @@ namespace Forge.Net.Synapse
         [DebuggerHidden]
         public static int DefaultSocketReceiveBufferSize
         {
-            get { return NetworkManager.mDefaultSocketReceiveBufferSize; }
+            get { return mDefaultSocketReceiveBufferSize; }
         }
 
         /// <summary>
@@ -151,7 +176,7 @@ namespace Forge.Net.Synapse
         [DebuggerHidden]
         public static int DefaultSocketSendBufferSize
         {
-            get { return NetworkManager.mDefaultSocketSendBufferSize; }
+            get { return mDefaultSocketSendBufferSize; }
         }
 
         /// <summary>
@@ -198,7 +223,7 @@ namespace Forge.Net.Synapse
         /// The network factory.
         /// </value>
         [DebuggerHidden]
-        public INetworkFactory NetworkFactory
+        public INetworkFactoryBase NetworkFactory
         {
             get { return mNetworkFactory; }
         }
@@ -408,7 +433,7 @@ namespace Forge.Net.Synapse
         public long StartServer(int localPort)
         {
             DoDisposeCheck();
-            return StartServer(new AddressEndPoint(AddressEndPoint.Any.ToString(), localPort));
+            return StartServer(new AddressEndPoint(AddressEndPoint.Any.ToString(), localPort), int.MaxValue, mServerStreamFactory);
         }
 
         /// <summary>
@@ -419,7 +444,7 @@ namespace Forge.Net.Synapse
         public long StartServer(AddressEndPoint endPoint)
         {
             DoDisposeCheck();
-            return StartServer(endPoint, mServerStreamFactory);
+            return StartServer(endPoint, int.MaxValue, mServerStreamFactory);
         }
 
         /// <summary>
@@ -431,14 +456,44 @@ namespace Forge.Net.Synapse
         public long StartServer(AddressEndPoint endPoint, IServerStreamFactory serverStreamFactory)
         {
             DoDisposeCheck();
+            return StartServer(endPoint, int.MaxValue, serverStreamFactory);
+        }
+
+        /// <summary>
+        /// Starts the server.
+        /// </summary>
+        /// <param name="endPoint">The end point.</param>
+        /// <param name="backlog">The maximum number of pending connections allowed in the waiting queue.</param>
+        /// <param name="serverStreamFactory">The server stream factory.</param>
+        /// <returns>Identifier of the listener</returns>
+        public long StartServer(AddressEndPoint endPoint, int backlog, IServerStreamFactory serverStreamFactory)
+        {
+            DoDisposeCheck();
 
             if (endPoint == null)
             {
                 ThrowHelper.ThrowArgumentNullException("endPoint");
             }
 
+            if (backlog < 1)
+            {
+                ThrowHelper.ThrowArgumentOutOfRangeException("backlog");
+            }
+
+            if (serverStreamFactory == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("serverStreamFactory");
+            }
+
             ITcpListener listener = mNetworkFactory.CreateTcpListener(endPoint);
-            listener.Start(); // ez dobhat kivételt
+            if (int.MaxValue == backlog)
+            {
+                listener.Start(); // it can throw exception
+            }
+            else
+            {
+                listener.Start(backlog); // it can throw exception
+            }
 
             ServerContainer container = new ServerContainer(Interlocked.Increment(ref mServerGlobalId), listener, this, serverStreamFactory);
 
@@ -460,6 +515,27 @@ namespace Forge.Net.Synapse
             }
 
             return container.ServerId;
+        }
+
+        /// <summary>Starts a set of TCP servers from options</summary>
+        /// <param name="serverOptions">The server options.</param>
+        /// <returns>
+        ///   Dictionary with the original ServerOption and server id
+        /// </returns>
+        public Dictionary<ServerOptions, long> StartTCPServers(IEnumerable<ServerOptions> serverOptions)
+        {
+            Dictionary<ServerOptions, long> result = new Dictionary<ServerOptions, long>();
+            if (serverOptions != null && serverOptions.Any())
+            {
+                foreach (ServerOptions option in serverOptions)
+                {
+                    result.Add(option, StartServer(
+                        new AddressEndPoint(string.IsNullOrWhiteSpace(option.HostIP) ? AddressEndPoint.Any.ToString() : option.HostIP, option.Port), 
+                        option.Backlog == null || option.Backlog <= 0 ? int.MaxValue : option.Backlog.Value, 
+                        mServerStreamFactory));
+                }
+            }
+            return result;
         }
 
         /// <summary>
@@ -527,6 +603,8 @@ namespace Forge.Net.Synapse
             }
         }
 
+#if NET40
+
         /// <summary>
         /// Begins the connect.
         /// </summary>
@@ -536,7 +614,7 @@ namespace Forge.Net.Synapse
         /// <returns>Async property</returns>
         public IAsyncResult BeginConnect(AddressEndPoint endPoint, AsyncCallback callback, object state)
         {
-            return BeginConnect(endPoint, this.mSocketReceiveBufferSize, mClientStreamFactory, callback, state);
+            return BeginConnect(endPoint, mSocketReceiveBufferSize, mClientStreamFactory, callback, state);
         }
 
         /// <summary>
@@ -549,7 +627,7 @@ namespace Forge.Net.Synapse
         /// <returns>Async property</returns>
         public IAsyncResult BeginConnect(AddressEndPoint endPoint, IClientStreamFactory clientStreamFactory, AsyncCallback callback, object state)
         {
-            return BeginConnect(endPoint, this.mSocketReceiveBufferSize, clientStreamFactory, callback, state);
+            return BeginConnect(endPoint, mSocketReceiveBufferSize, clientStreamFactory, callback, state);
         }
 
         /// <summary>
@@ -591,21 +669,228 @@ namespace Forge.Net.Synapse
             }
 
             Interlocked.Increment(ref mAsyncActiveConnectCount);
-            NetworkManagerConnectDelegate d = new NetworkManagerConnectDelegate(this.Connect);
-            if (this.mAsyncActiveConnectEvent == null)
+            NetworkManagerConnectDelegate d = new NetworkManagerConnectDelegate(Connect);
+            if (mAsyncActiveConnectEvent == null)
             {
                 lock (LOCK_CONNECT)
                 {
-                    if (this.mAsyncActiveConnectEvent == null)
+                    if (mAsyncActiveConnectEvent == null)
                     {
-                        this.mAsyncActiveConnectEvent = new AutoResetEvent(true);
+                        mAsyncActiveConnectEvent = new AutoResetEvent(true);
                     }
                 }
             }
-            this.mAsyncActiveConnectEvent.WaitOne();
-            this.mConnectDelegate = d;
+            mAsyncActiveConnectEvent.WaitOne();
+            mConnectDelegate = d;
             return d.BeginInvoke(endPoint, bufferSize, clientStreamFactory, callback, state);
         }
+
+        /// <summary>
+        /// Ends the connect.
+        /// </summary>
+        /// <param name="asyncResult">The async result.</param>
+        /// <returns>
+        /// Network Stream instance
+        /// </returns>
+        public NetworkStream EndConnect(IAsyncResult asyncResult)
+        {
+            if (asyncResult == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("asyncResult");
+            }
+            if (mConnectDelegate == null)
+            {
+                ThrowHelper.ThrowArgumentException("Wrong async result or EndConnect called multiple times.", "asyncResult");
+            }
+            try
+            {
+                return mConnectDelegate.EndInvoke(asyncResult);
+            }
+            finally
+            {
+                mConnectDelegate = null;
+                mAsyncActiveConnectEvent.Set();
+                CloseAsyncActiveConnectEvent(Interlocked.Decrement(ref mAsyncActiveConnectCount));
+            }
+        }
+
+#endif
+
+        /// <summary>Begins the connect.</summary>
+        /// <param name="endPoint">The end point.</param>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        public ITaskResult BeginConnect(AddressEndPoint endPoint, ReturnCallback callback, object state)
+        {
+            return BeginConnect(endPoint, mSocketReceiveBufferSize, mClientStreamFactory, callback, state);
+        }
+
+        /// <summary>Begins the connect.</summary>
+        /// <param name="endPoint">The end point.</param>
+        /// <param name="clientStreamFactory">The client stream factory.</param>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        public ITaskResult BeginConnect(AddressEndPoint endPoint, IClientStreamFactory clientStreamFactory, ReturnCallback callback, object state)
+        {
+            return BeginConnect(endPoint, mSocketReceiveBufferSize, clientStreamFactory, callback, state);
+        }
+
+        /// <summary>Begins the connect.</summary>
+        /// <param name="endPoint">The end point.</param>
+        /// <param name="bufferSize">Size of the buffer.</param>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        public ITaskResult BeginConnect(AddressEndPoint endPoint, int bufferSize, ReturnCallback callback, object state)
+        {
+            return BeginConnect(endPoint, bufferSize, mClientStreamFactory, callback, state);
+        }
+
+        /// <summary>Begins the connect.</summary>
+        /// <param name="endPoint">The end point.</param>
+        /// <param name="bufferSize">Size of the buffer.</param>
+        /// <param name="clientStreamFactory">The client stream factory.</param>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        public ITaskResult BeginConnect(AddressEndPoint endPoint, int bufferSize, IClientStreamFactory clientStreamFactory, ReturnCallback callback, object state)
+        {
+            DoDisposeCheck();
+            if (endPoint == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("endPoint");
+            }
+            if (bufferSize < 0)
+            {
+                ThrowHelper.ThrowArgumentOutOfRangeException("bufferSize");
+            }
+            if (clientStreamFactory == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("clientStreamFactory");
+            }
+
+            Interlocked.Increment(ref mAsyncActiveConnectCount);
+            System.Func<AddressEndPoint, int, IClientStreamFactory, NetworkStream> d = new System.Func<AddressEndPoint, int, IClientStreamFactory, NetworkStream>(Connect);
+            if (mAsyncActiveConnectEvent == null)
+            {
+                lock (LOCK_CONNECT)
+                {
+                    if (mAsyncActiveConnectEvent == null)
+                    {
+                        mAsyncActiveConnectEvent = new AutoResetEvent(true);
+                    }
+                }
+            }
+            mAsyncActiveConnectEvent.WaitOne();
+            mConnectFuncDelegate = d;
+            return d.BeginInvoke(endPoint, bufferSize, clientStreamFactory, callback, state);
+        }
+
+        /// <summary>Ends the connect.</summary>
+        /// <param name="asyncResult">The async result.</param>
+        /// <returns>Network Stream instance</returns>
+        public NetworkStream EndConnect(ITaskResult asyncResult)
+        {
+            if (asyncResult == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("asyncResult");
+            }
+            if (mConnectFuncDelegate == null)
+            {
+                ThrowHelper.ThrowArgumentException("Wrong async result or EndConnect called multiple times.", "asyncResult");
+            }
+            try
+            {
+                return mConnectFuncDelegate.EndInvoke(asyncResult);
+            }
+            finally
+            {
+                mConnectFuncDelegate = null;
+                mAsyncActiveConnectEvent.Set();
+                CloseAsyncActiveConnectEvent(Interlocked.Decrement(ref mAsyncActiveConnectCount));
+            }
+        }
+
+#if NETCOREAPP3_1_OR_GREATER
+
+        /// <summary>
+        /// Connects the specified end point.
+        /// </summary>
+        /// <param name="endPoint">The end point.</param>
+        /// <returns>Network Stream instance</returns>
+        public async Task<NetworkStream> ConnectAsync(AddressEndPoint endPoint)
+        {
+            DoDisposeCheck();
+            return await ConnectAsync(endPoint, mSocketReceiveBufferSize, mClientStreamFactory);
+        }
+
+        /// <summary>
+        /// Connects the specified end point.
+        /// </summary>
+        /// <param name="endPoint">The end point.</param>
+        /// <param name="clientStreamFactory">The client stream factory.</param>
+        /// <returns>Network Stream instance</returns>
+        public async Task<NetworkStream> ConnectAsync(AddressEndPoint endPoint, IClientStreamFactory clientStreamFactory)
+        {
+            DoDisposeCheck();
+            return await ConnectAsync(endPoint, mSocketReceiveBufferSize, clientStreamFactory);
+        }
+
+        /// <summary>
+        /// Connects the specified end point.
+        /// </summary>
+        /// <param name="endPoint">The end point.</param>
+        /// <param name="bufferSize">Size of the buffer.</param>
+        /// <returns>Network Stream instance</returns>
+        public async Task<NetworkStream> ConnectAsync(AddressEndPoint endPoint, int bufferSize)
+        {
+            DoDisposeCheck();
+            return await ConnectAsync(endPoint, bufferSize, mClientStreamFactory);
+        }
+
+        /// <summary>
+        /// Connects the specified end point.
+        /// </summary>
+        /// <param name="endPoint">The end point.</param>
+        /// <param name="bufferSize">Size of the buffer.</param>
+        /// <param name="clientStreamFactory">The client stream factory.</param>
+        /// <returns>
+        /// Network Stream instance
+        /// </returns>
+        public async Task<NetworkStream> ConnectAsync(AddressEndPoint endPoint, int bufferSize, IClientStreamFactory clientStreamFactory)
+        {
+            DoDisposeCheck();
+            if (endPoint == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("endPoint");
+            }
+            if (bufferSize < 0)
+            {
+                ThrowHelper.ThrowArgumentOutOfRangeException("bufferSize");
+            }
+            if (clientStreamFactory == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("clientStreamFactory");
+            }
+
+            ITcpClient client = mNetworkFactory.CreateTcpClient(); // add async methods to the interface and implement them
+            await client.ConnectAsync(endPoint); // it can throw exception
+            client.Client.SendBufferSize = bufferSize;
+            client.Client.ReceiveBufferSize = bufferSize;
+            client.Client.SendTimeout = Timeout.Infinite;
+            client.Client.ReceiveTimeout = Timeout.Infinite;
+#if IS_WINDOWS
+            client.Client.SetKeepAliveValues(true, DefaultSocketKeepAliveTime, DefaultSocketKeepAliveTimeInterval);
+#endif
+            client.Client.NoDelay = NoDelay;
+
+            if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("SYNAPSE_NETWORK_MANAGER, create client network stream for connection. Factory type: '{0}'. Connection remote endpoint: '{1}'", clientStreamFactory.GetType().FullName, endPoint.ToString()));
+            return await clientStreamFactory.CreateNetworkStreamAsync(client);
+        }
+
+#endif
 
         /// <summary>
         /// Connects the specified end point.
@@ -615,7 +900,7 @@ namespace Forge.Net.Synapse
         public NetworkStream Connect(AddressEndPoint endPoint)
         {
             DoDisposeCheck();
-            return Connect(endPoint, this.mSocketReceiveBufferSize, mClientStreamFactory);
+            return Connect(endPoint, mSocketReceiveBufferSize, mClientStreamFactory);
         }
 
         /// <summary>
@@ -627,7 +912,7 @@ namespace Forge.Net.Synapse
         public NetworkStream Connect(AddressEndPoint endPoint, IClientStreamFactory clientStreamFactory)
         {
             DoDisposeCheck();
-            return Connect(endPoint, this.mSocketReceiveBufferSize, clientStreamFactory);
+            return Connect(endPoint, mSocketReceiveBufferSize, clientStreamFactory);
         }
 
         /// <summary>
@@ -667,8 +952,8 @@ namespace Forge.Net.Synapse
                 ThrowHelper.ThrowArgumentNullException("clientStreamFactory");
             }
 
-            ITcpClient client = mNetworkFactory.CreateTcpClient();
-            client.Connect(endPoint); // ez dobhat kivételt
+            ITcpClient client = mNetworkFactory.CreateTcpClient(); // add async methods to the interface and implement them
+            client.Connect(endPoint); // it can throw exception
             client.Client.SendBufferSize = bufferSize;
             client.Client.ReceiveBufferSize = bufferSize;
             client.Client.SendTimeout = Timeout.Infinite;
@@ -676,39 +961,10 @@ namespace Forge.Net.Synapse
 #if IS_WINDOWS
             client.Client.SetKeepAliveValues(true, DefaultSocketKeepAliveTime, DefaultSocketKeepAliveTimeInterval);
 #endif
-            client.Client.NoDelay = this.NoDelay;
+            client.Client.NoDelay = NoDelay;
 
             if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("SYNAPSE_NETWORK_MANAGER, create client network stream for connection. Factory type: '{0}'. Connection remote endpoint: '{1}'", clientStreamFactory.GetType().FullName, endPoint.ToString()));
             return clientStreamFactory.CreateNetworkStream(client);
-        }
-
-        /// <summary>
-        /// Ends the connect.
-        /// </summary>
-        /// <param name="asyncResult">The async result.</param>
-        /// <returns>
-        /// Network Stream instance
-        /// </returns>
-        public NetworkStream EndConnect(IAsyncResult asyncResult)
-        {
-            if (asyncResult == null)
-            {
-                ThrowHelper.ThrowArgumentNullException("asyncResult");
-            }
-            if (this.mConnectDelegate == null)
-            {
-                ThrowHelper.ThrowArgumentException("Wrong async result or EndConnect called multiple times.", "asyncResult");
-            }
-            try
-            {
-                return this.mConnectDelegate.EndInvoke(asyncResult);
-            }
-            finally
-            {
-                this.mConnectDelegate = null;
-                this.mAsyncActiveConnectEvent.Set();
-                CloseAsyncActiveConnectEvent(Interlocked.Decrement(ref mAsyncActiveConnectCount));
-            }
         }
 
         /// <summary>
@@ -778,11 +1034,11 @@ namespace Forge.Net.Synapse
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "mLockForServers"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "mAsyncActiveConnectEvent"), MethodImpl(MethodImplOptions.Synchronized)]
         public void Dispose()
         {
-            if (!this.mDisposed)
+            if (!mDisposed)
             {
                 StopServers();
                 mLockForServers.Dispose();
-                this.mDisposed = true;
+                mDisposed = true;
                 GC.SuppressFinalize(this);
             }
         }
@@ -793,23 +1049,23 @@ namespace Forge.Net.Synapse
 
         internal void OnNetworkPeerConnected(ConnectionEventArgs e)
         {
-            Raiser.CallDelegatorBySync(NetworkPeerConnected, new object[] { this, e });
+            Executor.Invoke(NetworkPeerConnected, this, e);
         }
 
         private void DoDisposeCheck()
         {
-            if (this.mDisposed)
+            if (mDisposed)
             {
-                throw new ObjectDisposedException(this.GetType().FullName);
+                throw new ObjectDisposedException(GetType().FullName);
             }
         }
 
         private void CloseAsyncActiveConnectEvent(int asyncActiveCount)
         {
-            if ((this.mAsyncActiveConnectEvent != null) && (asyncActiveCount == 0))
+            if ((mAsyncActiveConnectEvent != null) && (asyncActiveCount == 0))
             {
-                this.mAsyncActiveConnectEvent.Dispose();
-                this.mAsyncActiveConnectEvent = null;
+                mAsyncActiveConnectEvent.Dispose();
+                mAsyncActiveConnectEvent = null;
             }
         }
 
@@ -822,13 +1078,13 @@ namespace Forge.Net.Synapse
 
             #region Field(s)
 
-            private long mServerId = -1;
+            private readonly long mServerId = -1;
 
-            private ITcpListener mListener = null;
+            private readonly ITcpListener mListener = null;
 
-            private NetworkManager mManager = null;
+            private readonly NetworkManager mManager = null;
 
-            private IServerStreamFactory mServerStreamFactory = null;
+            private readonly IServerStreamFactory mServerStreamFactory = null;
 
             #endregion
 
@@ -843,22 +1099,22 @@ namespace Forge.Net.Synapse
             /// <param name="serverStreamFactory">The stream factory.</param>
             internal ServerContainer(long serverId, ITcpListener listener, NetworkManager manager, IServerStreamFactory serverStreamFactory)
             {
-                this.mServerId = serverId;
-                this.mListener = listener;
-                this.mManager = manager;
-                this.mServerStreamFactory = serverStreamFactory;
+                mServerId = serverId;
+                mListener = listener;
+                mManager = manager;
+                mServerStreamFactory = serverStreamFactory;
             }
 
             #endregion
 
             #region Public Properties
 
-            public long ServerId
+            internal long ServerId
             {
                 get { return mServerId; }
             }
 
-            public ITcpListener Listener
+            internal ITcpListener Listener
             {
                 get { return mListener; }
             }
@@ -870,7 +1126,7 @@ namespace Forge.Net.Synapse
             /// <summary>
             /// Initializes this instance.
             /// </summary>
-            public void Initialize()
+            internal void Initialize()
             {
                 BeginAccept();
             }
@@ -879,7 +1135,7 @@ namespace Forge.Net.Synapse
 
             #region Private method(s)
 
-            private void DoAcceptSocketCallback(IAsyncResult ar)
+            private void DoAcceptSocketCallback(ITaskResult ar)
             {
                 ITcpListener listener = (ITcpListener)ar.AsyncState;
                 ITcpClient tcpClient = null;
@@ -902,7 +1158,7 @@ namespace Forge.Net.Synapse
                 }
                 catch (Exception ex)
                 {
-                    // ez a szerver leállítása közben történhet
+                    // this happened while server shut down
                     if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("Failed to configure accepted TcpClient. Reason: {0}", ex.Message));
                     return;
                 }
@@ -915,7 +1171,7 @@ namespace Forge.Net.Synapse
                 }
                 catch (Exception ex)
                 {
-                    if (LOGGER.IsErrorEnabled) LOGGER.Error(String.Format("ServerStreamFactory implementation threw an exception ({0}).", mServerStreamFactory.GetType().AssemblyQualifiedName), ex);
+                    if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format("ServerStreamFactory implementation threw an exception ({0}).", mServerStreamFactory.GetType().AssemblyQualifiedName), ex);
                 }
 
                 if (networkStream == null)
@@ -928,7 +1184,7 @@ namespace Forge.Net.Synapse
                 {
                     if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("Propagate event about the new connection. Listening endpoint: {0}, local endpoint: {1}, remote endpoint: {2}. Network stream id: {3}", listener.LocalEndpoint.ToString(), tcpClient.Client.LocalEndPoint.ToString(), tcpClient.Client.RemoteEndPoint.ToString(), networkStream.Id.ToString()));
                     BeginAccept();
-                    this.mManager.OnNetworkPeerConnected(new ConnectionEventArgs(this.mServerId, listener.LocalEndpoint, networkStream));
+                    mManager.OnNetworkPeerConnected(new ConnectionEventArgs(mServerId, listener.LocalEndpoint, networkStream));
                 }
             }
 
@@ -936,13 +1192,13 @@ namespace Forge.Net.Synapse
             {
                 try
                 {
-                    if (LOGGER.IsDebugEnabled) LOGGER.Debug(String.Format("Begin accept TcpClient on a TcpListener. Local endpoint: {0}", mListener.LocalEndpoint.ToString()));
-                    mListener.BeginAcceptTcpClient(new AsyncCallback(DoAcceptSocketCallback), mListener);
+                    if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("Begin accept TcpClient on a TcpListener. Local endpoint: {0}", mListener.LocalEndpoint.ToString()));
+                    mListener.BeginAcceptTcpClient(new ReturnCallback(DoAcceptSocketCallback), mListener);
                 }
                 catch (Exception ex)
                 {
-                    // ez akkor fordul elő, ha leállítom eközben a listener-t
-                    if (LOGGER.IsDebugEnabled) LOGGER.Debug(String.Format("Failed to begin accept TcpClient on a TcpListener. Reason: {0}", ex.Message));
+                    // this happens, while I shut down the listener
+                    if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("Failed to begin accept TcpClient on a TcpListener. Reason: {0}", ex.Message));
                 }
             }
 

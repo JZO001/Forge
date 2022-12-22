@@ -9,6 +9,7 @@
 
 using System;
 using System.Collections.Generic;
+using Forge.Shared;
 using Microsoft.Win32;
 
 namespace Forge.UpdateFramework
@@ -21,7 +22,7 @@ namespace Forge.UpdateFramework
     public class RegistryDescriptor : DescriptorBase
     {
 
-#region Constructor(s)
+        #region Constructor(s)
 
         /// <summary>
         /// Prevents a default instance of the <see cref="RegistryDescriptor"/> class from being created.
@@ -94,9 +95,9 @@ namespace Forge.UpdateFramework
             }
         }
 
-#endregion
+        #endregion
 
-#region Public properties
+        #region Public properties
 
         /// <summary>
         /// Gets the mining result.
@@ -128,7 +129,7 @@ namespace Forge.UpdateFramework
         /// </summary>
         public Dictionary<string, RegistryItemDescriptor> Values { get; private set; }
 
-#endregion
+        #endregion
 
     }
 

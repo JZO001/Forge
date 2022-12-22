@@ -7,8 +7,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Forge.Legacy;
 using Forge.Net.Remoting.Channels;
 using Forge.Net.Remoting.Validators;
+using Forge.Shared;
 using Forge.Threading;
 
 namespace Forge.Net.Remoting.Service
@@ -55,7 +57,7 @@ namespace Forge.Net.Remoting.Service
         /// </summary>
         /// <param name="channelId">The channel id.</param>
         /// <param name="implementationType">Type of the implementation.</param>
-        private ServiceFactory(String channelId, Type implementationType)
+        private ServiceFactory(string channelId, Type implementationType)
         {
             if (string.IsNullOrEmpty(channelId))
             {
@@ -74,13 +76,13 @@ namespace Forge.Net.Remoting.Service
             ContractValidator.ValidateContractIntegrity(ServiceContract);
             ImplementationValidator.ValidateImplementationIntegrity(implementationType);
 
-            this.mChannel = ChannelServices.GetChannelById(channelId);
-            if (this.mChannel == null)
+            mChannel = ChannelServices.GetChannelById(channelId);
+            if (mChannel == null)
             {
                 throw new ChannelNotFoundException(channelId);
             }
 
-            this.mImplementationType = implementationType;
+            mImplementationType = implementationType;
 
             // adatstruktúra adminisztrációja
             // egy factory csak azt adhatja hozzá, ami nincs és csak azt veheti el, ami még nem volt.
@@ -116,7 +118,7 @@ namespace Forge.Net.Remoting.Service
                             Type currentImplType = descriptor.ImplementationPerChannel[channelId];
                             if (!currentImplType.Equals(implementationType))
                             {
-                                throw new ArgumentException(String.Format("Unable to register provided implementation type: '{0}'. An other implementation type '{1}' has already definied for channel '{2}' and contract '{3}'.", implementationType.FullName, currentImplType.FullName, channelId, ServiceContract.FullName));
+                                throw new ArgumentException(string.Format("Unable to register provided implementation type: '{0}'. An other implementation type '{1}' has already definied for channel '{2}' and contract '{3}'.", implementationType.FullName, currentImplType.FullName, channelId, ServiceContract.FullName));
                             }
                         }
                     }
@@ -191,7 +193,7 @@ namespace Forge.Net.Remoting.Service
         /// implementationType
         /// </exception>
         /// <exception cref="ChannelNotFoundException"></exception>
-        public static IServiceFactory GetServiceFactory<TServiceContract>(String channelId, Type implementationType) where TServiceContract : IRemoteContract
+        public static IServiceFactory GetServiceFactory<TServiceContract>(string channelId, Type implementationType) where TServiceContract : IRemoteContract
         {
             if (string.IsNullOrEmpty(channelId))
             {

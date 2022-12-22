@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Forge.Collections;
 using Forge.Persistence.StorageProviders;
+using Forge.Shared;
 
 namespace Forge.Persistence.Collections
 {
@@ -29,8 +30,8 @@ namespace Forge.Persistence.Collections
         /// </summary>
         /// <param name="mapId">The map id.</param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        public PersistentDictionary(String mapId) :
-            base(mapId, CacheStrategyEnum.RecentlyUsed, Int32.MaxValue)
+        public PersistentDictionary(string mapId) :
+            base(mapId, CacheStrategyEnum.RecentlyUsed, int.MaxValue)
         {
             SetStorageProvider(new FileStorageProvider<KeyValuePair<TKey, TValue>>(mapId), true);
             FillCache();
@@ -41,8 +42,8 @@ namespace Forge.Persistence.Collections
         /// </summary>
         /// <param name="mapId">The map id.</param>
         /// <param name="provider">The provider.</param>
-        public PersistentDictionary(String mapId, IStorageProvider<KeyValuePair<TKey, TValue>> provider) :
-            base(mapId, CacheStrategyEnum.RecentlyUsed, Int32.MaxValue)
+        public PersistentDictionary(string mapId, IStorageProvider<KeyValuePair<TKey, TValue>> provider) :
+            base(mapId, CacheStrategyEnum.RecentlyUsed, int.MaxValue)
         {
             SetStorageProvider(provider, false);
             FillCache();
@@ -54,7 +55,7 @@ namespace Forge.Persistence.Collections
         /// <param name="mapId">The map id.</param>
         /// <param name="provider">The provider.</param>
         /// <param name="cacheSize">Size of the cache.</param>
-        public PersistentDictionary(String mapId, IStorageProvider<KeyValuePair<TKey, TValue>> provider, int cacheSize) :
+        public PersistentDictionary(string mapId, IStorageProvider<KeyValuePair<TKey, TValue>> provider, int cacheSize) :
             base(mapId, CacheStrategyEnum.RecentlyUsed, cacheSize)
         {
             SetStorageProvider(provider, false);
@@ -67,7 +68,7 @@ namespace Forge.Persistence.Collections
         /// <param name="mapId">The map id.</param>
         /// <param name="cacheSize">Size of the cache.</param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        public PersistentDictionary(String mapId, int cacheSize) :
+        public PersistentDictionary(string mapId, int cacheSize) :
             base(mapId, CacheStrategyEnum.RecentlyUsed, cacheSize)
         {
             SetStorageProvider(new FileStorageProvider<KeyValuePair<TKey, TValue>>(mapId), true);
@@ -79,7 +80,7 @@ namespace Forge.Persistence.Collections
         /// </summary>
         /// <param name="mapId">The map id.</param>
         /// <param name="configurationName">Name of the configuration.</param>
-        public PersistentDictionary(String mapId, String configurationName) :
+        public PersistentDictionary(string mapId, string configurationName) :
             base(mapId, CacheStrategyEnum.RecentlyUsed, configurationName)
         {
         }
@@ -121,7 +122,7 @@ namespace Forge.Persistence.Collections
 
             lock (mLockObject)
             {
-                for (int i = 0; i < this.Count; i++)
+                for (int i = 0; i < Count; i++)
                 {
                     KeyValuePair<TKey, TValue> item = GetItem(i);
                     if (key.Equals(item.Key))
@@ -151,7 +152,7 @@ namespace Forge.Persistence.Collections
 
                 lock (mLockObject)
                 {
-                    for (int i = 0; i < this.Count; i++)
+                    for (int i = 0; i < Count; i++)
                     {
                         TKey key = GetItem(i).Key;
                         if (!resultSet.Contains(key))
@@ -182,12 +183,12 @@ namespace Forge.Persistence.Collections
 
             lock (mLockObject)
             {
-                for (int i = 0; i < this.Count; i++)
+                for (int i = 0; i < Count; i++)
                 {
                     KeyValuePair<TKey, TValue> item = GetItem(i);
                     if (key.Equals(item.Key))
                     {
-                        this.RemoveItem(item);
+                        RemoveItem(item);
                         result = true;
                         break;
                     }
@@ -217,7 +218,7 @@ namespace Forge.Persistence.Collections
 
             lock (mLockObject)
             {
-                for (int i = 0; i < this.Count; i++)
+                for (int i = 0; i < Count; i++)
                 {
                     KeyValuePair<TKey, TValue> item = GetItem(i);
                     if (key.Equals(item.Key))
@@ -248,7 +249,7 @@ namespace Forge.Persistence.Collections
 
                 lock (mLockObject)
                 {
-                    for (int i = 0; i < this.Count; i++)
+                    for (int i = 0; i < Count; i++)
                     {
                         resultList.Add(GetItem(i).Value);
                     }
@@ -282,7 +283,7 @@ namespace Forge.Persistence.Collections
                 lock (mLockObject)
                 {
                     bool found = false;
-                    for (int i = 0; i < this.Count; i++)
+                    for (int i = 0; i < Count; i++)
                     {
                         KeyValuePair<TKey, TValue> item = GetItem(i);
                         if (key.Equals(item.Key))
@@ -294,7 +295,7 @@ namespace Forge.Persistence.Collections
                     }
                     if (!found)
                     {
-                        throw new KeyNotFoundException(String.Format("Key not found: {0}", key));
+                        throw new KeyNotFoundException(string.Format("Key not found: {0}", key));
                     }
                 }
 
@@ -311,7 +312,7 @@ namespace Forge.Persistence.Collections
                 lock (mLockObject)
                 {
                     bool found = false;
-                    for (int i = 0; i < this.Count; i++)
+                    for (int i = 0; i < Count; i++)
                     {
                         KeyValuePair<TKey, TValue> item = GetItem(i);
                         if (key.Equals(item.Key))
@@ -325,7 +326,7 @@ namespace Forge.Persistence.Collections
                     }
                     if (!found)
                     {
-                        this.AddItem(new KeyValuePair<TKey, TValue>(key, value));
+                        AddItem(new KeyValuePair<TKey, TValue>(key, value));
                     }
                 }
             }
@@ -339,10 +340,6 @@ namespace Forge.Persistence.Collections
         public void Add(KeyValuePair<TKey, TValue> kv)
         {
             DoDisposeCheck();
-            if (ReferenceEquals(kv, null))
-            {
-                ThrowHelper.ThrowArgumentNullException("kv");
-            }
             if (ReferenceEquals(kv.Key, null))
             {
                 ThrowHelper.ThrowArgumentNullException("kv.Key");
@@ -350,15 +347,15 @@ namespace Forge.Persistence.Collections
 
             lock (mLockObject)
             {
-                for (int i = 0; i < this.Count; i++)
+                for (int i = 0; i < Count; i++)
                 {
                     KeyValuePair<TKey, TValue> item = GetItem(i);
                     if (kv.Key.Equals(item.Key))
                     {
-                        ThrowHelper.ThrowArgumentException(String.Format("Key already exist: {0}", kv.Key), "kv.Key");
+                        ThrowHelper.ThrowArgumentException(string.Format("Key already exist: {0}", kv.Key), "kv.Key");
                     }
                 }
-                this.AddItem(kv);
+                AddItem(kv);
             }
         }
 
@@ -377,7 +374,7 @@ namespace Forge.Persistence.Collections
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException("index");
             }
-            if ((array.Length - index) < this.Count)
+            if ((array.Length - index) < Count)
             {
                 ThrowHelper.ThrowArgumentException("array");
             }
@@ -407,21 +404,16 @@ namespace Forge.Persistence.Collections
         public bool Remove(KeyValuePair<TKey, TValue> kv)
         {
             DoDisposeCheck();
-            if (ReferenceEquals(kv, null))
-            {
-                ThrowHelper.ThrowArgumentNullException("kv");
-            }
-
             bool result = false;
 
             lock (mLockObject)
             {
-                for (int i = 0; i < this.Count; i++)
+                for (int i = 0; i < Count; i++)
                 {
                     KeyValuePair<TKey, TValue> item = GetItem(i);
                     if (kv.Equals(item))
                     {
-                        this.RemoveItem(item);
+                        RemoveItem(item);
                         result = true;
                         break;
                     }

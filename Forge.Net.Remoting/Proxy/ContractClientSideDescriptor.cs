@@ -4,6 +4,8 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Legacy;
+using Forge.Shared;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -55,9 +57,9 @@ namespace Forge.Net.Remoting.Proxy
                     ThrowHelper.ThrowArgumentException("Type of default proxy is not assignable from ProxyBase.");
                 }
             }
-            this.mContractType = contractType;
-            this.mDefaultChannelId = defaultChannelId;
-            this.mDefaultProxyType = defaultProxyType;
+            mContractType = contractType;
+            mDefaultChannelId = defaultChannelId;
+            mDefaultProxyType = defaultProxyType;
         }
 
         #endregion

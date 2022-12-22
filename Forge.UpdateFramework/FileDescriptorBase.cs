@@ -4,9 +4,9 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Shared;
 using System;
 using System.IO;
-using Forge.IO;
 
 namespace Forge.UpdateFramework
 {

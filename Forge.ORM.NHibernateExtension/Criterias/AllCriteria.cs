@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using Forge.ORM.NHibernateExtension.Model;
+using Forge.Shared;
 using NHibernate.Criterion;
 
 namespace Forge.ORM.NHibernateExtension.Criterias
@@ -48,7 +49,7 @@ namespace Forge.ORM.NHibernateExtension.Criterias
         /// </summary>
         private AllCriteria()
         {
-            this.mCriterion = Expression.Sql(" 1=1 ");
+            mCriterion = Expression.Sql(" 1=1 ");
         }
 
         #endregion
@@ -125,7 +126,7 @@ namespace Forge.ORM.NHibernateExtension.Criterias
             }
             else
             {
-                criteria.Add(this.mCriterion);
+                criteria.Add(mCriterion);
             }
         }
 
@@ -174,7 +175,7 @@ namespace Forge.ORM.NHibernateExtension.Criterias
         /// </returns>
         public override string ToString()
         {
-            return this.mCriterion.ToString();
+            return mCriterion.ToString();
         }
 
         #endregion
@@ -195,7 +196,7 @@ namespace Forge.ORM.NHibernateExtension.Criterias
         /// <returns></returns>
         protected override ICriterion BuildCriterion(string fieldName)
         {
-            return this.mCriterion;
+            return mCriterion;
         }
 
         #endregion

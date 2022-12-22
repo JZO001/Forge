@@ -10,7 +10,9 @@ using System.Configuration;
 using System.Data.Common;
 using System.Data.SQLite;
 using System.IO;
+using Forge.Configuration;
 using Forge.Configuration.Shared;
+using Forge.Shared;
 
 namespace Forge.DatabaseManagement.SQLite
 {
@@ -98,9 +100,9 @@ namespace Forge.DatabaseManagement.SQLite
         /// Initializes the specified config item.
         /// </summary>
         /// <param name="configItem">The config item.</param>
-        public virtual void Initialize(CategoryPropertyItem configItem)
+        public virtual void Initialize(IPropertyItem configItem)
         {
-            this.IsInitialized = true;
+            IsInitialized = true;
         }
 
         /// <summary>

@@ -7,8 +7,10 @@
 using System;
 using System.Diagnostics;
 using System.Threading;
+using Forge.Legacy;
 using Forge.Net.Remoting.Channels;
 using Forge.Net.Remoting.Messaging;
+using Forge.Shared;
 
 namespace Forge.Net.Remoting.Proxy
 {
@@ -24,7 +26,7 @@ namespace Forge.Net.Remoting.Proxy
         /// <summary>
         /// Represents the constant which identifiy the proxy identifier in the call context
         /// </summary>
-        public static readonly String PROXY_ID = "PROXY_ID";
+        public static readonly string PROXY_ID = "PROXY_ID";
 
         private static long mProxyIdAllocator = 0;
 
@@ -39,7 +41,7 @@ namespace Forge.Net.Remoting.Proxy
         /// <summary>
         /// The session identifier
         /// </summary>
-        protected readonly string mSessionId = string.Empty;
+        protected string mSessionId = string.Empty;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private bool mDisposed = false;
@@ -67,7 +69,7 @@ namespace Forge.Net.Remoting.Proxy
         /// </summary>
         /// <param name="channel">The channel.</param>
         /// <param name="sessionId">The session id.</param>
-        protected ProxyBase(Channel channel, String sessionId)
+        protected ProxyBase(Channel channel, string sessionId)
         {
             if (channel == null)
             {
@@ -77,9 +79,9 @@ namespace Forge.Net.Remoting.Proxy
             {
                 ThrowHelper.ThrowArgumentNullException("sessionId");
             }
-            this.mChannel = channel;
-            this.mSessionId = sessionId;
-            this.mProxyId = Interlocked.Increment(ref mProxyIdAllocator);
+            mChannel = channel;
+            mSessionId = sessionId;
+            mProxyId = Interlocked.Increment(ref mProxyIdAllocator);
         }
 
         /// <summary>
@@ -163,7 +165,7 @@ namespace Forge.Net.Remoting.Proxy
         /// Sends the response manually.
         /// </summary>
         /// <param name="value">The value.</param>
-        protected void SendResponseManually(Object value)
+        protected void SendResponseManually(object value)
         {
             ServiceBase.SendResponseManually(value);
         }
@@ -173,7 +175,7 @@ namespace Forge.Net.Remoting.Proxy
         /// </summary>
         /// <param name="value">The value.</param>
         /// <param name="returnTimeout">The return timeout.</param>
-        protected void SendResponseManually(Object value, long returnTimeout)
+        protected void SendResponseManually(object value, long returnTimeout)
         {
             ServiceBase.SendResponseManually(value, returnTimeout);
         }
@@ -186,7 +188,7 @@ namespace Forge.Net.Remoting.Proxy
         /// <param name="parameterTypes">The parameter types.</param>
         /// <param name="timeoutType">Type of the timeout.</param>
         /// <returns></returns>
-        protected long GetTimeoutByMethod(Type serviceContract, String methodName, MethodParameter[] parameterTypes, MethodTimeoutEnum timeoutType)
+        protected long GetTimeoutByMethod(Type serviceContract, string methodName, MethodParameter[] parameterTypes, MethodTimeoutEnum timeoutType)
         {
             return ServiceBase.GetTimeoutByMethod(serviceContract, methodName, parameterTypes, timeoutType);
         }
@@ -198,7 +200,7 @@ namespace Forge.Net.Remoting.Proxy
         {
             if (mDisposed)
             {
-                throw new ObjectDisposedException(this.GetType().FullName);
+                throw new ObjectDisposedException(GetType().FullName);
             }
         }
 
@@ -211,10 +213,10 @@ namespace Forge.Net.Remoting.Proxy
             if (!mDisposed)
             {
                 ServiceBase.UnregisterProxy(this);
-                this.mDisposed = true;
-                if (!this.mChannel.IsSessionReusable)
+                mDisposed = true;
+                if (!mChannel.IsSessionReusable)
                 {
-                    this.mChannel.Disconnect(mSessionId);
+                    mChannel.Disconnect(mSessionId);
                 }
             }
         }

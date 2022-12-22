@@ -4,7 +4,9 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Threading.Tasking;
 using System;
+using System.Threading.Tasks;
 
 namespace Forge.Net.Synapse.NetworkServices
 {
@@ -14,6 +16,8 @@ namespace Forge.Net.Synapse.NetworkServices
     /// </summary>
     public interface ITcpClient : IDisposable
     {
+
+#if NET40
 
         /// <summary>
         /// Begins the connect.
@@ -33,6 +37,52 @@ namespace Forge.Net.Synapse.NetworkServices
         /// <param name="state">The state.</param>
         /// <returns>Async property</returns>
         IAsyncResult BeginConnect(AddressEndPoint localEp, AsyncCallback callback, object state);
+
+        /// <summary>Ends the connect.</summary>
+        /// <param name="asyncResult">The asynchronous result.</param>
+        void EndConnect(IAsyncResult asyncResult);
+
+#endif
+
+        /// <summary>
+        /// Begins the connect.
+        /// </summary>
+        /// <param name="host">The host.</param>
+        /// <param name="port">The port.</param>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        ITaskResult BeginConnect(string host, int port, ReturnCallback callback, object state);
+
+        /// <summary>
+        /// Begins the connect.
+        /// </summary>
+        /// <param name="localEp">The local ep.</param>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        ITaskResult BeginConnect(AddressEndPoint localEp, ReturnCallback callback, object state);
+
+        /// <summary>Ends the connect.</summary>
+        /// <param name="asyncResult">The asynchronous result.</param>
+        void EndConnect(ITaskResult asyncResult);
+
+#if NETCOREAPP3_1_OR_GREATER
+
+        /// <summary>
+        /// Connects the specified host.
+        /// </summary>
+        /// <param name="host">The host.</param>
+        /// <param name="port">The port.</param>
+        Task ConnectAsync(string host, int port);
+
+        /// <summary>
+        /// Connects the specified local ep.
+        /// </summary>
+        /// <param name="localEp">The local ep.</param>
+        Task ConnectAsync(AddressEndPoint localEp);
+
+#endif
 
         /// <summary>
         /// Connects the specified host.

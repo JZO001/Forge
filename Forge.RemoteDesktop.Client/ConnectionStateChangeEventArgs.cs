@@ -22,7 +22,7 @@ namespace Forge.RemoteDesktop.Client
         /// <param name="state">if set to <c>true</c> [state].</param>
         public ConnectionStateChangeEventArgs(bool state)
         {
-            this.IsConnected = state;
+            IsConnected = state;
         }
 
         /// <summary>

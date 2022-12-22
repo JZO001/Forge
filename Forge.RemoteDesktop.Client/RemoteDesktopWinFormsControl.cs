@@ -12,13 +12,14 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows.Forms;
 using Forge.Collections;
-using Forge.EventRaiser;
-using Forge.Logging;
+using Forge.Invoker;
+using Forge.Logging.Abstraction;
 using Forge.Native.Hooks;
 using Forge.Net.Remoting.Proxy;
 using Forge.Net.Services.Locators;
 using Forge.Net.Synapse;
 using Forge.RemoteDesktop.Contracts;
+using Forge.Shared;
 
 namespace Forge.RemoteDesktop.Client
 {
@@ -35,7 +36,7 @@ namespace Forge.RemoteDesktop.Client
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(RemoteDesktopWinFormsControl));
+        private static readonly ILog LOGGER = LogManager.GetLogger<RemoteDesktopWinFormsControl>();
 
         private static readonly IRemoteServiceLocator<IRemoteDesktop> mRemoteServiceLocator = RemoteServiceLocatorManager.GetServiceLocator<IRemoteDesktop, RemoteDesktopServiceLocator>();
 
@@ -188,7 +189,7 @@ namespace Forge.RemoteDesktop.Client
             {
                 mProxy = (IRemoteDesktopClientInternal)factory.CreateProxy();
                 mProxy.Owner = this;
-                Raiser.CallDelegatorBySync(EventConnectionStateChange, new object[] { this, new ConnectionStateChangeEventArgs(true) });
+                Executor.Invoke(EventConnectionStateChange, this, new ConnectionStateChangeEventArgs(true));
                 mProxy.Disconnected += new EventHandler<DisconnectEventArgs>(Proxy_Disconnected);
             }
         }
@@ -278,7 +279,7 @@ namespace Forge.RemoteDesktop.Client
                 throw new InvalidOperationException("Client was not authenticated.");
             }
 
-            if (this.InvokeRequired)
+            if (InvokeRequired)
             {
                 Action d = new Action(StartEventPump);
                 ((RemoteDesktopWinFormsControl)d.Target).Invoke(d);
@@ -537,7 +538,7 @@ namespace Forge.RemoteDesktop.Client
         /// <param name="m">The Windows <see cref="T:System.Windows.Forms.Message" /> to process.</param>
         protected override void WndProc(ref Message m)
         {
-            if (this.IsHandleCreated)
+            if (IsHandleCreated)
             {
                 if (m.Msg == (int)MouseInputNotificationEnum.WM_MOUSEWHEEL || m.Msg == (int)MouseInputNotificationEnum.WM_MOUSEHWHEEL)
                 {
@@ -662,7 +663,7 @@ namespace Forge.RemoteDesktop.Client
         {
             if (IsDisposed)
             {
-                throw new ObjectDisposedException(this.GetType().Name);
+                throw new ObjectDisposedException(GetType().Name);
             }
         }
 
@@ -688,7 +689,7 @@ namespace Forge.RemoteDesktop.Client
 
         private void SetClipboardContentFromClient(string text)
         {
-            if (this.InvokeRequired)
+            if (InvokeRequired)
             {
                 SetClipboardContentHandler d = new SetClipboardContentHandler(SetClipboardContentFromClient);
                 ((RemoteDesktopWinFormsControl)d.Target).Invoke(d, text);
@@ -700,19 +701,19 @@ namespace Forge.RemoteDesktop.Client
 
         private void OnInternalMouseWheel(MouseWheelInternalEventArgs e)
         {
-            if (this.IsDisposed)
+            if (IsDisposed)
             {
                 return;
             }
 
-            if (this.InvokeRequired)
+            if (InvokeRequired)
             {
                 MouseWheelInternalHandler d = new MouseWheelInternalHandler(OnInternalMouseWheel);
                 ((RemoteDesktopWinFormsControl)d.Target).Invoke(d, e);
                 return;
             }
 
-            if (this.Focused)
+            if (Focused)
             {
                 Point clientPoint = pbClient.PointToClient(e.Location);
 
@@ -728,8 +729,8 @@ namespace Forge.RemoteDesktop.Client
                     y = VerticalScroll.Value;
                 }
 
-                int endX = this.ClientRectangle.Width + x;
-                int endY = this.ClientRectangle.Height + y;
+                int endX = ClientRectangle.Width + x;
+                int endY = ClientRectangle.Height + y;
 
                 if (clientPoint.X >= x && clientPoint.X <= endX && clientPoint.Y >= y && clientPoint.Y <= endY)
                 {
@@ -752,7 +753,7 @@ namespace Forge.RemoteDesktop.Client
             DrawInitialBlackBackground();
             lock (mLockEventObject)
             {
-                Raiser.CallDelegatorBySync(EventConnectionStateChange, new object[] { this, new ConnectionStateChangeEventArgs(false) });
+                Executor.Invoke(EventConnectionStateChange, this, new ConnectionStateChangeEventArgs(false));
             }
         }
 
@@ -761,16 +762,16 @@ namespace Forge.RemoteDesktop.Client
             // picturebox events
             //this.pbClient.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pbClient_MouseClick);
             //this.pbClient.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.pbClient_MouseDoubleClick);
-            this.pbClient.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pbClient_MouseDown);
-            this.pbClient.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pbClient_MouseMove);
-            this.pbClient.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pbClient_MouseUp);
+            pbClient.MouseDown += new System.Windows.Forms.MouseEventHandler(pbClient_MouseDown);
+            pbClient.MouseMove += new System.Windows.Forms.MouseEventHandler(pbClient_MouseMove);
+            pbClient.MouseUp += new System.Windows.Forms.MouseEventHandler(pbClient_MouseUp);
 
             // form events
-            this.Scroll += new System.Windows.Forms.ScrollEventHandler(this.RemoteDesktopWinFormsControl_Scroll);
-            this.ClientSizeChanged += new System.EventHandler(this.RemoteDesktopWinFormsControl_ClientSizeChanged);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Event_KeyDown);
+            Scroll += new System.Windows.Forms.ScrollEventHandler(RemoteDesktopWinFormsControl_Scroll);
+            ClientSizeChanged += new System.EventHandler(RemoteDesktopWinFormsControl_ClientSizeChanged);
+            KeyDown += new System.Windows.Forms.KeyEventHandler(Event_KeyDown);
             //this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Event_KeyPress);
-            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Event_KeyUp);
+            KeyUp += new System.Windows.Forms.KeyEventHandler(Event_KeyUp);
         }
 
         private void UnsubscribeEvents()
@@ -778,16 +779,16 @@ namespace Forge.RemoteDesktop.Client
             // picturebox events
             //this.pbClient.MouseClick -= new System.Windows.Forms.MouseEventHandler(this.pbClient_MouseClick);
             //this.pbClient.MouseDoubleClick -= new System.Windows.Forms.MouseEventHandler(this.pbClient_MouseDoubleClick);
-            this.pbClient.MouseDown -= new System.Windows.Forms.MouseEventHandler(this.pbClient_MouseDown);
-            this.pbClient.MouseMove -= new System.Windows.Forms.MouseEventHandler(this.pbClient_MouseMove);
-            this.pbClient.MouseUp -= new System.Windows.Forms.MouseEventHandler(this.pbClient_MouseUp);
+            pbClient.MouseDown -= new System.Windows.Forms.MouseEventHandler(pbClient_MouseDown);
+            pbClient.MouseMove -= new System.Windows.Forms.MouseEventHandler(pbClient_MouseMove);
+            pbClient.MouseUp -= new System.Windows.Forms.MouseEventHandler(pbClient_MouseUp);
 
             // form events
-            this.Scroll -= new System.Windows.Forms.ScrollEventHandler(this.RemoteDesktopWinFormsControl_Scroll);
-            this.ClientSizeChanged -= new System.EventHandler(this.RemoteDesktopWinFormsControl_ClientSizeChanged);
-            this.KeyDown -= new System.Windows.Forms.KeyEventHandler(this.Event_KeyDown);
+            Scroll -= new System.Windows.Forms.ScrollEventHandler(RemoteDesktopWinFormsControl_Scroll);
+            ClientSizeChanged -= new System.EventHandler(RemoteDesktopWinFormsControl_ClientSizeChanged);
+            KeyDown -= new System.Windows.Forms.KeyEventHandler(Event_KeyDown);
             //this.KeyPress -= new System.Windows.Forms.KeyPressEventHandler(this.Event_KeyPress);
-            this.KeyUp -= new System.Windows.Forms.KeyEventHandler(this.Event_KeyUp);
+            KeyUp -= new System.Windows.Forms.KeyEventHandler(Event_KeyUp);
         }
 
         private Area GetVisibleArea()
@@ -795,7 +796,7 @@ namespace Forge.RemoteDesktop.Client
             int x = 0;
             int y = 0;
 
-            if (this.IsHandleCreated)
+            if (IsHandleCreated)
             {
                 if (HorizontalScroll.Visible)
                 {
@@ -807,7 +808,7 @@ namespace Forge.RemoteDesktop.Client
                 }
             }
 
-            return new Area(x, y, this.ClientRectangle.Width + x, this.ClientRectangle.Height + y);
+            return new Area(x, y, ClientRectangle.Width + x, ClientRectangle.Height + y);
         }
 
         private void ClipboardChangedEventHandler(object sender, Native.Hooks.ClipboardChangedEventArgs e)
@@ -868,7 +869,7 @@ namespace Forge.RemoteDesktop.Client
                 SubscribedKeyPressEventArgs arg = new SubscribedKeyPressEventArgs(k);
                 foreach (EventHandler<SubscribedKeyPressEventArgs> handler in subscribeds)
                 {
-                    Raiser.CallDelegatorBySync(handler, new object[] { this, arg });
+                    Executor.Invoke(handler, this, arg);
                 }
             }
             else
@@ -972,7 +973,7 @@ namespace Forge.RemoteDesktop.Client
 
         private void DrawInitialBlackBackground()
         {
-            if (this.InvokeRequired)
+            if (InvokeRequired)
             {
                 Action d = new Action(DrawInitialBlackBackground);
                 try
@@ -998,7 +999,7 @@ namespace Forge.RemoteDesktop.Client
         {
             if (LOGGER.IsDebugEnabled) LOGGER.Debug("REMOTE_CLIENT, draw mouse to the surface.");
 
-            if (this.InvokeRequired)
+            if (InvokeRequired)
             {
                 Action d = new Action(DrawMouse);
                 ((RemoteDesktopWinFormsControl)d.Target).Invoke(d);
@@ -1021,7 +1022,7 @@ namespace Forge.RemoteDesktop.Client
 
         private void DrawDesktopClip(DesktopImageClipArgs e)
         {
-            if (this.InvokeRequired)
+            if (InvokeRequired)
             {
                 DrawDesktopClipHandler d = new DrawDesktopClipHandler(DrawDesktopClip);
                 try
@@ -1169,7 +1170,7 @@ namespace Forge.RemoteDesktop.Client
             internal MouseWheelInternalEventArgs(MouseButtons button, int clicks, int x, int y, int delta, MouseWheelTypeEnum wheelType)
                 : base(button, clicks, x, y, delta)
             {
-                this.WheelType = wheelType;
+                WheelType = wheelType;
             }
 
             internal MouseWheelTypeEnum WheelType { get; private set; }

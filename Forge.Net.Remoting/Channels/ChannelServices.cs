@@ -7,11 +7,14 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Forge.Configuration;
 using Forge.Configuration.Shared;
-using Forge.EventRaiser;
-using Forge.Logging;
+using Forge.Invoker;
+using Forge.Legacy;
+using Forge.Logging.Abstraction;
 using Forge.Net.Remoting.ConfigSection;
 using Forge.Reflection;
+using Forge.Shared;
 
 namespace Forge.Net.Remoting.Channels
 {
@@ -24,7 +27,7 @@ namespace Forge.Net.Remoting.Channels
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(ChannelServices));
+        private static readonly ILog LOGGER = LogManager.GetLogger<ChannelServices>();
 
         private static readonly HashSet<Channel> mChannels = new HashSet<Channel>();
 
@@ -51,15 +54,10 @@ namespace Forge.Net.Remoting.Channels
         /// </summary>
         static ChannelServices()
         {
-            bool autoLoad = true;
-            string autoLoadValue = ConfigurationAccessHelper.GetValueByPath(RemotingConfiguration.Settings.CategoryPropertyItems, "Settings/AutomaticallyLoadChannels");
-            if (string.IsNullOrEmpty(autoLoadValue))
+            bool autoLoad = false;
+            if (ConfigurationAccessHelper.ParseBooleanValue(RemotingConfiguration.Settings.CategoryPropertyItems, "Settings/AutomaticallyLoadChannels", ref autoLoad) && autoLoad)
             {
-                ThrowHelper.ThrowArgumentNullException("autoLoadValue");
-            }
-            if (autoLoad)
-            {
-                Initialize();
+                Initialize(RemotingConfiguration.Settings.CategoryPropertyItems);
             }
         }
 
@@ -74,28 +72,40 @@ namespace Forge.Net.Remoting.Channels
 
         #region Public static method(s)
 
-        /// <summary>
-        /// Initializes this instance.
-        /// </summary>
-        /// <exception cref="Forge.Configuration.Shared.InvalidConfigurationException">
-        /// Channel id has not been definied.
-        /// or
-        /// Channel class name has not been definied.
-        /// </exception>
-        /// <exception cref="Forge.Configuration.Shared.InvalidConfigurationValueException"></exception>
-        /// <exception cref="Forge.InitializationException"></exception>
+        /// <summary>Initializes this instance with the XML based configuration, if it is exist.</summary>
         [MethodImpl(MethodImplOptions.Synchronized)]
         public static void Initialize()
         {
+            if (RemotingConfiguration.Settings.CategoryPropertyItems.Count > 0)
+            {
+                Initialize(RemotingConfiguration.Settings.CategoryPropertyItems);
+            }
+        }
+
+        /// <summary>Initializes this instance.</summary>
+        /// <param name="configurationRoot">The configuration</param>
+        /// <exception cref="Forge.Configuration.Shared.InvalidConfigurationException">Channel id has not been definied.
+        /// or
+        /// Channel class name has not been definied.</exception>
+        /// <exception cref="Forge.Configuration.Shared.InvalidConfigurationValueException"></exception>
+        /// <exception cref="Forge.Shared.InitializationException"></exception>
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public static void Initialize(IPropertyItem configurationRoot)
+        {
+            if (configurationRoot is null)
+            {
+                throw new ArgumentNullException(nameof(configurationRoot));
+            }
+
             if (!mInitialized)
             {
                 if (LOGGER.IsInfoEnabled) LOGGER.Info("Initializing channel services.");
-                CategoryPropertyItem pi = ConfigurationAccessHelper.GetCategoryPropertyByPath(RemotingConfiguration.Settings.CategoryPropertyItems, "Channels");
+                IPropertyItem pi = ConfigurationAccessHelper.GetPropertyByPath(configurationRoot, "Channels");
                 if (pi != null)
                 {
                     try
                     {
-                        IEnumerator<CategoryPropertyItem> iterator = pi.GetEnumerator();
+                        IEnumerator<IPropertyItem> iterator = pi.Items.Values.GetEnumerator();
                         while (iterator.MoveNext())
                         {
                             pi = iterator.Current;
@@ -103,23 +113,23 @@ namespace Forge.Net.Remoting.Channels
                             {
                                 throw new InvalidConfigurationException("Channel id has not been definied.");
                             }
-                            if (string.IsNullOrEmpty(pi.EntryValue))
+                            if (string.IsNullOrEmpty(pi.Value))
                             {
                                 throw new InvalidConfigurationException("Channel class name has not been definied.");
                             }
                             Channel channel = null;
                             try
                             {
-                                if (LOGGER.IsInfoEnabled) LOGGER.Info(string.Format("Create channel instance from type '{0}'. ChannelId: '{1}'", pi.EntryValue, pi.Id));
-                                Type cls = TypeHelper.GetTypeFromString(pi.EntryValue);
+                                if (LOGGER.IsInfoEnabled) LOGGER.Info(string.Format("Create channel instance from type '{0}'. ChannelId: '{1}'", pi.Value, pi.Id));
+                                Type cls = TypeHelper.GetTypeFromString(pi.Value);
                                 channel = (Channel)cls.GetConstructor(new Type[] { }).Invoke(null);
                             }
                             catch (Exception ex)
                             {
-                                throw new InvalidConfigurationValueException(String.Format("Unable to create instance of channel type: {0}", pi.EntryValue), ex);
+                                throw new InvalidConfigurationValueException(string.Format("Unable to create instance of channel type: {0}", pi.Value), ex);
                             }
                             mChannels.Add(channel);
-                            if (LOGGER.IsInfoEnabled) LOGGER.Info(string.Format("Initializing channel instance, type '{0}'. ChannelId: '{1}'", pi.EntryValue, pi.Id));
+                            if (LOGGER.IsInfoEnabled) LOGGER.Info(string.Format("Initializing channel instance, type '{0}'. ChannelId: '{1}'", pi.Value, pi.Id));
                             channel.Initialize(pi);
                             //channel.startListening();
                         }
@@ -136,7 +146,7 @@ namespace Forge.Net.Remoting.Channels
                             }
                             mChannels.Clear();
                         }
-                        throw new InitializationException(String.Format("Unable to initialize {0}.", typeof(ChannelServices).Name), ex);
+                        throw new InitializationException(string.Format("Unable to initialize {0}.", typeof(ChannelServices).Name), ex);
                     }
                 }
 
@@ -148,7 +158,7 @@ namespace Forge.Net.Remoting.Channels
         /// <summary>
         /// Starts the listening channels.
         /// </summary>
-        /// <exception cref="Forge.InitializationException"></exception>
+        /// <exception cref="Forge.Shared.InitializationException"></exception>
         [MethodImpl(MethodImplOptions.Synchronized)]
         public static void StartListeningChannels()
         {
@@ -161,7 +171,7 @@ namespace Forge.Net.Remoting.Channels
                 catch (Exception ex)
                 {
                     StopListeningChannels();
-                    throw new InitializationException(String.Format("Failed to start listening on a channel, ChannelId: {0}", channel.ChannelId), ex);
+                    throw new InitializationException(string.Format("Failed to start listening on a channel, ChannelId: {0}", channel.ChannelId), ex);
                 }
             }
         }
@@ -180,7 +190,7 @@ namespace Forge.Net.Remoting.Channels
                 }
                 catch (Exception ex)
                 {
-                    if (LOGGER.IsErrorEnabled) LOGGER.Error(String.Format("Failed to stop listening a channel. ChannelId: {0}", channel.ChannelId), ex);
+                    if (LOGGER.IsErrorEnabled) LOGGER.Error(string.Format("Failed to stop listening a channel. ChannelId: {0}", channel.ChannelId), ex);
                 }
             }
         }
@@ -191,7 +201,7 @@ namespace Forge.Net.Remoting.Channels
         /// <param name="channel">The channel.</param>
         /// <returns>True, if this channel was a new instance, otherwise False.</returns>
         /// <exception cref="System.ArgumentNullException">channel</exception>
-        /// <exception cref="Forge.InitializationException">Channel has not been initialized.</exception>
+        /// <exception cref="Forge.Shared.InitializationException">Channel has not been initialized.</exception>
         [MethodImpl(MethodImplOptions.Synchronized)]
         public static bool RegisterChannel(Channel channel)
         {
@@ -208,7 +218,7 @@ namespace Forge.Net.Remoting.Channels
             {
                 result = true;
                 mChannels.Add(channel);
-                Raiser.CallDelegatorBySync(RegisterChannelEvent, new object[] { mChannelServicesSingleton, new ChannelRegistrationEventArgs(channel) });
+                Executor.Invoke(RegisterChannelEvent, mChannelServicesSingleton, new ChannelRegistrationEventArgs(channel));
             }
             return result;
         }
@@ -226,7 +236,7 @@ namespace Forge.Net.Remoting.Channels
             {
                 throw new ArgumentNullException("channel");
             }
-            Raiser.CallDelegatorBySync(UnregisterChannelEvent, new object[] { mChannelServicesSingleton, new ChannelRegistrationEventArgs(channel) });
+            Executor.Invoke(UnregisterChannelEvent, mChannelServicesSingleton, new ChannelRegistrationEventArgs(channel));
             return mChannels.Remove(channel);
         }
 
@@ -256,7 +266,7 @@ namespace Forge.Net.Remoting.Channels
         ///   <c>true</c> if [is channel registered] [the specified channel id]; otherwise, <c>false</c>.
         /// </returns>
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public static bool IsChannelRegistered(String channelId)
+        public static bool IsChannelRegistered(string channelId)
         {
             return GetChannelById(channelId) == null ? false : true;
         }
@@ -280,7 +290,7 @@ namespace Forge.Net.Remoting.Channels
         /// <param name="channelId">The channel id.</param>
         /// <returns>Channel</returns>
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public static Channel GetChannelById(String channelId)
+        public static Channel GetChannelById(string channelId)
         {
             if (string.IsNullOrEmpty(channelId))
             {
@@ -288,11 +298,11 @@ namespace Forge.Net.Remoting.Channels
             }
 
             Channel result = null;
-            foreach (Channel c in mChannels)
+            foreach (Channel channel in mChannels)
             {
-                if (channelId.Equals(c.ChannelId))
+                if (channelId.Equals(channel.ChannelId))
                 {
-                    result = c;
+                    result = channel;
                     break;
                 }
             }

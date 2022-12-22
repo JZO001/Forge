@@ -7,7 +7,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Forge.Legacy;
 using Forge.Net.TerraGraf.NetworkPeers;
+using Forge.Shared;
 
 namespace Forge.Net.TerraGraf.Contexts
 {
@@ -22,7 +24,7 @@ namespace Forge.Net.TerraGraf.Contexts
         #region Field(s)
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private string mName = String.Empty;
+        private string mName = string.Empty;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private List<INetworkPeerRemote> mNetworkPeers = new List<INetworkPeerRemote>(); // lockolni kell
@@ -188,7 +190,7 @@ namespace Forge.Net.TerraGraf.Contexts
             {
                 ThrowHelper.ThrowArgumentNullException("other");
             }
-            return this.mName.CompareTo(other.mName);
+            return mName.CompareTo(other.mName);
         }
 
         /// <summary>

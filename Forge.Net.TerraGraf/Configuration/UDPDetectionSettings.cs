@@ -10,8 +10,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Forge.Configuration.Shared;
-using Forge.Logging;
+using Forge.Logging.Abstraction;
 using Forge.Net.TerraGraf.ConfigSection;
+using Forge.Shared;
 
 namespace Forge.Net.TerraGraf.Configuration
 {
@@ -25,7 +26,7 @@ namespace Forge.Net.TerraGraf.Configuration
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(UDPDetectionSettings));
+        private static readonly ILog LOGGER = LogManager.GetLogger<UDPDetectionSettings>();
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private bool mEnabled = true;
@@ -45,7 +46,7 @@ namespace Forge.Net.TerraGraf.Configuration
         /// <summary>
         /// Initializes a new instance of the <see cref="UDPDetectionSettings"/> class.
         /// </summary>
-        internal UDPDetectionSettings()
+        public UDPDetectionSettings()
         {
             IPv4MulticastAddress = string.Empty;
             IPv6MulticastAddress = string.Empty;
@@ -66,15 +67,7 @@ namespace Forge.Net.TerraGraf.Configuration
             get { return mEnabled; }
             set
             {
-                if (value != mEnabled)
-                {
-                    mEnabled = value;
-                    if (mInitialized)
-                    {
-                        // TODO: változtatás propagálása
-
-                    }
-                }
+                if (!mInitialized) mEnabled = value;
             }
         }
 
@@ -86,7 +79,7 @@ namespace Forge.Net.TerraGraf.Configuration
         /// </value>
         public List<int> BroadcastListeningPorts
         {
-            get { return new List<int>(mBroadcastListeningPorts); }
+            get { return mInitialized ? new List<int>(mBroadcastListeningPorts) : mBroadcastListeningPorts; }
             set
             {
                 if (value == null)
@@ -94,7 +87,7 @@ namespace Forge.Net.TerraGraf.Configuration
                     ThrowHelper.ThrowArgumentNullException("value");
                 }
 
-                // különböznek?
+                // are they different?
                 bool dif = value.Count != mBroadcastListeningPorts.Count;
                 if (!dif)
                 {
@@ -114,7 +107,7 @@ namespace Forge.Net.TerraGraf.Configuration
                     mBroadcastListeningPorts.AddRange(value);
                     if (mInitialized)
                     {
-                        // változtatások propagálása
+                        // propagate changes
 
                     }
                 }
@@ -129,7 +122,7 @@ namespace Forge.Net.TerraGraf.Configuration
         /// </value>
         public List<int> BroadcastTargetPorts
         {
-            get { return new List<int>(mBroadcastTargetPorts); }
+            get { return mInitialized ? new List<int>(mBroadcastTargetPorts) : mBroadcastTargetPorts; }
             set
             {
                 if (value == null)
@@ -137,7 +130,7 @@ namespace Forge.Net.TerraGraf.Configuration
                     ThrowHelper.ThrowArgumentNullException("value");
                 }
 
-                // különböznek?
+                // are they different?
                 bool dif = value.Count != mBroadcastTargetPorts.Count;
                 if (!dif)
                 {
@@ -157,7 +150,7 @@ namespace Forge.Net.TerraGraf.Configuration
                     mBroadcastTargetPorts.AddRange(value);
                     if (mInitialized)
                     {
-                        // változtatások propagálása
+                        // propagate changes
 
                     }
                 }
@@ -199,10 +192,10 @@ namespace Forge.Net.TerraGraf.Configuration
         {
             if (LOGGER.IsInfoEnabled)
             {
-                LOGGER.Info(string.Format("TERRAGRAF, Broadcast detection enabled: {0}", this.mEnabled));
-                LOGGER.Info(string.Format("TERRAGRAF, Broadcast detection mode: {0}", this.DetectionMode.ToString()));
-                LOGGER.Info(string.Format("TERRAGRAF, IPv4MulticastAddress: {0}", this.IPv4MulticastAddress));
-                LOGGER.Info(string.Format("TERRAGRAF, IPv6MulticastAddress: {0}", this.IPv6MulticastAddress));
+                LOGGER.Info(string.Format("TERRAGRAF, Broadcast detection enabled: {0}", mEnabled));
+                LOGGER.Info(string.Format("TERRAGRAF, Broadcast detection mode: {0}", DetectionMode.ToString()));
+                LOGGER.Info(string.Format("TERRAGRAF, IPv4MulticastAddress: {0}", IPv4MulticastAddress));
+                LOGGER.Info(string.Format("TERRAGRAF, IPv6MulticastAddress: {0}", IPv6MulticastAddress));
 
                 StringBuilder sb = new StringBuilder();
                 foreach (int i in mBroadcastListeningPorts)
@@ -227,9 +220,22 @@ namespace Forge.Net.TerraGraf.Configuration
         /// </summary>
         internal void Initialize()
         {
-            TerraGrafConfiguration.SectionHandler.OnConfigurationChanged += new EventHandler<EventArgs>(SectionHandler_OnConfigurationChanged);
-            SectionHandler_OnConfigurationChanged(null, null);
-            this.mInitialized = true;
+            if (NetworkManager.ConfigurationSource == ConfigurationSourceEnum.ConfigurationManager)
+            {
+                TerraGrafConfiguration.SectionHandler.OnConfigurationChanged += new EventHandler<EventArgs>(SectionHandler_OnConfigurationChanged);
+                SectionHandler_OnConfigurationChanged(null, null);
+            }
+            mInitialized = true;
+        }
+
+        /// <summary>Cleans up.</summary>
+        internal void CleanUp()
+        {
+            if (mInitialized && NetworkManager.ConfigurationSource == ConfigurationSourceEnum.ConfigurationManager)
+            {
+                TerraGrafConfiguration.SectionHandler.OnConfigurationChanged -= new EventHandler<EventArgs>(SectionHandler_OnConfigurationChanged);
+            }
+            mInitialized = false;
         }
 
         #endregion

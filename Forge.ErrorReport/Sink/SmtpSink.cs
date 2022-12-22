@@ -4,15 +4,17 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
-#if NETCOREAPP3_1_OR_GREATER
-#else
+#if NET461
 
 using System;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
+using Forge.Configuration;
 using Forge.Configuration.Shared;
 using Forge.Logging;
+using Forge.Logging.Abstraction;
+using Forge.Shared;
 using log4net.Appender;
 using log4net.Layout;
 
@@ -124,12 +126,12 @@ namespace Forge.ErrorReport.Sink
         /// </summary>
         public SmtpSink()
         {
-            this.LOGGER = LogManager.GetLogger(this.GetType());
-            this.Authentication = SmtpAppender.SmtpAuthentication.None;
-            this.BodyEncoding = Encoding.Default;
-            this.Port = 25;
-            this.Priority = MailPriority.Normal;
-            this.SubjectEncoding = Encoding.Default;
+            LOGGER = LogManager.GetLogger<SmtpSink>();
+            Authentication = SmtpAppender.SmtpAuthentication.None;
+            BodyEncoding = Encoding.Default;
+            Port = 25;
+            Priority = MailPriority.Normal;
+            SubjectEncoding = Encoding.Default;
         }
 
 #endregion
@@ -332,7 +334,7 @@ namespace Forge.ErrorReport.Sink
         /// Initializes the specified item.
         /// </summary>
         /// <param name="item">The item.</param>
-        public override void Initialize(CategoryPropertyItem item)
+        public override void Initialize(IPropertyItem item)
         {
             if (item == null)
             {
@@ -342,63 +344,63 @@ namespace Forge.ErrorReport.Sink
             base.Initialize(item);
 
             SmtpAppender.SmtpAuthentication authMode = SmtpAppender.SmtpAuthentication.None;
-            if (ConfigurationAccessHelper.ParseEnumValue<SmtpAppender.SmtpAuthentication>(item.PropertyItems, CONFIG_AUTHENTICATION, ref authMode))
+            if (ConfigurationAccessHelper.ParseEnumValue<SmtpAppender.SmtpAuthentication>(item, CONFIG_AUTHENTICATION, ref authMode))
             {
-                this.Authentication = authMode;
+                Authentication = authMode;
             }
 
             string bcc = string.Empty;
-            if (ConfigurationAccessHelper.ParseStringValue(item.PropertyItems, CONFIG_BCC, ref bcc))
+            if (ConfigurationAccessHelper.ParseStringValue(item, CONFIG_BCC, ref bcc))
             {
-                this.Bcc = bcc;
+                Bcc = bcc;
             }
 
 #region Body Encoding
 
             string bodyEncoding = "Default";
-            if (ConfigurationAccessHelper.ParseStringValue(item.PropertyItems, CONFIG_BODYENCODING, ref bodyEncoding))
+            if (ConfigurationAccessHelper.ParseStringValue(item, CONFIG_BODYENCODING, ref bodyEncoding))
             {
                 switch (bodyEncoding)
                 {
                     case "Default":
                         {
-                            this.BodyEncoding = Encoding.Default;
+                            BodyEncoding = Encoding.Default;
                         }
                         break;
 
                     case "ASCII":
                         {
-                            this.BodyEncoding = Encoding.ASCII;
+                            BodyEncoding = Encoding.ASCII;
                         }
                         break;
 
                     case "BigEndianUnicode":
                         {
-                            this.BodyEncoding = Encoding.BigEndianUnicode;
+                            BodyEncoding = Encoding.BigEndianUnicode;
                         }
                         break;
 
                     case "Unicode":
                         {
-                            this.BodyEncoding = Encoding.Unicode;
+                            BodyEncoding = Encoding.Unicode;
                         }
                         break;
 
                     case "UTF32":
                         {
-                            this.BodyEncoding = Encoding.UTF32;
+                            BodyEncoding = Encoding.UTF32;
                         }
                         break;
 
                     case "UTF7":
                         {
-                            this.BodyEncoding = Encoding.UTF7;
+                            BodyEncoding = Encoding.UTF7;
                         }
                         break;
 
                     case "UTF8":
                         {
-                            this.BodyEncoding = Encoding.UTF8;
+                            BodyEncoding = Encoding.UTF8;
                         }
                         break;
 
@@ -408,7 +410,7 @@ namespace Forge.ErrorReport.Sink
 
                     default:
                         {
-                            this.BodyEncoding = Encoding.GetEncoding(bodyEncoding);
+                            BodyEncoding = Encoding.GetEncoding(bodyEncoding);
                         }
                         break;
                 }
@@ -417,115 +419,115 @@ namespace Forge.ErrorReport.Sink
 #endregion
 
             string cc = string.Empty;
-            if (ConfigurationAccessHelper.ParseStringValue(item.PropertyItems, CONFIG_CC, ref cc))
+            if (ConfigurationAccessHelper.ParseStringValue(item, CONFIG_CC, ref cc))
             {
-                this.Cc = cc;
+                Cc = cc;
             }
 
             bool enableSsl = false;
-            if (ConfigurationAccessHelper.ParseBooleanValue(item.PropertyItems, CONFIG_ENABLESSL, ref enableSsl))
+            if (ConfigurationAccessHelper.ParseBooleanValue(item, CONFIG_ENABLESSL, ref enableSsl))
             {
-                this.EnableSsl = enableSsl;
+                EnableSsl = enableSsl;
             }
 
             string from = string.Empty;
-            if (ConfigurationAccessHelper.ParseStringValue(item.PropertyItems, CONFIG_FROM, ref from))
+            if (ConfigurationAccessHelper.ParseStringValue(item, CONFIG_FROM, ref from))
             {
-                this.From = from;
+                From = from;
             }
 
             string password = string.Empty;
-            if (ConfigurationAccessHelper.ParseStringValue(item.PropertyItems, CONFIG_PASSWORD, ref password))
+            if (ConfigurationAccessHelper.ParseStringValue(item, CONFIG_PASSWORD, ref password))
             {
-                this.Password = password;
+                Password = password;
             }
 
             int port = 25;
-            if (ConfigurationAccessHelper.ParseIntValue(item.PropertyItems, CONFIG_PORT, 1, 65535, ref port))
+            if (ConfigurationAccessHelper.ParseIntValue(item, CONFIG_PORT, 1, 65535, ref port))
             {
-                this.Port = port;
+                Port = port;
             }
 
             MailPriority prio = MailPriority.Normal;
-            if (ConfigurationAccessHelper.ParseEnumValue<MailPriority>(item.PropertyItems, CONFIG_MAILPRIORITY, ref prio))
+            if (ConfigurationAccessHelper.ParseEnumValue<MailPriority>(item, CONFIG_MAILPRIORITY, ref prio))
             {
-                this.Priority = prio;
+                Priority = prio;
             }
 
             string replyTo = string.Empty;
-            if (ConfigurationAccessHelper.ParseStringValue(item.PropertyItems, CONFIG_REPLYTO, ref replyTo))
+            if (ConfigurationAccessHelper.ParseStringValue(item, CONFIG_REPLYTO, ref replyTo))
             {
-                this.ReplyTo = replyTo;
+                ReplyTo = replyTo;
             }
 
             string pattern = string.Empty;
-            if (ConfigurationAccessHelper.ParseStringValue(item.PropertyItems, CONFIG_LAYOUT_PATTERN, ref pattern))
+            if (ConfigurationAccessHelper.ParseStringValue(item, CONFIG_LAYOUT_PATTERN, ref pattern))
             {
-                this.ConversionPattern = pattern;
+                ConversionPattern = pattern;
             }
             else
             {
-                this.ConversionPattern = DEFAULT_LAYOUT_PATTERN;
+                ConversionPattern = DEFAULT_LAYOUT_PATTERN;
             }
 
             string smtpHost = string.Empty;
-            if (ConfigurationAccessHelper.ParseStringValue(item.PropertyItems, CONFIG_SMTP_HOST, ref smtpHost))
+            if (ConfigurationAccessHelper.ParseStringValue(item, CONFIG_SMTP_HOST, ref smtpHost))
             {
-                this.SmtpHost = smtpHost;
+                SmtpHost = smtpHost;
             }
 
             string subject = string.Empty;
-            if (ConfigurationAccessHelper.ParseStringValue(item.PropertyItems, CONFIG_SUBJECT, ref subject))
+            if (ConfigurationAccessHelper.ParseStringValue(item, CONFIG_SUBJECT, ref subject))
             {
-                this.Subject = subject;
+                Subject = subject;
             }
 
 #region Subject Encoding
 
             string subjectEncoding = "Default";
-            if (ConfigurationAccessHelper.ParseStringValue(item.PropertyItems, CONFIG_SUBJECTENCODING, ref subjectEncoding))
+            if (ConfigurationAccessHelper.ParseStringValue(item, CONFIG_SUBJECTENCODING, ref subjectEncoding))
             {
                 switch (bodyEncoding)
                 {
                     case "Default":
                         {
-                            this.SubjectEncoding = Encoding.Default;
+                            SubjectEncoding = Encoding.Default;
                         }
                         break;
 
                     case "ASCII":
                         {
-                            this.SubjectEncoding = Encoding.ASCII;
+                            SubjectEncoding = Encoding.ASCII;
                         }
                         break;
 
                     case "BigEndianUnicode":
                         {
-                            this.SubjectEncoding = Encoding.BigEndianUnicode;
+                            SubjectEncoding = Encoding.BigEndianUnicode;
                         }
                         break;
 
                     case "Unicode":
                         {
-                            this.SubjectEncoding = Encoding.Unicode;
+                            SubjectEncoding = Encoding.Unicode;
                         }
                         break;
 
                     case "UTF32":
                         {
-                            this.SubjectEncoding = Encoding.UTF32;
+                            SubjectEncoding = Encoding.UTF32;
                         }
                         break;
 
                     case "UTF7":
                         {
-                            this.SubjectEncoding = Encoding.UTF7;
+                            SubjectEncoding = Encoding.UTF7;
                         }
                         break;
 
                     case "UTF8":
                         {
-                            this.SubjectEncoding = Encoding.UTF8;
+                            SubjectEncoding = Encoding.UTF8;
                         }
                         break;
 
@@ -535,7 +537,7 @@ namespace Forge.ErrorReport.Sink
 
                     default:
                         {
-                            this.SubjectEncoding = Encoding.GetEncoding(bodyEncoding);
+                            SubjectEncoding = Encoding.GetEncoding(bodyEncoding);
                         }
                         break;
                 }
@@ -544,22 +546,22 @@ namespace Forge.ErrorReport.Sink
 #endregion
 
             string to = string.Empty;
-            if (ConfigurationAccessHelper.ParseStringValue(item.PropertyItems, CONFIG_TO, ref to))
+            if (ConfigurationAccessHelper.ParseStringValue(item, CONFIG_TO, ref to))
             {
-                this.To = to;
+                To = to;
             }
 
             string username = string.Empty;
-            if (ConfigurationAccessHelper.ParseStringValue(item.PropertyItems, CONFIG_USERNAME, ref username))
+            if (ConfigurationAccessHelper.ParseStringValue(item, CONFIG_USERNAME, ref username))
             {
-                this.Username = username;
+                Username = username;
             }
 
             LOGGER.Info(string.Format("{0}, Authentication: {1}, Bcc: {2}, BodyEncoding: {3}, Cc: {4}, EnableSSL: {5}, From: {6}, Password: {7}, Port: {8}, Priority: {9}, ReplyTo: {10}, SmtpHost: {11}, SubjectEncoding: {12}, To: {13}, Username: {14}",
-                this.GetType().Name, this.Authentication.ToString(), this.Bcc, this.BodyEncoding.EncodingName, this.Cc,
-                this.EnableSsl.ToString(), this.From, string.IsNullOrEmpty(this.Password) ? "not set" : "exist", this.Port.ToString(), this.Priority.ToString(), this.ReplyTo, this.SmtpHost, this.SubjectEncoding.EncodingName, this.To, this.Username));
+                GetType().Name, Authentication.ToString(), Bcc, BodyEncoding.EncodingName, Cc,
+                EnableSsl.ToString(), From, string.IsNullOrEmpty(Password) ? "not set" : "exist", Port.ToString(), Priority.ToString(), ReplyTo, SmtpHost, SubjectEncoding.EncodingName, To, Username));
 
-            this.IsInitialized = true;
+            IsInitialized = true;
         }
 
         /// <summary>
@@ -569,9 +571,9 @@ namespace Forge.ErrorReport.Sink
         public override void ProcessReportPackage(ReportPackage package)
         {
             DoInitializationCheck();
-            LOGGER.Debug(string.Format("{0}, an error report package arrived. SinkId: '{0}'", this.GetType().Name, this.SinkId));
+            LOGGER.Debug(string.Format("{0}, an error report package arrived. SinkId: '{0}'", GetType().Name, SinkId));
 
-            PatternLayout layout = new PatternLayout(this.ConversionPattern);
+            PatternLayout layout = new PatternLayout(ConversionPattern);
             StringBuilder sb = new StringBuilder();
             sb.Append("Created (UTC): ");
             sb.AppendLine(package.ReportCreated.ToString());
@@ -582,19 +584,19 @@ namespace Forge.ErrorReport.Sink
 
             using (SmtpClient client = new SmtpClient())
             {
-                if (!string.IsNullOrEmpty(this.SmtpHost))
+                if (!string.IsNullOrEmpty(SmtpHost))
                 {
-                    client.Host = this.SmtpHost;
+                    client.Host = SmtpHost;
                 }
-                client.Port = this.Port;
+                client.Port = Port;
                 client.DeliveryMethod = SmtpDeliveryMethod.Network;
-                client.EnableSsl = this.EnableSsl;
+                client.EnableSsl = EnableSsl;
 
-                if (this.Authentication == SmtpAppender.SmtpAuthentication.Basic)
+                if (Authentication == SmtpAppender.SmtpAuthentication.Basic)
                 {
-                    client.Credentials = new NetworkCredential(this.Username, this.Password);
+                    client.Credentials = new NetworkCredential(Username, Password);
                 }
-                else if (this.Authentication == SmtpAppender.SmtpAuthentication.Ntlm)
+                else if (Authentication == SmtpAppender.SmtpAuthentication.Ntlm)
                 {
                     client.Credentials = CredentialCache.DefaultNetworkCredentials;
                 }
@@ -604,24 +606,24 @@ namespace Forge.ErrorReport.Sink
                     message.DeliveryNotificationOptions = DeliveryNotificationOptions.OnFailure;
                     message.IsBodyHtml = false;
                     message.Body = sb.ToString();
-                    message.BodyEncoding = this.BodyEncoding;
-                    message.From = new MailAddress(this.From);
-                    message.To.Add(this.To);
-                    if (!string.IsNullOrEmpty(this.Cc))
+                    message.BodyEncoding = BodyEncoding;
+                    message.From = new MailAddress(From);
+                    message.To.Add(To);
+                    if (!string.IsNullOrEmpty(Cc))
                     {
-                        message.CC.Add(this.Cc);
+                        message.CC.Add(Cc);
                     }
-                    if (!string.IsNullOrEmpty(this.Bcc))
+                    if (!string.IsNullOrEmpty(Bcc))
                     {
-                        message.Bcc.Add(this.Bcc);
+                        message.Bcc.Add(Bcc);
                     }
-                    if (!string.IsNullOrEmpty(this.ReplyTo))
+                    if (!string.IsNullOrEmpty(ReplyTo))
                     {
-                        message.ReplyToList.Add(new MailAddress(this.ReplyTo));
+                        message.ReplyToList.Add(new MailAddress(ReplyTo));
                     }
-                    message.Subject = this.Subject;
-                    message.SubjectEncoding = this.SubjectEncoding;
-                    message.Priority = this.Priority;
+                    message.Subject = Subject;
+                    message.SubjectEncoding = SubjectEncoding;
+                    message.Priority = Priority;
                     client.Send(message);
                 }
 

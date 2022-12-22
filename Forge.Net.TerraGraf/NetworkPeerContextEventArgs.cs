@@ -7,6 +7,7 @@
 using System;
 using System.Diagnostics;
 using Forge.Net.TerraGraf.NetworkPeers;
+using Forge.Shared;
 
 namespace Forge.Net.TerraGraf
 {
@@ -37,7 +38,7 @@ namespace Forge.Net.TerraGraf
             {
                 ThrowHelper.ThrowArgumentNullException("networkPeer");
             }
-            this.mNetworkPeer = networkPeer;
+            mNetworkPeer = networkPeer;
         }
 
         #endregion

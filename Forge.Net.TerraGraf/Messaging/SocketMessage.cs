@@ -51,10 +51,10 @@ namespace Forge.Net.TerraGraf.Messaging
         internal SocketMessage(string senderId, string targetId, MessageCodeEnum messageCode, MessageTypeEnum messageType, int senderPort, int targetPort, long senderSocketId, long targetSocketId)
             : base(senderId, targetId, messageCode, Interlocked.Increment(ref mGlobalMessageId), MessagePriorityEnum.Low, messageType)
         {
-            this.mSenderPort = senderPort;
-            this.mSenderSocketId = senderSocketId;
-            this.mTargetPort = targetPort;
-            this.mTargetSocketId = targetSocketId;
+            mSenderPort = senderPort;
+            mSenderSocketId = senderSocketId;
+            mTargetPort = targetPort;
+            mTargetSocketId = targetSocketId;
         }
 
         #endregion

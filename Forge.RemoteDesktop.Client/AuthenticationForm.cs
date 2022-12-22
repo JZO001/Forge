@@ -24,9 +24,9 @@ namespace Forge.RemoteDesktop.Client
         public AuthenticationForm()
         {
             InitializeComponent();
-            this.Text = Resources.Authentication_Title;
-            lUserName.Text = Resources.lUserName;
-            lPassword.Text = Resources.lPassword;
+            Text = Resources.Authentication_Title;
+            Text = Resources.lUserName;
+            Text = Resources.lPassword;
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Forge.RemoteDesktop.Client
         {
             if (authMode != AuthenticationModeEnum.UsernameAndPassword)
             {
-                tbUsername.Enabled = false;
+                Enabled = false;
             }
         }
 
@@ -51,7 +51,7 @@ namespace Forge.RemoteDesktop.Client
         {
             get
             {
-                return tbUsername.Text;
+                return Text;
             }
         }
 
@@ -65,13 +65,13 @@ namespace Forge.RemoteDesktop.Client
         {
             get
             {
-                return tbPassword.Text;
+                return Text;
             }
         }
 
         private void btOk_Click(object sender, EventArgs e)
         {
-            this.DialogResult = System.Windows.Forms.DialogResult.OK;
+            DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
     }

@@ -14,7 +14,9 @@ using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Security;
 using System.Text;
+using Forge.Legacy;
 using Forge.Reflection;
+using Forge.Shared;
 
 namespace Forge.Persistence.Serialization
 {
@@ -33,10 +35,10 @@ namespace Forge.Persistence.Serialization
         /// </summary>
         public BinarySerializer()
         {
-            this.TypeLookupMode = TypeLookupModeEnum.AllowExactVersions;
-            this.Context = new StreamingContext();
+            TypeLookupMode = TypeLookupModeEnum.AllowExactVersions;
+            Context = new StreamingContext();
             SurrogateSelector ss = new SurrogateSelector();
-            this.Selector = ss;
+            Selector = ss;
         }
 
         /// <summary>
@@ -46,9 +48,9 @@ namespace Forge.Persistence.Serialization
         /// <param name="context">The context.</param>
         public BinarySerializer(ISurrogateSelector selector, StreamingContext context)
         {
-            this.TypeLookupMode = TypeLookupModeEnum.AllowExactVersions; ;
-            this.Context = context;
-            this.Selector = selector;
+            TypeLookupMode = TypeLookupModeEnum.AllowExactVersions; ;
+            Context = context;
+            Selector = selector;
         }
 
         #endregion
@@ -116,7 +118,7 @@ namespace Forge.Persistence.Serialization
                 ThrowHelper.ThrowArgumentNullException("serializationStream");
             }
 
-            new SerializationContext(this.Selector, this.Context).Serialize(serializationStream, graph);
+            new SerializationContext(Selector, Context).Serialize(serializationStream, graph);
         }
 
         /// <summary>
@@ -135,7 +137,7 @@ namespace Forge.Persistence.Serialization
 
             try
             {
-                return new DeserializationContext(this.Selector, this.Context, this.SerializerBehavior, this.TypeLookupMode, this.FindNewestTypeVersion).Deserialize(serializationStream);
+                return new DeserializationContext(Selector, Context, SerializerBehavior, TypeLookupMode, FindNewestTypeVersion).Deserialize(serializationStream);
             }
             catch (MissingFieldException)
             {
@@ -244,8 +246,8 @@ namespace Forge.Persistence.Serialization
             /// <param name="context">The context.</param>
             internal SerializationContext(ISurrogateSelector selector, StreamingContext context)
             {
-                this.Context = context;
-                this.Selector = selector;
+                Context = context;
+                Selector = selector;
             }
 
             #endregion
@@ -474,17 +476,17 @@ namespace Forge.Persistence.Serialization
                         {
                             // serializable type
                             ISurrogateSelector selector = null;
-                            ISerializationSurrogate surrogate = (Selector == null ? null : Selector.GetSurrogate(objectType, this.Context, out selector));
+                            ISerializationSurrogate surrogate = (Selector == null ? null : Selector.GetSurrogate(objectType, Context, out selector));
 
                             SerializationInfo info = new SerializationInfo(ti.Type, new FormatterConverter());
                             if (surrogate == null)
                             {
                                 ISerializable serializable = (ISerializable)o;
-                                serializable.GetObjectData(info, this.Context);
+                                serializable.GetObjectData(info, Context);
                             }
                             else
                             {
-                                surrogate.GetObjectData(o, info, this.Context);
+                                surrogate.GetObjectData(o, info, Context);
                             }
 
                             result.SerializationInfo = info;
@@ -517,13 +519,13 @@ namespace Forge.Persistence.Serialization
                         }
                         else if (objectType.IsGenericType && objectType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
                         {
-                            // a reflector nem viszi a Nullable típust
+                            // reflection does not support nullable type
                             dynamic dn = o;
                             result.FieldVsProxy.Add("value", GetTypeInstanceProxy(dn, dn.GetType()));
                         }
                         else if (objectType.IsArray && objectType.GetArrayRank() == 1 && objectType.Equals(typeof(byte[])))
                         {
-                            // a byte tömböt máshogy serializálom
+                            // byte array will be serialized in an other way
                         }
                         else if (objectType.IsArray && objectType.GetArrayRank() == 1)
                         {
@@ -551,8 +553,8 @@ namespace Forge.Persistence.Serialization
                                     {
                                         if (objectType.IsValueType && objectType.IsAssignableFrom(fi.FieldType))
                                         {
-                                            // ez a Boolean struktúránál tapasztalt végtelen ciklus kivédésére szolgál
-                                            // a Boolean-ban van egy bool mező, amiben ismét van egy és ismét. Örökös körforgást el kell kerülni.
+                                            // protection from the Boolean infinite cycle
+                                            // Boolean has a bool field inside, in it there is an other and an other... and so an
                                         }
                                         else if (fi.FieldType.IsGenericType && fi.FieldType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
                                         {
@@ -574,7 +576,7 @@ namespace Forge.Persistence.Serialization
                 }
                 else
                 {
-                    // null érték
+                    // null value
                     if (mNullProxy == null)
                     {
                         STypeInfo ti = GetTypeInfo(typeof(Object));
@@ -620,7 +622,7 @@ namespace Forge.Persistence.Serialization
             [SecurityCritical]
             private void CollectMultiArrayItems(List<STypeInstanceProxy> items, Array array, int dimension, params long[] indices)
             {
-                // visszaállítási adatok mentése
+                // saving restoration data
                 long originalIndicesValueOnDimension = 0;
                 if (dimension + 1 < array.GetType().GetArrayRank())
                 {
@@ -723,11 +725,11 @@ namespace Forge.Persistence.Serialization
             /// <param name="findNewestTypeVersion">if set to <c>true</c> [find newest type version].</param>
             internal DeserializationContext(ISurrogateSelector selector, StreamingContext context, BinarySerializerBehaviorEnum serializerBehavior, TypeLookupModeEnum typeLookupMode, bool findNewestTypeVersion)
             {
-                this.Selector = selector;
-                this.Context = context;
-                this.mSerializerBehavior = serializerBehavior;
-                this.mTypeLookupMode = typeLookupMode;
-                this.mFindNewestTypeVersion = findNewestTypeVersion;
+                Selector = selector;
+                Context = context;
+                mSerializerBehavior = serializerBehavior;
+                mTypeLookupMode = typeLookupMode;
+                mFindNewestTypeVersion = findNewestTypeVersion;
             }
 
             #endregion
@@ -1361,7 +1363,7 @@ namespace Forge.Persistence.Serialization
                                             int length = int.Parse(Encoding.UTF8.GetString(ms.ToArray()));
                                             byte[] bytes = new byte[length];
                                             serializationStream.Read(bytes, 0, bytes.Length);
-                                            proxy.InstanceValue = TypeHelper.GetTypeFromString(Encoding.UTF32.GetString(bytes), this.TypeLookupMode, this.FindNewestTypeVersion, true, false);
+                                            proxy.InstanceValue = TypeHelper.GetTypeFromString(Encoding.UTF32.GetString(bytes), TypeLookupMode, FindNewestTypeVersion, true, false);
                                             proxy.IsConstructed = true;
                                         }
                                         else if (reflectionType.Equals(typeof(string)))
@@ -1451,7 +1453,7 @@ namespace Forge.Persistence.Serialization
             /// </summary>
             internal STypeInfo()
             {
-                this.AssemblyId = -1;
+                AssemblyId = -1;
             }
 
             #endregion
@@ -1500,7 +1502,7 @@ namespace Forge.Persistence.Serialization
             {
                 get
                 {
-                    return this.Type.IsArray ? this.Type.GetArrayRank() : 0;
+                    return Type.IsArray ? Type.GetArrayRank() : 0;
                 }
             }
 
@@ -1516,18 +1518,18 @@ namespace Forge.Persistence.Serialization
             internal void SerializeType(Stream serializationStream, SerializationContext context)
             {
                 // typeId
-                byte[] bytes = Encoding.UTF8.GetBytes(this.TypeId.ToString());
+                byte[] bytes = Encoding.UTF8.GetBytes(TypeId.ToString());
                 serializationStream.Write(bytes, 0, bytes.Length);
                 serializationStream.WriteByte(0);
 
                 // Full type name
-                StringBuilder sb = GetTypeString(this.Type, context);
+                StringBuilder sb = GetTypeString(Type, context);
                 bytes = Encoding.UTF8.GetBytes(sb.ToString());
                 serializationStream.Write(bytes, 0, bytes.Length);
                 serializationStream.WriteByte(0);
 
                 // IsArray
-                if (this.Type.IsArray)
+                if (Type.IsArray)
                 {
                     serializationStream.WriteByte(1); // true flag
                 }
@@ -1537,10 +1539,10 @@ namespace Forge.Persistence.Serialization
                 }
 
                 // normál generikus típus vagy generikus tömb
-                if (this.Type.IsGenericType || this.Type.GetGenericArguments().Length > 0)
+                if (Type.IsGenericType || Type.GetGenericArguments().Length > 0)
                 {
                     serializationStream.WriteByte(1); // true flag
-                    if (this.Type.IsGenericTypeDefinition)
+                    if (Type.IsGenericTypeDefinition)
                     {
                         serializationStream.WriteByte(1); // true flag
                     }
@@ -1555,7 +1557,7 @@ namespace Forge.Persistence.Serialization
                 }
 
                 // number of fields
-                bytes = Encoding.UTF8.GetBytes(this.SerializableFieldCounter.ToString());
+                bytes = Encoding.UTF8.GetBytes(SerializableFieldCounter.ToString());
                 serializationStream.Write(bytes, 0, bytes.Length);
                 serializationStream.WriteByte(0);
             }
@@ -1574,7 +1576,7 @@ namespace Forge.Persistence.Serialization
             public override bool Equals(object obj)
             {
                 STypeInfo other = (STypeInfo)obj;
-                return other.Type.Equals(this.Type);
+                return other.Type.Equals(Type);
             }
 
             /// <summary>
@@ -1585,7 +1587,7 @@ namespace Forge.Persistence.Serialization
             /// </returns>
             public override int GetHashCode()
             {
-                return this.Type.GetHashCode();
+                return Type.GetHashCode();
             }
 
             /// <summary>
@@ -1596,7 +1598,7 @@ namespace Forge.Persistence.Serialization
             /// </returns>
             public object Clone()
             {
-                return new STypeInstanceProxy() { Type = this.Type, TypeId = this.TypeId, SerializableFieldCounter = this.SerializableFieldCounter, AssemblyId = this.AssemblyId };
+                return new STypeInstanceProxy() { Type = Type, TypeId = TypeId, SerializableFieldCounter = SerializableFieldCounter, AssemblyId = AssemblyId };
             }
 
             #endregion
@@ -1826,7 +1828,7 @@ namespace Forge.Persistence.Serialization
                 if (ReferenceEquals(this, obj)) return true;
                 if (!obj.GetType().Equals(GetType())) return false;
 
-                return this.GetHashCode().Equals(obj.GetHashCode());
+                return GetHashCode().Equals(obj.GetHashCode());
             }
 
             /// <summary>
@@ -1838,15 +1840,15 @@ namespace Forge.Persistence.Serialization
             public override int GetHashCode()
             {
                 int hash = 21;
-                hash = hash ^ 23 + this.Type.GetHashCode();
-                hash = hash ^ 33 + this.IsArrayDimensionRepresentation.GetHashCode();
-                if (this.InstanceValue == null)
+                hash = hash ^ 23 + Type.GetHashCode();
+                hash = hash ^ 33 + IsArrayDimensionRepresentation.GetHashCode();
+                if (InstanceValue == null)
                 {
                     hash = hash ^ 34511;
                 }
                 else
                 {
-                    hash = hash ^ 144 + RuntimeHelpers.GetHashCode(this.InstanceValue);
+                    hash = hash ^ 144 + RuntimeHelpers.GetHashCode(InstanceValue);
                 }
                 return hash;
             }
@@ -1863,17 +1865,17 @@ namespace Forge.Persistence.Serialization
             internal void SerializeContent(Stream serializationStream, SerializationContext context)
             {
                 // InstanceId
-                byte[] bytes = Encoding.UTF8.GetBytes(this.InstanceId.ToString());
+                byte[] bytes = Encoding.UTF8.GetBytes(InstanceId.ToString());
                 serializationStream.Write(bytes, 0, bytes.Length);
                 serializationStream.WriteByte(0);
 
                 // typeId
-                bytes = Encoding.UTF8.GetBytes(this.TypeId.ToString());
+                bytes = Encoding.UTF8.GetBytes(TypeId.ToString());
                 serializationStream.Write(bytes, 0, bytes.Length);
                 serializationStream.WriteByte(0);
 
                 // ArrayKeys
-                if (this.ArrayKeys != null && this.ArrayKeys.Count > 0)
+                if (ArrayKeys != null && ArrayKeys.Count > 0)
                 {
                     serializationStream.WriteByte(1); // has array keys
 
@@ -1900,12 +1902,12 @@ namespace Forge.Persistence.Serialization
                 serializationStream.WriteByte(IsArrayDimensionRepresentation ? (byte)1 : (byte)0);
 
                 // IsArray?
-                if (this.Type.IsArray || IsArrayDimensionRepresentation || SerializationInfo != null)
+                if (Type.IsArray || IsArrayDimensionRepresentation || SerializationInfo != null)
                 {
                     // number of array items
-                    if (this.Type.Equals(typeof(byte[])))
+                    if (Type.Equals(typeof(byte[])))
                     {
-                        bytes = Encoding.UTF8.GetBytes(((byte[])this.InstanceValue).Length.ToString());
+                        bytes = Encoding.UTF8.GetBytes(((byte[])InstanceValue).Length.ToString());
                         serializationStream.Write(bytes, 0, bytes.Length);
                         serializationStream.WriteByte(0);
                     }
@@ -1961,13 +1963,13 @@ namespace Forge.Persistence.Serialization
                     }
                 }
 
-                if (this.InstanceValue == null)
+                if (InstanceValue == null)
                 {
                     serializationStream.WriteByte(0); // null
                 }
-                else if (mSystemByteTypes.Contains(this.InstanceValue.GetType()))
+                else if (mSystemByteTypes.Contains(InstanceValue.GetType()))
                 {
-                    Type reflectionType = this.InstanceValue.GetType();
+                    Type reflectionType = InstanceValue.GetType();
                     if (reflectionType.Equals(typeof(bool?)))
                     {
                         bool? c = (bool?)InstanceValue;
@@ -1992,10 +1994,10 @@ namespace Forge.Persistence.Serialization
                 else
                 {
                     bytes = null;
-                    Type reflectionType = this.InstanceValue.GetType();
+                    Type reflectionType = InstanceValue.GetType();
                     if (reflectionType.IsEnum)
                     {
-                        bytes = Encoding.UTF8.GetBytes(Convert.ChangeType(this.InstanceValue, reflectionType.GetEnumUnderlyingType()).ToString());
+                        bytes = Encoding.UTF8.GetBytes(Convert.ChangeType(InstanceValue, reflectionType.GetEnumUnderlyingType()).ToString());
                         serializationStream.Write(bytes, 0, bytes.Length);
                         serializationStream.WriteByte(0);
                     }
@@ -2207,7 +2209,7 @@ namespace Forge.Persistence.Serialization
                     }
                     else if (reflectionType.Equals(typeof(byte[])))
                     {
-                        bytes = (byte[])this.InstanceValue;
+                        bytes = (byte[])InstanceValue;
                         serializationStream.Write(bytes, 0, bytes.Length);
                     }
                     else
@@ -2232,8 +2234,8 @@ namespace Forge.Persistence.Serialization
             /// </summary>
             internal DTypeInfo()
             {
-                this.AssemblyId = -1;
-                this.DeclaredTypeId = -1;
+                AssemblyId = -1;
+                DeclaredTypeId = -1;
             }
 
             #endregion
@@ -2290,7 +2292,7 @@ namespace Forge.Persistence.Serialization
             {
                 get
                 {
-                    return this.Type.IsArray ? this.Type.GetArrayRank() : 0;
+                    return Type.IsArray ? Type.GetArrayRank() : 0;
                 }
             }
 
@@ -2354,7 +2356,7 @@ namespace Forge.Persistence.Serialization
             /// <returns></returns>
             internal Type ResolveType(DeserializationContext context)
             {
-                if (this.Type == null)
+                if (Type == null)
                 {
                     string type = TypeName;
 
@@ -2390,9 +2392,9 @@ namespace Forge.Persistence.Serialization
                         type = string.Format("{0}, {1}", type, context.AsmIdVsAssemblyName[AssemblyId].FullName);
                     }
 
-                    this.Type = TypeHelper.GetTypeFromString(type, context.TypeLookupMode, context.FindNewestTypeVersion, true, false);
+                    Type = TypeHelper.GetTypeFromString(type, context.TypeLookupMode, context.FindNewestTypeVersion, true, false);
                 }
-                return this.Type;
+                return Type;
             }
 
             /// <summary>
@@ -2405,11 +2407,11 @@ namespace Forge.Persistence.Serialization
             {
                 if (IsNested)
                 {
-                    return context.TypeIdVsTypeInfo[DeclaredTypeId].AppendNestedType(context, string.Format("{0}+{1}", this.TypeName, typeName));
+                    return context.TypeIdVsTypeInfo[DeclaredTypeId].AppendNestedType(context, string.Format("{0}+{1}", TypeName, typeName));
                 }
                 else
                 {
-                    return string.Format("{0}+{1}", this.TypeName, typeName);
+                    return string.Format("{0}+{1}", TypeName, typeName);
                 }
             }
 
@@ -2426,20 +2428,20 @@ namespace Forge.Persistence.Serialization
             public object Clone()
             {
                 DTypeInstanceProxy proxy = new DTypeInstanceProxy();
-                proxy.AssemblyId = this.AssemblyId;
-                proxy.TypeId = this.TypeId;
-                proxy.Type = this.Type;
-                proxy.TypeName = this.TypeName;
-                proxy.IsArray = this.IsArray;
-                proxy.IsGenericType = this.IsGenericType;
-                proxy.IsGenericDeclaration = this.IsGenericDeclaration;
-                proxy.IsNested = this.IsNested;
-                proxy.DeclaredTypeId = this.DeclaredTypeId;
-                if (this.GenericParameterTypeIds != null)
+                proxy.AssemblyId = AssemblyId;
+                proxy.TypeId = TypeId;
+                proxy.Type = Type;
+                proxy.TypeName = TypeName;
+                proxy.IsArray = IsArray;
+                proxy.IsGenericType = IsGenericType;
+                proxy.IsGenericDeclaration = IsGenericDeclaration;
+                proxy.IsNested = IsNested;
+                proxy.DeclaredTypeId = DeclaredTypeId;
+                if (GenericParameterTypeIds != null)
                 {
-                    proxy.GenericParameterTypeIds = new List<int>(this.GenericParameterTypeIds);
+                    proxy.GenericParameterTypeIds = new List<int>(GenericParameterTypeIds);
                 }
-                proxy.DeserializableFieldNumber = this.DeserializableFieldNumber;
+                proxy.DeserializableFieldNumber = DeserializableFieldNumber;
                 return proxy;
             }
 
@@ -2552,17 +2554,17 @@ namespace Forge.Persistence.Serialization
                     if (this.IsArrayDimensionRepresentation)
                     {
                     }
-                    else if (typeof(ISerializable).IsAssignableFrom(this.Type))
+                    else if (typeof(ISerializable).IsAssignableFrom(Type))
                     {
                         ISurrogateSelector selector = null;
-                        ISerializationSurrogate surrogate = (context.Selector == null ? null : context.Selector.GetSurrogate(this.Type, context.Context, out selector));
-                        SerializationInfo info = new SerializationInfo(this.Type, new FormatterConverter());
-                        if (this.ArrayKeysRefIds != null)
+                        ISerializationSurrogate surrogate = (context.Selector == null ? null : context.Selector.GetSurrogate(Type, context.Context, out selector));
+                        SerializationInfo info = new SerializationInfo(Type, new FormatterConverter());
+                        if (ArrayKeysRefIds != null)
                         {
-                            for (int i = 0; i < this.ArrayKeysRefIds.Count; i++)
+                            for (int i = 0; i < ArrayKeysRefIds.Count; i++)
                             {
-                                DTypeInstanceProxy proxyKey = context.InstanceIdVsInstanceProxy[this.ArrayKeysRefIds[i]];
-                                DTypeInstanceProxy proxyItem = context.InstanceIdVsInstanceProxy[this.ArrayItemsRefIds[i]];
+                                DTypeInstanceProxy proxyKey = context.InstanceIdVsInstanceProxy[ArrayKeysRefIds[i]];
+                                DTypeInstanceProxy proxyItem = context.InstanceIdVsInstanceProxy[ArrayItemsRefIds[i]];
                                 info.AddValue((string)proxyKey.Construct(context), proxyItem.Construct(context));
                             }
                         }
@@ -2571,40 +2573,40 @@ namespace Forge.Persistence.Serialization
                         {
                             bool found = false;
 
-                            foreach (ConstructorInfo ci in this.Type.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
+                            foreach (ConstructorInfo ci in Type.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
                             {
                                 ParameterInfo[] pis = ci.GetParameters();
                                 if (pis != null && pis.Length == 2 && pis[0].ParameterType.Equals(typeof(SerializationInfo)) && pis[1].ParameterType.Equals(typeof(StreamingContext)))
                                 {
                                     found = true;
-                                    this.InstanceValue = ci.Invoke(new object[] { info, context.Context });
-                                    this.IsConstructed = true;
+                                    InstanceValue = ci.Invoke(new object[] { info, context.Context });
+                                    IsConstructed = true;
                                     break;
                                 }
                             }
 
                             if (!found)
                             {
-                                throw new SerializationException(string.Format("The constructor to deserialize an object type '{0}' was not found.", this.Type.FullName));
+                                throw new SerializationException(string.Format("The constructor to deserialize an object type '{0}' was not found.", Type.FullName));
                             }
 
-                            if (this.InstanceValue is IDeserializationCallback)
+                            if (InstanceValue is IDeserializationCallback)
                             {
-                                ((IDeserializationCallback)this.InstanceValue).OnDeserialization(context.Context);
+                                ((IDeserializationCallback)InstanceValue).OnDeserialization(context.Context);
                             }
                         }
                         else
                         {
-                            this.InstanceValue = surrogate.SetObjectData(FormatterServices.GetUninitializedObject(this.Type), info, context.Context, selector);
-                            this.IsConstructed = true;
+                            InstanceValue = surrogate.SetObjectData(FormatterServices.GetUninitializedObject(Type), info, context.Context, selector);
+                            IsConstructed = true;
                         }
                     }
-                    else if (this.Type.IsArray)
+                    else if (Type.IsArray)
                     {
-                        // a dimenziók méretének megállapítása
+                        // measure the size of dimensions
                         List<int> dimSizes = new List<int>();
                         DTypeInstanceProxy proxy = this;
-                        for (int i = 0; i < this.ArrayRank; i++)
+                        for (int i = 0; i < ArrayRank; i++)
                         {
                             dimSizes.Add(proxy.ArrayItemsRefIds.Count);
                             if (proxy.ArrayItemsRefIds.Count > 0)
@@ -2620,9 +2622,9 @@ namespace Forge.Persistence.Serialization
                             }
                         }
 
-                        Array array = Array.CreateInstance(this.Type.GetElementType(), dimSizes.ToArray());
-                        this.InstanceValue = array;
-                        this.IsConstructed = true;
+                        Array array = Array.CreateInstance(Type.GetElementType(), dimSizes.ToArray());
+                        InstanceValue = array;
+                        IsConstructed = true;
 
                         int[] indices = new int[dimSizes.Count];
                         SetArrayItems(context, array, 0, indices);
@@ -2632,22 +2634,22 @@ namespace Forge.Persistence.Serialization
 
                         #region Restore object
 
-                        Type currentType = this.Type;
+                        Type currentType = Type;
                         if (!(currentType.IsGenericType && currentType.GetGenericTypeDefinition().Equals(typeof(Nullable<>))))
                         {
-                            this.InstanceValue = FormatterServices.GetUninitializedObject(this.Type);
-                            this.IsConstructed = true;
+                            InstanceValue = FormatterServices.GetUninitializedObject(Type);
+                            IsConstructed = true;
                         }
 
                         foreach (KeyValuePair<string, int?> kv in mFieldsVsInstanceIds)
                         {
-                            currentType = this.Type;
+                            currentType = Type;
                             if (currentType.IsGenericType && currentType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
                             {
-                                // nullable típust nem viszi a reflector
+                                // reflection does not support nullable type
                                 object obj = context.InstanceIdVsInstanceProxy[kv.Value.Value].Construct(context);
-                                this.InstanceValue = currentType.GetConstructors()[0].Invoke(new object[] { obj });
-                                this.IsConstructed = true;
+                                InstanceValue = currentType.GetConstructors()[0].Invoke(new object[] { obj });
+                                IsConstructed = true;
                             }
                             else
                             {
@@ -2671,11 +2673,11 @@ namespace Forge.Persistence.Serialization
                                                     int? v = kv.Value;
                                                     if (v == null || !v.HasValue)
                                                     {
-                                                        fi.SetValue(this.InstanceValue, null);
+                                                        fi.SetValue(InstanceValue, null);
                                                     }
                                                     else
                                                     {
-                                                        fi.SetValue(this.InstanceValue, context.InstanceIdVsInstanceProxy[v.Value].Construct(context));
+                                                        fi.SetValue(InstanceValue, context.InstanceIdVsInstanceProxy[v.Value].Construct(context));
                                                     }
                                                 }
                                                 break;
@@ -2691,7 +2693,7 @@ namespace Forge.Persistence.Serialization
 
                                 if (!found && context.SerializerBehavior == BinarySerializerBehaviorEnum.ThrowExceptionOnMissingField)
                                 {
-                                    throw new MissingFieldException(this.Type.FullName, fieldName);
+                                    throw new MissingFieldException(Type.FullName, fieldName);
                                 }
                             }
                         }
@@ -2701,7 +2703,7 @@ namespace Forge.Persistence.Serialization
                     }
                 }
 
-                return this.InstanceValue;
+                return InstanceValue;
             }
 
             #endregion
@@ -2715,7 +2717,7 @@ namespace Forge.Persistence.Serialization
                 {
                     indices[dimension] = i;
                     int instanceId = mArrayItemsRefIds[i];
-                    // ha -1 az érték, az null-t jelent
+                    // if the value is -1, it means null
                     if (instanceId == -1)
                     {
                         array.SetValue(null, indices);

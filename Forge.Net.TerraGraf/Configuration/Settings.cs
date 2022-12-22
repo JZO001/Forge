@@ -6,10 +6,12 @@
 
 using System;
 using System.Diagnostics;
+using System.Reflection;
 using System.Threading;
 using Forge.Configuration.Shared;
-using Forge.Logging;
+using Forge.Logging.Abstraction;
 using Forge.Net.TerraGraf.ConfigSection;
+using Forge.Shared;
 
 namespace Forge.Net.TerraGraf.Configuration
 {
@@ -23,7 +25,7 @@ namespace Forge.Net.TerraGraf.Configuration
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(Settings));
+        private static readonly ILog LOGGER = LogManager.GetLogger<Settings>();
 
         private static readonly int DEFAULT_MAX_MESSAGE_PASSAGE_NUMBER = 3;
 
@@ -110,6 +112,15 @@ namespace Forge.Net.TerraGraf.Configuration
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private bool mAddWindowsFirewallException = DEFAULT_ADD_WINDOWS_FIREWALL_EXCEPTION;
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private string mApplicationId = string.Format("TerraGraf_{0}", Guid.NewGuid().ToString());
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private string mApplicationName = string.Empty;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private string mApplicationPathWithName = string.Empty;
+
         #endregion
 
         #region Constructor(s)
@@ -117,8 +128,26 @@ namespace Forge.Net.TerraGraf.Configuration
         /// <summary>
         /// Initializes a new instance of the <see cref="Settings"/> class.
         /// </summary>
-        internal Settings()
+        public Settings()
         {
+            mApplicationName = mApplicationId;
+
+            Assembly asm = Assembly.GetEntryAssembly();
+            if (asm != null)
+            {
+                string uriString = asm.GetName().CodeBase;
+                if (!string.IsNullOrWhiteSpace(uriString))
+                {
+                    if (uriString.ToLower().EndsWith(".dll"))
+                    {
+                        uriString = string.Format("{0}.exe", uriString.Substring(0, uriString.Length - ".dll".Length));
+                    }
+
+                    Uri uri = null;
+                    Uri.TryCreate(uriString, UriKind.Absolute, out uri);
+                    mApplicationPathWithName = uri?.LocalPath ?? string.Empty;
+                }
+            }
         }
 
         #endregion
@@ -486,7 +515,44 @@ namespace Forge.Net.TerraGraf.Configuration
         public bool AddWindowsFirewallException
         {
             get { return mAddWindowsFirewallException; }
-            set { mAddWindowsFirewallException = value; }
+            set
+            {
+                if (!mInitialized) mAddWindowsFirewallException = value;
+            }
+        }
+
+        /// <summary>Gets or sets the application identifier.</summary>
+        /// <value>The application identifier.</value>
+        [DebuggerHidden]
+        public string ApplicationId
+        {
+            get { return mApplicationId; }
+            set
+            {
+                if (!mInitialized) mApplicationId = value;
+            }
+        }
+
+        /// <summary>Gets or sets the name of the application.</summary>
+        /// <value>The name of the application.</value>
+        public string ApplicationName
+        {
+            get { return mApplicationName; }
+            set
+            {
+                if (!mInitialized) mApplicationName = value;
+            }
+        }
+
+        /// <summary>Gets or sets the application path with name.</summary>
+        /// <value>The application path with name.</value>
+        public string ApplicationPathWithName
+        {
+            get { return mApplicationPathWithName; }
+            set
+            {
+                if (!mInitialized) mApplicationPathWithName = value;
+            }
         }
 
         #endregion
@@ -500,24 +566,27 @@ namespace Forge.Net.TerraGraf.Configuration
         {
             if (LOGGER.IsInfoEnabled)
             {
-                LOGGER.Info(string.Format("TERRAGRAF, Blackhole: {0}", this.mBlackHole));
-                LOGGER.Info(string.Format("TERRAGRAF, DefaultConnectionTimeoutInMS: {0}", this.mDefaultConnectionTimeoutInMS));
-                LOGGER.Info(string.Format("TERRAGRAF, EnableMultipleConnectionWithNetworkPeers: {0}", this.mEnableMultipleConnectionWithNetworkPeers));
-                LOGGER.Info(string.Format("TERRAGRAF, EnableAgressiveConnectionEstablishment: {0}", this.mEnableAgressiveConnectionEstablishment));
-                LOGGER.Info(string.Format("TERRAGRAF, MaxConnectionsWithNetworkPeers: {0}", this.mMaxConnectionsWithNetworkPeers));
-                LOGGER.Info(string.Format("TERRAGRAF, DefaultSocketAcceptTimeWaitInMS: {0}", this.mDefaultSocketAcceptTimeWaitInMS));
-                LOGGER.Info(string.Format("TERRAGRAF, DefaultSocketBacklogSize: {0}", this.mDefaultSocketBacklogSize));
-                LOGGER.Info(string.Format("TERRAGRAF, DefaultConcurrentSocketConnectionAttempts: {0}", this.mDefaultConcurrentSocketConnectionAttempts));
-                LOGGER.Info(string.Format("TERRAGRAF, DefaultReceiveBufferSize: {0}", this.mDefaultReceiveBufferSize));
-                LOGGER.Info(string.Format("TERRAGRAF, DefaultSendBufferSize: {0}", this.mDefaultSendBufferSize));
-                LOGGER.Info(string.Format("TERRAGRAF, DefaultReceiveTimeoutInMS: {0}", this.mDefaultReceiveTimeoutInMS));
-                LOGGER.Info(string.Format("TERRAGRAF, DefaultSendTimeoutInMS: {0}", this.mDefaultSendTimeoutInMS));
-                LOGGER.Info(string.Format("TERRAGRAF, DefaultLowLevelSocketKeepAliveTime: {0}", this.mDefaultLowLevelSocketKeepAliveTime));
-                LOGGER.Info(string.Format("TERRAGRAF, DefaultLowLevelSocketKeepAliveTimeInterval: {0}", this.mDefaultLowLevelSocketKeepAliveTimeInterval));
-                LOGGER.Info(string.Format("TERRAGRAF, DefaultLowLevelNoDelay: {0}", this.mDefaultLowLevelNoDelay.ToString()));
-                LOGGER.Info(string.Format("TERRAGRAF, MaxMessagePassageNumber: {0}", this.mMaxMessagePassageNumber));
-                LOGGER.Info(string.Format("TERRAGRAF, EnableIPV6: {0}", this.mEnableIPV6.ToString()));
-                LOGGER.Info(string.Format("TERRAGRAF, AddWindowsFirewallException: {0}", this.mAddWindowsFirewallException.ToString()));
+                LOGGER.Info(string.Format("TERRAGRAF, Blackhole: {0}", mBlackHole));
+                LOGGER.Info(string.Format("TERRAGRAF, DefaultConnectionTimeoutInMS: {0}", mDefaultConnectionTimeoutInMS));
+                LOGGER.Info(string.Format("TERRAGRAF, EnableMultipleConnectionWithNetworkPeers: {0}", mEnableMultipleConnectionWithNetworkPeers));
+                LOGGER.Info(string.Format("TERRAGRAF, EnableAgressiveConnectionEstablishment: {0}", mEnableAgressiveConnectionEstablishment));
+                LOGGER.Info(string.Format("TERRAGRAF, MaxConnectionsWithNetworkPeers: {0}", mMaxConnectionsWithNetworkPeers));
+                LOGGER.Info(string.Format("TERRAGRAF, DefaultSocketAcceptTimeWaitInMS: {0}", mDefaultSocketAcceptTimeWaitInMS));
+                LOGGER.Info(string.Format("TERRAGRAF, DefaultSocketBacklogSize: {0}", mDefaultSocketBacklogSize));
+                LOGGER.Info(string.Format("TERRAGRAF, DefaultConcurrentSocketConnectionAttempts: {0}", mDefaultConcurrentSocketConnectionAttempts));
+                LOGGER.Info(string.Format("TERRAGRAF, DefaultReceiveBufferSize: {0}", mDefaultReceiveBufferSize));
+                LOGGER.Info(string.Format("TERRAGRAF, DefaultSendBufferSize: {0}", mDefaultSendBufferSize));
+                LOGGER.Info(string.Format("TERRAGRAF, DefaultReceiveTimeoutInMS: {0}", mDefaultReceiveTimeoutInMS));
+                LOGGER.Info(string.Format("TERRAGRAF, DefaultSendTimeoutInMS: {0}", mDefaultSendTimeoutInMS));
+                LOGGER.Info(string.Format("TERRAGRAF, DefaultLowLevelSocketKeepAliveTime: {0}", mDefaultLowLevelSocketKeepAliveTime));
+                LOGGER.Info(string.Format("TERRAGRAF, DefaultLowLevelSocketKeepAliveTimeInterval: {0}", mDefaultLowLevelSocketKeepAliveTimeInterval));
+                LOGGER.Info(string.Format("TERRAGRAF, DefaultLowLevelNoDelay: {0}", mDefaultLowLevelNoDelay.ToString()));
+                LOGGER.Info(string.Format("TERRAGRAF, MaxMessagePassageNumber: {0}", mMaxMessagePassageNumber));
+                LOGGER.Info(string.Format("TERRAGRAF, EnableIPV6: {0}", mEnableIPV6.ToString()));
+                LOGGER.Info(string.Format("TERRAGRAF, AddWindowsFirewallException: {0}", mAddWindowsFirewallException.ToString()));
+                LOGGER.Info(string.Format("TERRAGRAF, ApplicationId: {0}", mApplicationId));
+                LOGGER.Info(string.Format("TERRAGRAF, ApplicationName: {0}", mApplicationName));
+                LOGGER.Info(string.Format("TERRAGRAF, ApplicationPathWithName: {0}", mApplicationPathWithName));
             }
         }
 
@@ -526,9 +595,22 @@ namespace Forge.Net.TerraGraf.Configuration
         /// </summary>
         internal void Initialize()
         {
-            TerraGrafConfiguration.SectionHandler.OnConfigurationChanged += new EventHandler<EventArgs>(SectionHandler_OnConfigurationChanged);
-            SectionHandler_OnConfigurationChanged(null, null);
-            this.mInitialized = true;
+            if (NetworkManager.ConfigurationSource == ConfigurationSourceEnum.ConfigurationManager)
+            {
+                TerraGrafConfiguration.SectionHandler.OnConfigurationChanged += new EventHandler<EventArgs>(SectionHandler_OnConfigurationChanged);
+                SectionHandler_OnConfigurationChanged(null, null);
+            }
+            mInitialized = true;
+        }
+
+        /// <summary>Cleans up.</summary>
+        internal void CleanUp()
+        {
+            if (mInitialized && NetworkManager.ConfigurationSource == ConfigurationSourceEnum.ConfigurationManager)
+            {
+                TerraGrafConfiguration.SectionHandler.OnConfigurationChanged -= new EventHandler<EventArgs>(SectionHandler_OnConfigurationChanged);
+            }
+            mInitialized = false;
         }
 
         #endregion
@@ -775,6 +857,9 @@ namespace Forge.Net.TerraGraf.Configuration
                     AddWindowsFirewallException = boolValue;
                 }
             }
+
+
+            mApplicationId = ApplicationHelper.ApplicationId;
         }
 
         #endregion

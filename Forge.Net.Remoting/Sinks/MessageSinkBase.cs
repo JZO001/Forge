@@ -7,9 +7,12 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using Forge.Configuration;
 using Forge.Configuration.Shared;
+using Forge.Formatters;
+using Forge.Legacy;
 using Forge.Net.Remoting.Messaging;
-using Forge.Persistence.Formatters;
+using Forge.Shared;
 
 namespace Forge.Net.Remoting.Sinks
 {
@@ -75,9 +78,9 @@ namespace Forge.Net.Remoting.Sinks
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException("compressDataOverSize");
             }
-            this.mMessageSinkId = messageSinkId;
-            this.mCompressData = compressData;
-            this.mCompressDataOverSize = compressDataOverSize;
+            mMessageSinkId = messageSinkId;
+            mCompressData = compressData;
+            mCompressDataOverSize = compressDataOverSize;
         } 
 
         #endregion
@@ -114,24 +117,24 @@ namespace Forge.Net.Remoting.Sinks
         /// Initialize message sink from configuration
         /// </summary>
         /// <param name="pi">The pi.</param>
-        public virtual void Initialize(CategoryPropertyItem pi)
+        public virtual void Initialize(IPropertyItem pi)
         {
             if (pi == null)
             {
                 ThrowHelper.ThrowArgumentNullException("pi");
             }
 
-            if (!this.mInitialized)
+            if (!mInitialized)
             {
-                CategoryPropertyItem piCompressData = ConfigurationAccessHelper.GetCategoryPropertyByPath(pi.PropertyItems, "CompressData");
+                IPropertyItem piCompressData = ConfigurationAccessHelper.GetPropertyByPath(pi, "CompressData");
                 if (piCompressData != null)
                 {
-                    bool.TryParse(piCompressData.EntryValue, out mCompressData);
-                    CategoryPropertyItem piCompressDataOverSize = ConfigurationAccessHelper.GetCategoryPropertyByPath(pi.PropertyItems, "CompressDataOverSize");
+                    bool.TryParse(piCompressData.Value, out mCompressData);
+                    IPropertyItem piCompressDataOverSize = ConfigurationAccessHelper.GetPropertyByPath(pi, "CompressDataOverSize");
                     if (piCompressDataOverSize != null)
                     {
                         int result = 0;
-                        if (int.TryParse(piCompressDataOverSize.EntryValue, out result))
+                        if (int.TryParse(piCompressDataOverSize.Value, out result))
                         {
                             mCompressDataOverSize = result;
                         }
@@ -234,7 +237,7 @@ namespace Forge.Net.Remoting.Sinks
         {
             if (mDisposed)
             {
-                throw new ObjectDisposedException(this.GetType().FullName);
+                throw new ObjectDisposedException(GetType().FullName);
             }
         }
 

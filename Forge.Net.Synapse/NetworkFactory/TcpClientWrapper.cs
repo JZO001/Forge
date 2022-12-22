@@ -7,7 +7,13 @@
 using System;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
+using Forge.Legacy;
 using Forge.Net.Synapse.NetworkServices;
+using Forge.Shared;
+using Forge.Threading;
+using Forge.Threading.Tasking;
 
 namespace Forge.Net.Synapse.NetworkFactory
 {
@@ -25,6 +31,11 @@ namespace Forge.Net.Synapse.NetworkFactory
         private SocketWrapper mSocketWrapper = null;
         private bool mDisposed = false;
 
+        private System.Action<string, int> mConnectDelegate = null;
+        private int mAsyncActiveConnectCount = 0;
+        private AutoResetEvent mAsyncActiveConnectEvent = null;
+        private readonly object LOCK_CONNECT = new object();
+
         #endregion
 
         #region Constructor(s)
@@ -39,7 +50,7 @@ namespace Forge.Net.Synapse.NetworkFactory
             {
                 ThrowHelper.ThrowArgumentNullException("tcpClient");
             }
-            this.mTcpClient = tcpClient;
+            mTcpClient = tcpClient;
         }
 
         /// <summary>
@@ -54,6 +65,8 @@ namespace Forge.Net.Synapse.NetworkFactory
         #endregion
 
         #region Public method(s)
+
+#if NET40
 
         /// <summary>
         /// Begins the connect.
@@ -83,6 +96,105 @@ namespace Forge.Net.Synapse.NetworkFactory
             }
             return BeginConnect(localEp.Host, localEp.Port, callback, state);
         }
+
+        /// <summary>Ends the connect.</summary>
+        /// <param name="asyncResult">The asynchronous result.</param>
+        public void EndConnect(IAsyncResult asyncResult)
+        {
+            mTcpClient.EndConnect(asyncResult);
+        }
+
+#endif
+
+        /// <summary>Begins the connect.</summary>
+        /// <param name="host">The host.</param>
+        /// <param name="port">The port.</param>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        public ITaskResult BeginConnect(string host, int port, ReturnCallback callback, object state)
+        {
+            Interlocked.Increment(ref mAsyncActiveConnectCount);
+            System.Action<string, int> d = new System.Action<string, int>(Connect);
+            if (mAsyncActiveConnectEvent == null)
+            {
+                lock (LOCK_CONNECT)
+                {
+                    if (mAsyncActiveConnectEvent == null)
+                    {
+                        mAsyncActiveConnectEvent = new AutoResetEvent(true);
+                    }
+                }
+            }
+            mAsyncActiveConnectEvent.WaitOne();
+            mConnectDelegate = d;
+            return d.BeginInvoke(host, port, callback, state);
+        }
+
+        /// <summary>Begins the connect.</summary>
+        /// <param name="localEp">The local ep.</param>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        public ITaskResult BeginConnect(AddressEndPoint localEp, ReturnCallback callback, object state)
+        {
+            if (localEp == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("localEp");
+            }
+            return BeginConnect(localEp.Host, localEp.Port, callback, state);
+        }
+
+        /// <summary>Ends the connect.</summary>
+        /// <param name="asyncResult">The asynchronous result.</param>
+        public void EndConnect(ITaskResult asyncResult)
+        {
+            if (asyncResult == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("asyncResult");
+            }
+            if (mConnectDelegate == null)
+            {
+                ThrowHelper.ThrowArgumentException("Wrong async result or EndConnect called multiple times.", "asyncResult");
+            }
+            try
+            {
+                mConnectDelegate.EndInvoke(asyncResult);
+            }
+            finally
+            {
+                mConnectDelegate = null;
+                mAsyncActiveConnectEvent.Set();
+                CloseAsyncActiveConnectEvent(Interlocked.Decrement(ref mAsyncActiveConnectCount));
+            }
+        }
+
+#if NETCOREAPP3_1_OR_GREATER
+
+        /// <summary>
+        /// Connects the specified host.
+        /// </summary>
+        /// <param name="host">The host.</param>
+        /// <param name="port">The port.</param>
+        public async Task ConnectAsync(string host, int port)
+        {
+            await mTcpClient.ConnectAsync(host, port);
+        }
+
+        /// <summary>
+        /// Connects the specified local ep.
+        /// </summary>
+        /// <param name="localEp">The local ep.</param>
+        public async Task ConnectAsync(AddressEndPoint localEp)
+        {
+            if (localEp == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("localEp");
+            }
+            await ConnectAsync(localEp.Host, localEp.Port);
+        }
+
+#endif
 
         /// <summary>
         /// Connects the specified host.
@@ -280,6 +392,19 @@ namespace Forge.Net.Synapse.NetworkFactory
                     mNetworkStream.Dispose();
                 }
                 mTcpClient.Close();
+            }
+        }
+
+        #endregion
+
+        #region Private method(s)
+
+        private void CloseAsyncActiveConnectEvent(int asyncActiveCount)
+        {
+            if ((mAsyncActiveConnectEvent != null) && (asyncActiveCount == 0))
+            {
+                mAsyncActiveConnectEvent.Dispose();
+                mAsyncActiveConnectEvent = null;
             }
         }
 

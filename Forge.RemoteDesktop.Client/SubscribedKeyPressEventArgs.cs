@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Shared;
 using System;
 
 namespace Forge.RemoteDesktop.Client
@@ -26,7 +27,7 @@ namespace Forge.RemoteDesktop.Client
             {
                 ThrowHelper.ThrowArgumentNullException("subscription");
             }
-            this.Subscription = subscription;
+            Subscription = subscription;
         }
 
         /// <summary>

@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Shared;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -30,9 +31,9 @@ namespace Forge.RemoteDesktop.Service
             {
                 ThrowHelper.ThrowArgumentNullException("location");
             }
-            this.Location = location;
-            this.Size = size;
-            this.SubscribedClients = new Dictionary<IRemoteDesktopInternalClient, ClientContext>();
+            Location = location;
+            Size = size;
+            SubscribedClients = new Dictionary<IRemoteDesktopInternalClient, ClientContext>();
         }
 
         /// <summary>
@@ -101,10 +102,10 @@ namespace Forge.RemoteDesktop.Service
 
         internal ClientContext(IRemoteDesktopInternalClient client, byte[] contentToSend, AutoResetEvent workerThreadEvent)
         {
-            this.Client = client;
-            this.IsChanged = true;
-            this.ContentToSend = contentToSend;
-            this.WorkerThreadEvent = workerThreadEvent;
+            Client = client;
+            IsChanged = true;
+            ContentToSend = contentToSend;
+            WorkerThreadEvent = workerThreadEvent;
         }
 
         internal IRemoteDesktopInternalClient Client { get; private set; }

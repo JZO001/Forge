@@ -20,8 +20,8 @@ namespace Forge.UpdateFramework
     public class RegistryItemDescriptor : DescriptorBase
     {
 
-#region Constructor(s)
-        
+        #region Constructor(s)
+
         /// <summary>
         /// Initializes a new instance of the <see cref="RegistryItemDescriptor"/> class.
         /// </summary>
@@ -36,10 +36,10 @@ namespace Forge.UpdateFramework
             this.Value = key.GetValue(valueKey);
         }
 
-#endregion
+        #endregion
 
-#region Public properties
-        
+        #region Public properties
+
         /// <summary>
         /// Gets the parent.
         /// </summary>
@@ -58,7 +58,7 @@ namespace Forge.UpdateFramework
         /// </summary>
         public object Value { get; private set; }
 
-#endregion
+        #endregion
 
     }
 

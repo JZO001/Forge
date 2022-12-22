@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Shared;
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -66,7 +67,7 @@ namespace Forge.ORM.NHibernateExtension.Model
         [DebuggerHidden]
         public override bool IsSaved
         {
-            get { return this.Id != null && base.IsSaved; }
+            get { return Id != null && base.IsSaved; }
             set { base.IsSaved = value; }
         }
 
@@ -82,7 +83,7 @@ namespace Forge.ORM.NHibernateExtension.Model
         /// </returns>
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder(this.GetType().Name);
+            StringBuilder sb = new StringBuilder(GetType().Name);
             if (Id == null)
             {
                 sb.Append("(unsaved)");
@@ -92,11 +93,11 @@ namespace Forge.ORM.NHibernateExtension.Model
                 sb.Append(Id.ToString());
             }
             sb.Append(", Created: ");
-            sb.Append(this.EntityCreationTime.ToString());
+            sb.Append(EntityCreationTime.ToString());
             sb.Append(", Modified: ");
-            sb.Append(this.EntityModificationTime.ToString());
+            sb.Append(EntityModificationTime.ToString());
             sb.Append(", Deleted: ");
-            sb.Append(this.Deleted.ToString());
+            sb.Append(Deleted.ToString());
             return sb.ToString();
         }
 
@@ -111,14 +112,14 @@ namespace Forge.ORM.NHibernateExtension.Model
         {
             if (!mHashcodeCreated)
             {
-                if (this.Id == null)
+                if (Id == null)
                 {
                     mHashcode = base.GetHashCode();
                 }
                 else
                 {
-                    mHashcode = 9 * this.Id.GetHashCode();
-                    mHashcode = 7 ^ mHashcode + this.EntityCreationTime.GetHashCode();
+                    mHashcode = 9 * Id.GetHashCode();
+                    mHashcode = 7 ^ mHashcode + EntityCreationTime.GetHashCode();
                 }
                 mHashcodeCreated = true;
             }
@@ -143,7 +144,7 @@ namespace Forge.ORM.NHibernateExtension.Model
             {
                 return false;
             }
-            if (this.Id == null || !this.Id.Equals(other.Id))
+            if (Id == null || !Id.Equals(other.Id))
             {
                 return false;
             }
@@ -165,13 +166,13 @@ namespace Forge.ORM.NHibernateExtension.Model
 
             EntityBaseGenericId<TID> obj = (EntityBaseGenericId<TID>)o;
             int result = 0;
-            if (this.Id == null)
+            if (Id == null)
             {
-                result = this.EntityCreationTime.CompareTo(obj.EntityCreationTime);
+                result = EntityCreationTime.CompareTo(obj.EntityCreationTime);
             }
             else
             {
-                result = this.Id.CompareTo(obj.Id);
+                result = Id.CompareTo(obj.Id);
             }
             return result; // default is equals. This provides the functionality as keep the original order of the treesets
         }

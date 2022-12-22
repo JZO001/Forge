@@ -8,9 +8,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using Forge.Legacy;
 using Forge.Net.TerraGraf.Connection;
 using Forge.Net.TerraGraf.Contexts;
 using Forge.Net.TerraGraf.NetworkInfo;
+using Forge.Shared;
 
 namespace Forge.Net.TerraGraf.NetworkPeers
 {
@@ -120,7 +122,7 @@ namespace Forge.Net.TerraGraf.NetworkPeers
         [DebuggerHidden]
         public long ReplyTime
         {
-            get { return this.Session == null ? (long)Timeout.Infinite : this.Session.ReplyTime; }
+            get { return Session == null ? (long)Timeout.Infinite : Session.ReplyTime; }
         }
 
         /// <summary>
@@ -139,8 +141,8 @@ namespace Forge.Net.TerraGraf.NetworkPeers
                     NetworkConnection c = Session.NetworkConnection;
                     if (c != null && c.IsConnected)
                     {
-                        // csakis a saját tulajdonú, aktív hálózati kapcsolatot adom vissza
-                        if (c.OwnerSession.RemotePeer.Id.Equals(this.Id))
+                        // gets back the network connection which are owned by me
+                        if (c.OwnerSession.RemotePeer.Id.Equals(Id))
                         {
                             result = c;
                         }
@@ -254,7 +256,7 @@ namespace Forge.Net.TerraGraf.NetworkPeers
             {
                 ThrowHelper.ThrowArgumentNullException("other");
             }
-            return this.Id.CompareTo(other.Id);
+            return Id.CompareTo(other.Id);
         }
 
         /// <summary>
@@ -328,15 +330,15 @@ namespace Forge.Net.TerraGraf.NetworkPeers
         {
             NetworkPeer peer = new NetworkPeer();
 
-            peer.HostName = this.HostName;
-            peer.Id = this.Id;
-            peer.BlackHoleContainer = this.BlackHoleContainer.BuildBlackHoleContainer();
-            peer.NATGateways = this.NATGatewayCollection.BuildNATGatewayContainer();
-            peer.NetworkContext = this.NetworkContext.Name;
-            peer.PeerContext = this.InternalPeerContext.BuildPeerContextContainer();
-            peer.PeerRelations = this.PeerRelationPairs.BuildPeerRelationContainer(blackHole, targetNetworkContext);
-            peer.TCPServers = this.TCPServerCollection.BuildServerContainer();
-            peer.Version = this.Version;
+            peer.HostName = HostName;
+            peer.Id = Id;
+            peer.BlackHoleContainer = BlackHoleContainer.BuildBlackHoleContainer();
+            peer.NATGateways = NATGatewayCollection.BuildNATGatewayContainer();
+            peer.NetworkContext = NetworkContext.Name;
+            peer.PeerContext = InternalPeerContext.BuildPeerContextContainer();
+            peer.PeerRelations = PeerRelationPairs.BuildPeerRelationContainer(blackHole, targetNetworkContext);
+            peer.TCPServers = TCPServerCollection.BuildServerContainer();
+            peer.Version = Version;
 
             return peer;
         }

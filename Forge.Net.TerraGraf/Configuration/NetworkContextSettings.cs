@@ -9,8 +9,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using Forge.Configuration.Shared;
-using Forge.Logging;
+using Forge.Logging.Abstraction;
 using Forge.Net.TerraGraf.ConfigSection;
+using Forge.Shared;
 
 namespace Forge.Net.TerraGraf.Configuration
 {
@@ -24,7 +25,7 @@ namespace Forge.Net.TerraGraf.Configuration
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(NetworkContextSettings));
+        private static readonly ILog LOGGER = LogManager.GetLogger<NetworkContextSettings>();
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string mName = string.Empty;
@@ -38,7 +39,7 @@ namespace Forge.Net.TerraGraf.Configuration
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private List<ContextRule> mBlackList = new List<ContextRule>();
 
-        //private bool mInitialized = false;
+        private bool mInitialized = false;
 
         #endregion
 
@@ -47,7 +48,7 @@ namespace Forge.Net.TerraGraf.Configuration
         /// <summary>
         /// Initializes a new instance of the <see cref="NetworkContextSettings"/> class.
         /// </summary>
-        internal NetworkContextSettings()
+        public NetworkContextSettings()
         {
         }
 
@@ -65,6 +66,14 @@ namespace Forge.Net.TerraGraf.Configuration
         public string Name
         {
             get { return mName; }
+            set
+            {
+                if (!mInitialized)
+                {
+                    if (string.IsNullOrWhiteSpace(value)) ThrowHelper.ThrowArgumentNullException("value");
+                    mName = value;
+                }
+            }
         }
 
         /// <summary>
@@ -77,7 +86,10 @@ namespace Forge.Net.TerraGraf.Configuration
         public bool Separation
         {
             get { return mSeparation; }
-            internal set { mSeparation = value; }
+            set 
+            { 
+                if (!mInitialized) mSeparation = value; 
+            }
         }
 
         /// <summary>
@@ -88,7 +100,7 @@ namespace Forge.Net.TerraGraf.Configuration
         /// </value>
         public List<ContextRule> WhiteList
         {
-            get { return new List<ContextRule>(mWhiteList); }
+            get { return mInitialized ? new List<ContextRule>(mWhiteList) : mWhiteList; }
             internal set
             {
                 if (value == null)
@@ -109,7 +121,7 @@ namespace Forge.Net.TerraGraf.Configuration
         /// </value>
         public List<ContextRule> BlackList
         {
-            get { return new List<ContextRule>(mBlackList); }
+            get { return mInitialized ? new List<ContextRule>(mBlackList) : mBlackList; }
             internal set
             {
                 if (value == null)
@@ -133,8 +145,8 @@ namespace Forge.Net.TerraGraf.Configuration
         {
             if (LOGGER.IsInfoEnabled)
             {
-                LOGGER.Info(string.Format("TERRAGRAF, Network Context Name: {0}", this.mName));
-                LOGGER.Info(string.Format("TERRAGRAF, Separation: {0}", this.mSeparation));
+                LOGGER.Info(string.Format("TERRAGRAF, Network Context Name: {0}", mName));
+                LOGGER.Info(string.Format("TERRAGRAF, Separation: {0}", mSeparation));
 
                 StringBuilder sb = new StringBuilder();
                 foreach (ContextRule ep in mWhiteList)
@@ -157,8 +169,21 @@ namespace Forge.Net.TerraGraf.Configuration
         /// </summary>
         internal void Initialize()
         {
-            SectionHandler_OnConfigurationChanged(null, null);
-            //this.mInitialized = true;
+            if (NetworkManager.ConfigurationSource == ConfigurationSourceEnum.ConfigurationManager)
+            {
+                SectionHandler_OnConfigurationChanged(null, null);
+            }
+            mInitialized = true;
+        }
+
+        /// <summary>Cleans up.</summary>
+        internal void CleanUp()
+        {
+            if (mInitialized && NetworkManager.ConfigurationSource == ConfigurationSourceEnum.ConfigurationManager)
+            {
+                TerraGrafConfiguration.SectionHandler.OnConfigurationChanged -= new EventHandler<EventArgs>(SectionHandler_OnConfigurationChanged);
+            }
+            mInitialized = false;
         }
 
         #endregion
@@ -173,7 +198,7 @@ namespace Forge.Net.TerraGraf.Configuration
             {
                 throw new InitializationException("Network context name not configured.");
             }
-            this.mName = value.Trim();
+            mName = value.Trim();
 
             value = ConfigurationAccessHelper.GetValueByPath(TerraGrafConfiguration.Settings.CategoryPropertyItems, "NetworkContext/Separation");
             bool boolValue = false;

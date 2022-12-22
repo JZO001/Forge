@@ -1,159 +1,125 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{63528BC4-C7D4-4DB0-ADD7-36C98F0E0C0E}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Forge.Net.Synapse</RootNamespace>
-    <AssemblyName>Forge.Net.Synapse</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
-    <TargetFrameworkProfile />
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\Forge.Net.Synapse.xml</DocumentationFile>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;IS_WINDOWS</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <RunCodeAnalysis>false</RunCodeAnalysis>
-    <DocumentationFile>bin\Release\Forge.Net.Synapse.xml</DocumentationFile>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <RegisterForComInterop>false</RegisterForComInterop>
-    <Prefer32Bit>false</Prefer32Bit>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>Forge.pfx</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-  <PropertyGroup>
-    <DelaySign>false</DelaySign>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AddressEndPoint.cs" />
-    <Compile Include="ConnectionEventArgs.cs" />
-    <Compile Include="Firewall\FirewallException.cs" />
-    <Compile Include="Firewall\WindowsFirewallManager.cs" />
-    <Compile Include="Icmp\Ping.cs" />
-    <Compile Include="Icmp\PingResultEnum.cs" />
-    <Compile Include="Icmp\PingResultEventArgs.cs" />
-    <Compile Include="NATUPnP\ProtocolEnum.cs" />
-    <Compile Include="NATUPnP\UPnPManager.cs" />
-    <Compile Include="NetworkFactory\DefaultClientStreamFactory.cs" />
-    <Compile Include="NetworkFactory\DefaultNetworkFactory.cs" />
-    <Compile Include="NetworkFactory\DefaultServerStreamFactory.cs" />
-    <Compile Include="NetworkFactory\SocketWrapper.cs" />
-    <Compile Include="NetworkFactory\SslClientStreamFactory.cs" />
-    <Compile Include="NetworkFactory\SslServerStreamFactory.cs" />
-    <Compile Include="NetworkFactory\StreamFactoryBase.cs" />
-    <Compile Include="NetworkFactory\TcpClientWrapper.cs" />
-    <Compile Include="NetworkFactory\TcpListenerWrapper.cs" />
-    <Compile Include="NetworkFactory\UdpClientWrapper.cs" />
-    <Compile Include="NetworkManager.cs" />
-    <Compile Include="NetworkServices\IClientStreamFactory.cs" />
-    <Compile Include="NetworkServices\INetworkFactory.cs" />
-    <Compile Include="NetworkServices\IServerStreamFactory.cs" />
-    <Compile Include="NetworkServices\ISocket.cs" />
-    <Compile Include="NetworkServices\IStreamFactory.cs" />
-    <Compile Include="NetworkServices\ITcpClient.cs" />
-    <Compile Include="NetworkServices\ITcpListener.cs" />
-    <Compile Include="NetworkServices\IUdpClient.cs" />
-    <Compile Include="NetworkStream.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TcpKeepAlive.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Forge.pfx" />
-  </ItemGroup>
-  <ItemGroup>
-    <COMReference Include="NATUPNPLib">
-      <Guid>{1C565858-F302-471E-B409-F180AA4ABEC6}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-    <COMReference Include="NetFwTypeLib">
-      <Guid>{58FBCF7C-E7A9-467C-80B3-FC65E8FCCA08}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Forge.Base\Forge.Base.csproj">
-      <Project>{f3eed65e-c103-4ba8-af1d-37421d73a708}</Project>
-      <Name>Forge.Base</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Forge.Security\Forge.Security.csproj">
-      <Project>{94a61ae8-d345-40cd-a007-9cb050b8e0aa}</Project>
-      <Name>Forge.Security</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>echo F|xcopy /r /y "$(TargetPath)" "$(SolutionDir).Output\$(TargetFileName)"
-echo F|xcopy /r /y "$(TargetDir)$(TargetName).pdb" "$(SolutionDir).Output\$(TargetName).pdb"
-echo F|xcopy /r /y "$(TargetDir)$(TargetName).xml" "$(SolutionDir).Output\$(TargetName).xml"
+<Project>
 
-rem "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\Extensions\PreEmptiveSolutions\DotfuscatorCE\dotfuscatorCLI.exe" /q "C:\Development\NET\Forge\.Documents\SynapseFuscator.xml"
+	<Sdk Name="Microsoft.NET.Sdk" />
 
-rem "C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.7 Tools\x64\sn.exe" -Vr "$(SolutionDir).Dotfuscated\Forge.Net.Synapse.dll"
-rem "C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.7 Tools\x64\sn.exe" -R "$(SolutionDir).Dotfuscated\Forge.Net.Synapse.dll" "$(SolutionDir).Dotfuscated\Forge.snk"
+	<PropertyGroup Label="Globals">
+	  <SccProjectName>SAK</SccProjectName>
+	  <SccProvider>SAK</SccProvider>
+	  <SccAuxPath>SAK</SccAuxPath>
+	  <SccLocalPath>SAK</SccLocalPath>
+	</PropertyGroup>
 
-rem echo F|xcopy /r /y "$(SolutionDir).Dotfuscated\$(TargetFileName)" "$(TargetPath)"
-</PostBuildEvent>
-  </PropertyGroup>
-  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
-  </Target>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+	<PropertyGroup>
+		<TargetFrameworks>net40;netcoreapp3.1;net6.0;net6.0-windows</TargetFrameworks>
+		<Version>4.3.0.0</Version>
+		<AssemblyVersion>4.3.0.1</AssemblyVersion>
+		<Copyright>Copyright © Zoltan Juhasz, 2005-2022</Copyright>
+		<Description>Contains the persistence library</Description>
+		<Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
+		<Company>Forge Project Contributor(s)</Company>
+		<PackageId>Forge.Net.Synapse</PackageId>
+		<Authors>Zoltan Juhasz</Authors>
+		<Title>Synapse Network Core Library</Title>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<ProjectGuid>{63528BC4-C7D4-4DB0-ADD7-36C98F0E0C0E}</ProjectGuid>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<DocumentationFile>Forge.Net.Synapse.xml</DocumentationFile>
+		<RepositoryUrl>https://github.com/JZO001/Forge.Net.Synapse</RepositoryUrl>
+		<DefineConstants Condition="'$(TargetFramework)' == 'net6.0-windows'">IS_WINDOWS</DefineConstants>
+		<DefineConstants Condition="'$(TargetFramework)' == 'netcoreapp3.1'">IS_WINDOWS</DefineConstants>
+		<DefineConstants Condition="'$(TargetFramework)' == 'net40'">IS_WINDOWS</DefineConstants>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-windows'">
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0"></PackageReference>
+		<PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
+		<COMReference Include="NetFwTypeLib.dll">
+			<Guid>58fbcf7c-e7a9-467c-80b3-fc65e8fcca08</Guid>
+			<VersionMajor>1</VersionMajor>
+			<VersionMinor>0</VersionMinor>
+			<WrapperTool>tlbimp</WrapperTool>
+			<Lcid>0</Lcid>
+			<Isolated>false</Isolated>
+		</COMReference>
+		<COMReference Include="NATUPNPLib.dll">
+			<Guid>1c565858-f302-471e-b409-f180aa4abec6</Guid>
+			<VersionMajor>1</VersionMajor>
+			<VersionMinor>0</VersionMinor>
+			<WrapperTool>tlbimp</WrapperTool>
+			<Lcid>0</Lcid>
+			<Isolated>false</Isolated>
+		</COMReference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0"></PackageReference>
+		<PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0"></PackageReference>
+		<PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
+		<COMReference Include="NetFwTypeLib.dll">
+			<Guid>58fbcf7c-e7a9-467c-80b3-fc65e8fcca08</Guid>
+			<VersionMajor>1</VersionMajor>
+			<VersionMinor>0</VersionMinor>
+			<WrapperTool>tlbimp</WrapperTool>
+			<Lcid>0</Lcid>
+			<Isolated>false</Isolated>
+		</COMReference>
+		<COMReference Include="NATUPNPLib.dll">
+			<Guid>1c565858-f302-471e-b409-f180aa4abec6</Guid>
+			<VersionMajor>1</VersionMajor>
+			<VersionMinor>0</VersionMinor>
+			<WrapperTool>tlbimp</WrapperTool>
+			<Lcid>0</Lcid>
+			<Isolated>false</Isolated>
+		</COMReference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net40'">
+		<Reference Include="System.Configuration" />
+		<COMReference Include="NetFwTypeLib.dll">
+			<Guid>58fbcf7c-e7a9-467c-80b3-fc65e8fcca08</Guid>
+			<VersionMajor>1</VersionMajor>
+			<VersionMinor>0</VersionMinor>
+			<WrapperTool>tlbimp</WrapperTool>
+			<Lcid>0</Lcid>
+			<Isolated>false</Isolated>
+		</COMReference>
+		<COMReference Include="NATUPNPLib.dll">
+			<Guid>1c565858-f302-471e-b409-f180aa4abec6</Guid>
+			<VersionMajor>1</VersionMajor>
+			<VersionMinor>0</VersionMinor>
+			<WrapperTool>tlbimp</WrapperTool>
+			<Lcid>0</Lcid>
+			<Isolated>false</Isolated>
+		</COMReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.1" Condition="'$(TargetFramework)' != 'net40'" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Remove="Forge.Net.Synapse.xml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Forge.Configuration\Forge.Configuration.csproj" />
+	  <ProjectReference Include="..\Forge.Invoker\Forge.Invoker.csproj" />
+	  <ProjectReference Include="..\Forge.Legacy\Forge.Legacy.csproj" />
+	  <ProjectReference Include="..\Forge.Security\Forge.Security.csproj" />
+	  <ProjectReference Include="..\Forge.Threading\Forge.Threading.csproj" />
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
+	</Target>
+
 </Project>

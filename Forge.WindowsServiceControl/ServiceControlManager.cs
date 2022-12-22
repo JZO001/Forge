@@ -4,6 +4,7 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
+using Forge.Legacy;
 using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
@@ -16,16 +17,16 @@ namespace Forge.WindowsServiceControl
     struct SERVICE_FAILURE_ACTIONS
     {
         [MarshalAs(UnmanagedType.U4)]
-        public UInt32 dwResetPeriod;
+        public uint dwResetPeriod;
 
         [MarshalAs(UnmanagedType.LPStr)]
-        public String lpRebootMsg;
+        public string lpRebootMsg;
 
         [MarshalAs(UnmanagedType.LPStr)]
-        public String lpCommand;
+        public string lpCommand;
 
         [MarshalAs(UnmanagedType.U4)]
-        public UInt32 cActions;
+        public uint cActions;
 
         public IntPtr lpsaActions;
     }
@@ -36,7 +37,7 @@ namespace Forge.WindowsServiceControl
         public ServiceActionTypeEnum Type;
 
         [MarshalAs(UnmanagedType.U4)]
-        public UInt32 Delay;
+        public uint Delay;
     }
 
     #endregion
@@ -259,7 +260,7 @@ namespace Forge.WindowsServiceControl
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1806:DoNotIgnoreMethodResults", MessageId = "Forge.WindowsServiceControl.NativeMethods.CloseServiceHandle(System.IntPtr)")]
         protected virtual void Dispose(bool disposing)
         {
-            if (!this.mDisposed)
+            if (!mDisposed)
             {
                 // Unmanaged resources always need disposing
                 if (mSCManager != IntPtr.Zero)

@@ -12,6 +12,8 @@ using System.Diagnostics;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Forge.Legacy;
+using Forge.Shared;
 using NATUPNPLib;
 
 namespace Forge.Net.Synapse.NATUPnP

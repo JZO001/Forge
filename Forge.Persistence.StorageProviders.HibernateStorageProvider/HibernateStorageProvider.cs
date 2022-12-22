@@ -5,8 +5,10 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Forge.Collections;
+using Forge.Configuration;
 using Forge.Configuration.Shared;
 using Forge.DatabaseManagement;
+using Forge.Formatters;
 using Forge.ORM.NHibernateExtension;
 using Forge.ORM.NHibernateExtension.Criterias;
 using Forge.ORM.NHibernateExtension.Model.Distributed;
@@ -15,6 +17,7 @@ using Forge.Persistence.Serialization;
 using Forge.Persistence.StorageProviders.ConfigSection;
 using Forge.Persistence.StorageProviders.HibernateStorageProvider.EntityModel;
 using Forge.Reflection;
+using Forge.Shared;
 using NHibernate;
 using NHibernate.Mapping.Attributes;
 using NHibernate.Tool.hbm2ddl;
@@ -34,17 +37,19 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
 
         private static readonly bool LOG_QUERY = false;
 
-        private static readonly long SYSTEM_ID;
+        private static readonly Dictionary<string, ISessionFactory> mSessionFactoriesForStorages = new Dictionary<string, ISessionFactory>();
 
-        private static readonly Dictionary<String, ISessionFactory> mSessionFactoriesForStorages = new Dictionary<String, ISessionFactory>();
+        private static long DEFAULT_SYSTEM_ID;
 
-        private static readonly ISessionFactory DEFAULT_SESSION_FACTORY = null;
+        private static ISessionFactory DEFAULT_SESSION_FACTORY = null;
 
         private Mutex mAppIdMutex = null;
 
         private ItemTable mAllocationTable = null;
 
         private IDataFormatter<ItemTable> mTableFormatter = new BinarySerializerFormatter<ItemTable>(BinarySerializerBehaviorEnum.DoNotThrowExceptionOnMissingField, TypeLookupModeEnum.AllowAll, true);
+
+        private long mSystemId;
 
         private long mDeviceId;
 
@@ -59,12 +64,12 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
         /// </summary>
         static HibernateStorageProvider()
         {
-            SYSTEM_ID = HashGeneratorHelper.GetSHA256BasedValue(ApplicationHelper.ApplicationId);
+            DEFAULT_SYSTEM_ID = HashGeneratorHelper.GetSHA256BasedValue(ApplicationHelper.ApplicationId);
 
             CategoryPropertyItem configItem = ConfigurationAccessHelper.GetCategoryPropertyByPath(StorageConfiguration.Settings.CategoryPropertyItems, "NHibernateProvider/NHibernateStorages/Default");
             if (configItem != null)
             {
-                DEFAULT_SESSION_FACTORY = CreateEntityManagerFactory(configItem);
+                DEFAULT_SESSION_FACTORY = CreateEntityManagerFactory(configItem, DEFAULT_SYSTEM_ID);
             }
 
             configItem = ConfigurationAccessHelper.GetCategoryPropertyByPath(StorageConfiguration.Settings.CategoryPropertyItems, "NHibernateProvider/NHibernateStorages/StorageSpecified");
@@ -72,7 +77,7 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
             {
                 foreach (CategoryPropertyItem pi in configItem)
                 {
-                    mSessionFactoriesForStorages.Add(configItem.Id, CreateEntityManagerFactory(configItem));
+                    mSessionFactoriesForStorages.Add(configItem.Id, CreateEntityManagerFactory(configItem, DEFAULT_SYSTEM_ID));
                 }
             }
         }
@@ -120,10 +125,10 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
                 ThrowHelper.ThrowArgumentNullException("dataFormatter");
             }
 
-            this.mDataFormatter = dataFormatter;
-            this.mCompressContent = compressContent;
+            mDataFormatter = dataFormatter;
+            mCompressContent = compressContent;
 
-            Initialize();
+            Initialize(StorageConfiguration.Settings.CategoryPropertyItems);
         }
 
         /// <summary>
@@ -131,10 +136,53 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
         /// </summary>
         /// <param name="storageId">The storage id.</param>
         /// <param name="configItem">The config item.</param>
-        public HibernateStorageProvider(string storageId, CategoryPropertyItem configItem)
+        public HibernateStorageProvider(string storageId, IPropertyItem configItem)
             : base(storageId, configItem)
         {
-            Initialize();
+            long systemId = 1;
+            if (!ConfigurationAccessHelper.ParseLongValue(configItem, "SystemId", 1, long.MaxValue, ref systemId))
+            {
+                systemId = DEFAULT_SYSTEM_ID;
+            }
+            mSystemId = systemId;
+
+            bool compressContent = false;
+            ConfigurationAccessHelper.ParseBooleanValue(configItem, "CompressContent", ref compressContent);
+
+            lock (mSessionFactoriesForStorages)
+            {
+                if (!mSessionFactoriesForStorages.ContainsKey(configItem.Id))
+                {
+                    mSessionFactoriesForStorages.Add(configItem.Id, CreateEntityManagerFactory(configItem, systemId));
+                }
+            }
+
+            Initialize(StorageConfiguration.Settings.CategoryPropertyItems);
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="HibernateStorageProvider{T}" /> class.</summary>
+        /// <param name="propertyItem">The property item.</param>
+        public HibernateStorageProvider(IPropertyItem propertyItem) : base(propertyItem)
+        {
+            long systemId = 1;
+            if (!ConfigurationAccessHelper.ParseLongValue(propertyItem, "SystemId", 1, long.MaxValue, ref systemId))
+            {
+                systemId = DEFAULT_SYSTEM_ID;
+            }
+            mSystemId = systemId;
+
+            bool compressContent = false;
+            ConfigurationAccessHelper.ParseBooleanValue(propertyItem, "CompressContent", ref compressContent);
+
+            lock (mSessionFactoriesForStorages)
+            {
+                if (!mSessionFactoriesForStorages.ContainsKey(propertyItem.Id))
+                {
+                    mSessionFactoriesForStorages.Add(propertyItem.Id, CreateEntityManagerFactory(propertyItem, systemId));
+                }
+            }
+
+            Initialize(propertyItem);
         }
 
         #endregion
@@ -149,7 +197,7 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
         public override void Add(T o)
         {
             DoDisposeCheck();
-            EntityId entityId = new EntityId(SYSTEM_ID, mDeviceId, GetNextId());
+            EntityId entityId = new EntityId(mSystemId, mDeviceId, GetNextId());
             mAllocationTable.ItemIds.Add(entityId);
 
             using (ISession session = GetSession())
@@ -166,7 +214,7 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
                 catch (Exception ex)
                 {
                     mAllocationTable.ItemIds.RemoveAt(mAllocationTable.ItemIds.Count - 1);
-                    throw new PersistenceException(String.Format("Unable to add object. Id: {0}", entityId), ex);
+                    throw new PersistenceException(string.Format("Unable to add object. Id: {0}", entityId), ex);
                 }
             }
 
@@ -195,7 +243,7 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
                     {
                         foreach (T item in o)
                         {
-                            EntityId entityId = new EntityId(SYSTEM_ID, mDeviceId, GetNextId());
+                            EntityId entityId = new EntityId(mSystemId, mDeviceId, GetNextId());
                             mAllocationTable.ItemIds.Add(entityId);
                             ids.Add(entityId);
                             SaveObject(entityId, item, session);
@@ -235,7 +283,7 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException("index");
             }
-            EntityId entityId = new EntityId(SYSTEM_ID, mDeviceId, GetNextId());
+            EntityId entityId = new EntityId(mSystemId, mDeviceId, GetNextId());
             mAllocationTable.ItemIds.Insert(index, entityId);
 
             using (ISession session = GetSession())
@@ -252,7 +300,7 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
                 catch (Exception ex)
                 {
                     mAllocationTable.ItemIds.RemoveAt(index);
-                    throw new PersistenceException(String.Format("Unable to add object. Id: {0}", entityId), ex);
+                    throw new PersistenceException(string.Format("Unable to add object. Id: {0}", entityId), ex);
                 }
             }
 
@@ -317,7 +365,7 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
                 }
                 catch (Exception ex)
                 {
-                    throw new PersistenceException(String.Format("Unable to remove object. Id: {0}", entityId), ex);
+                    throw new PersistenceException(string.Format("Unable to remove object. Id: {0}", entityId), ex);
                 }
             }
 
@@ -417,6 +465,22 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
 
         #region Public properties
 
+        /// <summary>Gets or sets the default system identifier.</summary>
+        /// <value>The default system identifier.</value>
+        public static long DefaultSystemId
+        {
+            get { return DEFAULT_SYSTEM_ID; }
+            set { DEFAULT_SYSTEM_ID = value; }
+        }
+
+        /// <summary>Gets or sets the default session factory.</summary>
+        /// <value>The default session factory.</value>
+        public static ISessionFactory DefaultSessionFactory
+        {
+            get { return DEFAULT_SESSION_FACTORY; }
+            set { DEFAULT_SESSION_FACTORY = value; }
+        }
+
         /// <summary>
         /// Gets a value indicating whether [compress content].
         /// </summary>
@@ -433,18 +497,18 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
 
         #region Private method(s)
 
-        private static ISessionFactory CreateEntityManagerFactory(CategoryPropertyItem configItem)
+        private static ISessionFactory CreateEntityManagerFactory(IPropertyItem configItem, long systemId)
         {
             ISessionFactory sessionFactory = null;
             ISession session = null;
             ITransaction transaction = null;
             try
             {
-                sessionFactory = CreateEntityManagerFactory(SchemaFactoryModeEnum.Validate, configItem);
+                sessionFactory = CreateEntityManagerFactory(SchemaFactoryModeEnum.Validate, configItem, systemId);
                 session = sessionFactory.OpenSession();
                 using (transaction = session.BeginTransaction())
                 {
-                    session.Flush(); // működés ellenőrzése
+                    session.Flush(); // check if it is working properly
                     transaction.Rollback();
                 }
             }
@@ -462,11 +526,11 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
                 }
                 try
                 {
-                    sessionFactory = CreateEntityManagerFactory(SchemaFactoryModeEnum.Update, configItem);
+                    sessionFactory = CreateEntityManagerFactory(SchemaFactoryModeEnum.Update, configItem, systemId);
                     session = sessionFactory.OpenSession();
                     using (transaction = session.BeginTransaction())
                     {
-                        session.Flush(); // működés ellenőrzése
+                        session.Flush(); // check if it is working properly
                         transaction.Rollback();
                     }
                 }
@@ -484,11 +548,11 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
                     }
                     try
                     {
-                        sessionFactory = CreateEntityManagerFactory(SchemaFactoryModeEnum.Create, configItem);
+                        sessionFactory = CreateEntityManagerFactory(SchemaFactoryModeEnum.Create, configItem, systemId);
                         session = sessionFactory.OpenSession();
                         using (transaction = session.BeginTransaction())
                         {
-                            session.Flush(); // működés ellenőrzése
+                            session.Flush(); // check if it is working properly
                             transaction.Rollback();
                         }
                     }
@@ -518,15 +582,19 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
             return sessionFactory;
         }
 
-        private static ISessionFactory CreateEntityManagerFactory(SchemaFactoryModeEnum mode, CategoryPropertyItem configItem)
+        private static ISessionFactory CreateEntityManagerFactory(SchemaFactoryModeEnum mode, IPropertyItem configItem, long systemId)
         {
-            CategoryPropertyItem item = ConfigurationAccessHelper.GetCategoryPropertyByPath(configItem.PropertyItems, "DatabaseManager");
-            if (item != null && !string.IsNullOrEmpty(item.EntryValue))
+            string databaseManagerTypeStr = string.Empty;
+
+            IPropertyItem dbItem = ConfigurationAccessHelper.GetPropertyByPath(configItem, "DatabaseManager");
+            if (dbItem != null) databaseManagerTypeStr = dbItem.Value;
+
+            if (!string.IsNullOrWhiteSpace(databaseManagerTypeStr))
             {
                 Type databaseManagerType = null;
                 try
                 {
-                    databaseManagerType = TypeHelper.GetTypeFromString(item.EntryValue);
+                    databaseManagerType = TypeHelper.GetTypeFromString(databaseManagerTypeStr);
                 }
                 catch (Exception ex)
                 {
@@ -537,13 +605,13 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
                 {
                     using (IDatabaseManager manager = (IDatabaseManager)databaseManagerType.GetConstructor(Type.EmptyTypes).Invoke(null))
                     {
-                        manager.Initialize(item);
+                        manager.Initialize(dbItem);
                         Dictionary<string, string> settings = new Dictionary<string, string>();
-                        foreach (CategoryPropertyItem pi in ConfigurationAccessHelper.GetCategoryPropertyByPath(configItem.PropertyItems, "NHibernateSettings"))
+                        foreach (IPropertyItem pi in ConfigurationAccessHelper.GetPropertyByPath(configItem, "NHibernateSettings").Items.Values)
                         {
-                            settings[pi.Id] = pi.EntryValue;
+                            settings[pi.Id] = pi.Value;
                         }
-                        manager.EnsureDatabaseIntegrity(SYSTEM_ID, settings, mode);
+                        manager.EnsureDatabaseIntegrity(systemId, settings, mode);
                     }
                 }
 
@@ -554,11 +622,11 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
             NHibernate.Cfg.Configuration cfg = new NHibernate.Cfg.Configuration();
             cfg.Properties.Clear();
 
-            foreach (CategoryPropertyItem pi in ConfigurationAccessHelper.GetCategoryPropertyByPath(configItem.PropertyItems, "NHibernateSettings"))
+            foreach (IPropertyItem pi in ConfigurationAccessHelper.GetPropertyByPath(configItem, "NHibernateSettings").Items.Values)
             {
                 if (!hbm2ddl.Equals(pi.Id.ToLower()))
                 {
-                    cfg.Properties[pi.Id] = pi.EntryValue;
+                    cfg.Properties[pi.Id] = pi.Value;
                 }
             }
 
@@ -599,11 +667,19 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
             return cfg.BuildSessionFactory();
         }
 
-        private void Initialize()
+        private void Initialize(IPropertyItem categoryPropertyItems)
         {
-            string appId = ApplicationHelper.ApplicationId;
             bool mutexResult = false;
-            string typeName = String.Format("HibernateStorageProvider_{0}_{1}_{2}", appId, StorageId, typeof(T).AssemblyQualifiedName.GetHashCode().ToString());
+
+            string typeName = string.Empty;
+
+#if NET40
+            string appId = ApplicationHelper.ApplicationId;
+            typeName = string.Format("HibernateStorageProvider_{0}_{1}_{2}", appId, StorageId, typeof(T).AssemblyQualifiedName.GetHashCode().ToString());
+#else
+            typeName = string.Format("HibernateStorageProvider_{0}_{1}", StorageId, typeof(T).AssemblyQualifiedName.GetHashCode().ToString());
+#endif
+
             if (typeName.Length > 255)
             {
                 // limit the length of the mutex name to avoid exception
@@ -615,25 +691,32 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
                 throw new InitializationException("An other application with the specified application identifier is running.");
             }
 
-            this.mDeviceId = HashGeneratorHelper.GetSHA256BasedValue(StorageId);
-            CategoryPropertyItem pi = ConfigurationAccessHelper.GetCategoryPropertyByPath(StorageConfiguration.Settings.CategoryPropertyItems, String.Format("NHibernateProvider/KnownStorageIdsToReset/{0}", StorageId));
+            mDeviceId = HashGeneratorHelper.GetSHA256BasedValue(StorageId);
+
+            IPropertyItem pi = ConfigurationAccessHelper.GetPropertyByPath(categoryPropertyItems, string.Format("NHibernateProvider/KnownStorageIdsToReset/{0}", StorageId));
             if (pi != null)
             {
                 Reset();
             }
+
             LoadAllocationTable();
         }
 
         private ISession GetSession()
         {
             ISession session = null;
-            if (mSessionFactoriesForStorages.ContainsKey(StorageId))
+            bool hasKey = false;
+            lock (mSessionFactoriesForStorages)
+            {
+                hasKey = mSessionFactoriesForStorages.ContainsKey(StorageId);
+            }
+            if (hasKey)
             {
                 session = mSessionFactoriesForStorages[StorageId].OpenSession();
             }
             else if (DEFAULT_SESSION_FACTORY == null)
             {
-                throw new PersistenceException(String.Format("Unable to find hibernate database configuration for this storage: {0}", StorageId));
+                throw new PersistenceException(string.Format("Unable to find hibernate database configuration for this storage: {0}", StorageId));
             }
             else
             {
@@ -656,14 +739,14 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
                         IList<PersistentStorageAllocationTable> resultList = QueryHelper.Query<PersistentStorageAllocationTable>(session, query, LOG_QUERY);
                         if (resultList.Count == 0)
                         {
-                            this.mAllocationTable = new ItemTable();
+                            mAllocationTable = new ItemTable();
                         }
                         else
                         {
                             using (MemoryStream ms = new MemoryStream(resultList[0].ItemAllocationTableData))
                             {
                                 ms.Position = 0;
-                                this.mAllocationTable = SerializationHelper.Read<ItemTable>(ms, mTableFormatter, false);
+                                mAllocationTable = SerializationHelper.Read<ItemTable>(ms, mTableFormatter, false);
                             }
                         }
                     }
@@ -686,7 +769,7 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
                 if (resultList.Count == 0)
                 {
                     table = new PersistentStorageAllocationTable();
-                    table.Id = new EntityId(SYSTEM_ID, mDeviceId, 0L);
+                    table.Id = new EntityId(mSystemId, mDeviceId, 0L);
                     table.Version = new EntityVersion(mDeviceId);
                 }
                 else
@@ -710,7 +793,7 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
         private Criteria GetAllocationTableCriteria()
         {
             return new GroupCriteria(
-                    new ArithmeticCriteria("id.systemId", SYSTEM_ID),
+                    new ArithmeticCriteria("id.systemId", mSystemId),
                     new ArithmeticCriteria("id.deviceId", mDeviceId),
                     new ArithmeticCriteria("id.id", 0L),
                     new ArithmeticCriteria("deleted", false));
@@ -734,7 +817,7 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
                         IList<PersistentStorageItem> resultList = QueryHelper.Query<PersistentStorageItem>(session, query, LOG_QUERY);
                         if (resultList.Count == 0)
                         {
-                            throw new Exception(String.Format("Unable to read object. Id: {0}", entityId));
+                            throw new Exception(string.Format("Unable to read object. Id: {0}", entityId));
                         }
                         else
                         {
@@ -751,7 +834,7 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
                 }
                 catch (Exception ex)
                 {
-                    throw new PersistenceException(String.Format("Unable to read object. Id: {0}", entityId), ex);
+                    throw new PersistenceException(string.Format("Unable to read object. Id: {0}", entityId), ex);
                 }
             }
 
@@ -795,7 +878,7 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
             }
             catch (Exception ex)
             {
-                throw new PersistenceException(String.Format("Unable to save object. Id: {0}", entityId), ex);
+                throw new PersistenceException(string.Format("Unable to save object. Id: {0}", entityId), ex);
             }
         }
 
@@ -810,7 +893,7 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
             PersistentStorageItem item = null;
             if (resultList.Count == 0)
             {
-                throw new Exception(String.Format("Unable to remove object. Id: {0}", entityId));
+                throw new Exception(string.Format("Unable to remove object. Id: {0}", entityId));
             }
             else
             {
@@ -822,7 +905,7 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
         [MethodImpl(MethodImplOptions.Synchronized)]
         private long GetNextId()
         {
-            if (Int64.MaxValue == mAllocationTable.ItemUid)
+            if (long.MaxValue == mAllocationTable.ItemUid)
             {
                 mAllocationTable.ItemUid = 0;
             }
@@ -850,7 +933,7 @@ namespace Forge.Persistence.StorageProviders.HibernateStorageProvider
                         {
                             QueryParams<PersistentStorageItem> query = new QueryParams<PersistentStorageItem>(
                                     new GroupCriteria(
-                                    new ArithmeticCriteria("id.systemId", SYSTEM_ID),
+                                    new ArithmeticCriteria("id.systemId", mSystemId),
                                     new ArithmeticCriteria("id.deviceId", mDeviceId)));
                             IList<PersistentStorageItem> resultList = QueryHelper.Query<PersistentStorageItem>(session, query, LOG_QUERY);
                             if (resultList.Count > 0)

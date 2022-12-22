@@ -22,7 +22,7 @@ namespace Forge.Net.Remoting
         /// <param name="state">The state.</param>
         public ServiceInitializationStateEventArgs(ServiceInitializationStateEnum state)
         {
-            this.State = state;
+            State = state;
         }
 
         /// <summary>

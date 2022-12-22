@@ -11,23 +11,30 @@ using System.Net;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
 using Forge.Collections;
-using Forge.Logging;
+using Forge.Legacy;
+using Forge.Logging.Abstraction;
 using Forge.Net.Synapse;
 using Forge.Net.Synapse.NetworkServices;
 using Forge.Net.TerraGraf.Contexts;
 using Forge.Net.TerraGraf.Messaging;
 using Forge.Net.TerraGraf.NetworkPeers;
+using Forge.Shared;
+using Forge.Threading;
+using Forge.Threading.Tasking;
 
 namespace Forge.Net.TerraGraf
 {
 
+#if NET40
     internal delegate ISocket SocketAcceptDelegate();
     internal delegate void SocketConnectDelegate(EndPoint endPoint);
     internal delegate int SocketReceiveDelegate(byte[] buffer, int offset, int size);
     internal delegate int SocketReceiveFromDelegate(byte[] buffer, int offset, int size, ref EndPoint remoteEp);
     internal delegate int SocketSendDelegate(byte[] buffer, int offset, int size);
     internal delegate int SocketSendToDelegate(byte[] buffer, int offset, int size, EndPoint remoteEp);
+#endif
 
     /// <summary>
     /// Socket implementation for TerraGraf
@@ -37,7 +44,7 @@ namespace Forge.Net.TerraGraf
 
         #region Field(s)
 
-        private static readonly ILog LOGGER = LogManager.GetLogger(typeof(Socket));
+        private static readonly ILog LOGGER = LogManager.GetLogger<Socket>();
 
         private static Semaphore mSemaphoreConnection = new Semaphore(NetworkManager.Instance.InternalConfiguration.Settings.DefaultConcurrentSocketConnectionAttempts,
             NetworkManager.Instance.InternalConfiguration.Settings.DefaultConcurrentSocketConnectionAttempts);
@@ -53,44 +60,60 @@ namespace Forge.Net.TerraGraf
         private static long mGlobalSocketId = 0;
         private long mLocalSocketId = Interlocked.Increment(ref mGlobalSocketId);
 
-        private long mRemoteSocketId = -1; // TCP üzeneteknél
+        private long mRemoteSocketId = -1; // at TCP messages
 
         private ulong mRemotePacketOrderNumber = 0;
 
         private ulong mLocalPacketOrderNumber = 0;
 
-        private int mReceiveBufferSize = 0; // constructor-ban beállítva
+        private int mReceiveBufferSize = 0; // set in constructor
 
-        private int mSendBufferSize = 0; // constructor-ban beállítva
+        private int mSendBufferSize = 0; // set in constructor
 
-        private int mReceiveTimeout = 0; // constructor-ban beállítva
+        private int mReceiveTimeout = 0; // set in constructor
 
-        private int mSendTimeout = 0; // constructor-ban beállítva
+        private int mSendTimeout = 0; // set in constructor
 
+#if NET40
+        private SocketAcceptDelegate mAcceptDelegateOld = null;
+        private SocketConnectDelegate mConnectDelegateOld = null;
+        private SocketReceiveDelegate mReceiveDelegateOld = null;
+        private SocketReceiveFromDelegate mReceiveFromDelegateOld = null;
+        private SocketSendDelegate mSendDelegateOld = null;
+        private SocketSendToDelegate mSendToDelegateOld = null;
+#endif
+
+        private System.Func<ISocket> mAcceptDelegate = null;
         private int mAsyncActiveAcceptCount = 0;
         private AutoResetEvent mAsyncActiveAcceptEvent = null;
+        private readonly object LOCK_ACCEPT = new object();
 
+        private System.Action<EndPoint> mEndpointConnectDelegate = null;
+        private System.Action<string, int> mHostIpConnectDelegate = null;
         private int mAsyncActiveConnectCount = 0;
         private AutoResetEvent mAsyncActiveConnectEvent = null;
+        private readonly object LOCK_CONNECT = new object();
 
+        private System.Func<byte[], int, int, int> mReceiveDelegate = null;
         private int mAsyncActiveReceiveCount = 0;
         private AutoResetEvent mAsyncActiveReceiveEvent = null;
+        private readonly object LOCK_RECEIVE = new object();
 
+        private System.Func<byte[], int, int, EndPoint, int> mReceiveFromDelegate = null;
         private int mAsyncActiveReceiveFromCount = 0;
         private AutoResetEvent mAsyncActiveReceiveFromEvent = null;
+        private readonly object LOCK_RECEIVE_FROM = new object();
+        private EndPoint mReceiveFromEndpoint = null;
 
+        private System.Func<byte[], int, int, int> mSendDelegate = null;
         private int mAsyncActiveSendCount = 0;
         private AutoResetEvent mAsyncActiveSendEvent = null;
+        private readonly object LOCK_SEND = new object();
 
+        private System.Func<byte[], int, int, EndPoint, int> mSendToDelegate = null;
         private int mAsyncActiveSendToCount = 0;
         private AutoResetEvent mAsyncActiveSendToEvent = null;
-
-        private SocketAcceptDelegate mAcceptDelegate = null;
-        private SocketConnectDelegate mConnectDelegate = null;
-        private SocketReceiveDelegate mReceiveDelegate = null;
-        private SocketReceiveFromDelegate mReceiveFromDelegate = null;
-        private SocketSendDelegate mSendDelegate = null;
-        private SocketSendToDelegate mSendToDelegate = null;
+        private readonly object LOCK_SENDTO = new object();
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private ProtocolType mProtocolType = ProtocolType.Tcp;
@@ -146,18 +169,6 @@ namespace Forge.Net.TerraGraf
 
         private readonly object mListenLock = new object();
 
-        private readonly object LOCK_BEGIN_ACCEPT = new object();
-
-        private readonly object LOCK_BEGIN_CONNECT = new object();
-
-        private readonly object LOCK_BEGIN_RECEIVE = new object();
-
-        private readonly object LOCK_BEGIN_RECEIVEFROM = new object();
-
-        private readonly object LOCK_BEGIN_SEND = new object();
-
-        private readonly object LOCK_BEGIN_SENDTO = new object();
-
         #endregion
 
         #region Constructor(s)
@@ -175,12 +186,12 @@ namespace Forge.Net.TerraGraf
             {
                 ThrowHelper.ThrowArgumentException("Unsupported protocol and socket type.", "protocolType");
             }
-            this.mProtocolType = protocolType;
-            this.mSocketType = socketType;
-            this.mReceiveBufferSize = NetworkManager.Instance.InternalConfiguration.Settings.DefaultReceiveBufferSize;
-            this.mSendBufferSize = NetworkManager.Instance.InternalConfiguration.Settings.DefaultSendBufferSize;
-            this.mReceiveTimeout = NetworkManager.Instance.InternalConfiguration.Settings.DefaultReceiveTimeoutInMS;
-            this.mSendTimeout = NetworkManager.Instance.InternalConfiguration.Settings.DefaultSendTimeoutInMS;
+            mProtocolType = protocolType;
+            mSocketType = socketType;
+            mReceiveBufferSize = NetworkManager.Instance.InternalConfiguration.Settings.DefaultReceiveBufferSize;
+            mSendBufferSize = NetworkManager.Instance.InternalConfiguration.Settings.DefaultSendBufferSize;
+            mReceiveTimeout = NetworkManager.Instance.InternalConfiguration.Settings.DefaultReceiveTimeoutInMS;
+            mSendTimeout = NetworkManager.Instance.InternalConfiguration.Settings.DefaultSendTimeoutInMS;
         }
 
         /// <summary>
@@ -196,6 +207,8 @@ namespace Forge.Net.TerraGraf
 
         #region Public method(s)
 
+#if NET40
+
         /// <summary>
         /// Begins the accept.
         /// </summary>
@@ -207,154 +220,23 @@ namespace Forge.Net.TerraGraf
         public IAsyncResult BeginAccept(AsyncCallback callback, object state)
         {
             DoDisposeCheck();
-            DoListenNotCheck(); // figyelnie kell
+            DoListenNotCheck(); // must listen on
 
             Interlocked.Increment(ref mAsyncActiveAcceptCount);
-            SocketAcceptDelegate d = new SocketAcceptDelegate(this.Accept);
-            if (this.mAsyncActiveAcceptEvent == null)
+            SocketAcceptDelegate d = new SocketAcceptDelegate(Accept);
+            if (mAsyncActiveAcceptEvent == null)
             {
-                lock (LOCK_BEGIN_ACCEPT)
+                lock (LOCK_ACCEPT)
                 {
-                    if (this.mAsyncActiveAcceptEvent == null)
+                    if (mAsyncActiveAcceptEvent == null)
                     {
-                        this.mAsyncActiveAcceptEvent = new AutoResetEvent(true);
+                        mAsyncActiveAcceptEvent = new AutoResetEvent(true);
                     }
                 }
             }
-            this.mAsyncActiveAcceptEvent.WaitOne();
-            this.mAcceptDelegate = d;
+            mAsyncActiveAcceptEvent.WaitOne();
+            mAcceptDelegateOld = d;
             return d.BeginInvoke(callback, state);
-        }
-
-        /// <summary>
-        /// Accepts a new incoming connection.
-        /// </summary>
-        /// <returns>
-        /// Socket implementation
-        /// </returns>
-        /// <exception cref="System.Net.Sockets.SocketException"></exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        public ISocket Accept()
-        {
-            DoDisposeCheck();
-            DoBindCheck(); // legyen bindolva
-            DoListenNotCheck(); // figyelnie kell
-            DoShutdownReceiveCheck();
-            DoShutdownSendCheck();
-
-            Socket result = null;
-
-            while (result == null)
-            {
-                if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), start accept, waiting for an incoming connection.", this.mLocalSocketId.ToString()));
-                mSemaphoreListener.WaitOne(); // egyszerre csak egy szál lesz itt max
-                DoShutdownReceiveCheck();
-                if (mClosedLevel > 0)
-                {
-                    throw new SocketException((int)SocketError.Shutdown);
-                }
-                lock (mDisposeLock)
-                {
-                    DoShutdownReceiveCheck();
-                    if (mClosedLevel > 0)
-                    {
-                        throw new SocketException((int)SocketError.Shutdown);
-                    }
-                    lock (mListenerQueue)
-                    {
-                        IncomingConnection c = mListenerQueue.Peek();
-                        if (!c.Timedout)
-                        {
-                            c.Accepted = true;
-                            mListenerQueue.Dequeue();
-                            if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), accepting incoming connection. {1}", this.mLocalSocketId.ToString(), c.Message.ToString()));
-                            if (ExclusiveAddressUse)
-                            {
-                                // meglévő port használata
-                                mListening = false;
-                                SocketOpenResponseMessage response = null;
-                                while (mListenerQueue.Count > 0)
-                                {
-                                    // akik időközben a queue-ba kerültek, azokat "lerázom"
-                                    IncomingConnection trash = mListenerQueue.Dequeue();
-                                    response = new SocketOpenResponseMessage(NetworkManager.Instance.InternalLocalhost.Id,
-                                        trash.Message.SenderId, -1, trash.Message.SenderPort, -1, trash.Message.SenderSocketId);
-                                    if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), socket connection declined, socket port used exclusivelly, sending response to the client. MessageId: {1}", this.mLocalSocketId.ToString(), trash.Message.MessageId.ToString()));
-                                    NetworkManager.Instance.InternalSendMessage(response, null);
-                                }
-                                mRemoteSocketId = c.Message.SenderSocketId;
-                                mRemoteEndPointInternal = new AddressEndPoint(c.Message.SenderId, c.Message.SenderPort);
-                                mRemoteEndPoint = mRemoteEndPointInternal;
-                                mRemoteNetworkPeer = (NetworkPeerRemote)NetworkPeerContext.GetNetworkPeerById(c.Message.SenderId);
-                                //mReceivedMessages = new ListSpecialized<ReceivedMessage>();
-                                //mReceiveEvent = new AutoResetEvent(false);
-
-                                NetworkManager.Instance.NetworkPeerUnaccessible += new EventHandler<NetworkPeerChangedEventArgs>(NetworkPeerUnaccessibleHandler);
-                                lock (mServerSockets)
-                                {
-                                    mServerSockets.Remove(this); // már nem vagyok tovább server socket
-                                }
-
-                                // válaszüzenet küldése
-                                if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), socket connection established, sending response to the client. MessageId: {1}", this.mLocalSocketId.ToString(), c.Message.MessageId.ToString()));
-                                response = new SocketOpenResponseMessage(NetworkManager.Instance.InternalLocalhost.Id,
-                                    c.Message.SenderId, mLocalEndPointInternal.Port, c.Message.SenderPort, mLocalSocketId, c.Message.SenderSocketId);
-                                NetworkManager.Instance.InternalSendMessage(response, null);
-                                result = this;
-                            }
-                            else
-                            {
-                                // átirányítás másik portra
-                                result = new Socket(System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
-                                try
-                                {
-                                    result.Bind(new AddressEndPoint(NetworkManager.Instance.InternalLocalhost.Id, 0));
-                                    result.LocalEndPoint = mLocalEndPointInternal;
-                                }
-                                catch (Exception)
-                                {
-                                    // ha ez kivételt dob, akkor nincs szabad belső port
-                                    if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), no internal port available for incoming connections. MessageId: {1}", this.mLocalSocketId.ToString(), c.Message.MessageId.ToString()));
-                                    result = null;
-                                }
-
-                                if (result == null)
-                                {
-                                    // küldöm a válaszüzenetet, miszerint sikertelen a csatlakozás
-                                    SocketOpenResponseMessage response = new SocketOpenResponseMessage(NetworkManager.Instance.InternalLocalhost.Id,
-                                        c.Message.SenderId, -1, c.Message.SenderPort, -1, c.Message.SenderSocketId);
-                                    NetworkManager.Instance.InternalSendMessage(response, null);
-                                }
-                                else
-                                {
-                                    // sikeres kapcsolódás
-                                    if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), socket connection established, sending response to the client. MessageId: {1}", this.mLocalSocketId.ToString(), c.Message.MessageId.ToString()));
-                                    result.mRemoteSocketId = c.Message.SenderSocketId;
-                                    result.mRemoteEndPointInternal = new AddressEndPoint(c.Message.SenderId, c.Message.SenderPort);
-                                    result.mRemoteEndPoint = result.mRemoteEndPointInternal;
-                                    result.mRemoteNetworkPeer = NetworkManager.Instance.InternalLocalhost.Id.Equals(c.Message.SenderId) ? NetworkManager.Instance.InternalLocalhost : (NetworkPeerRemote)NetworkPeerContext.GetNetworkPeerById(c.Message.SenderId);
-                                    //result.mReceivedMessages = new ListSpecialized<ReceivedMessage>();
-                                    //result.mReceiveEvent = new AutoResetEvent(false);
-                                    NetworkManager.Instance.NetworkPeerUnaccessible += new EventHandler<NetworkPeerChangedEventArgs>(result.NetworkPeerUnaccessibleHandler);
-                                    SocketOpenResponseMessage response = new SocketOpenResponseMessage(NetworkManager.Instance.InternalLocalhost.Id,
-                                        c.Message.SenderId, result.mLocalEndPointInternal.Port, c.Message.SenderPort, result.mLocalSocketId, c.Message.SenderSocketId);
-                                    NetworkManager.Instance.InternalSendMessage(response, null);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), this connection request has timed out. MessageId: {1}", this.mLocalSocketId.ToString(), c.Message.MessageId.ToString()));
-                        }
-                    }
-                }
-            }
-
-#pragma warning disable CS1690 // Accessing a member on a field of a marshal-by-reference class may cause a runtime exception
-            if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), accept finished. Result socket id: {1}", this.mLocalSocketId.ToString(), result.mLocalSocketId.ToString()));
-#pragma warning restore CS1690 // Accessing a member on a field of a marshal-by-reference class may cause a runtime exception
-
-            return result;
         }
 
         /// <summary>
@@ -371,18 +253,18 @@ namespace Forge.Net.TerraGraf
             {
                 ThrowHelper.ThrowArgumentNullException("asyncResult");
             }
-            if (this.mAcceptDelegate == null)
+            if (mAcceptDelegateOld == null)
             {
                 ThrowHelper.ThrowArgumentException("Wrong async result or EndAccept called multiple times.", "asyncResult");
             }
             try
             {
-                return this.mAcceptDelegate.EndInvoke(asyncResult);
+                return mAcceptDelegateOld.EndInvoke(asyncResult);
             }
             finally
             {
-                this.mAcceptDelegate = null;
-                this.mAsyncActiveAcceptEvent.Set();
+                mAcceptDelegateOld = null;
+                mAsyncActiveAcceptEvent.Set();
                 CloseAsyncActiveAcceptEvent(Interlocked.Decrement(ref mAsyncActiveAcceptCount));
             }
         }
@@ -405,19 +287,19 @@ namespace Forge.Net.TerraGraf
             }
 
             Interlocked.Increment(ref mAsyncActiveConnectCount);
-            SocketConnectDelegate d = new SocketConnectDelegate(this.Connect);
-            if (this.mAsyncActiveConnectEvent == null)
+            SocketConnectDelegate d = new SocketConnectDelegate(Connect);
+            if (mAsyncActiveConnectEvent == null)
             {
-                lock (LOCK_BEGIN_CONNECT)
+                lock (LOCK_CONNECT)
                 {
-                    if (this.mAsyncActiveConnectEvent == null)
+                    if (mAsyncActiveConnectEvent == null)
                     {
-                        this.mAsyncActiveConnectEvent = new AutoResetEvent(true);
+                        mAsyncActiveConnectEvent = new AutoResetEvent(true);
                     }
                 }
             }
-            this.mAsyncActiveConnectEvent.WaitOne();
-            this.mConnectDelegate = d;
+            mAsyncActiveConnectEvent.WaitOne();
+            mConnectDelegateOld = d;
             return d.BeginInvoke(endPoint, callBack, state);
         }
 
@@ -437,6 +319,846 @@ namespace Forge.Net.TerraGraf
         }
 
         /// <summary>
+        /// Ends the connect.
+        /// </summary>
+        /// <param name="asyncResult">The async result.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Forge.ThrowHelper.ThrowArgumentException(System.String,System.String)")]
+        public void EndConnect(IAsyncResult asyncResult)
+        {
+            if (asyncResult == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("asyncResult");
+            }
+            if (mConnectDelegateOld == null)
+            {
+                ThrowHelper.ThrowArgumentException("Wrong async result or EndConnect called multiple times.", "asyncResult");
+            }
+            try
+            {
+                mConnectDelegateOld.EndInvoke(asyncResult);
+            }
+            finally
+            {
+                mConnectDelegateOld = null;
+                mAsyncActiveConnectEvent.Set();
+                CloseAsyncActiveConnectEvent(Interlocked.Decrement(ref mAsyncActiveConnectCount));
+            }
+        }
+
+        /// <summary>
+        /// Begins the receive.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="callBack">The call back.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>
+        /// Async property
+        /// </returns>
+        public IAsyncResult BeginReceive(byte[] buffer, int offset, int size, AsyncCallback callBack, object state)
+        {
+            DoDisposeCheck();
+            if (buffer == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("buffer");
+            }
+            if ((offset < 0) || (offset > buffer.Length))
+            {
+                ThrowHelper.ThrowArgumentOutOfRangeException("offset");
+            }
+            if ((size < 0) || (size > (buffer.Length - offset)))
+            {
+                ThrowHelper.ThrowArgumentOutOfRangeException("size");
+            }
+
+            Interlocked.Increment(ref mAsyncActiveReceiveCount);
+            SocketReceiveDelegate d = new SocketReceiveDelegate(Receive);
+            if (mAsyncActiveReceiveEvent == null)
+            {
+                lock (LOCK_RECEIVE)
+                {
+                    if (mAsyncActiveReceiveEvent == null)
+                    {
+                        mAsyncActiveReceiveEvent = new AutoResetEvent(true);
+                    }
+                }
+            }
+            mAsyncActiveReceiveEvent.WaitOne();
+            mReceiveDelegateOld = d;
+            return d.BeginInvoke(buffer, offset, size, callBack, state);
+        }
+
+        /// <summary>
+        /// Ends the receive.
+        /// </summary>
+        /// <param name="asyncResult">The async result.</param>
+        /// <returns>
+        /// Number of received bytes
+        /// </returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Forge.ThrowHelper.ThrowArgumentException(System.String,System.String)")]
+        public int EndReceive(IAsyncResult asyncResult)
+        {
+            if (asyncResult == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("asyncResult");
+            }
+            if (mReceiveDelegateOld == null)
+            {
+                ThrowHelper.ThrowArgumentException("Wrong async result or EndReceive called multiple times.", "asyncResult");
+            }
+
+            try
+            {
+                return mReceiveDelegateOld.EndInvoke(asyncResult);
+            }
+            finally
+            {
+                mReceiveDelegateOld = null;
+                mAsyncActiveReceiveEvent.Set();
+                CloseAsyncActiveReceiveEvent(Interlocked.Decrement(ref mAsyncActiveReceiveCount));
+            }
+        }
+
+        /// <summary>
+        /// Receives from.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="remoteEp">The remote ep.</param>
+        /// <param name="callBack">The call back.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>
+        /// Async property
+        /// </returns>
+        public IAsyncResult BeginReceiveFrom(byte[] buffer, int offset, int size, ref EndPoint remoteEp, AsyncCallback callBack, object state)
+        {
+            DoDisposeCheck();
+            if (remoteEp == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("remoteEp");
+            }
+            if (buffer == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("buffer");
+            }
+            if ((offset < 0) || (offset > buffer.Length))
+            {
+                ThrowHelper.ThrowArgumentOutOfRangeException("offset");
+            }
+            if ((size < 0) || (size > (buffer.Length - offset)))
+            {
+                ThrowHelper.ThrowArgumentOutOfRangeException("size");
+            }
+
+            Interlocked.Increment(ref mAsyncActiveReceiveFromCount);
+            SocketReceiveFromDelegate d = new SocketReceiveFromDelegate(ReceiveFrom);
+            if (mAsyncActiveReceiveFromEvent == null)
+            {
+                lock (LOCK_RECEIVE_FROM)
+                {
+                    if (mAsyncActiveReceiveFromEvent == null)
+                    {
+                        mAsyncActiveReceiveFromEvent = new AutoResetEvent(true);
+                    }
+                }
+            }
+            mAsyncActiveReceiveFromEvent.WaitOne();
+            mReceiveFromDelegateOld = d;
+            return d.BeginInvoke(buffer, offset, size, ref remoteEp, callBack, state);
+        }
+
+        /// <summary>
+        /// Ends the receive from.
+        /// </summary>
+        /// <param name="asyncResult">The async result.</param>
+        /// <param name="remoteEp">The remote ep.</param>
+        /// <returns>
+        /// Number of received bytes
+        /// </returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Forge.ThrowHelper.ThrowArgumentException(System.String,System.String)")]
+        public int EndReceiveFrom(IAsyncResult asyncResult, ref EndPoint remoteEp)
+        {
+            if (asyncResult == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("asyncResult");
+            }
+            if (mReceiveFromDelegateOld == null)
+            {
+                ThrowHelper.ThrowArgumentException("Wrong async result or EndReceiveFrom called multiple times.", "asyncResult");
+            }
+
+            try
+            {
+                return mReceiveFromDelegateOld.EndInvoke(ref remoteEp, asyncResult);
+            }
+            finally
+            {
+                mReceiveFromDelegateOld = null;
+                mAsyncActiveReceiveFromEvent.Set();
+                CloseAsyncActiveReceiveFromEvent(Interlocked.Decrement(ref mAsyncActiveReceiveFromCount));
+            }
+        }
+
+        /// <summary>
+        /// Begins the send.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="callBack">The call back.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>
+        /// Async property
+        /// </returns>
+        public IAsyncResult BeginSend(byte[] buffer, int offset, int size, AsyncCallback callBack, object state)
+        {
+            DoDisposeCheck();
+            if (buffer == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("buffer");
+            }
+            if ((offset < 0) || (offset > buffer.Length))
+            {
+                ThrowHelper.ThrowArgumentOutOfRangeException("offset");
+            }
+            if ((size < 0) || (size > (buffer.Length - offset)))
+            {
+                ThrowHelper.ThrowArgumentOutOfRangeException("size");
+            }
+
+            Interlocked.Increment(ref mAsyncActiveSendCount);
+            SocketSendDelegate d = new SocketSendDelegate(Send);
+            if (mAsyncActiveSendEvent == null)
+            {
+                lock (LOCK_SEND)
+                {
+                    if (mAsyncActiveSendEvent == null)
+                    {
+                        mAsyncActiveSendEvent = new AutoResetEvent(true);
+                    }
+                }
+            }
+            mAsyncActiveSendEvent.WaitOne();
+            mSendDelegateOld = d;
+            return d.BeginInvoke(buffer, offset, size, callBack, state);
+        }
+
+        /// <summary>
+        /// Ends the send.
+        /// </summary>
+        /// <param name="asyncResult">The async result.</param>
+        /// <returns>
+        /// Number of sent bytes
+        /// </returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Forge.ThrowHelper.ThrowArgumentException(System.String,System.String)")]
+        public int EndSend(IAsyncResult asyncResult)
+        {
+            if (asyncResult == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("asyncResult");
+            }
+            if (mSendDelegateOld == null)
+            {
+                ThrowHelper.ThrowArgumentException("Wrong async result or EndSend called multiple times.", "asyncResult");
+            }
+
+            try
+            {
+                return mSendDelegateOld.EndInvoke(asyncResult);
+            }
+            finally
+            {
+                mSendDelegateOld = null;
+                mAsyncActiveSendEvent.Set();
+                CloseAsyncActiveSendEvent(Interlocked.Decrement(ref mAsyncActiveSendCount));
+            }
+        }
+
+        /// <summary>
+        /// Begins the send to.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="remoteEp">The remote ep.</param>
+        /// <param name="callBack">The call back.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>
+        /// Async property
+        /// </returns>
+        public IAsyncResult BeginSendTo(byte[] buffer, int offset, int size, EndPoint remoteEp, AsyncCallback callBack, object state)
+        {
+            DoDisposeCheck();
+            if (remoteEp == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("remoteEp");
+            }
+            if (buffer == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("buffer");
+            }
+            if ((offset < 0) || (offset > buffer.Length))
+            {
+                ThrowHelper.ThrowArgumentOutOfRangeException("offset");
+            }
+            if ((size < 0) || (size > (buffer.Length - offset)))
+            {
+                ThrowHelper.ThrowArgumentOutOfRangeException("size");
+            }
+
+            Interlocked.Increment(ref mAsyncActiveSendToCount);
+            SocketSendToDelegate d = new SocketSendToDelegate(SendTo);
+            if (mAsyncActiveSendToEvent == null)
+            {
+                lock (LOCK_SENDTO)
+                {
+                    if (mAsyncActiveSendToEvent == null)
+                    {
+                        mAsyncActiveSendToEvent = new AutoResetEvent(true);
+                    }
+                }
+            }
+            mAsyncActiveSendToEvent.WaitOne();
+            mSendToDelegateOld = d;
+            return d.BeginInvoke(buffer, offset, size, remoteEp, callBack, state);
+        }
+
+        /// <summary>
+        /// Ends the send to.
+        /// </summary>
+        /// <param name="asyncResult">The async result.</param>
+        /// <returns>
+        /// Number of sent bytes
+        /// </returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Forge.ThrowHelper.ThrowArgumentException(System.String,System.String)")]
+        public int EndSendTo(IAsyncResult asyncResult)
+        {
+            if (asyncResult == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("asyncResult");
+            }
+            if (mSendToDelegateOld == null)
+            {
+                ThrowHelper.ThrowArgumentException("Wrong async result or EndSendTo called multiple times.", "asyncResult");
+            }
+
+            try
+            {
+                return mSendToDelegateOld.EndInvoke(asyncResult);
+            }
+            finally
+            {
+                mSendToDelegateOld = null;
+                mAsyncActiveSendToEvent.Set();
+                CloseAsyncActiveSendToEvent(Interlocked.Decrement(ref mAsyncActiveSendToCount));
+            }
+        }
+
+#endif
+
+        /// <summary>Begins the accept.</summary>
+        /// <param name="callback">The callback.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        public ITaskResult BeginAccept(ReturnCallback callback, object state)
+        {
+            Interlocked.Increment(ref mAsyncActiveAcceptCount);
+            System.Func<ISocket> d = new System.Func<ISocket>(Accept);
+            if (mAsyncActiveAcceptEvent == null)
+            {
+                lock (LOCK_ACCEPT)
+                {
+                    if (mAsyncActiveAcceptEvent == null)
+                    {
+                        mAsyncActiveAcceptEvent = new AutoResetEvent(true);
+                    }
+                }
+            }
+            mAsyncActiveAcceptEvent.WaitOne();
+            mAcceptDelegate = d;
+            return d.BeginInvoke(callback, state);
+        }
+
+        /// <summary>Ends the accept.</summary>
+        /// <param name="asyncResult">The async result.</param>
+        /// <returns>Socket implementation</returns>
+        public ISocket EndAccept(ITaskResult asyncResult)
+        {
+            if (asyncResult == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("asyncResult");
+            }
+            if (mAcceptDelegate == null)
+            {
+                ThrowHelper.ThrowArgumentException("Wrong async result or EndAccept called multiple times.", "asyncResult");
+            }
+            try
+            {
+                return mAcceptDelegate.EndInvoke(asyncResult);
+            }
+            finally
+            {
+                mAcceptDelegate = null;
+                mAsyncActiveAcceptEvent.Set();
+                CloseAsyncActiveAcceptEvent(Interlocked.Decrement(ref mAsyncActiveAcceptCount));
+            }
+        }
+
+        /// <summary>Begins the connect.</summary>
+        /// <param name="endPoint">The end point.</param>
+        /// <param name="callback">The call back.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        /// <exception cref="System.ArgumentNullException">endPoint</exception>
+        public ITaskResult BeginConnect(EndPoint endPoint, ReturnCallback callback, object state)
+        {
+            if (endPoint == null) throw new ArgumentNullException(nameof(endPoint));
+
+            Interlocked.Increment(ref mAsyncActiveConnectCount);
+            System.Action<EndPoint> d = new System.Action<EndPoint>(Connect);
+            if (mAsyncActiveConnectEvent == null)
+            {
+                lock (LOCK_CONNECT)
+                {
+                    if (mAsyncActiveConnectEvent == null)
+                    {
+                        mAsyncActiveConnectEvent = new AutoResetEvent(true);
+                    }
+                }
+            }
+            mAsyncActiveConnectEvent.WaitOne();
+            mEndpointConnectDelegate = d;
+            return d.BeginInvoke(endPoint, callback, state);
+        }
+
+        /// <summary>Begins the connect.</summary>
+        /// <param name="host">The host.</param>
+        /// <param name="port">The port.</param>
+        /// <param name="callback">The call back.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        /// <exception cref="System.ArgumentNullException">host</exception>
+        public ITaskResult BeginConnect(string host, int port, ReturnCallback callback, object state)
+        {
+            if (string.IsNullOrWhiteSpace(host)) throw new ArgumentNullException(nameof(host));
+
+            Interlocked.Increment(ref mAsyncActiveConnectCount);
+            System.Action<string, int> d = new System.Action<string, int>(Connect);
+            if (mAsyncActiveConnectEvent == null)
+            {
+                lock (LOCK_CONNECT)
+                {
+                    if (mAsyncActiveConnectEvent == null)
+                    {
+                        mAsyncActiveConnectEvent = new AutoResetEvent(true);
+                    }
+                }
+            }
+            mAsyncActiveConnectEvent.WaitOne();
+            mHostIpConnectDelegate = d;
+            return d.BeginInvoke(host, port, callback, state);
+        }
+
+        /// <summary>Ends the connect.</summary>
+        /// <param name="asyncResult">The async result.</param>
+        public void EndConnect(ITaskResult asyncResult)
+        {
+            if (asyncResult == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("asyncResult");
+            }
+            if (mEndpointConnectDelegate == null)
+            {
+                ThrowHelper.ThrowArgumentException("Wrong async result or EndConnect called multiple times.", "asyncResult");
+            }
+            try
+            {
+                mEndpointConnectDelegate.EndInvoke(asyncResult);
+            }
+            finally
+            {
+                mEndpointConnectDelegate = null;
+                mAsyncActiveConnectEvent.Set();
+                CloseAsyncActiveConnectEvent(Interlocked.Decrement(ref mAsyncActiveConnectCount));
+            }
+        }
+
+        /// <summary>Begins the receive.</summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="callback">The call back.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        /// <exception cref="System.ArgumentNullException">buffer</exception>
+        public ITaskResult BeginReceive(byte[] buffer, int offset, int size, ReturnCallback callback, object state)
+        {
+            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+
+            Interlocked.Increment(ref mAsyncActiveReceiveCount);
+            System.Func<byte[], int, int, int> d = new System.Func<byte[], int, int, int>(Receive);
+            if (mAsyncActiveReceiveEvent == null)
+            {
+                lock (LOCK_RECEIVE)
+                {
+                    if (mAsyncActiveReceiveEvent == null)
+                    {
+                        mAsyncActiveReceiveEvent = new AutoResetEvent(true);
+                    }
+                }
+            }
+            mAsyncActiveReceiveEvent.WaitOne();
+            mReceiveDelegate = d;
+            return d.BeginInvoke(buffer, offset, size, callback, state);
+        }
+
+        /// <summary>Ends the receive.</summary>
+        /// <param name="asyncResult">The async result.</param>
+        /// <returns>Number of received bytes</returns>
+        public int EndReceive(ITaskResult asyncResult)
+        {
+            if (asyncResult == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("asyncResult");
+            }
+            if (mReceiveDelegate == null)
+            {
+                ThrowHelper.ThrowArgumentException("Wrong async result or EndReceive called multiple times.", "asyncResult");
+            }
+            try
+            {
+                return mReceiveDelegate.EndInvoke(asyncResult);
+            }
+            finally
+            {
+                mReceiveDelegate = null;
+                mAsyncActiveReceiveEvent.Set();
+                CloseAsyncActiveReceiveEvent(Interlocked.Decrement(ref mAsyncActiveReceiveCount));
+            }
+        }
+
+        /// <summary>Receives from.</summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="remoteEp">The remote ep.</param>
+        /// <param name="callback">The call back.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        /// <exception cref="System.ArgumentNullException">buffer
+        /// or
+        /// remoteEp</exception>
+        public ITaskResult BeginReceiveFrom(byte[] buffer, int offset, int size, ref EndPoint remoteEp, ReturnCallback callback, object state)
+        {
+            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+            if (remoteEp == null) throw new ArgumentNullException(nameof(remoteEp));
+
+            mReceiveFromEndpoint = remoteEp;
+
+            Interlocked.Increment(ref mAsyncActiveReceiveFromCount);
+            System.Func<byte[], int, int, EndPoint, int> d = new System.Func<byte[], int, int, EndPoint, int>(InternalReceiveFrom);
+            if (mAsyncActiveReceiveFromEvent == null)
+            {
+                lock (LOCK_RECEIVE_FROM)
+                {
+                    if (mAsyncActiveReceiveFromEvent == null)
+                    {
+                        mAsyncActiveReceiveFromEvent = new AutoResetEvent(true);
+                    }
+                }
+            }
+            mAsyncActiveReceiveFromEvent.WaitOne();
+            mReceiveFromDelegate = d;
+            return d.BeginInvoke(buffer, offset, size, remoteEp, callback, state);
+        }
+
+        /// <summary>Ends the receive from.</summary>
+        /// <param name="asyncResult">The async result.</param>
+        /// <param name="remoteEp">The remote ep.</param>
+        /// <returns>Number of received bytes</returns>
+        public int EndReceiveFrom(ITaskResult asyncResult, ref EndPoint remoteEp)
+        {
+            if (asyncResult == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("asyncResult");
+            }
+            if (mReceiveFromDelegate == null)
+            {
+                ThrowHelper.ThrowArgumentException("Wrong async result or EndReceiveFrom called multiple times.", "asyncResult");
+            }
+            try
+            {
+                int result = mReceiveFromDelegate.EndInvoke(asyncResult);
+                remoteEp = mReceiveFromEndpoint;
+                return result;
+            }
+            finally
+            {
+                mReceiveFromDelegate = null;
+                mAsyncActiveReceiveFromEvent.Set();
+                CloseAsyncActiveReceiveFromEvent(Interlocked.Decrement(ref mAsyncActiveReceiveFromCount));
+            }
+        }
+
+        /// <summary>Begins the send.</summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="callback">The call back.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        /// <exception cref="System.ArgumentNullException">buffer</exception>
+        public ITaskResult BeginSend(byte[] buffer, int offset, int size, ReturnCallback callback, object state)
+        {
+            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+
+            Interlocked.Increment(ref mAsyncActiveSendCount);
+            System.Func<byte[], int, int, int> d = new System.Func<byte[], int, int, int>(Send);
+            if (mAsyncActiveSendEvent == null)
+            {
+                lock (LOCK_SEND)
+                {
+                    if (mAsyncActiveSendEvent == null)
+                    {
+                        mAsyncActiveSendEvent = new AutoResetEvent(true);
+                    }
+                }
+            }
+            mAsyncActiveSendEvent.WaitOne();
+            mSendDelegate = d;
+            return d.BeginInvoke(buffer, offset, size, callback, state);
+        }
+
+        /// <summary>Ends the send.</summary>
+        /// <param name="asyncResult">The async result.</param>
+        /// <returns>Number of sent bytes</returns>
+        public int EndSend(ITaskResult asyncResult)
+        {
+            if (asyncResult == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("asyncResult");
+            }
+            if (mSendDelegate == null)
+            {
+                ThrowHelper.ThrowArgumentException("Wrong async result or EndSend called multiple times.", "asyncResult");
+            }
+            try
+            {
+                return mSendDelegate.EndInvoke(asyncResult);
+            }
+            finally
+            {
+                mSendDelegate = null;
+                mAsyncActiveSendEvent.Set();
+                CloseAsyncActiveSendEvent(Interlocked.Decrement(ref mAsyncActiveSendCount));
+            }
+        }
+
+        /// <summary>Begins the send to.</summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="remoteEp">The remote ep.</param>
+        /// <param name="callback">The call back.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Async property</returns>
+        /// <exception cref="System.ArgumentNullException">buffer
+        /// or
+        /// remoteEp</exception>
+        public ITaskResult BeginSendTo(byte[] buffer, int offset, int size, EndPoint remoteEp, ReturnCallback callback, object state)
+        {
+            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+            if (remoteEp == null) throw new ArgumentNullException(nameof(remoteEp));
+
+            Interlocked.Increment(ref mAsyncActiveSendToCount);
+            System.Func<byte[], int, int, EndPoint, int> d = new System.Func<byte[], int, int, EndPoint, int>(SendTo);
+            if (mAsyncActiveSendToEvent == null)
+            {
+                lock (LOCK_SENDTO)
+                {
+                    if (mAsyncActiveSendToEvent == null)
+                    {
+                        mAsyncActiveSendToEvent = new AutoResetEvent(true);
+                    }
+                }
+            }
+            mAsyncActiveSendToEvent.WaitOne();
+            mSendToDelegate = d;
+            return d.BeginInvoke(buffer, offset, size, remoteEp, callback, state);
+        }
+
+        /// <summary>Ends the send to.</summary>
+        /// <param name="asyncResult">The async result.</param>
+        /// <returns>Number of sent bytes</returns>
+        public int EndSendTo(ITaskResult asyncResult)
+        {
+            if (asyncResult == null)
+            {
+                ThrowHelper.ThrowArgumentNullException("asyncResult");
+            }
+            if (mSendToDelegate == null)
+            {
+                ThrowHelper.ThrowArgumentException("Wrong async result or EndSendTo called multiple times.", "asyncResult");
+            }
+            try
+            {
+                return mSendToDelegate.EndInvoke(asyncResult);
+            }
+            finally
+            {
+                mSendToDelegate = null;
+                mAsyncActiveSendToEvent.Set();
+                CloseAsyncActiveSendToEvent(Interlocked.Decrement(ref mAsyncActiveSendToCount));
+            }
+        }
+
+#if NETCOREAPP3_1_OR_GREATER
+
+        /// <summary>
+        /// Accepts a new incoming connection.
+        /// </summary>
+        /// <returns>Socket implementation</returns>
+        public async Task<ISocket> AcceptAsync()
+        {
+            return await Task.Run(() => Accept());
+        }
+
+#endif
+
+        /// <summary>
+        /// Accepts a new incoming connection.
+        /// </summary>
+        /// <returns>
+        /// Socket implementation
+        /// </returns>
+        /// <exception cref="System.Net.Sockets.SocketException"></exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        public ISocket Accept()
+        {
+            DoDisposeCheck();
+            DoBindCheck(); // need to be binded
+            DoListenNotCheck(); // must listen to
+            DoShutdownReceiveCheck();
+            DoShutdownSendCheck();
+
+            Socket result = null;
+
+            while (result == null)
+            {
+                if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), start accept, waiting for an incoming connection.", mLocalSocketId.ToString()));
+                mSemaphoreListener.WaitOne(); // only one thread is allowed at the same time
+                DoShutdownReceiveCheck();
+                if (mClosedLevel > 0)
+                {
+                    throw new SocketException((int)SocketError.Shutdown);
+                }
+                lock (mDisposeLock)
+                {
+                    DoShutdownReceiveCheck();
+                    if (mClosedLevel > 0)
+                    {
+                        throw new SocketException((int)SocketError.Shutdown);
+                    }
+                    lock (mListenerQueue)
+                    {
+                        IncomingConnection c = mListenerQueue.Peek();
+                        if (!c.Timedout)
+                        {
+                            c.Accepted = true;
+                            mListenerQueue.Dequeue();
+                            if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), accepting incoming connection. {1}", mLocalSocketId.ToString(), c.Message.ToString()));
+                            if (ExclusiveAddressUse)
+                            {
+                                // using existing port
+                                mListening = false;
+                                SocketOpenResponseMessage response = null;
+                                while (mListenerQueue.Count > 0)
+                                {
+                                    // drop out, whose are landed into the queue in the meantime
+                                    IncomingConnection trash = mListenerQueue.Dequeue();
+                                    response = new SocketOpenResponseMessage(NetworkManager.Instance.InternalLocalhost.Id,
+                                        trash.Message.SenderId, -1, trash.Message.SenderPort, -1, trash.Message.SenderSocketId);
+                                    if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), socket connection declined, socket port used exclusivelly, sending response to the client. MessageId: {1}", mLocalSocketId.ToString(), trash.Message.MessageId.ToString()));
+                                    NetworkManager.Instance.InternalSendMessage(response, null);
+                                }
+                                mRemoteSocketId = c.Message.SenderSocketId;
+                                mRemoteEndPointInternal = new AddressEndPoint(c.Message.SenderId, c.Message.SenderPort);
+                                mRemoteEndPoint = mRemoteEndPointInternal;
+                                mRemoteNetworkPeer = (NetworkPeerRemote)NetworkPeerContext.GetNetworkPeerById(c.Message.SenderId);
+                                //mReceivedMessages = new ListSpecialized<ReceivedMessage>();
+                                //mReceiveEvent = new AutoResetEvent(false);
+
+                                NetworkManager.Instance.NetworkPeerUnaccessible += new EventHandler<NetworkPeerChangedEventArgs>(NetworkPeerUnaccessibleHandler);
+                                lock (mServerSockets)
+                                {
+                                    mServerSockets.Remove(this); // I am not a server socket anymore
+                                }
+
+                                // válaszüzenet küldése
+                                if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), socket connection established, sending response to the client. MessageId: {1}", mLocalSocketId.ToString(), c.Message.MessageId.ToString()));
+                                response = new SocketOpenResponseMessage(NetworkManager.Instance.InternalLocalhost.Id,
+                                    c.Message.SenderId, mLocalEndPointInternal.Port, c.Message.SenderPort, mLocalSocketId, c.Message.SenderSocketId);
+                                NetworkManager.Instance.InternalSendMessage(response, null);
+                                result = this;
+                            }
+                            else
+                            {
+                                // redirecting to an other port
+                                result = new Socket(System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
+                                try
+                                {
+                                    result.Bind(new AddressEndPoint(NetworkManager.Instance.InternalLocalhost.Id, 0));
+                                    result.LocalEndPoint = mLocalEndPointInternal;
+                                }
+                                catch (Exception)
+                                {
+                                    // if this throws an exception, that means there are no free port numbers
+                                    if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), no internal port available for incoming connections. MessageId: {1}", mLocalSocketId.ToString(), c.Message.MessageId.ToString()));
+                                    result = null;
+                                }
+
+                                if (result == null)
+                                {
+                                    // sending the response message, there is no free socket connection port
+                                    SocketOpenResponseMessage response = new SocketOpenResponseMessage(NetworkManager.Instance.InternalLocalhost.Id,
+                                        c.Message.SenderId, -1, c.Message.SenderPort, -1, c.Message.SenderSocketId);
+                                    NetworkManager.Instance.InternalSendMessage(response, null);
+                                }
+                                else
+                                {
+                                    // connection successful
+                                    if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), socket connection established, sending response to the client. MessageId: {1}", mLocalSocketId.ToString(), c.Message.MessageId.ToString()));
+                                    result.mRemoteSocketId = c.Message.SenderSocketId;
+                                    result.mRemoteEndPointInternal = new AddressEndPoint(c.Message.SenderId, c.Message.SenderPort);
+                                    result.mRemoteEndPoint = result.mRemoteEndPointInternal;
+                                    result.mRemoteNetworkPeer = NetworkManager.Instance.InternalLocalhost.Id.Equals(c.Message.SenderId) ? NetworkManager.Instance.InternalLocalhost : (NetworkPeerRemote)NetworkPeerContext.GetNetworkPeerById(c.Message.SenderId);
+                                    //result.mReceivedMessages = new ListSpecialized<ReceivedMessage>();
+                                    //result.mReceiveEvent = new AutoResetEvent(false);
+                                    NetworkManager.Instance.NetworkPeerUnaccessible += new EventHandler<NetworkPeerChangedEventArgs>(result.NetworkPeerUnaccessibleHandler);
+                                    SocketOpenResponseMessage response = new SocketOpenResponseMessage(NetworkManager.Instance.InternalLocalhost.Id,
+                                        c.Message.SenderId, result.mLocalEndPointInternal.Port, c.Message.SenderPort, result.mLocalSocketId, c.Message.SenderSocketId);
+                                    NetworkManager.Instance.InternalSendMessage(response, null);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), this connection request has timed out. MessageId: {1}", mLocalSocketId.ToString(), c.Message.MessageId.ToString()));
+                        }
+                    }
+                }
+            }
+
+#pragma warning disable CS1690 // Accessing a member on a field of a marshal-by-reference class may cause a runtime exception
+            if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), accept finished. Result socket id: {1}", mLocalSocketId.ToString(), result.mLocalSocketId.ToString()));
+#pragma warning restore CS1690 // Accessing a member on a field of a marshal-by-reference class may cause a runtime exception
+
+            return result;
+        }
+
+        /// <summary>
         /// Binds the specified end point.
         /// </summary>
         /// <param name="endPoint">The end point.</param>
@@ -446,7 +1168,7 @@ namespace Forge.Net.TerraGraf
         public void Bind(EndPoint endPoint)
         {
             DoDisposeCheck();
-            DoBindNotCheck(); // ne legyen bindolva
+            DoBindNotCheck(); // binded not allowed
             if (endPoint == null)
             {
                 ThrowHelper.ThrowArgumentNullException("endPoint");
@@ -472,7 +1194,7 @@ namespace Forge.Net.TerraGraf
             {
                 if (port == 0)
                 {
-                    // keresünk egy szabad port-ot. Ha nincs, SocketException megy.
+                    // find a free port, if no one, throws a SocketException
                     for (int i = 1; i < 65536; i++)
                     {
                         if (!mUsedPorts.Contains(i))
@@ -489,7 +1211,7 @@ namespace Forge.Net.TerraGraf
                 }
                 else
                 {
-                    // megpróbáljuk a kért porthoz bindolni. Ha sikertelen, akkor SocketException megy.
+                    // trying to bind to the requested port. It it is unsuccessful, throws a SocketException.
                     if (mUsedPorts.Contains(port))
                     {
                         throw new SocketException((int)SocketError.AddressAlreadyInUse);
@@ -501,11 +1223,34 @@ namespace Forge.Net.TerraGraf
                 }
             }
 
-            // ezen a porton figyel. TCP-re és UDP-re is jó.
+            // listening on that port. It is good for both TCP and UDP.
             mLocalEndPointInternal = new AddressEndPoint(NetworkManager.Instance.InternalLocalhost.Id, port);
             mLocalEndPoint = mLocalEndPointInternal;
             NetworkManager.Instance.InternalSocketRegister(this);
         }
+
+#if NETCOREAPP3_1_OR_GREATER
+
+        /// <summary>
+        /// Connects the specified end point.
+        /// </summary>
+        /// <param name="endPoint">The end point.</param>
+        public async Task ConnectAsync(EndPoint endPoint)
+        {
+            await Task.Run(() => Connect(endPoint));
+        }
+
+        /// <summary>
+        /// Connects the specified host.
+        /// </summary>
+        /// <param name="host">The host.</param>
+        /// <param name="port">The port.</param>
+        public async Task ConnectAsync(string host, int port)
+        {
+            await Task.Run(() => Connect(host, port));
+        }
+
+#endif
 
         /// <summary>
         /// Connects the specified end point.
@@ -518,8 +1263,8 @@ namespace Forge.Net.TerraGraf
         public void Connect(EndPoint endPoint)
         {
             DoDisposeCheck();
-            DoListenCheck(); // ne figyeljen
-            DoConnectedRemoteCheck(); // ne legyen csatlakoztatva
+            DoListenCheck(); // no binding allowed
+            DoConnectedRemoteCheck(); // connected state is not allowed
             DoShutdownReceiveCheck();
             DoShutdownSendCheck();
 
@@ -531,7 +1276,7 @@ namespace Forge.Net.TerraGraf
             {
                 ThrowHelper.ThrowArgumentException(string.Format("Supported EndPoint types: {0} and {1}", typeof(AddressEndPoint).FullName, typeof(DnsEndPoint).FullName), "endPoint");
             }
-            // csak TCP
+            // only TCP
             if (mSocketType == SocketType.Dgram)
             {
                 throw new InvalidOperationException("Connect method used for connection-oriented sockets, not for datagrams.");
@@ -573,17 +1318,17 @@ namespace Forge.Net.TerraGraf
 
                     if (string.IsNullOrEmpty(netContext))
                     {
-                        // először ID alapján próbálom feloldani a kliens-t
+                        // first I try to resolve the client by ID
                         mRemoteNetworkPeer = NetworkManager.Instance.InternalLocalhost.Id.Equals(peerStr) ? NetworkManager.Instance.InternalLocalhost : (NetworkPeerRemote)NetworkPeerContext.GetNetworkPeerById(peerStr);
                         if (mRemoteNetworkPeer == null)
                         {
-                            // ha nincs ilyen, akkor hostname alapján
+                            // if it is not found, than trying based on host name
                             mRemoteNetworkPeer = (NetworkPeerRemote)NetworkPeerContext.GetNetworkPeerByName(peerStr);
                         }
                     }
                     else
                     {
-                        // context is van definiálva
+                        // it is context definied
                         NetworkContext c = NetworkContext.GetNetworkContextByName(netContext);
                         if (c == null)
                         {
@@ -670,7 +1415,7 @@ namespace Forge.Net.TerraGraf
                             throw new SocketException((int)SocketError.ConnectionRefused);
                         }
                         mRemoteEndPoint = ep;
-                        if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), socket connected with remote peer '{1}'.", this.mLocalSocketId.ToString(), mRemoteNetworkPeer.Id));
+                        if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), socket connected with remote peer '{1}'.", mLocalSocketId.ToString(), mRemoteNetworkPeer.Id));
                     }
                     else
                     {
@@ -703,218 +1448,31 @@ namespace Forge.Net.TerraGraf
             Connect(new AddressEndPoint(host, port));
         }
 
+#if NETCOREAPP3_1_OR_GREATER
+
         /// <summary>
-        /// Ends the connect.
+        /// Receives the specified buffer.
         /// </summary>
-        /// <param name="asyncResult">The async result.</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Forge.ThrowHelper.ThrowArgumentException(System.String,System.String)")]
-        public void EndConnect(IAsyncResult asyncResult)
+        /// <param name="buffer">The buffer.</param>
+        /// <returns>Number of received bytes</returns>
+        public async Task<int> ReceiveAsync(byte[] buffer)
         {
-            if (asyncResult == null)
-            {
-                ThrowHelper.ThrowArgumentNullException("asyncResult");
-            }
-            if (this.mConnectDelegate == null)
-            {
-                ThrowHelper.ThrowArgumentException("Wrong async result or EndConnect called multiple times.", "asyncResult");
-            }
-            try
-            {
-                this.mConnectDelegate.EndInvoke(asyncResult);
-            }
-            finally
-            {
-                this.mConnectDelegate = null;
-                this.mAsyncActiveConnectEvent.Set();
-                CloseAsyncActiveConnectEvent(Interlocked.Decrement(ref mAsyncActiveConnectCount));
-            }
+            return await Task.Run(() => Receive(buffer, 0, buffer.Length));
         }
 
         /// <summary>
-        /// Begins the receive.
+        /// Receives the specified buffer.
         /// </summary>
         /// <param name="buffer">The buffer.</param>
         /// <param name="offset">The offset.</param>
         /// <param name="size">The size.</param>
-        /// <param name="callBack">The call back.</param>
-        /// <param name="state">The state.</param>
-        /// <returns>
-        /// Async property
-        /// </returns>
-        public IAsyncResult BeginReceive(byte[] buffer, int offset, int size, AsyncCallback callBack, object state)
+        /// <returns>Number of received bytes</returns>
+        public async Task<int> ReceiveAsync(byte[] buffer, int offset, int size)
         {
-            DoDisposeCheck();
-            if (buffer == null)
-            {
-                ThrowHelper.ThrowArgumentNullException("buffer");
-            }
-            if ((offset < 0) || (offset > buffer.Length))
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeException("offset");
-            }
-            if ((size < 0) || (size > (buffer.Length - offset)))
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeException("size");
-            }
-
-            Interlocked.Increment(ref mAsyncActiveReceiveCount);
-            SocketReceiveDelegate d = new SocketReceiveDelegate(this.Receive);
-            if (this.mAsyncActiveReceiveEvent == null)
-            {
-                lock (LOCK_BEGIN_RECEIVE)
-                {
-                    if (this.mAsyncActiveReceiveEvent == null)
-                    {
-                        this.mAsyncActiveReceiveEvent = new AutoResetEvent(true);
-                    }
-                }
-            }
-            this.mAsyncActiveReceiveEvent.WaitOne();
-            this.mReceiveDelegate = d;
-            return d.BeginInvoke(buffer, offset, size, callBack, state);
+            return await Task.Run(() => Receive(buffer, offset, size));
         }
 
-        /// <summary>
-        /// Receives from.
-        /// </summary>
-        /// <param name="buffer">The buffer.</param>
-        /// <param name="offset">The offset.</param>
-        /// <param name="size">The size.</param>
-        /// <param name="remoteEp">The remote ep.</param>
-        /// <param name="callBack">The call back.</param>
-        /// <param name="state">The state.</param>
-        /// <returns>
-        /// Async property
-        /// </returns>
-        public IAsyncResult BeginReceiveFrom(byte[] buffer, int offset, int size, ref EndPoint remoteEp, AsyncCallback callBack, object state)
-        {
-            DoDisposeCheck();
-            if (remoteEp == null)
-            {
-                ThrowHelper.ThrowArgumentNullException("remoteEp");
-            }
-            if (buffer == null)
-            {
-                ThrowHelper.ThrowArgumentNullException("buffer");
-            }
-            if ((offset < 0) || (offset > buffer.Length))
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeException("offset");
-            }
-            if ((size < 0) || (size > (buffer.Length - offset)))
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeException("size");
-            }
-
-            Interlocked.Increment(ref mAsyncActiveReceiveFromCount);
-            SocketReceiveFromDelegate d = new SocketReceiveFromDelegate(this.ReceiveFrom);
-            if (this.mAsyncActiveReceiveFromEvent == null)
-            {
-                lock (LOCK_BEGIN_RECEIVEFROM)
-                {
-                    if (this.mAsyncActiveReceiveFromEvent == null)
-                    {
-                        this.mAsyncActiveReceiveFromEvent = new AutoResetEvent(true);
-                    }
-                }
-            }
-            this.mAsyncActiveReceiveFromEvent.WaitOne();
-            this.mReceiveFromDelegate = d;
-            return d.BeginInvoke(buffer, offset, size, ref remoteEp, callBack, state);
-        }
-
-        /// <summary>
-        /// Begins the send.
-        /// </summary>
-        /// <param name="buffer">The buffer.</param>
-        /// <param name="offset">The offset.</param>
-        /// <param name="size">The size.</param>
-        /// <param name="callBack">The call back.</param>
-        /// <param name="state">The state.</param>
-        /// <returns>
-        /// Async property
-        /// </returns>
-        public IAsyncResult BeginSend(byte[] buffer, int offset, int size, AsyncCallback callBack, object state)
-        {
-            DoDisposeCheck();
-            if (buffer == null)
-            {
-                ThrowHelper.ThrowArgumentNullException("buffer");
-            }
-            if ((offset < 0) || (offset > buffer.Length))
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeException("offset");
-            }
-            if ((size < 0) || (size > (buffer.Length - offset)))
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeException("size");
-            }
-
-            Interlocked.Increment(ref mAsyncActiveSendCount);
-            SocketSendDelegate d = new SocketSendDelegate(this.Send);
-            if (this.mAsyncActiveSendEvent == null)
-            {
-                lock (LOCK_BEGIN_SEND)
-                {
-                    if (this.mAsyncActiveSendEvent == null)
-                    {
-                        this.mAsyncActiveSendEvent = new AutoResetEvent(true);
-                    }
-                }
-            }
-            this.mAsyncActiveSendEvent.WaitOne();
-            this.mSendDelegate = d;
-            return d.BeginInvoke(buffer, offset, size, callBack, state);
-        }
-
-        /// <summary>
-        /// Begins the send to.
-        /// </summary>
-        /// <param name="buffer">The buffer.</param>
-        /// <param name="offset">The offset.</param>
-        /// <param name="size">The size.</param>
-        /// <param name="remoteEp">The remote ep.</param>
-        /// <param name="callBack">The call back.</param>
-        /// <param name="state">The state.</param>
-        /// <returns>
-        /// Async property
-        /// </returns>
-        public IAsyncResult BeginSendTo(byte[] buffer, int offset, int size, EndPoint remoteEp, AsyncCallback callBack, object state)
-        {
-            DoDisposeCheck();
-            if (remoteEp == null)
-            {
-                ThrowHelper.ThrowArgumentNullException("remoteEp");
-            }
-            if (buffer == null)
-            {
-                ThrowHelper.ThrowArgumentNullException("buffer");
-            }
-            if ((offset < 0) || (offset > buffer.Length))
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeException("offset");
-            }
-            if ((size < 0) || (size > (buffer.Length - offset)))
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeException("size");
-            }
-
-            Interlocked.Increment(ref mAsyncActiveSendToCount);
-            SocketSendToDelegate d = new SocketSendToDelegate(this.SendTo);
-            if (this.mAsyncActiveSendToEvent == null)
-            {
-                lock (LOCK_BEGIN_SENDTO)
-                {
-                    if (this.mAsyncActiveSendToEvent == null)
-                    {
-                        this.mAsyncActiveSendToEvent = new AutoResetEvent(true);
-                    }
-                }
-            }
-            this.mAsyncActiveSendToEvent.WaitOne();
-            this.mSendToDelegate = d;
-            return d.BeginInvoke(buffer, offset, size, remoteEp, callBack, state);
-        }
+#endif
 
         /// <summary>
         /// Receives the specified buffer.
@@ -980,7 +1538,7 @@ namespace Forge.Net.TerraGraf
 
             while (!exit)
             {
-                if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), receive data. Buffer size: {1}, offset: {2}, size: {3}. Need: {4}, received: {5}", this.mLocalSocketId.ToString(), buffer.Length.ToString(), offset.ToString(), size.ToString(), size.ToString(), receivedBytes.ToString()));
+                if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), receive data. Buffer size: {1}, offset: {2}, size: {3}. Need: {4}, received: {5}", mLocalSocketId.ToString(), buffer.Length.ToString(), offset.ToString(), size.ToString(), size.ToString(), receivedBytes.ToString()));
                 if (mClosedLevel > 0 || mReceiveEvent.WaitOne(mReceiveTimeout))
                 {
                     // ide akkor futunk be:
@@ -1081,10 +1639,38 @@ namespace Forge.Net.TerraGraf
                 }
             }
 
-            if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), end receive data. Buffer size: {1}, offset: {2}, size: {3}. Need: {4}, received: {5}", this.mLocalSocketId.ToString(), buffer.Length.ToString(), offset.ToString(), size.ToString(), size.ToString(), receivedBytes.ToString()));
+            if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), end receive data. Buffer size: {1}, offset: {2}, size: {3}. Need: {4}, received: {5}", mLocalSocketId.ToString(), buffer.Length.ToString(), offset.ToString(), size.ToString(), size.ToString(), receivedBytes.ToString()));
 
             return receivedBytes;
         }
+
+#if NETCOREAPP3_1_OR_GREATER
+
+        /// <summary>
+        /// Receives from.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="remoteEp">The remote ep.</param>
+        /// <returns>Number of received bytes</returns>
+        public async Task<(int, System.Net.EndPoint)> ReceiveFromAsync(byte[] buffer, System.Net.EndPoint remoteEp)
+        {
+            return (await Task.Run(() => ReceiveFrom(buffer, ref remoteEp)), remoteEp);
+        }
+
+        /// <summary>
+        /// Receives from.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="remoteEp">The remote ep.</param>
+        /// <returns>Number of received bytes</returns>
+        public async Task<(int, System.Net.EndPoint)> ReceiveFromAsync(byte[] buffer, int offset, int size, System.Net.EndPoint remoteEp)
+        {
+            return (await Task.Run(() => ReceiveFrom(buffer, offset, size, ref remoteEp)), remoteEp);
+        }
+
+#endif
 
         /// <summary>
         /// Receives from.
@@ -1208,6 +1794,32 @@ namespace Forge.Net.TerraGraf
             return receivedBytes;
         }
 
+#if NETCOREAPP3_1_OR_GREATER
+
+        /// <summary>
+        /// Sends the specified buffer.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <returns>Number of sent bytes</returns>
+        public async Task<int> SendAsync(byte[] buffer)
+        {
+            return await Task.Run(() => Send(buffer, 0, buffer.Length));
+        }
+
+        /// <summary>
+        /// Sends the specified buffer.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="size">The size.</param>
+        /// <returns>Number of sent bytes</returns>
+        public async Task<int> SendAsync(byte[] buffer, int offset, int size)
+        {
+            return await Task.Run(() => Send(buffer, offset, size));
+        }
+
+#endif
+
         /// <summary>
         /// Sends the specified buffer.
         /// </summary>
@@ -1280,7 +1892,7 @@ namespace Forge.Net.TerraGraf
             Stopwatch watch = Stopwatch.StartNew();
             try
             {
-                if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), send data. Buffer size: {1}, offset: {2}, size: {3}. Need: {4}", this.mLocalSocketId.ToString(), buffer.Length.ToString(), offset.ToString(), size.ToString(), size.ToString()));
+                if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), send data. Buffer size: {1}, offset: {2}, size: {3}. Need: {4}", mLocalSocketId.ToString(), buffer.Length.ToString(), offset.ToString(), size.ToString(), size.ToString()));
 
                 if (mSendEvent.WaitOne(mSendTimeout))
                 {
@@ -1318,10 +1930,10 @@ namespace Forge.Net.TerraGraf
                                 Array.Copy(buffer, offset, data, 0, size);
                             }
                             SocketRawDataMessage initMessage = new SocketRawDataMessage(NetworkManager.Instance.InternalLocalhost.Id,
-                                this.mRemoteEndPointInternal.Host, this.mLocalEndPointInternal.Port, this.mRemoteEndPointInternal.Port,
-                                this.mLocalSocketId, this.mRemoteSocketId, this.mLocalPacketOrderNumber, data);
+                                mRemoteEndPointInternal.Host, mLocalEndPointInternal.Port, mRemoteEndPointInternal.Port,
+                                mLocalSocketId, mRemoteSocketId, mLocalPacketOrderNumber, data);
                             slots.Add(NetworkManager.Instance.InternalSendMessage(initMessage, null, mSentEventForMessages));
-                            this.mLocalPacketOrderNumber++;
+                            mLocalPacketOrderNumber++;
                         }
                         // kiszámolom mennyi időm van még
                         int availableTime = mSendTimeout - Convert.ToInt32(watch.ElapsedMilliseconds);
@@ -1417,10 +2029,10 @@ namespace Forge.Net.TerraGraf
                                                     byte[] data = new byte[leftBytes > bufferSize ? bufferSize : leftBytes];
                                                     Array.Copy(buffer, offset + sentBytes, data, 0, data.Length);
                                                     SocketRawDataMessage initMessage = new SocketRawDataMessage(NetworkManager.Instance.InternalLocalhost.Id,
-                                                        this.mRemoteEndPointInternal.Host, this.mLocalEndPointInternal.Port, this.mRemoteEndPointInternal.Port,
-                                                        this.mLocalSocketId, this.mRemoteSocketId, this.mLocalPacketOrderNumber, data);
+                                                        mRemoteEndPointInternal.Host, mLocalEndPointInternal.Port, mRemoteEndPointInternal.Port,
+                                                        mLocalSocketId, mRemoteSocketId, mLocalPacketOrderNumber, data);
                                                     slots[index] = NetworkManager.Instance.InternalSendMessage(initMessage, null, mSentEventForMessages);
-                                                    this.mLocalPacketOrderNumber++;
+                                                    mLocalPacketOrderNumber++;
                                                     sentBytes += data.Length; // ennyit küldtem el
                                                 }
                                                 else
@@ -1456,10 +2068,10 @@ namespace Forge.Net.TerraGraf
                                                 byte[] data = new byte[leftBytes > bufferSize ? bufferSize : leftBytes];
                                                 Array.Copy(buffer, offset + sentBytes, data, 0, data.Length);
                                                 SocketRawDataMessage initMessage = new SocketRawDataMessage(NetworkManager.Instance.InternalLocalhost.Id,
-                                                    this.mRemoteEndPointInternal.Host, this.mLocalEndPointInternal.Port, this.mRemoteEndPointInternal.Port,
-                                                    this.mLocalSocketId, this.mRemoteSocketId, this.mLocalPacketOrderNumber, data);
+                                                    mRemoteEndPointInternal.Host, mLocalEndPointInternal.Port, mRemoteEndPointInternal.Port,
+                                                    mLocalSocketId, mRemoteSocketId, mLocalPacketOrderNumber, data);
                                                 slots.Add(NetworkManager.Instance.InternalSendMessage(initMessage, null, mSentEventForMessages));
-                                                this.mLocalPacketOrderNumber++;
+                                                mLocalPacketOrderNumber++;
                                                 sentBytes += data.Length; // ennyit küldtem el
                                             }
                                             else
@@ -1500,10 +2112,38 @@ namespace Forge.Net.TerraGraf
                 watch.Stop();
             }
 
-            if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), send data. Buffer size: {1}, offset: {2}, size: {3}. Need: {4}, confirmed: {5}.", this.mLocalSocketId.ToString(), buffer.Length.ToString(), offset.ToString(), size.ToString(), size.ToString(), confirmedBytes.ToString()));
+            if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), send data. Buffer size: {1}, offset: {2}, size: {3}. Need: {4}, confirmed: {5}.", mLocalSocketId.ToString(), buffer.Length.ToString(), offset.ToString(), size.ToString(), size.ToString(), confirmedBytes.ToString()));
 
             return confirmedBytes;
         }
+
+#if NETCOREAPP3_1_OR_GREATER
+
+        /// <summary>
+        /// Sends to.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="remoteEp">The remote ep.</param>
+        /// <returns>Number of sent bytes</returns>
+        public async Task<int> SendToAsync(byte[] buffer, System.Net.EndPoint remoteEp)
+        {
+            return await Task.Run(() => SendTo(buffer, remoteEp));
+        }
+
+        /// <summary>
+        /// Sends to.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="remoteEp">The remote ep.</param>
+        /// <returns>Number of sent bytes</returns>
+        public async Task<int> SendToAsync(byte[] buffer, int offset, int size, System.Net.EndPoint remoteEp)
+        {
+            return await Task.Run(() => SendTo(buffer, offset, size, remoteEp));
+        }
+
+#endif
 
         /// <summary>
         /// Sends to.
@@ -1700,139 +2340,6 @@ namespace Forge.Net.TerraGraf
         }
 
         /// <summary>
-        /// Ends the receive.
-        /// </summary>
-        /// <param name="asyncResult">The async result.</param>
-        /// <returns>
-        /// Number of received bytes
-        /// </returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Forge.ThrowHelper.ThrowArgumentException(System.String,System.String)")]
-        public int EndReceive(IAsyncResult asyncResult)
-        {
-            if (asyncResult == null)
-            {
-                ThrowHelper.ThrowArgumentNullException("asyncResult");
-            }
-            if (this.mReceiveDelegate == null)
-            {
-                ThrowHelper.ThrowArgumentException("Wrong async result or EndReceive called multiple times.", "asyncResult");
-            }
-
-            int num = 0;
-            try
-            {
-                num = this.mReceiveDelegate.EndInvoke(asyncResult);
-            }
-            finally
-            {
-                this.mReceiveDelegate = null;
-                this.mAsyncActiveReceiveEvent.Set();
-                CloseAsyncActiveReceiveEvent(Interlocked.Decrement(ref mAsyncActiveReceiveCount));
-            }
-            return num;
-        }
-
-        /// <summary>
-        /// Ends the receive from.
-        /// </summary>
-        /// <param name="asyncResult">The async result.</param>
-        /// <param name="remoteEp">The remote ep.</param>
-        /// <returns>
-        /// Number of received bytes
-        /// </returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Forge.ThrowHelper.ThrowArgumentException(System.String,System.String)")]
-        public int EndReceiveFrom(IAsyncResult asyncResult, ref EndPoint remoteEp)
-        {
-            if (asyncResult == null)
-            {
-                ThrowHelper.ThrowArgumentNullException("asyncResult");
-            }
-            if (this.mReceiveFromDelegate == null)
-            {
-                ThrowHelper.ThrowArgumentException("Wrong async result or EndReceiveFrom called multiple times.", "asyncResult");
-            }
-
-            int num = 0;
-            try
-            {
-                num = this.mReceiveFromDelegate.EndInvoke(ref remoteEp, asyncResult);
-            }
-            finally
-            {
-                this.mReceiveFromDelegate = null;
-                this.mAsyncActiveReceiveFromEvent.Set();
-                CloseAsyncActiveReceiveFromEvent(Interlocked.Decrement(ref mAsyncActiveReceiveFromCount));
-            }
-            return num;
-        }
-
-        /// <summary>
-        /// Ends the send.
-        /// </summary>
-        /// <param name="asyncResult">The async result.</param>
-        /// <returns>
-        /// Number of sent bytes
-        /// </returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Forge.ThrowHelper.ThrowArgumentException(System.String,System.String)")]
-        public int EndSend(IAsyncResult asyncResult)
-        {
-            if (asyncResult == null)
-            {
-                ThrowHelper.ThrowArgumentNullException("asyncResult");
-            }
-            if (this.mSendDelegate == null)
-            {
-                ThrowHelper.ThrowArgumentException("Wrong async result or EndSend called multiple times.", "asyncResult");
-            }
-
-            int num = 0;
-            try
-            {
-                num = this.mSendDelegate.EndInvoke(asyncResult);
-            }
-            finally
-            {
-                this.mSendDelegate = null;
-                this.mAsyncActiveSendEvent.Set();
-                CloseAsyncActiveSendEvent(Interlocked.Decrement(ref mAsyncActiveSendCount));
-            }
-            return num;
-        }
-
-        /// <summary>
-        /// Ends the send to.
-        /// </summary>
-        /// <param name="asyncResult">The async result.</param>
-        /// <returns>
-        /// Number of sent bytes
-        /// </returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Forge.ThrowHelper.ThrowArgumentException(System.String,System.String)")]
-        public int EndSendTo(IAsyncResult asyncResult)
-        {
-            if (asyncResult == null)
-            {
-                ThrowHelper.ThrowArgumentNullException("asyncResult");
-            }
-            if (this.mSendToDelegate == null)
-            {
-                ThrowHelper.ThrowArgumentException("Wrong async result or EndSendTo called multiple times.", "asyncResult");
-            }
-
-            int num = 0;
-            try
-            {
-                num = this.mSendToDelegate.EndInvoke(asyncResult);
-            }
-            finally
-            {
-                this.mSendToDelegate = null;
-                this.mAsyncActiveSendToEvent.Set();
-                CloseAsyncActiveSendToEvent(Interlocked.Decrement(ref mAsyncActiveSendToCount));
-            }
-            return num;
-        }
-
-        /// <summary>
         /// Listens the specified backlog.
         /// </summary>
         /// <param name="backlog">The maximum size of the connection request queue.</param>
@@ -1855,7 +2362,7 @@ namespace Forge.Net.TerraGraf
                         if (!mListening)
                         {
                             mListenerQueue = new Queue<IncomingConnection>(backlog < 1 ? NetworkManager.Instance.InternalConfiguration.Settings.DefaultSocketBacklogSize : backlog);
-                            mSemaphoreListener = new Semaphore(0, Int32.MaxValue);
+                            mSemaphoreListener = new Semaphore(0, int.MaxValue);
 
                             if (backlog > 0)
                             {
@@ -1871,7 +2378,7 @@ namespace Forge.Net.TerraGraf
                                     if (mThreadServerSocketAcceptTimeoutListener == null)
                                     {
                                         mServerSockets = new HashSet<Socket>();
-                                        mSemaphoreServerSockets = new Semaphore(0, Int32.MaxValue);
+                                        mSemaphoreServerSockets = new Semaphore(0, int.MaxValue);
 
                                         mThreadServerSocketAcceptTimeoutListener = new Thread(new ThreadStart(
                                             delegate()
@@ -2017,11 +2524,11 @@ namespace Forge.Net.TerraGraf
         {
             if (timeout > 1 && timeout < 500)
             {
-                this.mCloseTimeout = 500;
+                mCloseTimeout = 500;
             }
             else if (timeout >= 500)
             {
-                this.mCloseTimeout = timeout;
+                mCloseTimeout = timeout;
             }
             if (Connected)
             {
@@ -2276,12 +2783,12 @@ namespace Forge.Net.TerraGraf
         /// </value>
         public int ReceiveBufferSize
         {
-            get { return this.mReceiveBufferSize; }
+            get { return mReceiveBufferSize; }
             set
             {
                 if (value >= 1024)
                 {
-                    this.mReceiveBufferSize = value;
+                    mReceiveBufferSize = value;
                 }
             }
         }
@@ -2332,7 +2839,7 @@ namespace Forge.Net.TerraGraf
             {
                 if (value >= 1024)
                 {
-                    this.mSendBufferSize = value;
+                    mSendBufferSize = value;
                 }
             }
         }
@@ -2438,20 +2945,20 @@ namespace Forge.Net.TerraGraf
                             if (mListenerQueue.Count >= mBacklog)
                             {
                                 // nem fér be több kérés a queue-ba
-                                if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), listening queue is full. Backlog size: {1}, MessageId: {2}", this.mLocalSocketId.ToString(), mBacklog.ToString(), message.ToString()));
+                                if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), listening queue is full. Backlog size: {1}, MessageId: {2}", mLocalSocketId.ToString(), mBacklog.ToString(), message.ToString()));
                                 sendResponse = true;
                             }
                             else
                             {
                                 // elhelyezem a timeout queue-ban
-                                if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), add to listening queue. Backlog size: {1}, MessageId: {2}", this.mLocalSocketId.ToString(), mBacklog.ToString(), message.ToString()));
+                                if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), add to listening queue. Backlog size: {1}, MessageId: {2}", mLocalSocketId.ToString(), mBacklog.ToString(), message.ToString()));
                                 mListenerQueue.Enqueue(new IncomingConnection(message, this));
                             }
                         }
                         else
                         {
                             // időközben megállhatott exkluzív portnál a figyelés
-                            if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), socket not listening anymore(2). MessageId: {1}", this.mLocalSocketId.ToString(), message.ToString()));
+                            if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), socket not listening anymore(2). MessageId: {1}", mLocalSocketId.ToString(), message.ToString()));
                             sendResponse = true;
                         }
                         if (!sendResponse)
@@ -2468,7 +2975,7 @@ namespace Forge.Net.TerraGraf
             }
             else
             {
-                if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), socket not listening anymore(1). MessageId: {1}", this.mLocalSocketId.ToString(), message.ToString()));
+                if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), socket not listening anymore(1). MessageId: {1}", mLocalSocketId.ToString(), message.ToString()));
                 sendResponse = true;
             }
             if (sendResponse)
@@ -2494,8 +3001,8 @@ namespace Forge.Net.TerraGraf
                     {
                         try
                         {
-                            if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), socket open response has arrived. IsBound: {1}, local port: {2} MessageId: {3}", this.mLocalSocketId.ToString(), IsBound.ToString(), this.mLocalEndPointInternal == null ? "-1" : this.mLocalEndPointInternal.Port.ToString(), message.ToString()));
-                            if (IsBound && message.TargetPort == this.mLocalEndPointInternal.Port)
+                            if (LOGGER.IsDebugEnabled) LOGGER.Debug(string.Format("NETWORK-SOCKET({0}), socket open response has arrived. IsBound: {1}, local port: {2} MessageId: {3}", mLocalSocketId.ToString(), IsBound.ToString(), mLocalEndPointInternal == null ? "-1" : mLocalEndPointInternal.Port.ToString(), message.ToString()));
+                            if (IsBound && message.TargetPort == mLocalEndPointInternal.Port)
                             {
                                 if (message.SenderPort > -1 && message.SenderSocketId > -1)
                                 {
@@ -2525,7 +3032,7 @@ namespace Forge.Net.TerraGraf
         {
             lock (mDisposeLock)
             {
-                if (IsBound && Connected && message.TargetPort == this.mLocalEndPointInternal.Port && message.SenderPort == mRemoteEndPointInternal.Port)
+                if (IsBound && Connected && message.TargetPort == mLocalEndPointInternal.Port && message.SenderPort == mRemoteEndPointInternal.Port)
                 {
                     if (message.MessageType == MessageTypeEnum.Tcp)
                     {
@@ -2548,12 +3055,12 @@ namespace Forge.Net.TerraGraf
         {
             if (mClosedLevel == 0)
             {
-                if (this.ProtocolType == System.Net.Sockets.ProtocolType.Tcp && message.MessageType == MessageTypeEnum.Tcp)
+                if (ProtocolType == System.Net.Sockets.ProtocolType.Tcp && message.MessageType == MessageTypeEnum.Tcp)
                 {
                     // TCP üzenet
                     lock (mDisposeLock)
                     {
-                        if (IsBound && Connected && message.TargetPort == this.mLocalEndPointInternal.Port && message.SenderPort == this.mRemoteEndPointInternal.Port)
+                        if (IsBound && Connected && message.TargetPort == mLocalEndPointInternal.Port && message.SenderPort == mRemoteEndPointInternal.Port)
                         {
                             // jó helyen jár...
                             ReceivedMessage m = new ReceivedMessage() { Message = message };
@@ -2579,7 +3086,7 @@ namespace Forge.Net.TerraGraf
                         }
                     }
                 }
-                else if (this.ProtocolType == System.Net.Sockets.ProtocolType.Udp && message.MessageType == MessageTypeEnum.Udp)
+                else if (ProtocolType == System.Net.Sockets.ProtocolType.Udp && message.MessageType == MessageTypeEnum.Udp)
                 {
                     // UDP üzenet
                     if ((EnableBroadcast && string.IsNullOrEmpty(message.TargetId)) ||
@@ -2654,7 +3161,7 @@ namespace Forge.Net.TerraGraf
         {
             if (mClosedLevel == 2)
             {
-                throw new ObjectDisposedException(this.GetType().FullName);
+                throw new ObjectDisposedException(GetType().FullName);
             }
         }
 
@@ -2692,55 +3199,55 @@ namespace Forge.Net.TerraGraf
 
         private void CloseAsyncActiveAcceptEvent(int asyncActiveCount)
         {
-            if ((this.mAsyncActiveAcceptEvent != null) && (asyncActiveCount == 0))
+            if ((mAsyncActiveAcceptEvent != null) && (asyncActiveCount == 0))
             {
-                this.mAsyncActiveAcceptEvent.Dispose();
-                this.mAsyncActiveAcceptEvent = null;
+                mAsyncActiveAcceptEvent.Dispose();
+                mAsyncActiveAcceptEvent = null;
             }
         }
 
         private void CloseAsyncActiveConnectEvent(int asyncActiveCount)
         {
-            if ((this.mAsyncActiveConnectEvent != null) && (asyncActiveCount == 0))
+            if ((mAsyncActiveConnectEvent != null) && (asyncActiveCount == 0))
             {
-                this.mAsyncActiveConnectEvent.Dispose();
-                this.mAsyncActiveConnectEvent = null;
+                mAsyncActiveConnectEvent.Dispose();
+                mAsyncActiveConnectEvent = null;
             }
         }
 
         private void CloseAsyncActiveReceiveEvent(int asyncActiveCount)
         {
-            if ((this.mAsyncActiveReceiveEvent != null) && (asyncActiveCount == 0))
+            if ((mAsyncActiveReceiveEvent != null) && (asyncActiveCount == 0))
             {
-                this.mAsyncActiveReceiveEvent.Dispose();
-                this.mAsyncActiveReceiveEvent = null;
+                mAsyncActiveReceiveEvent.Dispose();
+                mAsyncActiveReceiveEvent = null;
             }
         }
 
         private void CloseAsyncActiveReceiveFromEvent(int asyncActiveCount)
         {
-            if ((this.mAsyncActiveReceiveFromEvent != null) && (asyncActiveCount == 0))
+            if ((mAsyncActiveReceiveFromEvent != null) && (asyncActiveCount == 0))
             {
-                this.mAsyncActiveReceiveFromEvent.Dispose();
-                this.mAsyncActiveReceiveFromEvent = null;
+                mAsyncActiveReceiveFromEvent.Dispose();
+                mAsyncActiveReceiveFromEvent = null;
             }
         }
 
         private void CloseAsyncActiveSendEvent(int asyncActiveCount)
         {
-            if ((this.mAsyncActiveSendEvent != null) && (asyncActiveCount == 0))
+            if ((mAsyncActiveSendEvent != null) && (asyncActiveCount == 0))
             {
-                this.mAsyncActiveSendEvent.Dispose();
-                this.mAsyncActiveSendEvent = null;
+                mAsyncActiveSendEvent.Dispose();
+                mAsyncActiveSendEvent = null;
             }
         }
 
         private void CloseAsyncActiveSendToEvent(int asyncActiveCount)
         {
-            if ((this.mAsyncActiveSendToEvent != null) && (asyncActiveCount == 0))
+            if ((mAsyncActiveSendToEvent != null) && (asyncActiveCount == 0))
             {
-                this.mAsyncActiveSendToEvent.Dispose();
-                this.mAsyncActiveSendToEvent = null;
+                mAsyncActiveSendToEvent.Dispose();
+                mAsyncActiveSendToEvent = null;
             }
         }
 
@@ -2872,6 +3379,11 @@ namespace Forge.Net.TerraGraf
             }
         }
 
+        private int InternalReceiveFrom(byte[] buffer, int offset, int size, EndPoint remoteEp)
+        {
+            return ReceiveFrom(buffer, offset, size, ref mReceiveFromEndpoint);
+        }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "mAsyncActiveSendEvent"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "mAsyncActiveSendToEvent"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "mAsyncActiveReceiveFromEvent"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "mAsyncActiveReceiveEvent"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "mAsyncActiveConnectEvent"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "mAsyncActiveAcceptEvent")]
         private void Dispose(bool disposing)
         {
@@ -2964,8 +3476,8 @@ namespace Forge.Net.TerraGraf
             /// <param name="serverSocket">The server socket.</param>
             internal IncomingConnection(SocketOpenRequestMessage message, Socket serverSocket)
             {
-                this.mMessage = message;
-                this.mServerSocket = serverSocket;
+                mMessage = message;
+                mServerSocket = serverSocket;
             }
 
             #endregion
@@ -3117,7 +3629,7 @@ namespace Forge.Net.TerraGraf
             /// <returns></returns>
             public bool Equals(ReceivedMessage other)
             {
-                return other.Message.PacketOrderNumber == this.Message.PacketOrderNumber;
+                return other.Message.PacketOrderNumber == Message.PacketOrderNumber;
             }
 
             /// <summary>
