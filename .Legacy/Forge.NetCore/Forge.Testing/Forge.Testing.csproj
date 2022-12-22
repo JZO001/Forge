@@ -869,7 +869,7 @@
 		<PackageReference Include="NHibernate.Mapping.Attributes" Version="5.1.0" />
 		<PackageReference Include="Remotion.Linq" Version="2.2.0" />
 		<PackageReference Include="Remotion.Linq.EagerFetching" Version="2.2.0" />
-		<PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+		<PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
 		<PackageReference Include="EntityFramework" Version="6.4.4" />
 		<PackageReference Include="System.Data.SQLite" Version="1.0.116" />
 		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.116" />
