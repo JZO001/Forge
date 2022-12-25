@@ -169,15 +169,6 @@ namespace Forge.Net.TerraGraf.Formatters
             }
         }
 
-        /// <summary>Format the provided object into the output stream from the input stream</summary>
-        /// <param name="outputStream">Stream that the formatted data has been written</param>
-        /// <param name="inputStream">Object that will be formatted</param>
-        /// <exception cref="System.NotImplementedException">In all cases</exception>
-        public void Write(Stream outputStream, Stream inputStream)
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
         /// Creates a new object that is a copy of the current instance.
         /// </summary>
