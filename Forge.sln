@@ -256,6 +256,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testing.Net.Remoting.Servic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testing.Threading", "Testing.Threading\Testing.Threading.csproj", "{10A234E7-A0ED-48AC-9E5F-995BBDEDA476}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Formatters", "Testing.Formatters\Testing.Formatters.csproj", "{BA78D96A-06EA-44C1-B376-49DD0D79394E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -736,6 +738,14 @@ Global
 		{10A234E7-A0ED-48AC-9E5F-995BBDEDA476}.Release|Any CPU.Build.0 = Release|Any CPU
 		{10A234E7-A0ED-48AC-9E5F-995BBDEDA476}.Release|x86.ActiveCfg = Release|Any CPU
 		{10A234E7-A0ED-48AC-9E5F-995BBDEDA476}.Release|x86.Build.0 = Release|Any CPU
+		{BA78D96A-06EA-44C1-B376-49DD0D79394E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA78D96A-06EA-44C1-B376-49DD0D79394E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA78D96A-06EA-44C1-B376-49DD0D79394E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BA78D96A-06EA-44C1-B376-49DD0D79394E}.Debug|x86.Build.0 = Debug|Any CPU
+		{BA78D96A-06EA-44C1-B376-49DD0D79394E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA78D96A-06EA-44C1-B376-49DD0D79394E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA78D96A-06EA-44C1-B376-49DD0D79394E}.Release|x86.ActiveCfg = Release|Any CPU
+		{BA78D96A-06EA-44C1-B376-49DD0D79394E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -744,7 +754,7 @@ Global
 		SolutionGuid = {719B58E3-18E1-4DF2-8676-DE4D25031067}
 	EndGlobalSection
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 59
+		SccNumberOfProjects = 60
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://jzo.visualstudio.com/
 		SccLocalPath0 = .
@@ -922,6 +932,9 @@ Global
 		SccProjectUniqueName58 = Forge.Logging.Abstraction\\Forge.Logging.Abstraction.csproj
 		SccProjectName58 = Forge.Logging.Abstraction
 		SccLocalPath58 = Forge.Logging.Abstraction
+		SccProjectUniqueName59 = Testing.Formatters\\Testing.Formatters.csproj
+		SccProjectName59 = Testing.Formatters
+		SccLocalPath59 = Testing.Formatters
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Forge.vsmdi

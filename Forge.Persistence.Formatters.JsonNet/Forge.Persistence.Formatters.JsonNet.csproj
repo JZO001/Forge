@@ -8,9 +8,9 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<TargetFrameworks>net40;netstandard2.0;netcoreapp3.1;net6.0</TargetFrameworks>
-		<Version>2.0.0.0</Version>
-		<AssemblyVersion>2.0.0.0</AssemblyVersion>
+		<TargetFrameworks>net40;netstandard2.0;netstandard2.1;netcoreapp3.1;net6.0</TargetFrameworks>
+		<Version>2.1.0.0</Version>
+		<AssemblyVersion>2.1.0.0</AssemblyVersion>
 		<Copyright>Copyright © Zoltan Juhasz, 2013-2022</Copyright>
 		<Description>Contains an implementation of IDateFormatter for Json.NET</Description>
 		<Product>Forge: reference, practice and patterns implementations and helper(s)</Product>

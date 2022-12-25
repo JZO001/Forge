@@ -128,6 +128,15 @@ namespace Forge.Net.TerraGraf.Formatters
             return result;
         }
 
+        /// <summary>Restore the content of the stream</summary>
+        /// <param name="inputStream">Source stream</param>
+        /// <param name="outputStream">Output stream</param>
+        /// <exception cref="System.NotImplementedException">In all cases</exception>
+        public void Read(Stream inputStream, Stream outputStream)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Writes the specified stream.
         /// </summary>
@@ -158,6 +167,15 @@ namespace Forge.Net.TerraGraf.Formatters
                     dataStream.CopyTo(stream); // writing data
                 }
             }
+        }
+
+        /// <summary>Format the provided object into the output stream from the input stream</summary>
+        /// <param name="outputStream">Stream that the formatted data has been written</param>
+        /// <param name="inputStream">Object that will be formatted</param>
+        /// <exception cref="System.NotImplementedException">In all cases</exception>
+        public void Write(Stream outputStream, Stream inputStream)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
