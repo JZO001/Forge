@@ -8,10 +8,10 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<TargetFrameworks>net40;netcoreapp3.1;net6.0;net6.0-windows</TargetFrameworks>
-		<Version>1.2.0.0</Version>
-		<AssemblyVersion>1.2.0.0</AssemblyVersion>
-		<Copyright>Copyright © Zoltan Juhasz, 2012-2022</Copyright>
+		<TargetFrameworks>net40;netcoreapp3.1;net6.0;net6.0-windows;net7.0;net7.0-windows;net8.0;net8.0-windows</TargetFrameworks>
+		<Version>1.2.1.0</Version>
+		<AssemblyVersion>1.2.1.0</AssemblyVersion>
+		<Copyright>Copyright © Zoltan Juhasz, 2012-2024</Copyright>
 		<Description>TimeServer Interface</Description>
 		<Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
 		<Company>Forge Project Contributor(s)</Company>

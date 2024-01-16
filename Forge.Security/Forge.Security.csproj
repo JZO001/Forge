@@ -8,10 +8,10 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<TargetFrameworks>net40;netstandard2.1;netcoreapp3.1;net6.0;net6.0-windows</TargetFrameworks>
-		<Version>2.0.0.0</Version>
-		<AssemblyVersion>2.0.0.0</AssemblyVersion>
-		<Copyright>Copyright © Zoltan Juhasz, 2004-2022</Copyright>
+		<TargetFrameworks>net40;netstandard2.1;netcoreapp3.1;net6.0;net6.0-windows;net7.0;net7.0-windows;net8.0;net8.0-windows</TargetFrameworks>
+		<Version>2.0.1.0</Version>
+		<AssemblyVersion>2.0.1.0</AssemblyVersion>
+		<Copyright>Copyright © Zoltan Juhasz, 2004-2024</Copyright>
 		<Description>Forge Security related implementations</Description>
 		<Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
 		<Company>Forge Project Contributor(s)</Company>
@@ -35,10 +35,6 @@
 	<ItemGroup Condition="'$(TargetFramework)' == 'net40'">
 		<Reference Include="System.Configuration" />
 		<ProjectReference Include="..\Forge.Native\Forge.Native.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.1" Condition="'$(TargetFramework)' != 'net40'" />
 	</ItemGroup>
 
 	<ItemGroup>

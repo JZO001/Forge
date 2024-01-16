@@ -8,10 +8,10 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<TargetFrameworks>net40;netstandard2.0;netstandard2.1;netcoreapp3.1;net6.0</TargetFrameworks>
-		<Version>2.1.0.0</Version>
-		<AssemblyVersion>2.1.0.0</AssemblyVersion>
-		<Copyright>Copyright © Zoltan Juhasz, 2013-2022</Copyright>
+		<TargetFrameworks>net40;netstandard2.0;netstandard2.1;netcoreapp3.1;net6.0;net7.0;net8.0</TargetFrameworks>
+		<Version>2.1.1.0</Version>
+		<AssemblyVersion>2.1.1.0</AssemblyVersion>
+		<Copyright>Copyright © Zoltan Juhasz, 2013-2024</Copyright>
 		<Description>Contains an implementation of IDateFormatter for Json.NET</Description>
 		<Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
 		<Company>Forge Project Contributor(s)</Company>
@@ -36,7 +36,7 @@
 		<None Remove="Forge.Persistence.Formatters.JsonNet.xml" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0' or '$(TargetFramework)' == 'net8.0'">
 		<SupportedPlatform Include="browser" />
 	</ItemGroup>
 

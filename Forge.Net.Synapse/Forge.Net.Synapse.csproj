@@ -10,10 +10,10 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<TargetFrameworks>net40;netcoreapp3.1;net6.0;net6.0-windows</TargetFrameworks>
-		<Version>4.3.0.0</Version>
-		<AssemblyVersion>4.3.0.1</AssemblyVersion>
-		<Copyright>Copyright © Zoltan Juhasz, 2005-2022</Copyright>
+		<TargetFrameworks>net40;netcoreapp3.1;net6.0;net6.0-windows;net7.0;net7.0-windows;net8.0;net8.0-windows</TargetFrameworks>
+		<Version>4.3.1.0</Version>
+		<AssemblyVersion>4.3.1.0</AssemblyVersion>
+		<Copyright>Copyright © Zoltan Juhasz, 2005-2024</Copyright>
 		<Description>Contains the persistence library</Description>
 		<Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
 		<Company>Forge Project Contributor(s)</Company>
@@ -34,6 +34,8 @@
 		<DocumentationFile>Forge.Net.Synapse.xml</DocumentationFile>
 		<RepositoryUrl>https://github.com/JZO001/Forge.Net.Synapse</RepositoryUrl>
 		<DefineConstants Condition="'$(TargetFramework)' == 'net6.0-windows'">IS_WINDOWS</DefineConstants>
+		<DefineConstants Condition="'$(TargetFramework)' == 'net7.0-windows'">IS_WINDOWS</DefineConstants>
+		<DefineConstants Condition="'$(TargetFramework)' == 'net8.0-windows'">IS_WINDOWS</DefineConstants>
 		<DefineConstants Condition="'$(TargetFramework)' == 'netcoreapp3.1'">IS_WINDOWS</DefineConstants>
 		<DefineConstants Condition="'$(TargetFramework)' == 'net40'">IS_WINDOWS</DefineConstants>
 	</PropertyGroup>
@@ -62,6 +64,58 @@
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0"></PackageReference>
 		<PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0-windows'">
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0"></PackageReference>
+		<PackageReference Include="Microsoft.Extensions.Options" Version="7.0.0" />
+		<COMReference Include="NetFwTypeLib.dll">
+			<Guid>58fbcf7c-e7a9-467c-80b3-fc65e8fcca08</Guid>
+			<VersionMajor>1</VersionMajor>
+			<VersionMinor>0</VersionMinor>
+			<WrapperTool>tlbimp</WrapperTool>
+			<Lcid>0</Lcid>
+			<Isolated>false</Isolated>
+		</COMReference>
+		<COMReference Include="NATUPNPLib.dll">
+			<Guid>1c565858-f302-471e-b409-f180aa4abec6</Guid>
+			<VersionMajor>1</VersionMajor>
+			<VersionMinor>0</VersionMinor>
+			<WrapperTool>tlbimp</WrapperTool>
+			<Lcid>0</Lcid>
+			<Isolated>false</Isolated>
+		</COMReference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0"></PackageReference>
+		<PackageReference Include="Microsoft.Extensions.Options" Version="7.0.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-windows'">
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0"></PackageReference>
+		<PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
+		<COMReference Include="NetFwTypeLib.dll">
+			<Guid>58fbcf7c-e7a9-467c-80b3-fc65e8fcca08</Guid>
+			<VersionMajor>1</VersionMajor>
+			<VersionMinor>0</VersionMinor>
+			<WrapperTool>tlbimp</WrapperTool>
+			<Lcid>0</Lcid>
+			<Isolated>false</Isolated>
+		</COMReference>
+		<COMReference Include="NATUPNPLib.dll">
+			<Guid>1c565858-f302-471e-b409-f180aa4abec6</Guid>
+			<VersionMajor>1</VersionMajor>
+			<VersionMinor>0</VersionMinor>
+			<WrapperTool>tlbimp</WrapperTool>
+			<Lcid>0</Lcid>
+			<Isolated>false</Isolated>
+		</COMReference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0"></PackageReference>
+		<PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
@@ -103,10 +157,6 @@
 			<Lcid>0</Lcid>
 			<Isolated>false</Isolated>
 		</COMReference>
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.1" Condition="'$(TargetFramework)' != 'net40'" />
 	</ItemGroup>
 
 	<ItemGroup>

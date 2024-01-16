@@ -8,10 +8,10 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<TargetFrameworks>net40;netstandard2.0;netcoreapp3.1;net6.0</TargetFrameworks>
-		<Version>2.0.0.0</Version>
-		<AssemblyVersion>2.0.0.0</AssemblyVersion>
-		<Copyright>Copyright © Zoltan Juhasz, 2004-2022</Copyright>
+		<TargetFrameworks>net40;netstandard2.0;netcoreapp3.1;net6.0;net7.0;net8.0</TargetFrameworks>
+		<Version>2.0.1.0</Version>
+		<AssemblyVersion>2.0.1.0</AssemblyVersion>
+		<Copyright>Copyright © Zoltan Juhasz, 2004-2024</Copyright>
 		<Description>Forge Patterns and Practices</Description>
 		<Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
 		<Company>Forge Project Contributor(s)</Company>
@@ -34,6 +34,10 @@
 
 	<ItemGroup>
 		<None Remove="Forge.DatabaseManagement.xml" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0' or '$(TargetFramework)' == 'net8.0'">
+		<SupportedPlatform Include="browser" />
 	</ItemGroup>
 
 	<ItemGroup>

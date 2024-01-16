@@ -8,7 +8,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<TargetFrameworks>net40;netcoreapp3.1;net6.0;net6.0-windows</TargetFrameworks>
+		<TargetFrameworks>net40;netcoreapp3.1;net6.0;net6.0-windows;net7.0;net7.0-windows;net8.0;net8.0-windows</TargetFrameworks>
 		<Version>1.0.0.3</Version>
 		<Copyright>Copyright © Zoltan Juhasz, 2012-2022</Copyright>
 		<Description>Update Framework Shared Component</Description>
@@ -28,16 +28,14 @@
 		<DocumentationFile>Forge.UpdateFramework.xml</DocumentationFile>
 		<RepositoryUrl>https://github.com/JZO001/Forge</RepositoryUrl>
 		<DefineConstants Condition="'$(TargetFramework)' == 'net6.0-windows'">IS_WINDOWS</DefineConstants>
+		<DefineConstants Condition="'$(TargetFramework)' == 'net7.0-windows'">IS_WINDOWS</DefineConstants>
+		<DefineConstants Condition="'$(TargetFramework)' == 'net8.0-windows'">IS_WINDOWS</DefineConstants>
 		<DefineConstants Condition="'$(TargetFramework)' == 'netcoreapp3.1'">IS_WINDOWS</DefineConstants>
 		<DefineConstants Condition="'$(TargetFramework)' == 'net40'">IS_WINDOWS</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net40'">
 		<Reference Include="System.Configuration" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.1" Condition="'$(TargetFramework)' != 'net40'" />
 	</ItemGroup>
 
 	<ItemGroup>
