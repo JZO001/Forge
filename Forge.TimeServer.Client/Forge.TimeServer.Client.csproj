@@ -19,7 +19,7 @@
 		<Authors>Zoltan Juhasz</Authors>
 		<Title>Forge.TimeServer.Client</Title>
 		<SignAssembly>true</SignAssembly>
-		<AssemblyOriginatorKeyFile>..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
+		<AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<ProjectGuid>{D2DEC75E-E22B-423F-BA8A-253D652A611B}</ProjectGuid>
 	</PropertyGroup>

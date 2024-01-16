@@ -19,7 +19,7 @@
 		<Authors>Zoltan Juhasz</Authors>
 		<Title>Error Report Framework</Title>
 		<SignAssembly>true</SignAssembly>
-		<AssemblyOriginatorKeyFile>..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
+		<AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<ProjectGuid>{C7A8F803-2AF4-4211-8EF4-BB62A9EC0B34}</ProjectGuid>
 	</PropertyGroup>

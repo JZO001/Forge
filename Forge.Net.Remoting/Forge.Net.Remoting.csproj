@@ -19,7 +19,7 @@
 		<Authors>Zoltan Juhasz</Authors>
 		<Title>Forge.Net.Remoting</Title>
 		<SignAssembly>true</SignAssembly>
-		<AssemblyOriginatorKeyFile>..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
+		<AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<ProjectGuid>{0F590995-E709-4BD6-85FB-4059D2D7507E}</ProjectGuid>
 	</PropertyGroup>

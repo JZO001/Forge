@@ -19,7 +19,7 @@
 		<Authors>Zoltan Juhasz</Authors>
 		<Title>Forge.UpdateFramework.Service</Title>
 		<SignAssembly>true</SignAssembly>
-		<AssemblyOriginatorKeyFile>..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
+		<AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<ProjectGuid>{26FA621F-314D-4962-AED8-38404BEDE4F9}</ProjectGuid>
 	</PropertyGroup>

@@ -1,5 +1,6 @@
 <Project>
 	<Sdk Name="Microsoft.NET.Sdk" />
+	
 	<PropertyGroup Label="Globals">
 		<SccProjectName>SAK</SccProjectName>
 		<SccProvider>SAK</SccProvider>
@@ -19,7 +20,7 @@
 		<Authors>Zoltan Juhasz</Authors>
 		<Title>Forge Extensions</Title>
 		<SignAssembly>true</SignAssembly>
-		<AssemblyOriginatorKeyFile>..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
+		<AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<ProjectGuid>{B4EA240F-19DC-42CB-810B-99E86AF8D06E}</ProjectGuid>
 	</PropertyGroup>
@@ -30,6 +31,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Remove="Forge.Extensions.csproj.vspscc" />
 		<None Remove="Forge.Extensions.xml" />
 	</ItemGroup>
 
@@ -38,7 +40,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Forge.Shared\Forge.Shared.csproj" />
+		<ProjectReference Include="..\Forge.Shared\Forge.Shared.csproj" />
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">

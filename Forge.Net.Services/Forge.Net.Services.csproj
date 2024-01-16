@@ -19,7 +19,7 @@
 		<Authors>Zoltan Juhasz</Authors>
 		<Title>Forge.Net.Services</Title>
 		<SignAssembly>true</SignAssembly>
-		<AssemblyOriginatorKeyFile>..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
+		<AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<ProjectGuid>{5BF0BB3E-82BD-4F55-988F-64F39912A794}</ProjectGuid>
 	</PropertyGroup>

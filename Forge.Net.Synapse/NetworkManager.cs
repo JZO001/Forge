@@ -35,7 +35,7 @@ namespace Forge.Net.Synapse
     /// <summary>
     /// Network manager
     /// </summary>
-    public sealed class NetworkManager : MBRBase, IDefaultNetworkManager, IDisposable
+    public sealed class NetworkManager : MBRBase, IDefaultNetworkManager
     {
 
         #region Field(s)

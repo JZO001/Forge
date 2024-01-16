@@ -12,7 +12,7 @@
 		<Authors>Zoltan Juhasz</Authors>
 		<Title>Forge DatabaseManagement SqlServerCe40</Title>
 		<SignAssembly>true</SignAssembly>
-		<AssemblyOriginatorKeyFile>..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
+		<AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
 		<ProjectGuid>{D6DCC65B-BEE3-4076-A197-0F8BEDB7FDB0}</ProjectGuid>
 	</PropertyGroup>
 

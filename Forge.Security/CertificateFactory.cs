@@ -129,14 +129,14 @@ namespace Forge.Security
             RuntimeHelpers.PrepareConstrainedRegions();
             try
             {
-                Check(NativeMethods.CryptAcquireContextW(
+                Check(Forge.Native.NativeMethods.CryptAcquireContextW(
                     out providerContext,
                     containerName,
                     null,
                     1, // PROV_RSA_FULL, 2048 bit type: 1 | (2048<<16)
                     8)); // CRYPT_NEWKEYSET
 
-                Check(NativeMethods.CryptGenKey(
+                Check(Forge.Native.NativeMethods.CryptGenKey(
                     providerContext,
                     1, // AT_KEYEXCHANGE
                     1, // CRYPT_EXPORTABLE
@@ -151,7 +151,7 @@ namespace Forge.Security
                 // of errorStringPtr.
                 dataHandle = GCHandle.Alloc(x500, GCHandleType.Pinned);
 
-                if (!NativeMethods.CertStrToNameW(
+                if (!Forge.Native.NativeMethods.CertStrToNameW(
                     0x00010001, // X509_ASN_ENCODING | PKCS_7_ASN_ENCODING
                     dataHandle.AddrOfPinnedObject(),
                     3, // CERT_X500_NAME_STR = 3
@@ -166,7 +166,7 @@ namespace Forge.Security
 
                 nameData = new byte[nameDataLength];
 
-                if (!NativeMethods.CertStrToNameW(
+                if (!Forge.Native.NativeMethods.CertStrToNameW(
                     0x00010001, // X509_ASN_ENCODING | PKCS_7_ASN_ENCODING
                     dataHandle.AddrOfPinnedObject(),
                     3, // CERT_X500_NAME_STR = 3
@@ -191,7 +191,7 @@ namespace Forge.Security
                 kpi.ProviderType = 1; // PROV_RSA_FULL
                 kpi.KeySpec = 1; // AT_KEYEXCHANGE
 
-                certContext = NativeMethods.CertCreateSelfSignCertificate(
+                certContext = Forge.Native.NativeMethods.CertCreateSelfSignCertificate(
                     providerContext,
                     ref nameBlob,
                     0,
@@ -203,7 +203,7 @@ namespace Forge.Security
                 Check(certContext != IntPtr.Zero);
                 dataHandle.Free();
 
-                certStore = NativeMethods.CertOpenStore(
+                certStore = Forge.Native.NativeMethods.CertOpenStore(
                     "Memory", // sz_CERT_STORE_PROV_MEMORY
                     0,
                     IntPtr.Zero,
@@ -211,13 +211,13 @@ namespace Forge.Security
                     IntPtr.Zero);
                 Check(certStore != IntPtr.Zero);
 
-                Check(NativeMethods.CertAddCertificateContextToStore(
+                Check(Forge.Native.NativeMethods.CertAddCertificateContextToStore(
                     certStore,
                     certContext,
                     1, // CERT_STORE_ADD_NEW
                     out storeCertContext));
 
-                NativeMethods.CertSetCertificateContextProperty(
+                Forge.Native.NativeMethods.CertSetCertificateContextProperty(
                     storeCertContext,
                     2, // CERT_KEY_PROV_INFO_PROP_ID
                     0,
@@ -229,7 +229,7 @@ namespace Forge.Security
                 }
 
                 CryptoApiBlob pfxBlob = new CryptoApiBlob();
-                Check(NativeMethods.PFXExportCertStoreEx(
+                Check(Forge.Native.NativeMethods.PFXExportCertStoreEx(
                     certStore,
                     ref pfxBlob,
                     passwordPtr,
@@ -239,7 +239,7 @@ namespace Forge.Security
                 pfxData = new byte[pfxBlob.DataLength];
                 dataHandle = GCHandle.Alloc(pfxData, GCHandleType.Pinned);
                 pfxBlob.Data = dataHandle.AddrOfPinnedObject();
-                Check(NativeMethods.PFXExportCertStoreEx(
+                Check(Forge.Native.NativeMethods.PFXExportCertStoreEx(
                     certStore,
                     ref pfxBlob,
                     passwordPtr,
@@ -261,28 +261,28 @@ namespace Forge.Security
 
                 if (certContext != IntPtr.Zero)
                 {
-                    NativeMethods.CertFreeCertificateContext(certContext);
+                    Forge.Native.NativeMethods.CertFreeCertificateContext(certContext);
                 }
 
                 if (storeCertContext != IntPtr.Zero)
                 {
-                    NativeMethods.CertFreeCertificateContext(storeCertContext);
+                    Forge.Native.NativeMethods.CertFreeCertificateContext(storeCertContext);
                 }
 
                 if (certStore != IntPtr.Zero)
                 {
-                    NativeMethods.CertCloseStore(certStore, 0);
+                    Forge.Native.NativeMethods.CertCloseStore(certStore, 0);
                 }
 
                 if (cryptKey != IntPtr.Zero)
                 {
-                    NativeMethods.CryptDestroyKey(cryptKey);
+                    Forge.Native.NativeMethods.CryptDestroyKey(cryptKey);
                 }
 
                 if (providerContext != IntPtr.Zero)
                 {
-                    NativeMethods.CryptReleaseContext(providerContext, 0);
-                    NativeMethods.CryptAcquireContextW(
+                    Forge.Native.NativeMethods.CryptReleaseContext(providerContext, 0);
+                    Forge.Native.NativeMethods.CryptAcquireContextW(
                         out providerContext,
                         containerName,
                         null,
@@ -330,7 +330,7 @@ namespace Forge.Security
         {
             long fileTime = dateTime.ToFileTime();
             SystemTime systemTime;
-            Check(NativeMethods.FileTimeToSystemTime(ref fileTime, out systemTime));
+            Check(Forge.Native.NativeMethods.FileTimeToSystemTime(ref fileTime, out systemTime));
             return systemTime;
         }
 

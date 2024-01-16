@@ -21,7 +21,7 @@
 		<Authors>Zoltan Juhasz</Authors>
 		<Title>Forge Native Windows Methods</Title>
 		<SignAssembly>true</SignAssembly>
-		<AssemblyOriginatorKeyFile>..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
+		<AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<ProjectGuid>{B2B97F2D-EFF3-4568-AE8A-10646114AB14}</ProjectGuid>
 		<UseWindowsForms>true</UseWindowsForms>

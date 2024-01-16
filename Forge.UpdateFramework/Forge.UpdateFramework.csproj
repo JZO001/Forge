@@ -19,7 +19,7 @@
 		<AssemblyVersion>1.0.0.3</AssemblyVersion>
 		<Title>Forge.UpdateFramework</Title>
 		<SignAssembly>true</SignAssembly>
-		<AssemblyOriginatorKeyFile>..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
+		<AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<ProjectGuid>{5381068C-E22C-4FBB-A105-9A219FB5166B}</ProjectGuid>
 	</PropertyGroup>

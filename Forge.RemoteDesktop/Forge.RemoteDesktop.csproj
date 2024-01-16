@@ -21,7 +21,7 @@
 		<Authors>Zoltan Juhasz</Authors>
 		<Title>Remote Desktop Interface</Title>
 		<SignAssembly>true</SignAssembly>
-		<AssemblyOriginatorKeyFile>..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
+		<AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<ProjectGuid>{4C5BA699-04F5-4BFF-9CC2-3393C295445F}</ProjectGuid>
 		<UseWindowsForms>true</UseWindowsForms>
