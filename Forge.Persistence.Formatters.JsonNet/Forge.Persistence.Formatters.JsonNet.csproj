@@ -18,10 +18,13 @@
 		<PackageId>Forge.Persistence.Formatters.JsonNet</PackageId>
 		<Authors>Zoltan Juhasz</Authors>
 		<Title>Json.Net Formatter</Title>
+		<ProjectGuid>{64BB1EFC-27BB-4A5F-B631-234A552C4288}</ProjectGuid>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
-		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-		<ProjectGuid>{64BB1EFC-27BB-4A5F-B631-234A552C4288}</ProjectGuid>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -38,7 +41,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -46,8 +49,8 @@
 	  <ProjectReference Include="..\Forge.Shared\Forge.Shared.csproj" />
 	</ItemGroup>
 
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	<!--<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
-	</Target>
+	</Target>-->
 
 </Project>

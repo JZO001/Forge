@@ -18,10 +18,13 @@
 		<PackageId>Forge.TimeServer.Client</PackageId>
 		<Authors>Zoltan Juhasz</Authors>
 		<Title>Forge.TimeServer.Client</Title>
+		<ProjectGuid>{D2DEC75E-E22B-423F-BA8A-253D652A611B}</ProjectGuid>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
-		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-		<ProjectGuid>{D2DEC75E-E22B-423F-BA8A-253D652A611B}</ProjectGuid>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -49,8 +52,8 @@
 	  <ProjectReference Include="..\Forge.TimeServer\Forge.TimeServer.csproj" />
 	</ItemGroup>
 
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	<!--<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
-	</Target>
+	</Target>-->
 
 </Project>

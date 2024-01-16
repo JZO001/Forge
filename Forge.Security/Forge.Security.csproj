@@ -18,10 +18,13 @@
 		<PackageId>Forge.Security</PackageId>
 		<Authors>Zoltan Juhasz</Authors>
 		<Title>Forge Security</Title>
+		<ProjectGuid>{94A61AE8-D345-40CD-A007-9CB050B8E0AA}</ProjectGuid>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
-		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-		<ProjectGuid>{94A61AE8-D345-40CD-A007-9CB050B8E0AA}</ProjectGuid>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -31,12 +34,7 @@
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net40'">
 		<Reference Include="System.Configuration" />
-		<Reference Include="Forge.Native">
-			<HintPath>..\.Output\net40\Forge.Native.dll</HintPath>
-			<SpecificVersion>False</SpecificVersion>
-			<Private>True</Private>
-			<Name>Forge.Native</Name>
-		</Reference>
+		<ProjectReference Include="..\Forge.Native\Forge.Native.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -53,8 +51,8 @@
 	  <ProjectReference Include="..\Forge.Shared\Forge.Shared.csproj" />
 	</ItemGroup>
 
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	<!--<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
-	</Target>
+	</Target>-->
 
 </Project>

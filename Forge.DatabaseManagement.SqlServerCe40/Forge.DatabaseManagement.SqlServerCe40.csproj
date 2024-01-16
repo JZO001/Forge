@@ -11,9 +11,13 @@
 		<PackageId>Forge.DatabaseManagement.SqlServerCe40</PackageId>
 		<Authors>Zoltan Juhasz</Authors>
 		<Title>Forge DatabaseManagement SqlServerCe40</Title>
+		<ProjectGuid>{D6DCC65B-BEE3-4076-A197-0F8BEDB7FDB0}</ProjectGuid>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>..\..\.Documents\Forge.pfx</AssemblyOriginatorKeyFile>
-		<ProjectGuid>{D6DCC65B-BEE3-4076-A197-0F8BEDB7FDB0}</ProjectGuid>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -28,7 +32,7 @@
 	<ItemGroup>
 		<Reference Include="System.Configuration" />
 		<PackageReference Include="Microsoft.SqlServer.Compact" Version="4.0.8876.1" />
-		<PackageReference Include="NHibernate" Version="5.4.0" />
+		<PackageReference Include="NHibernate" Version="5.5.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -37,8 +41,8 @@
 		<ProjectReference Include="..\Forge.Shared\Forge.Shared.csproj" />
 	</ItemGroup>
 
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	<!--<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<Exec Command="echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).dll&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).pdb&quot;&#xD;&#xA;echo F|xcopy /r /y &quot;$(TargetDir)$(TargetName).xml&quot; &quot;$(SolutionDir).Output\$(TargetFramework)\$(TargetName).xml&quot;&#xD;&#xA;" />
-	</Target>
+	</Target>-->
 
 </Project>
