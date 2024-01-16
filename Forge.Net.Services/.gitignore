@@ -5,6 +5,7 @@
 *.suo
 *.user
 *.sln.docstates
+*.vspscc
 
 # Build results
 
@@ -151,41 +152,5 @@ $RECYCLE.BIN/
 # Mac crap
 .DS_Store
 
-# Sensitive documentations
-.Documents
-certificate.bat
-Forge.Net.TerraGraf.dll.*
-
-# Unnecessary files and folders
-Forge.sln
-BuildProcessTemplates
-NHibernate*
-Microsoft.SqlServer.*
-NuGet.CommandLine.*
-
-# Packages
-packages/Iesi*
-packages/log4net*
-packages/Newtonsoft*
-packages/NHibernate*
-packages/NuGet*
-packages/EntityFramework*
-packages/Microsoft*
-packages/System*
-
 # For Future
-$tf
-.Dotfuscated
-Dotfuscated
-.Output
-.nuget
-*.suo
-*.vsmdi
-*.vssscc
-Forge_Release.*
-*.testsettings
-*.xml
-Forge.Security.Jwt.Client*
-Forge.Security.Jwt.Service*
-Forge.Security.Jwt.Shared*
-Forge.Wasm.BrowserStorages*
+Forge.*.xml
