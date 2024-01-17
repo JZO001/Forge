@@ -1,4 +1,4 @@
-﻿#if NET461_OR_GREATER || NETSTANDARD2_0_OR_GREATER
+﻿#if NET461_OR_GREATER || NETSTANDARD2_0_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 
 using Forge.Logging.Abstraction;
 using Microsoft.Extensions.DependencyInjection;
