@@ -9,7 +9,7 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net40;net461;netstandard2.0;netcoreapp3.1;net6.0;net7.0;net8.0</TargetFrameworks>
-		<Version>2.0.2.0</Version>
+		<Version>2.0.3.0</Version>
 		<AssemblyVersion>2.0.2.0</AssemblyVersion>
 		<Copyright>Copyright © Zoltan Juhasz, 2004-2024</Copyright>
 		<Description>Forge Patterns and Practices</Description>

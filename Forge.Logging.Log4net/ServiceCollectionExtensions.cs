@@ -18,7 +18,8 @@ namespace Forge.Logging.Log4net
         {
             return services
                 .AddSingleton<ILog, Log4NetLog>()
-                .AddSingleton<ILoggerWrapper, Log4NetManager>(factory => Log4NetManager.Instance);
+                .AddSingleton<ILoggerWrapper, Log4NetManager>(factory => Log4NetManager.Instance)
+                .AddSingleton<log4net.ILog>(log4net.LogManager.GetLogger("[]"));
         }
 
     }
