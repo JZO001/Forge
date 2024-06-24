@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup Label="Globals">
-	  <SccProjectName>%24/Forge/Forge.UpdateFramework.Service</SccProjectName>
-	  <SccProvider>{4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}</SccProvider>
-	  <SccAuxPath>https://jzo.visualstudio.com</SccAuxPath>
-	  <SccLocalPath>.</SccLocalPath>
+	  <SccProjectName></SccProjectName>
+	  <SccProvider></SccProvider>
+	  <SccAuxPath></SccAuxPath>
+	  <SccLocalPath></SccLocalPath>
 	</PropertyGroup>
 
 	<PropertyGroup>
