@@ -4,10 +4,11 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
-using System;
-using System.Windows.Forms;
 using Forge.RemoteDesktop.Contracts;
 using Forge.RemoteDesktop.Service.Properties;
+using System;
+using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace Forge.RemoteDesktop.Service
 {
@@ -19,7 +20,7 @@ namespace Forge.RemoteDesktop.Service
     {
 
         #region Constructor(s)
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ConnectedClientsControl"/> class.
         /// </summary>
@@ -35,7 +36,7 @@ namespace Forge.RemoteDesktop.Service
             btDisconnectActiveClient.Text = Resources.Button_Disconnect;
             btDisconnectConnectedClient.Text = Resources.Button_Disconnect;
 
-        } 
+        }
 
         #endregion
 
@@ -47,6 +48,7 @@ namespace Forge.RemoteDesktop.Service
         /// <value>
         ///   <c>true</c> if [is initialized]; otherwise, <c>false</c>.
         /// </value>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public bool IsInitialized { get; protected set; }
 
         #endregion
@@ -64,7 +66,7 @@ namespace Forge.RemoteDesktop.Service
                 RemoteDesktopServiceManager.Instance.EventAcceptClient += new EventHandler<AcceptClientEventArgs>(RemoteDesktopServiceManager_EventAcceptClient);
                 IsInitialized = true;
             }
-        } 
+        }
 
         #endregion
 
@@ -212,7 +214,7 @@ namespace Forge.RemoteDesktop.Service
         {
             IRemoteDesktopPeer peer = lvActiveClients.SelectedItems[0].Tag as IRemoteDesktopPeer;
             RemoteDesktopServiceManager.Instance.Disconnect(peer);
-        } 
+        }
 
         #endregion
 

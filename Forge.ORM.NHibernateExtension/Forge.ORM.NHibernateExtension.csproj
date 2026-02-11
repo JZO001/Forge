@@ -1,17 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup Label="Globals">
-	  <SccProjectName></SccProjectName>
-	  <SccProvider></SccProvider>
-	  <SccAuxPath></SccAuxPath>
-	  <SccLocalPath></SccLocalPath>
+		<SccProjectName></SccProjectName>
+		<SccProvider></SccProvider>
+		<SccAuxPath></SccAuxPath>
+		<SccLocalPath></SccLocalPath>
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<TargetFrameworks>net461;netstandard2.0;netcoreapp3.1;net6.0;net7.0;net8.0</TargetFrameworks>
-		<Version>2.0.1.0</Version>
-		<AssemblyVersion>2.0.1.0</AssemblyVersion>
-		<Copyright>Copyright © Zoltan Juhasz, 2004-2024</Copyright>
+		<TargetFrameworks>net461;netstandard2.0;netcoreapp3.1;net6.0;net7.0;net8.0;net9.0;net10.0</TargetFrameworks>
+		<Version>2.0.2.0</Version>
+		<AssemblyVersion>2.0.2.0</AssemblyVersion>
+		<Copyright>Copyright © Zoltan Juhasz, 2004-2026</Copyright>
 		<Description>Forge NHibernate ORM Extensions</Description>
 		<Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
 		<Company>Forge Project Contributor(s)</Company>
@@ -33,14 +33,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="Net4CollectionTypeFactory.cs" />
+		<Compile Remove="Net4CollectionTypeFactory.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<None Remove="Forge.ORM.NHibernateExtension.xml" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0' or '$(TargetFramework)' == 'net8.0'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0' or '$(TargetFramework)' == 'net8.0' or '$(TargetFramework)' == 'net9.0' or '$(TargetFramework)' == 'net10.0'">
 		<SupportedPlatform Include="browser" />
 	</ItemGroup>
 
@@ -49,21 +49,21 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Include="Net4CollectionTypeFactory.cs" />
+		<None Include="Net4CollectionTypeFactory.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Iesi.Collections" Version="4.0.5" />
-		<PackageReference Include="NHibernate" Version="5.5.0" />
+		<PackageReference Include="Iesi.Collections" Version="4.1.1" />
+		<PackageReference Include="NHibernate" Version="5.6.0" />
 		<PackageReference Include="NHibernate.Mapping.Attributes" Version="5.1.0" />
 		<PackageReference Include="Remotion.Linq" Version="2.2.0" />
 		<PackageReference Include="Remotion.Linq.EagerFetching" Version="2.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Forge.Invoker\Forge.Invoker.csproj" />
-	  <ProjectReference Include="..\Forge.Reflection\Forge.Reflection.csproj" />
-	  <ProjectReference Include="..\Forge.Shared\Forge.Shared.csproj" />
+		<ProjectReference Include="..\Forge.Invoker\Forge.Invoker.csproj" />
+		<ProjectReference Include="..\Forge.Reflection\Forge.Reflection.csproj" />
+		<ProjectReference Include="..\Forge.Shared\Forge.Shared.csproj" />
 	</ItemGroup>
 
 	<!--<Target Name="PostBuild" AfterTargets="PostBuildEvent">

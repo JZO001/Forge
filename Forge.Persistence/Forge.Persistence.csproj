@@ -8,10 +8,10 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<TargetFrameworks>net40;netcoreapp3.1;netstandard2.0;netstandard2.1;net6.0;net7.0;net8.0</TargetFrameworks>
-		<Version>2.1.1.0</Version>
-		<AssemblyVersion>2.1.1.0</AssemblyVersion>
-		<Copyright>Copyright © Zoltan Juhasz, 2005-2024</Copyright>
+		<TargetFrameworks>net40;netcoreapp3.1;netstandard2.0;netstandard2.1;net6.0;net7.0;net8.0;net9.0;net10.0</TargetFrameworks>
+		<Version>2.3.1.0</Version>
+		<AssemblyVersion>2.3.1.0</AssemblyVersion>
+		<Copyright>Copyright © Zoltan Juhasz, 2005-2026</Copyright>
 		<Description>Contains the persistence library</Description>
 		<Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
 		<Company>Forge Project Contributor(s)</Company>
@@ -60,6 +60,22 @@
 		<SupportedPlatform Include="browser" />
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+		<PackageReference Include="Microsoft.Extensions.Options" Version="9.0.0" />
+		<PackageReference Include="Microsoft.CSharp">
+			<Version>4.7.0</Version>
+		</PackageReference>
+		<SupportedPlatform Include="browser" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+		<PackageReference Include="Microsoft.Extensions.Options" Version="10.0.0" />
+		<PackageReference Include="Microsoft.CSharp">
+			<Version>4.7.0</Version>
+		</PackageReference>
+		<SupportedPlatform Include="browser" />
+	</ItemGroup>
+
 	<ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
 		<PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
 		<PackageReference Include="Microsoft.CSharp">
@@ -87,10 +103,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Forge.Collections\Forge.Collections.csproj" />
-	  <ProjectReference Include="..\Forge.Configuration\Forge.Configuration.csproj" />
-	  <ProjectReference Include="..\Forge.Formatters\Forge.Formatters.csproj" />
-	  <ProjectReference Include="..\Forge.Reflection\Forge.Reflection.csproj" />
+		<ProjectReference Include="..\Forge.Collections\Forge.Collections.csproj" />
+		<ProjectReference Include="..\Forge.Configuration\Forge.Configuration.csproj" />
+		<ProjectReference Include="..\Forge.Formatters\Forge.Formatters.csproj" />
+		<ProjectReference Include="..\Forge.Reflection\Forge.Reflection.csproj" />
 	</ItemGroup>
 
 	<!--<Target Name="PostBuild" AfterTargets="PostBuildEvent">

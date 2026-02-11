@@ -1,17 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup Label="Globals">
-	  <SccProjectName></SccProjectName>
-	  <SccProvider></SccProvider>
-	  <SccAuxPath></SccAuxPath>
-	  <SccLocalPath></SccLocalPath>
+		<SccProjectName></SccProjectName>
+		<SccProvider></SccProvider>
+		<SccAuxPath></SccAuxPath>
+		<SccLocalPath></SccLocalPath>
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<TargetFrameworks>net40;net461;netstandard2.0;netcoreapp3.1;net6.0;net7.0;net8.0</TargetFrameworks>
-		<Version>2.0.3.0</Version>
-		<AssemblyVersion>2.0.2.0</AssemblyVersion>
-		<Copyright>Copyright © Zoltan Juhasz, 2004-2024</Copyright>
+		<TargetFrameworks>net40;net461;netstandard2.0;netcoreapp3.1;net6.0;net7.0;net8.0;net9.0;net10.0</TargetFrameworks>
+		<Version>2.0.4.0</Version>
+		<AssemblyVersion>2.0.4.0</AssemblyVersion>
+		<Copyright>Copyright © Zoltan Juhasz, 2004-2026</Copyright>
 		<Description>Forge Patterns and Practices</Description>
 		<Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
 		<Company>Forge Project Contributor(s)</Company>
@@ -61,6 +61,14 @@
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="log4net" Version="2.0.15" />
 	</ItemGroup>
@@ -70,8 +78,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Forge.Logging.Abstraction\Forge.Logging.Abstraction.csproj" />
-	  <ProjectReference Include="..\Forge.Shared\Forge.Shared.csproj" />
+		<ProjectReference Include="..\Forge.Logging.Abstraction\Forge.Logging.Abstraction.csproj" />
+		<ProjectReference Include="..\Forge.Shared\Forge.Shared.csproj" />
 	</ItemGroup>
 
 	<!--<Target Name="PostBuild" AfterTargets="PostBuildEvent">

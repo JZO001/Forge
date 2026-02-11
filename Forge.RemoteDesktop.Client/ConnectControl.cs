@@ -4,9 +4,6 @@
  * E-Mail: forge@jzo.hu
 ***********************************************************************/
 
-using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
 using Forge.Collections;
 using Forge.Invoker;
 using Forge.Net.Remoting.Proxy;
@@ -14,6 +11,10 @@ using Forge.Net.Services.Locators;
 using Forge.Net.TerraGraf;
 using Forge.RemoteDesktop.Client.Properties;
 using Forge.RemoteDesktop.Contracts;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace Forge.RemoteDesktop.Client
 {
@@ -60,6 +61,7 @@ namespace Forge.RemoteDesktop.Client
         /// <value>
         ///   <c>true</c> if [is initialized]; otherwise, <c>false</c>.
         /// </value>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public bool IsInitialized { get; protected set; }
 
         /// <summary>
@@ -68,6 +70,7 @@ namespace Forge.RemoteDesktop.Client
         /// <value>
         /// The selected provider.
         /// </value>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public ServiceProvider SelectedProvider { get; protected set; }
 
         /// <summary>
@@ -87,6 +90,7 @@ namespace Forge.RemoteDesktop.Client
         /// <value>
         ///   <c>true</c> if [show cancel button]; otherwise, <c>false</c>.
         /// </value>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public bool ShowCancelButton
         {
             get { return btCancel.Visible; }

@@ -8,10 +8,10 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<TargetFrameworks>net45;netstandard2.0;netcoreapp3.1;net6.0;net7.0;net8.0</TargetFrameworks>
-		<Version>2.0.1.0</Version>
-		<AssemblyVersion>2.0.1.0</AssemblyVersion>
-		<Copyright>Copyright © Zoltan Juhasz, 2019-2024</Copyright>
+		<TargetFrameworks>net45;netstandard2.0;netcoreapp3.1;net6.0;net7.0;net8.0;net9.0;net10.0</TargetFrameworks>
+		<Version>2.0.2.0</Version>
+		<AssemblyVersion>2.0.2.0</AssemblyVersion>
+		<Copyright>Copyright © Zoltan Juhasz, 2019-2026</Copyright>
 		<Description>WebSocket management implementation</Description>
 		<Product>Forge.Net.WebSockets: management implementation</Product>
 		<Company>Forge Project Contributor(s)</Company>
@@ -36,6 +36,10 @@
 		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" Condition="'$(TargetFramework)' != 'net45'" />
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+		<PackageReference Include="System.Text.Encodings.Web" Version="4.5.1" />
+	</ItemGroup>
+
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netcoreapp3.1'">
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
 	</ItemGroup>
@@ -48,7 +52,15 @@
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0' or '$(TargetFramework)' == 'net8.0'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0' or '$(TargetFramework)' == 'net8.0' or '$(TargetFramework)' == 'net9.0' or '$(TargetFramework)' == 'net10.0'">
 		<SupportedPlatform Include="browser" />
 	</ItemGroup>
 

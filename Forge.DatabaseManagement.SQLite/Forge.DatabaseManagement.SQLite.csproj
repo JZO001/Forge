@@ -1,17 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup Label="Globals">
-	  <SccProjectName></SccProjectName>
-	  <SccProvider></SccProvider>
-	  <SccAuxPath></SccAuxPath>
-	  <SccLocalPath></SccLocalPath>
+		<SccProjectName></SccProjectName>
+		<SccProvider></SccProvider>
+		<SccAuxPath></SccAuxPath>
+		<SccLocalPath></SccLocalPath>
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<TargetFrameworks>net40;netstandard2.0;netcoreapp3.1;net6.0;net7.0;net8.0</TargetFrameworks>
-		<Version>2.0.1.0</Version>
-		<AssemblyVersion>2.0.1.0</AssemblyVersion>
-		<Copyright>Copyright © Zoltan Juhasz, 2004-2024</Copyright>
+		<TargetFrameworks>net471;netstandard2.0;netcoreapp3.1;net6.0;net7.0;net8.0;net9.0;net10.0</TargetFrameworks>
+		<Version>2.0.2.0</Version>
+		<AssemblyVersion>2.0.2.0</AssemblyVersion>
+		<Copyright>Copyright © Zoltan Juhasz, 2004-2026</Copyright>
 		<Description>Forge Patterns and Practices</Description>
 		<Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
 		<Company>Forge Project Contributor(s)</Company>
@@ -32,16 +32,16 @@
 		<RepositoryUrl>https://github.com/JZO001/Forge.DatabaseManagement.SQLite</RepositoryUrl>
 	</PropertyGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net40'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net471'">
 		<Reference Include="System.Configuration" />
-		<PackageReference Include="System.Data.SQLite.EF6" Version="1.0.118" />
-		<PackageReference Include="System.Data.SQLite.Linq" Version="1.0.118" />
+		<PackageReference Include="System.Data.SQLite.EF6" Version="1.0.119" />
+		<PackageReference Include="System.Data.SQLite.Linq" Version="1.0.119" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="EntityFramework" Version="6.4.4" />
-		<PackageReference Include="System.Data.SQLite" Version="1.0.118" />
-		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.118" />
+		<PackageReference Include="EntityFramework" Version="6.5.1" />
+		<PackageReference Include="System.Data.SQLite" Version="1.0.119" />
+		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
@@ -56,12 +56,20 @@
 		<PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.0" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<None Remove="Forge.DatabaseManagement.SQLite.xml" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Forge.DatabaseManagement\Forge.DatabaseManagement.csproj" />
+		<ProjectReference Include="..\Forge.DatabaseManagement\Forge.DatabaseManagement.csproj" />
 	</ItemGroup>
 
 	<!--<Target Name="PostBuild" AfterTargets="PostBuildEvent">

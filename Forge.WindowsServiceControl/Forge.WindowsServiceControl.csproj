@@ -8,10 +8,10 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<TargetFrameworks>net40;netcoreapp3.1;net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
-		<Version>2.0.1.0</Version>
-		<AssemblyVersion>2.0.1.0</AssemblyVersion>
-		<Copyright>Copyright © Zoltan Juhasz, 2004-2024</Copyright>
+		<TargetFrameworks>net40;netcoreapp3.1;net6.0-windows;net7.0-windows;net8.0-windows;net9.0-windows;net10.0-windows</TargetFrameworks>
+		<Version>2.0.2.0</Version>
+		<AssemblyVersion>2.0.2.0</AssemblyVersion>
+		<Copyright>Copyright © Zoltan Juhasz, 2004-2026</Copyright>
 		<Description>Forge Patterns and Practices</Description>
 		<Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
 		<Company>Forge Project Contributor(s)</Company>
@@ -37,7 +37,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Forge.Legacy\Forge.Legacy.csproj" />
+		<ProjectReference Include="..\Forge.Legacy\Forge.Legacy.csproj" />
 	</ItemGroup>
 
 	<!--<Target Name="PostBuild" AfterTargets="PostBuildEvent">

@@ -1,19 +1,19 @@
 <Project>
 
 	<Sdk Name="Microsoft.NET.Sdk.WindowsDesktop" />
-	
+
 	<PropertyGroup Label="Globals">
-	  <SccProjectName></SccProjectName>
-	  <SccProvider></SccProvider>
-	  <SccAuxPath></SccAuxPath>
-	  <SccLocalPath></SccLocalPath>
+		<SccProjectName></SccProjectName>
+		<SccProvider></SccProvider>
+		<SccAuxPath></SccAuxPath>
+		<SccLocalPath></SccLocalPath>
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<TargetFrameworks>net40;netcoreapp3.1;net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
-		<Version>1.2.1.0</Version>
-		<AssemblyVersion>1.2.1.0</AssemblyVersion>
-		<Copyright>Copyright © Zoltan Juhasz, 2005-2024</Copyright>
+		<TargetFrameworks>net40;netcoreapp3.1;net6.0-windows;net7.0-windows;net8.0-windows;net9.0-windows;net10.0-windows</TargetFrameworks>
+		<Version>1.2.2.0</Version>
+		<AssemblyVersion>1.2.2.0</AssemblyVersion>
+		<Copyright>Copyright © Zoltan Juhasz, 2005-2026</Copyright>
 		<Description>Remote Desktop Service</Description>
 		<Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
 		<Company>Forge Project Contributor(s)</Company>
@@ -36,10 +36,12 @@
 		<DefineConstants Condition="'$(TargetFramework)' == 'net6.0-windows'">IS_WINDOWS</DefineConstants>
 		<DefineConstants Condition="'$(TargetFramework)' == 'net7.0-windows'">IS_WINDOWS</DefineConstants>
 		<DefineConstants Condition="'$(TargetFramework)' == 'net8.0-windows'">IS_WINDOWS</DefineConstants>
+		<DefineConstants Condition="'$(TargetFramework)' == 'net9.0-windows'">IS_WINDOWS</DefineConstants>
+		<DefineConstants Condition="'$(TargetFramework)' == 'net10.0-windows'">IS_WINDOWS</DefineConstants>
 		<DefineConstants Condition="'$(TargetFramework)' == 'netcoreapp3.1'">IS_WINDOWS</DefineConstants>
 		<DefineConstants Condition="'$(TargetFramework)' == 'net40'">IS_WINDOWS</DefineConstants>
 	</PropertyGroup>
-	
+
 	<ItemGroup Condition="'$(TargetFramework)' == 'net40'">
 		<Reference Include="System.Configuration" />
 		<Reference Include="WindowsBase" />
@@ -55,6 +57,14 @@
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
 		<PackageReference Include="System.Diagnostics.EventLog" Version="8.0.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+		<PackageReference Include="System.Diagnostics.EventLog" Version="9.0.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+		<PackageReference Include="System.Diagnostics.EventLog" Version="10.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

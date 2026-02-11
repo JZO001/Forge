@@ -1,19 +1,19 @@
 <Project>
 
 	<Sdk Name="Microsoft.NET.Sdk.WindowsDesktop" />
-	
+
 	<PropertyGroup Label="Globals">
-	  <SccProjectName></SccProjectName>
-	  <SccProvider></SccProvider>
-	  <SccAuxPath></SccAuxPath>
-	  <SccLocalPath></SccLocalPath>
+		<SccProjectName></SccProjectName>
+		<SccProvider></SccProvider>
+		<SccAuxPath></SccAuxPath>
+		<SccLocalPath></SccLocalPath>
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<TargetFrameworks>net40;netcoreapp3.1;net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
-		<Version>1.2.1.0</Version>
-		<AssemblyVersion>1.2.1.0</AssemblyVersion>
-		<Copyright>Copyright © Zoltan Juhasz, 2005-2024</Copyright>
+		<TargetFrameworks>net40;netcoreapp3.1;net6.0-windows;net7.0-windows;net8.0-windows;net9.0-windows;net10.0-windows</TargetFrameworks>
+		<Version>1.2.2.0</Version>
+		<AssemblyVersion>1.2.2.0</AssemblyVersion>
+		<Copyright>Copyright © Zoltan Juhasz, 2005-2026</Copyright>
 		<Description>Remote Desktop Client</Description>
 		<Product>Forge: reference, practice and patterns implementations and helper(s)</Product>
 		<Company>Forge Project Contributor(s)</Company>
@@ -36,6 +36,8 @@
 		<DefineConstants Condition="'$(TargetFramework)' == 'net6.0-windows'">IS_WINDOWS</DefineConstants>
 		<DefineConstants Condition="'$(TargetFramework)' == 'net7.0-windows'">IS_WINDOWS</DefineConstants>
 		<DefineConstants Condition="'$(TargetFramework)' == 'net8.0-windows'">IS_WINDOWS</DefineConstants>
+		<DefineConstants Condition="'$(TargetFramework)' == 'net9.0-windows'">IS_WINDOWS</DefineConstants>
+		<DefineConstants Condition="'$(TargetFramework)' == 'net10.0-windows'">IS_WINDOWS</DefineConstants>
 		<DefineConstants Condition="'$(TargetFramework)' == 'netcoreapp3.1'">IS_WINDOWS</DefineConstants>
 		<DefineConstants Condition="'$(TargetFramework)' == 'net40'">IS_WINDOWS</DefineConstants>
 	</PropertyGroup>
@@ -57,17 +59,25 @@
 		<PackageReference Include="System.Diagnostics.EventLog" Version="8.0.0" />
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+		<PackageReference Include="System.Diagnostics.EventLog" Version="9.0.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+		<PackageReference Include="System.Diagnostics.EventLog" Version="10.0.0" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<None Remove="Forge.RemoteDesktop.Client.xml" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Forge.Invoker\Forge.Invoker.csproj" />
-	  <ProjectReference Include="..\Forge.Native\Forge.Native.csproj" />
-	  <ProjectReference Include="..\Forge.Net.Services\Forge.Net.Services.csproj" />
-	  <ProjectReference Include="..\Forge.RemoteDesktop\Forge.RemoteDesktop.csproj" />
-	  <ProjectReference Include="..\Forge.Security\Forge.Security.csproj" />
-	  <ProjectReference Include="..\Forge.Windows.UI\Forge.Windows.UI.csproj" />
+		<ProjectReference Include="..\Forge.Invoker\Forge.Invoker.csproj" />
+		<ProjectReference Include="..\Forge.Native\Forge.Native.csproj" />
+		<ProjectReference Include="..\Forge.Net.Services\Forge.Net.Services.csproj" />
+		<ProjectReference Include="..\Forge.RemoteDesktop\Forge.RemoteDesktop.csproj" />
+		<ProjectReference Include="..\Forge.Security\Forge.Security.csproj" />
+		<ProjectReference Include="..\Forge.Windows.UI\Forge.Windows.UI.csproj" />
 	</ItemGroup>
 
 	<!--<Target Name="PostBuild" AfterTargets="PostBuildEvent">
